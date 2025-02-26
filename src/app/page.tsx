@@ -1,3 +1,8 @@
 export default function Home() {
-  return <div>gsm gogo frontend</div>;
+  return (
+    <>
+      <input />
+      <div className="text-main-100 text-h1b">gsm gogo frontend</div>
+    </>
+  );
 }
