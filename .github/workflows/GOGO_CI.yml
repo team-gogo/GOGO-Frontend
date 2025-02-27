@@ -1,5 +1,13 @@
+name: GOGO Frontend CI
+
+on:
+  pull_request:
+    branches:
+      - 'develop'
+      - 'main'
+
 jobs:
-  GOGO_Fronted_CI:
+  GOGO_Frontend_CI:
     runs-on: ubuntu-latest
 
     strategy:
@@ -34,11 +42,11 @@ jobs:
         if: ${{ success() }}
         with:
           webhook: ${{ secrets.WEBHOOK_CI }}
-          title: '🎉 GOGO Fronted CI'
+          title: '🎉 GOGO Frontend CI'
           description: 'CI success'
           status: ${{ job.status }}
           content: "<@${{ secrets.ID1 }}> <@${{ secrets.ID2 }}>\n확인해주세요."
-          username: GOGO Fronted CI bot
+          username: GOGO Frontend CI bot
           url: 'https://github.com/team-gogo/GOGO-Frontend'
           color: 4CAF50
 
@@ -47,10 +55,10 @@ jobs:
         if: failure()
         with:
           webhook: ${{ secrets.WEBHOOK_CI }}
-          title: '❌ GOGO Fronted CI'
+          title: '❌ GOGO Frontend CI'
           description: 'CI failed'
           content: '안돼 안바꿔줘 돌아가'
           status: ${{ job.status }}
-          username: GOGO Fronted CI bot
+          username: GOGO Frontend CI bot
           url: 'https://github.com/team-gogo/GOGO-Frontend'
           color: e74c3c
