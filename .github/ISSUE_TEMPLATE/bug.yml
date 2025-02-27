@@ -1,0 +1,17 @@
+name: 'Bug'
+description: '버그가 생겼어요'
+title: '🐞 [BUG] - <title>''
+labels: 버그
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      description: |
+        [Description] 버그에 관한 설명을 적어주세요.
+      placeholder: |
+        예)동아리 노션을 추가하지 않았는데 노션 보러가기 버튼이 떠요.
+  - type: textarea
+    attributes:
+      label: Additional
+      description: |
+        [추가사항] 별도로 알려줘야 할 사항이나 추가사항을 작성해주세요.
