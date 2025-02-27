@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-}
-
 html,
 body,
 div,
@@ -114,5 +111,5 @@ html {
   font-family: var(--font-gmarket);
 }
 body {
-  background-color: #fff;
+  background-color: #1e1e1e;
 }
