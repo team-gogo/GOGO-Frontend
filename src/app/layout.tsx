@@ -1,6 +1,5 @@
 import '../shared/styles/globals.css';
 import TanstackProviders from '@/shared/libs/TanstackProviders';
-import { gmarketSans } from '@/shared/styles/fonts';
 
 import type { Metadata } from 'next';
 
@@ -15,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={gmarketSans.variable}>
+    <html lang="ko">
       <body>
         <TanstackProviders>{children}</TanstackProviders>
       </body>
