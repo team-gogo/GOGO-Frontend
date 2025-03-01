@@ -14,6 +14,7 @@ const Button = ({ children, ...attributes }: ButtonProps) => {
         'rounded-lg',
         'disabled:bg-gray-400',
         'bg-main-600',
+        'text-body3s',
         'text-white',
       )}
     >

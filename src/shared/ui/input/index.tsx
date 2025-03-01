@@ -18,9 +18,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           'bg-gray-700',
           'px-[16px]',
           'py-[12px]',
-          'text-white',
           'placeholder:text-gray-400',
           'rounded-lg',
+          'text-body3s',
+          'text-white',
         )}
       />
       {icon && (
