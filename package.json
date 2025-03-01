@@ -15,9 +15,11 @@
     "@tanstack/react-query": "^5.64.2",
     "@tanstack/react-query-devtools": "^5.64.2",
     "axios": "^1.7.9",
+    "clsx": "^2.1.1",
     "next": "14.2.15",
     "react": "^18",
     "react-dom": "^18",
+    "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
