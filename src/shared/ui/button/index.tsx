@@ -2,9 +2,16 @@ import { cn } from '@/shared/utils/cn';
 
 interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   children: string;
+  bg?: string;
+  textColor?: string;
 }
 
-const Button = ({ children, ...attributes }: ButtonProps) => {
+const Button = ({
+  children,
+  bg = 'bg-main-600',
+  textColor = 'text-white',
+  ...attributes
+}: ButtonProps) => {
   return (
     <button
       {...attributes}
@@ -13,9 +20,9 @@ const Button = ({ children, ...attributes }: ButtonProps) => {
         'w-full',
         'rounded-lg',
         'disabled:bg-gray-400',
-        'bg-main-600',
+        bg,
+        textColor,
         'text-body3s',
-        'text-white',
       )}
     >
       {children}
