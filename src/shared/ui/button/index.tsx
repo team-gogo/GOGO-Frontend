@@ -1,6 +1,6 @@
 import { cn } from '@/shared/utils/cn';
 
-interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: string;
   bg?: string;
   textColor?: string;
@@ -14,6 +14,7 @@ const Button = ({
 }: ButtonProps) => {
   return (
     <button
+      type="button"
       {...attributes}
       className={cn(
         'h-[56px]',

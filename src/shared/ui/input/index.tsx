@@ -22,10 +22,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           'rounded-lg',
           'text-body3s',
           'text-white',
+          attributes.type === 'number' &&
+            '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
         )}
       />
       {icon && (
-        <div
+        <button
+          type="button"
           className={cn(
             'absolute',
             'right-[16px]',
@@ -34,7 +37,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         >
           {icon}
-        </div>
+        </button>
       )}
     </div>
   ),
