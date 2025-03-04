@@ -100,7 +100,11 @@ const config: Config = {
       },
     },
     screens: {
-      mobile: { max: '640px' },
+      mobile: { max: '640px' }, // 640px 이하: 모바일
+      tablet: '768px', // 768px 이상: 태블릿
+      laptop: '1024px', // 1024px 이상: 노트북
+      desktop: '1280px', // 1280px 이상: 데스크탑
+      wide: '1536px', // 1536px 이상: 초대형 화면
     },
   },
   plugins: [require('tailwindcss-animate')],
