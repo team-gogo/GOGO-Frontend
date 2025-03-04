@@ -1,9 +1,9 @@
 interface FaqIconProps {
-  size: number;
-  color: string;
+  size?: number;
+  color?: string;
 }
 
-const FaqIcon = ({ size, color }: FaqIconProps) => (
+const FaqIcon = ({ size = 36, color = '#727272' }: FaqIconProps) => (
   <svg
     width={size}
     height={size}

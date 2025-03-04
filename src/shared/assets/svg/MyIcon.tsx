@@ -1,9 +1,9 @@
 interface MyIconProps {
-  size: number;
-  color: string;
+  size?: number;
+  color?: string;
 }
 
-const MyIcon = ({ size, color }: MyIconProps) => (
+const MyIcon = ({ size = 36, color = '#727272' }: MyIconProps) => (
   <svg
     width={size}
     height={size}

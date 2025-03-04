@@ -1,9 +1,9 @@
 interface MiniGameIconProps {
-  size: number;
-  color: string;
+  size?: number;
+  color?: string;
 }
 
-const MiniGameIcon = ({ size, color }: MiniGameIconProps) => (
+const MiniGameIcon = ({ size = 36, color = '#727272' }: MiniGameIconProps) => (
   <svg
     width={size}
     height={size}

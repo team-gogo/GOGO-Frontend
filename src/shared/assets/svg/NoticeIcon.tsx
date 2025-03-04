@@ -1,9 +1,9 @@
 interface NoticeIconProps {
-  size: number;
-  color: string;
+  size?: number;
+  color?: string;
 }
 
-const NoticeIcon = ({ size, color }: NoticeIconProps) => (
+const NoticeIcon = ({ size = 36, color = '#727272' }: NoticeIconProps) => (
   <svg
     width={size}
     height={size}

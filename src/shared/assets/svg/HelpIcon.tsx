@@ -1,9 +1,9 @@
 interface HelpIconProps {
-  size: number;
-  color: string;
+  size?: number;
+  color?: string;
 }
 
-const HelpIcon = ({ size, color }: HelpIconProps) => (
+const HelpIcon = ({ size = 36, color = '#727272' }: HelpIconProps) => (
   <svg
     width={size}
     height={size}

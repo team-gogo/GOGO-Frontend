@@ -1,9 +1,9 @@
 interface StageIconProps {
-  size: number;
-  color: string;
+  size?: number;
+  color?: string;
 }
 
-const StageIcon = ({ size, color }: StageIconProps) => (
+const StageIcon = ({ size = 36, color = '#727272' }: StageIconProps) => (
   <svg
     width={size}
     height={size}
