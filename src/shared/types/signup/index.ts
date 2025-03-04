@@ -1,4 +1,5 @@
 export interface SignupFormData {
+  schoolGrade: string;
   schoolName: string;
   name: string;
   schoolClass: string;
