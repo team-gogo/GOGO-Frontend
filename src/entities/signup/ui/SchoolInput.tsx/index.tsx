@@ -38,7 +38,7 @@ const SchoolInput = ({
       <Input
         {...register('schoolName', { required: '학교 이름은 필수입니다.' })}
         placeholder="학교를 알려주세요."
-        icon={<SearchIcon />}
+        icon={<SearchIcon width={24} height={24} />}
         onChange={(e) => {
           setValue('schoolName', e.target.value);
           setSelectedSchool(null);
