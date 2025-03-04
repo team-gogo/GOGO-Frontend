@@ -6,8 +6,8 @@ import { cn } from '@/shared/utils/cn';
 
 interface GenderSelectionProps {
   register: UseFormRegister<SignupFormData>;
-  selectedGender: 'male' | 'female' | null;
-  setSelectedGender: (gender: 'male' | 'female' | null) => void;
+  selectedGender: 'MALE' | 'FEMALE' | null;
+  setSelectedGender: (gender: 'MALE' | 'FEMALE' | null) => void;
   setValue: UseFormSetValue<SignupFormData>;
 }
 
@@ -19,7 +19,7 @@ const GenderSelection = ({
 }: GenderSelectionProps) => {
   register('gender', { required: '성별은 필수입니다.' });
 
-  const handleGenderSelect = (gender: 'male' | 'female') => {
+  const handleGenderSelect = (gender: 'MALE' | 'FEMALE') => {
     setSelectedGender(gender);
     setValue('gender', gender, { shouldValidate: true });
   };
@@ -27,14 +27,14 @@ const GenderSelection = ({
   return (
     <div className={cn('flex', 'gap-16', 'items-center')}>
       <GenderButton
-        gender="male"
+        gender="MALE"
         selectedGender={selectedGender}
-        onClick={() => handleGenderSelect('male')}
+        onClick={() => handleGenderSelect('MALE')}
       />
       <GenderButton
-        gender="female"
+        gender="FEMALE"
         selectedGender={selectedGender}
-        onClick={() => handleGenderSelect('female')}
+        onClick={() => handleGenderSelect('FEMALE')}
       />
     </div>
   );

@@ -4,16 +4,17 @@ export interface SignupFormData {
   name: string;
   schoolClass: string;
   schoolNumber: string;
-  gender: 'male' | 'female';
+  gender: 'MALE' | 'FEMALE';
 }
 
 export interface School {
-  ATPT_OFCDC_SC_CODE: string;
-  SD_SCHUL_CODE: string;
-  SCHUL_NM: string;
-  SCHUL_KND_SC_NM: string;
-  ADDR: string;
-  ORG_TELNO: string;
-  HMPG_ADRES: string;
-  ORG_RDNMA: string;
+  ATPT_OFCDC_SC_CODE: string; // 교육청 코드
+  SD_SCHUL_CODE: string; // 학교 코드
+  SCHUL_NM: string; // 학교 이름
+  SCHUL_KND_SC_NM: string; // 학교 종류 (예: 초등학교, 중학교, 고등학교)
+  ADDR: string; // 주소
+  ORG_TELNO: string; // 학교 전화번호
+  HMPG_ADRES: string; // 홈페이지 주소
+  ORG_RDNMA: string; // 도로명 주소
+  LCTN_SC_NM: string; // 지역 정보 (추가된 속성)
 }

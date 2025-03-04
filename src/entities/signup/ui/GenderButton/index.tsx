@@ -3,9 +3,9 @@ import Button from '@/shared/ui/button';
 import { getGenderButtonStyles } from '../../model/getGenderButtonStyles';
 
 interface GenderButtonProps {
-  gender: 'male' | 'female';
-  selectedGender: 'male' | 'female' | null;
-  onClick: (gender: 'male' | 'female') => void;
+  gender: 'MALE' | 'FEMALE';
+  selectedGender: 'MALE' | 'FEMALE' | null;
+  onClick: (gender: 'MALE' | 'FEMALE') => void;
 }
 
 const GenderButton = ({
@@ -21,7 +21,7 @@ const GenderButton = ({
       onClick={() => onClick(gender)}
       type="button"
     >
-      {gender === 'male' ? '남성' : '여성'}
+      {gender === 'MALE' ? '남성' : '여성'}
     </Button>
   );
 };

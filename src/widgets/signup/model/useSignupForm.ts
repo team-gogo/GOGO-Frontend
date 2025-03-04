@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useForm, FieldErrors } from 'react-hook-form';
 import { School, SignupFormData } from '@/shared/types/signup';
+import { formatSignupData } from './formatSignupData';
 
 export const useSignupForm = () => {
   const { register, handleSubmit, setValue, watch } = useForm<SignupFormData>();
   const [selectedGender, setSelectedGender] = useState<
-    'male' | 'female' | null
+    'MALE' | 'FEMALE' | null
   >(null);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
 
@@ -25,7 +26,17 @@ export const useSignupForm = () => {
     !gender;
 
   const onSubmit = (data: SignupFormData) => {
-    console.log('제출결과 (JSON):', JSON.stringify(data, null, 2));
+    if (!selectedSchool) {
+      console.error('학교를 선택해야 합니다.');
+      return;
+    }
+
+    const formattedData = formatSignupData(
+      data,
+      selectedSchool,
+      selectedGender,
+    );
+    console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
   };
 
   const onError = (errors: FieldErrors<SignupFormData>) => {
