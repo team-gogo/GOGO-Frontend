@@ -1,12 +1,15 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { Logo } from '@/shared/assets/svg';
 import { useNavigation } from '@/shared/model/useNavigation';
 import { cn } from '@/shared/utils/cn';
 
 const Header = () => {
   const { navItems, getColor } = useNavigation();
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+
   return (
     <header
       className={cn(
@@ -37,10 +40,16 @@ const Header = () => {
             <Link
               key={item.href}
               href={item.href}
-              className="flex items-center gap-5"
+              className="group flex items-center gap-5"
+              onMouseEnter={() => setHoveredItem(item.href)}
+              onMouseLeave={() => setHoveredItem(null)}
             >
               <div className={cn('laptop:hidden', 'block')}>
-                <item.icon color={getColor(item.href)} />
+                <item.icon
+                  color={
+                    hoveredItem === item.href ? '#fff' : getColor(item.href)
+                  }
+                />
               </div>
 
               <span
@@ -49,7 +58,10 @@ const Header = () => {
                   'text-body2s',
                   'tablet:text-body3s',
                 )}
-                style={{ color: getColor(item.href) }}
+                style={{
+                  color:
+                    hoveredItem === item.href ? '#fff' : getColor(item.href),
+                }}
               >
                 {item.name}
               </span>
