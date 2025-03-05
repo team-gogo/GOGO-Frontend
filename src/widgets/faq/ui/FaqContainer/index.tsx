@@ -11,7 +11,6 @@ const FaqContainer = () => {
         'h-full',
         'max-w-[1144px]',
         'space-y-[36px]',
-        'overflow-y-auto',
         'pt-[40px]',
       )}
     >
