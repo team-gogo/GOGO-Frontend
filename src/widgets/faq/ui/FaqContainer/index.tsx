@@ -8,8 +8,8 @@ const FaqContainer = () => {
     <div
       className={cn(
         'w-full',
+        'h-full',
         'max-w-[1144px]',
-        'px-16',
         'space-y-[36px]',
         'overflow-y-auto',
         'pt-[40px]',
