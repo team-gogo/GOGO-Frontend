@@ -18,7 +18,7 @@ const FaqContainer = () => {
       )}
     >
       <div className={cn('flex', 'items-center', 'justify-center', 'gap-16')}>
-        <QuestionIcon width={60} height={60} color="#fff" />
+        <QuestionIcon size={60} color="#fff" />
         <h1 className={cn('text-white', 'text-h1e')}>FAQ</h1>
       </div>
       <div className={cn('space-y-24')}>

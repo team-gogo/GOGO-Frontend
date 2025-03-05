@@ -1,15 +1,14 @@
 import React from 'react';
 
 interface Props {
-  width?: number;
-  height?: number;
+  size?: number;
 }
 
-const SearchIcon = ({ width = 40, height = 40 }: Props) => {
+const SearchIcon = ({ size = 40 }: Props) => {
   return (
     <svg
-      width={width}
-      height={height}
+      width={size}
+      height={size}
       viewBox="0 0 40 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

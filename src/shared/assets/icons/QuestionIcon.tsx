@@ -1,20 +1,15 @@
 import React from 'react';
 
 interface Props {
-  width?: number;
-  height?: number;
+  size?: number;
   color?: string;
 }
 
-const QuestionIcon = ({
-  width = 36,
-  height = 36,
-  color = '#727272',
-}: Props) => {
+const QuestionIcon = ({ size = 36, color = '#727272' }: Props) => {
   return (
     <svg
-      width={width}
-      height={height}
+      width={size}
+      height={size}
       viewBox="0 0 36 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
