@@ -9,7 +9,9 @@ export default function DashboardLayout({
   return (
     <div className="flex h-full flex-col">
       <Header />
-      <main className={cn('w-full', 'flex-grow')}>{children}</main>
+      <main className={cn('w-full', 'flex-grow', 'overflow-auto')}>
+        {children}
+      </main>
     </div>
   );
 }
