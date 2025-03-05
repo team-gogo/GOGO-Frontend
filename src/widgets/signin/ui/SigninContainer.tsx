@@ -1,4 +1,3 @@
-import React from 'react';
 import { GoogleButton } from '@/entities/signin';
 import { Logo } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';

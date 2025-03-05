@@ -1,4 +1,3 @@
-import React from 'react';
 import Button from '@/shared/ui/button';
 import { getGenderButtonStyles } from '../../model/getGenderButtonStyles';
 

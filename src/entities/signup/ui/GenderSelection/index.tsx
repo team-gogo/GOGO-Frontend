@@ -1,4 +1,3 @@
-import React from 'react';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import GenderButton from '@/entities/signup/ui/GenderButton';
 import { SignupFormData } from '@/shared/types/signup';

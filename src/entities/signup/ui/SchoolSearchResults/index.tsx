@@ -1,4 +1,3 @@
-import React from 'react';
 import { School } from '@/shared/types/signup';
 import { cn } from '@/shared/utils/cn';
 
