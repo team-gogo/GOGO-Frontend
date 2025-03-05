@@ -6,10 +6,11 @@ const SignupPage = () => {
     <div
       className={cn(
         'flex',
-        'h-screen',
-        'w-screen',
+        'h-full',
+        'w-full',
         'items-center',
         'justify-center',
+        'px-16',
       )}
     >
       <SignupContainer />
