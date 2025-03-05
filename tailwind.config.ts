@@ -100,7 +100,11 @@ const config: Config = {
       },
     },
     screens: {
-      mobile: { max: '640px' },
+      mobile: { max: '639px' },
+      tablet: { max: '1023px' },
+      laptop: { max: '1279px' },
+      desktop: { max: '1535px' },
+      wide: { min: '1536px' },
     },
   },
   plugins: [require('tailwindcss-animate')],

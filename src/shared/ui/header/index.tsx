@@ -1,99 +1,55 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import {
-  FaqIcon,
-  HelpIcon,
-  Logo,
-  MiniGameIcon,
-  MyIcon,
-  NoticeIcon,
-  StageIcon,
-} from '@/shared/assets/svg';
+import { Logo } from '@/shared/assets/svg';
+import { useNavigation } from '@/shared/model/useNavigation';
 import { cn } from '@/shared/utils/cn';
 
 const Header = () => {
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const pathName = usePathname();
-  const mockUserName = '김민수';
-  const navLinks = [
-    {
-      name: '고객센터',
-      href: '/help',
-      icon: HelpIcon,
-    },
-    {
-      name: 'FAQ',
-      href: '/faq',
-      icon: FaqIcon,
-    },
-    {
-      name: '미니게임',
-      href: '/mini-game',
-      icon: MiniGameIcon,
-    },
-    {
-      name: '스테이지',
-      href: '/stage',
-      icon: StageIcon,
-    },
-    {
-      name: '공지',
-      href: '/notice',
-      icon: NoticeIcon,
-    },
-    {
-      name: mockUserName,
-      href: '/my',
-      icon: MyIcon,
-    },
-  ];
-
+  const { navItems, getColor } = useNavigation();
   return (
     <header
       className={cn(
-        'w-screen',
+        'w-full',
         'py-[32px]',
-        'fixed',
-        'left-0',
-        'top-0',
-        'justify-center',
+        'tablet:py-[24px]',
         'flex',
+        'border-b-1',
+        'border-solid',
+        'border-gray-700',
+        'justify-center',
+        'px-16',
       )}
     >
-      <section className={cn('w-[1320px]', 'flex', 'justify-between')}>
-        <Logo />
-        <nav className={cn('flex', 'gap-28')}>
-          {navLinks.map(({ name, href, icon }) => (
+      <div className={cn('flex', 'justify-between', 'w-full', 'w-[1320px]')}>
+        <Link href="/">
+          <Logo className="tablet:h-[34px] tablet:w-[100px] h-[48px] w-[140px]" />
+        </Link>
+        <nav className={cn('flex', 'gap-28', 'tablet:gap-16')}>
+          {navItems.map((item) => (
             <Link
-              href={href}
-              key={name}
-              className={cn(
-                'flex',
-                'gap-8',
-                'items-center',
-                'text-body2s',
-                'text-gray-500',
-                'hover:text-white',
-              )}
-              onMouseEnter={() => setHoveredLink(href)}
-              onMouseLeave={() => setHoveredLink(null)}
+              key={item.href}
+              href={item.href}
+              className="flex items-center gap-5"
             >
-              {icon({
-                size: 36,
-                color:
-                  pathName.includes(href) ||
-                  (hoveredLink && hoveredLink === href)
-                    ? '#ffffff'
-                    : '#727272',
-              })}
-              {name}
+              <div className={cn('laptop:hidden block')}>
+                <item.icon color={getColor(item.href)} />
+              </div>
+
+              <span
+                className={cn(
+                  'text-gray-500',
+                  'text-body2s',
+                  'tablet:text-body3s',
+                )}
+                style={{ color: getColor(item.href) }}
+              >
+                {item.name}
+              </span>
             </Link>
           ))}
         </nav>
-      </section>
+      </div>
     </header>
   );
 };
