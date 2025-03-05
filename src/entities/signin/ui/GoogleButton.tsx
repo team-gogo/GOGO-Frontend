@@ -1,4 +1,3 @@
-import React from 'react';
 import { GoogleLogo } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 

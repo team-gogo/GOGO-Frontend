@@ -1,4 +1,3 @@
-import React from 'react';
 import { UseFormRegister } from 'react-hook-form';
 import { SignupFormData } from '@/shared/types/signup';
 import Input from '@/shared/ui/input';

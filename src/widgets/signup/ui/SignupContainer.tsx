@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import GenderSelection from '@/entities/signup/ui/GenderSelection';
 import PersonalInfoInputs from '@/entities/signup/ui/PersonalInfoInputs';
 import SchoolInput from '@/entities/signup/ui/SchoolInput.tsx';

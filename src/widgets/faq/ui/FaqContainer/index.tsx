@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { FaqItem, FaqSearch } from '@/entities/faq';
 import { QuestionIcon } from '@/shared/assets/icons';
 import { cn } from '@/shared/utils/cn';
