@@ -1,4 +1,5 @@
 import { UseFormRegister } from 'react-hook-form';
+import { preventInvalidInputNumber } from '@/shared/model/preventInvalidInputNumber';
 import { SignupFormData } from '@/shared/types/signup';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
@@ -17,6 +18,7 @@ const PersonalInfoInputs = ({ register }: PersonalInfoInputsProps) => {
       <div className={cn('flex', 'gap-16', 'items-center')}>
         <Input
           type="number"
+          onInput={preventInvalidInputNumber}
           {...register('schoolGrade', {
             required: '학년은 필수입니다.',
           })}
@@ -24,6 +26,7 @@ const PersonalInfoInputs = ({ register }: PersonalInfoInputsProps) => {
         />
         <Input
           type="number"
+          onInput={preventInvalidInputNumber}
           {...register('schoolClass', {
             required: '반은 필수입니다.',
           })}
@@ -31,6 +34,7 @@ const PersonalInfoInputs = ({ register }: PersonalInfoInputsProps) => {
         />
         <Input
           type="number"
+          onInput={preventInvalidInputNumber}
           {...register('schoolNumber', {
             required: '번호는 필수입니다.',
           })}
