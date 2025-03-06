@@ -1,4 +1,6 @@
+import React, { useState } from 'react';
 import { School } from '@/shared/types/signup';
+import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
 
 interface SchoolSearchResultsProps {
@@ -12,6 +14,8 @@ const SchoolSearchResults = ({
   isLoading,
   onSelect,
 }: SchoolSearchResultsProps) => {
+  const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
+
   if (isLoading) {
     return <div className={cn('text-white', 'mt-2')}>검색 중...</div>;
   }
@@ -22,31 +26,48 @@ const SchoolSearchResults = ({
     );
   }
 
+  const handleSchoolClick = (school: School) => {
+    setSelectedSchool(school);
+  };
+
+  const handleConfirm = () => {
+    if (selectedSchool) {
+      onSelect(selectedSchool);
+    }
+  };
+
   return (
     <ul
       className={cn(
         'bg-gray-700',
-        'rounded-md',
-        'mt-2',
-        'max-h-60',
+        'rounded-lg',
+        'mt-16',
         'overflow-y-auto',
+        'p-24',
+
+        'space-y-24',
       )}
     >
       {schools.map((school, index) => (
         <li
           key={`${school.SCHUL_NM}-${index}`}
           className={cn(
-            'px-4',
-            'py-2',
-            'hover:bg-gray-600',
+            'text-body2s',
+            'pb-16',
+            'border-b-1',
+            'border-solid',
+            'border-gray-600',
             'cursor-pointer',
-            'text-white',
+            selectedSchool === school ? 'text-white' : 'text-gray-400',
           )}
-          onClick={() => onSelect(school)}
+          onClick={() => handleSchoolClick(school)}
         >
           {school.SCHUL_NM}
         </li>
       ))}
+      <Button onClick={handleConfirm} disabled={!selectedSchool}>
+        확인
+      </Button>
     </ul>
   );
 };
