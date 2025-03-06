@@ -26,7 +26,7 @@ const SchoolInput = ({
   setSelectedSchool,
 }: SchoolInputProps) => {
   const [isSearchResultsVisible, setSearchResultsVisible] = useState(true);
-  const searchResultsRef = useRef<HTMLDivElement | null>(null); // Ref 타입 지정
+  const searchResultsRef = useRef<HTMLDivElement | null>(null);
   const schoolName = watch('schoolName');
   const { data: schools, isLoading } = useSchoolQuery(schoolName);
 
