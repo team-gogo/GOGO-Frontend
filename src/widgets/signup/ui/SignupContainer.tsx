@@ -28,7 +28,7 @@ const SignupContainer = () => {
       className={cn('w-full', 'max-w-[648px]', 'space-y-[72px]')}
     >
       <h1 className={cn('text-white', 'text-h1e', 'text-center')}>회원가입</h1>
-      <div className={cn('space-y-24')}>
+      <div className={cn('space-y-24', 'relative')}>
         <SchoolInput
           register={register}
           setValue={setValue}
