@@ -10,3 +10,5 @@ export { default as PlinkoIcon } from './PlinkoIcon';
 export { default as StoreIcon } from './StoreIcon';
 export { default as PointIcon } from './PointIcon';
 export { default as TicketIcon } from './TicketIcon';
+export { default as CommentIcon } from './CommentIcon';
+export { default as HeartIcon } from './HeartIcon';
