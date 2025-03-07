@@ -1,6 +1,7 @@
 import '../shared/styles/globals.css';
 import TanstackProviders from '@/shared/libs/TanstackProviders';
 import { suit } from '@/shared/styles/fonts';
+import { cn } from '@/shared/utils/cn';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={suit.variable}>
-      <body>
+      <body className={cn('h-screen', 'w-screen')}>
         <TanstackProviders>{children}</TanstackProviders>
       </body>
     </html>

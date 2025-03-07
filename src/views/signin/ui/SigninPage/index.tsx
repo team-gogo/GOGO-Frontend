@@ -1,4 +1,3 @@
-import React from 'react';
 import { cn } from '@/shared/utils/cn';
 import { SigninContainer } from '@/widgets/signin';
 
@@ -7,10 +6,11 @@ const SigninPage = () => {
     <div
       className={cn(
         'flex',
-        'h-screen',
-        'w-screen',
+        'h-full',
+        'w-full',
         'items-center',
         'justify-center',
+        'px-16',
       )}
     >
       <SigninContainer />

@@ -1,10 +1,10 @@
-import React from 'react';
 import { GoogleLogo } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 const GoogleButton = () => {
   return (
-    <button
+    <a
+      href={`${process.env.NEXT_PUBLIC_GOOGLE_LOGIN_URL}`}
       className={cn(
         'flex',
         'w-full',
@@ -21,7 +21,7 @@ const GoogleButton = () => {
       >
         Google 계정으로 시작하기
       </span>
-    </button>
+    </a>
   );
 };
 

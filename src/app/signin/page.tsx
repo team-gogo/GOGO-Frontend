@@ -1,4 +1,3 @@
-import React from 'react';
 import { SigninPage } from '@/views/signin';
 
 const page = () => {
