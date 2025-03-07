@@ -6,10 +6,14 @@ import { StoreIcon } from '@/shared/assets/icons';
 import { MiniGameIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 import { GameCardContainer, InfoContainer } from '@/widgets/mini-game';
+import { getPointMock } from '../../mock/getPointMock';
+import { getTicketMock } from '../../mock/getTicketMock';
 import { miniGames } from '../../model/gameData';
 import { storeItems } from '../../model/storeData';
 
 const MiniGamePage = () => {
+  const tickets = getTicketMock();
+  const point = getPointMock();
   return (
     <div
       className={cn('w-full', 'flex', 'justify-center', 'py-[60px]', 'px-16')}
@@ -27,7 +31,7 @@ const MiniGamePage = () => {
           <InfoContainer
             icon={<MiniGameIcon color="#fff" />}
             title="미니게임"
-            rightContent={<GameInfo />}
+            rightContent={<GameInfo tickets={tickets} />}
           />
           <GameCardContainer items={miniGames} />
         </div>
@@ -35,7 +39,7 @@ const MiniGamePage = () => {
           <InfoContainer
             icon={<StoreIcon />}
             title="상점"
-            rightContent={<StoreInfo />}
+            rightContent={<StoreInfo point={point} />}
           />
           <GameCardContainer items={storeItems} />
         </div>

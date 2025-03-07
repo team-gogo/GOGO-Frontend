@@ -1,8 +1,9 @@
 import React from 'react';
 import { CoinIcon, PlinkoIcon, ShellGameIcon } from '@/shared/assets/icons';
+import { Tickets } from '@/shared/types/mini-game';
 import { cn } from '@/shared/utils/cn';
 
-const GameInfo = () => {
+const GameInfo = ({ tickets }: { tickets: Tickets }) => {
   return (
     <div className={cn('flex', 'items-center', 'gap-16')}>
       <div
@@ -14,15 +15,15 @@ const GameInfo = () => {
       <div className={cn('flex', 'items-center', 'gap-16')}>
         <div className={cn('flex', 'items-center', 'gap-4')}>
           <ShellGameIcon />
-          <p className={cn('text-body2s', 'text-white')}>2</p>
+          <p className={cn('text-body2s', 'text-white')}>{tickets.plinko}</p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-4')}>
           <CoinIcon />
-          <p className={cn('text-body2s', 'text-white')}>2</p>
+          <p className={cn('text-body2s', 'text-white')}>{tickets.yavarwee}</p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-4')}>
           <PlinkoIcon />
-          <p className={cn('text-body2s', 'text-white')}>2</p>
+          <p className={cn('text-body2s', 'text-white')}>{tickets.coinToss}</p>
         </div>
       </div>
     </div>
