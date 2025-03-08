@@ -30,11 +30,11 @@ export const SPORT_TYPES: Record<
     text: '배드민턴',
   },
   ETC: { icon: (color) => <EtcIcon color={color} />, text: '기타' },
-  newest: {
+  LATEST: {
     icon: (color) => <ArrowUpIcon color={color || '#526FFE'} size={20} />,
     text: '최신순',
   },
-  oldest: {
+  LAST: {
     icon: (color) => <ArrowDownIcon color={color || '#526FFE'} size={20} />,
     text: '오래된순',
   },

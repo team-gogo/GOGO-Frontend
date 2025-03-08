@@ -31,7 +31,7 @@ const Modal = ({
     'BADMINTON',
     'ETC',
   ];
-  const sortTypes: SportType[] = ['newest', 'oldest'];
+  const sortTypes: SportType[] = ['LATEST', 'LAST'];
 
   return (
     <ModalLayout
