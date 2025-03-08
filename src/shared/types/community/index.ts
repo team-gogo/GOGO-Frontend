@@ -1,10 +1,12 @@
 type GameType =
-  | 'soccer'
-  | 'baseball'
-  | 'volleyball'
-  | 'basketball'
-  | 'badminton'
-  | 'etc';
+  | 'SOCCER'
+  | 'BASE_BALL'
+  | 'BASKET_BALL'
+  | 'BADMINTON'
+  | 'etc'
+  | 'LOL'
+  | 'VOLLEY_BALL';
+
 type StageType = 's' | 'EASY' | 'MEDIUM' | 'HARD';
 
 interface Author {

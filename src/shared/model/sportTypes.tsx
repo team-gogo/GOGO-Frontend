@@ -14,22 +14,22 @@ export const SPORT_TYPES: Record<
   string,
   { icon: (color?: string) => JSX.Element; text: string }
 > = {
-  soccer: { icon: (color) => <SoccerIcon color={color} />, text: '축구' },
-  baseball: { icon: (color) => <BaseballIcon color={color} />, text: '야구' },
-  basketball: {
+  SOCCER: { icon: (color) => <SoccerIcon color={color} />, text: '축구' },
+  BASE_BALL: { icon: (color) => <BaseballIcon color={color} />, text: '야구' },
+  BASKET_BALL: {
     icon: (color) => <BasketballIcon color={color} />,
     text: '농구',
   },
-  volleyball: {
+  VOLLEY_BALL: {
     icon: (color) => <VolleyballIcon color={color} />,
     text: '배구',
   },
-  lol: { icon: (color) => <LoLIcon color={color} />, text: '리그 오브 레전드' },
-  badminton: {
+  LOL: { icon: (color) => <LoLIcon color={color} />, text: 'LoL' },
+  BADMINTON: {
     icon: (color) => <BadmintonIcon color={color} />,
     text: '배드민턴',
   },
-  etc: { icon: (color) => <EtcIcon color={color} />, text: '기타' },
+  ETC: { icon: (color) => <EtcIcon color={color} />, text: '기타' },
   newest: {
     icon: (color) => <ArrowUpIcon color={color || '#526FFE'} size={20} />,
     text: '최신순',

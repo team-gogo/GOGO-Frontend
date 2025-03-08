@@ -23,12 +23,13 @@ const Modal = ({
   toggleSortSelection,
 }: ModalProps) => {
   const sportTypes: SportType[] = [
-    'volleyball',
-    'soccer',
-    'lol',
-    'baseball',
-    'badminton',
-    'etc',
+    'VOLLEY_BALL',
+    'SOCCER',
+    'LOL',
+    'BASE_BALL',
+    'BASKET_BALL',
+    'BADMINTON',
+    'ETC',
   ];
   const sortTypes: SportType[] = ['newest', 'oldest'];
 

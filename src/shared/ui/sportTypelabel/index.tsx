@@ -17,7 +17,7 @@ const SportTypeLabel = ({
   onClick,
 }: SportTypeLabelProps) => {
   const { icon, text } = SPORT_TYPES[type] || {
-    icon: <EtcIcon />,
+    icon: (color) => <EtcIcon color={color} />,
     text: '기타',
   };
 
