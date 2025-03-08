@@ -22,7 +22,7 @@ const Modal = ({
   toggleSportSelection,
   toggleSortSelection,
 }: ModalProps) => {
-  const sportTypes: SportType[] = [
+  const categoryTypes: SportType[] = [
     'VOLLEY_BALL',
     'SOCCER',
     'LOL',
@@ -48,7 +48,7 @@ const Modal = ({
       )}
     >
       <div className={cn('flex', 'flex-wrap', 'gap-y-12', 'gap-x-16')}>
-        {sportTypes.map((sport) => (
+        {categoryTypes.map((sport) => (
           <SportTypeLabel
             key={sport}
             type={sport}
