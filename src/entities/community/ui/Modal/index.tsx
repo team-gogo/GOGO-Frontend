@@ -15,13 +15,13 @@ interface ModalProps {
   toggleSortSelection: (sort: SportType) => void;
 }
 
-const Modal: React.FC<ModalProps> = ({
+const Modal = ({
   onClose,
   selectedSport,
   selectedSort,
   toggleSportSelection,
   toggleSortSelection,
-}) => {
+}: ModalProps) => {
   const sportTypes: SportType[] = [
     'volleyball',
     'soccer',

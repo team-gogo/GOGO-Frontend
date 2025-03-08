@@ -17,7 +17,6 @@ const CommunityHeader = () => {
         'border-gray-700',
         'px-16',
         'tablet:grid-cols-[1fr_3fr]',
-        'mobile:',
       )}
     >
       <div className={cn('text-center')}>운동 종류</div>
