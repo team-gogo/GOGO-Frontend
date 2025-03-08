@@ -2,6 +2,7 @@ import {
   BadmintonIcon,
   BaseballIcon,
   BasketballIcon,
+  EtcIcon,
   LoLIcon,
   SoccerIcon,
   VolleyballIcon,
@@ -16,6 +17,7 @@ const SPORT_TYPES: Record<string, { icon: JSX.Element | null; text: string }> =
     volleyball: { icon: <VolleyballIcon />, text: '배구' },
     lol: { icon: <LoLIcon />, text: '리그 오브 레전드' },
     badminton: { icon: <BadmintonIcon />, text: '배드민턴' },
+    etc: { icon: <EtcIcon />, text: '기타(직접입력)' },
   };
 
 const SportTypeLabel = ({ type }: { type: string }) => {

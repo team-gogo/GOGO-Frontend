@@ -3,7 +3,8 @@ type GameType =
   | 'baseball'
   | 'volleyball'
   | 'basketball'
-  | 'badminton';
+  | 'badminton'
+  | 'etc';
 type StageType = 's' | 'EASY' | 'MEDIUM' | 'HARD';
 
 interface Author {

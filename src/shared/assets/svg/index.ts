@@ -14,3 +14,4 @@ export { default as SoccerIcon } from './SoccerIcon';
 export { default as LoLIcon } from './LoLIcon';
 export { default as CommunityIcon } from './CommunityIcon';
 export { default as CirclePlusIcon } from './CirclePlusIcon';
+export { default as EtcIcon } from './EtcIcon';

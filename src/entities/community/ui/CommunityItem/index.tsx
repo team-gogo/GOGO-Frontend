@@ -11,6 +11,10 @@ const CommunityItem = ({
   author,
   likeCount,
 }: CommunityItemProps) => {
+  const formatCount = (count: number) => {
+    return count >= 100 ? '99+' : count.toString();
+  };
+
   return (
     <Link
       href={`/community/detail/${boardId}`}
@@ -65,11 +69,11 @@ const CommunityItem = ({
       >
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <CommentIcon />
-          <p>10</p>
+          <p>{formatCount(100)}</p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <HeartIcon />
-          <p>{likeCount}</p>
+          <p>{formatCount(likeCount)}</p>
         </div>
       </div>
     </Link>
