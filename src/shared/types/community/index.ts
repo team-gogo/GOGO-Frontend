@@ -19,6 +19,7 @@ interface BoardItem {
   gameType: GameType;
   title: string;
   likeCount: number;
+  commentCount: number;
   createdAt: string;
   isFiltered: boolean;
   stageType: StageType;
@@ -41,4 +42,5 @@ export interface CommunityItemProps {
   title: string;
   author: Author;
   likeCount: number;
+  commentCount: number;
 }

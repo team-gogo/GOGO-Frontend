@@ -1,10 +1,15 @@
 import FilterIcon from '@/shared/assets/svg/FilterIcon';
 import { cn } from '@/shared/utils/cn';
 
-const FilterButton = () => {
+interface FilterButtonProps {
+  onClick: () => void;
+}
+
+const FilterButton = ({ onClick }: FilterButtonProps) => {
   return (
     <button
       type="button"
+      onClick={onClick}
       className={cn(
         'flex',
         'gap-8',

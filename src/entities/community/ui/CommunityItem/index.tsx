@@ -9,6 +9,7 @@ const CommunityItem = ({
   gameType,
   title,
   author,
+  commentCount,
   likeCount,
 }: CommunityItemProps) => {
   const formatCount = (count: number) => {
@@ -32,7 +33,7 @@ const CommunityItem = ({
         'items-center',
       )}
     >
-      <div className="flex items-center justify-center">
+      <div className={cn('flex', 'items-center', 'justify-center')}>
         <SportTypelabel type={gameType} />
       </div>
       <p
@@ -69,7 +70,7 @@ const CommunityItem = ({
       >
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <CommentIcon />
-          <p>{formatCount(100)}</p>
+          <p>{formatCount(commentCount)}</p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <HeartIcon />
