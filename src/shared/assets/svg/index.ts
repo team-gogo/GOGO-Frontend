@@ -6,3 +6,4 @@ export { default as MiniGameIcon } from './MiniGameIcon';
 export { default as MyIcon } from './MyIcon';
 export { default as NoticeIcon } from './NoticeIcon';
 export { default as StageIcon } from './StageIcon';
+export { default as LeftArrow } from './LeftArrow';
