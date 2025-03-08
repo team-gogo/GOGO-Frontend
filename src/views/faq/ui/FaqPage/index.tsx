@@ -3,16 +3,7 @@ import { FaqContainer } from '@/widgets/faq';
 
 const FaqPage = () => {
   return (
-    <div
-      className={cn(
-        'flex',
-        'h-full',
-        'w-full',
-        'justify-center',
-        'pb-16',
-        'px-16',
-      )}
-    >
+    <div className={cn('flex', 'w-full', 'justify-center', 'pb-16', 'px-16')}>
       <FaqContainer />
     </div>
   );
