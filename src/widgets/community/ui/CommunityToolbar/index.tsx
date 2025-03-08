@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Modal } from '@/entities/community';
+import { FilterButton, Modal, WriteButton } from '@/entities/community';
 import { CommunityIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
-import FilterButton from '../../../../entities/community/ui/FilterButton';
-import WriteButton from '../../../../entities/community/ui/WriteButton';
 
 interface CommunityToolbarProps {
   selectedSport: string | null;

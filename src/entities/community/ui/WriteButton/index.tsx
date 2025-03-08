@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { CirclePlusIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
