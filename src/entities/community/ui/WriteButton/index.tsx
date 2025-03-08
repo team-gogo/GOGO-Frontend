@@ -1,20 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { CirclePlusIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 const WriteButton = () => {
-  const router = useRouter();
-
-  const handleClick = () => {
-    router.push('/community/create');
-  };
-
   return (
-    <button
-      type="button"
-      onClick={handleClick}
+    <Link
+      href="/community/create"
       className={cn(
         'flex',
         'gap-8',
@@ -38,7 +31,7 @@ const WriteButton = () => {
       >
         글 쓰기
       </p>
-    </button>
+    </Link>
   );
 };
 
