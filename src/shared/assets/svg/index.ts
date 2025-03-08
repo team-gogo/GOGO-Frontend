@@ -16,3 +16,4 @@ export { default as CommunityIcon } from './CommunityIcon';
 export { default as CirclePlusIcon } from './CirclePlusIcon';
 export { default as EtcIcon } from './EtcIcon';
 export { default as XIcon } from './XIcon';
+export { default as WarningIcon } from './WarningIcon';

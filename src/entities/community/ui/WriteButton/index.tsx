@@ -1,10 +1,20 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { CirclePlusIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 const WriteButton = () => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push('/community/create');
+  };
+
   return (
     <button
       type="button"
+      onClick={handleClick}
       className={cn(
         'flex',
         'gap-8',

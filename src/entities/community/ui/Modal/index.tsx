@@ -1,35 +1,36 @@
 'use client';
 
 import React from 'react';
+import { WarningIcon } from '@/shared/assets/svg';
+import { SportType } from '@/shared/model/sportTypes';
 import ModalLayout from '@/shared/ui/modalLayout';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
 
 interface ModalProps {
   onClose: () => void;
-  selectedSport: string | null;
-  selectedSort: string | null;
-  toggleSportSelection: (sport: string) => void;
-  toggleSortSelection: (sort: string) => void;
+  selectedSport: SportType | null;
+  selectedSort: SportType | null;
+  toggleSportSelection: (sport: SportType) => void;
+  toggleSortSelection: (sort: SportType) => void;
 }
 
-const Modal = ({
+const Modal: React.FC<ModalProps> = ({
   onClose,
   selectedSport,
   selectedSort,
   toggleSportSelection,
   toggleSortSelection,
-}: ModalProps) => {
-  const options = [
-    { type: 'volleyball', category: 'sport' },
-    { type: 'soccer', category: 'sport' },
-    { type: 'lol', category: 'sport' },
-    { type: 'baseball', category: 'sport' },
-    { type: 'badminton', category: 'sport' },
-    { type: 'etc', category: 'sport' },
-    { type: 'newest', category: 'sort' },
-    { type: 'oldest', category: 'sort' },
+}) => {
+  const sportTypes: SportType[] = [
+    'volleyball',
+    'soccer',
+    'lol',
+    'baseball',
+    'badminton',
+    'etc',
   ];
+  const sortTypes: SportType[] = ['newest', 'oldest'];
 
   return (
     <ModalLayout
@@ -40,29 +41,42 @@ const Modal = ({
         'bg-gray-700',
         'px-[40px]',
         'py-[36px]',
-        'max-w-[571px]',
+        'max-w-[795px]',
         'w-full',
         'space-y-24',
       )}
     >
       <div className={cn('flex', 'flex-wrap', 'gap-y-12', 'gap-x-16')}>
-        {options.map(({ type, category }) => (
+        {sportTypes.map((sport) => (
           <SportTypeLabel
-            key={type}
-            type={type}
+            key={sport}
+            type={sport}
             asButton
-            isSelected={
-              category === 'sport'
-                ? selectedSport === type
-                : selectedSort === type
-            }
-            onClick={() =>
-              category === 'sport'
-                ? toggleSportSelection(type)
-                : toggleSortSelection(type)
-            }
+            isSelected={selectedSport === sport}
+            onClick={() => toggleSportSelection(sport)}
           />
         ))}
+      </div>
+
+      <div className="my-6 h-[1px] w-full bg-gray-600" />
+
+      <div className={cn('flex', 'flex-wrap', 'gap-y-12', 'gap-x-16')}>
+        {sortTypes.map((sort) => (
+          <SportTypeLabel
+            key={sort}
+            type={sort}
+            asButton
+            isSelected={selectedSort === sort}
+            onClick={() => toggleSortSelection(sort)}
+          />
+        ))}
+      </div>
+
+      <div className={cn('flex', 'gap-8', 'items-center')}>
+        <WarningIcon />
+        <p className={cn('text-caption1s', 'text-gray-500')}>
+          한 개씩 선택이 가능합니다.
+        </p>
       </div>
     </ModalLayout>
   );
