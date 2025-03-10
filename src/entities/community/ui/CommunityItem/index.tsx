@@ -70,11 +70,15 @@ const CommunityItem = ({
       >
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <CommentIcon />
-          <p>{formatCount(commentCount)}</p>
+          <p className={cn('text-body3s', 'text-gray-300')}>
+            {formatCount(commentCount)}
+          </p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <HeartIcon />
-          <p>{formatCount(likeCount)}</p>
+          <p className={cn('text-body3s', 'text-gray-300')}>
+            {formatCount(likeCount)}
+          </p>
         </div>
       </div>
     </Link>
