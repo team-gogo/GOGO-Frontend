@@ -1,18 +1,19 @@
 'use client';
 
 import { useState } from 'react';
+import { SportType, SortType } from '@/shared/model/sportTypes';
 import { cn } from '@/shared/utils/cn';
 import { CommunityItemContainer, CommunityToolbar } from '@/widgets/community';
 
 const CommunityPage = () => {
-  const [selectedSport, setSelectedSport] = useState<string | null>(null);
-  const [selectedSort, setSelectedSort] = useState<string | null>(null);
+  const [selectedSport, setSelectedSport] = useState<SportType | null>(null);
+  const [selectedSort, setSelectedSort] = useState<SortType | null>(null);
 
-  const toggleSportSelection = (sport: string) => {
+  const toggleSportSelection = (sport: SportType) => {
     setSelectedSport((prev) => (prev === sport ? null : sport));
   };
 
-  const toggleSortSelection = (sort: string) => {
+  const toggleSortSelection = (sort: SortType) => {
     setSelectedSort((prev) => (prev === sort ? null : sort));
   };
 

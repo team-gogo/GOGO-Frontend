@@ -50,7 +50,7 @@ const SportTypeLabel = ({
   );
 
   return asButton ? (
-    <button className={commonClasses} onClick={onClick}>
+    <button type="button" className={commonClasses} onClick={onClick}>
       {content}
     </button>
   ) : (
