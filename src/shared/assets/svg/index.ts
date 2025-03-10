@@ -19,3 +19,4 @@ export { default as XIcon } from './XIcon';
 export { default as WarningIcon } from './WarningIcon';
 export { default as PersonIcon } from './PersonIcon';
 export { default as SendIcon } from './SendIcon';
+export { default as LeftArrow } from './LeftArrow';
