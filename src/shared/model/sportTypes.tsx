@@ -10,6 +10,17 @@ import {
   VolleyballIcon,
 } from '@/shared/assets/svg';
 
+export type SportType =
+  | 'SOCCER'
+  | 'BASE_BALL'
+  | 'BASKET_BALL'
+  | 'VOLLEY_BALL'
+  | 'LOL'
+  | 'BADMINTON'
+  | 'ETC';
+
+export type SortType = 'LATEST' | 'LAST';
+
 export const SPORT_TYPES: Record<
   string,
   { icon: (color?: string) => JSX.Element; text: string }
@@ -39,5 +50,3 @@ export const SPORT_TYPES: Record<
     text: '오래된순',
   },
 };
-
-export type SportType = keyof typeof SPORT_TYPES;

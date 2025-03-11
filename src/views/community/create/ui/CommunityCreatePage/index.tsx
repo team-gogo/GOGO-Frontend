@@ -1,7 +1,7 @@
 import { cn } from '@/shared/utils/cn';
-import { SignupContainer } from '@/widgets/signup';
+import { CommunityCreateContainer } from '@/widgets/community/create';
 
-const SignupPage = () => {
+const CommunityCreatePage = () => {
   return (
     <div
       className={cn(
@@ -14,9 +14,9 @@ const SignupPage = () => {
         'py-16',
       )}
     >
-      <SignupContainer />
+      <CommunityCreateContainer />
     </div>
   );
 };
 
-export default SignupPage;
+export default CommunityCreatePage;
