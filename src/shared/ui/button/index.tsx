@@ -1,15 +1,18 @@
+import { LockIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: string;
   bg?: string;
   textColor?: string;
+  isLocked?: boolean;
 }
 
 const Button = ({
   children,
   bg = 'bg-main-600',
   textColor = 'text-white',
+  isLocked,
   ...attributes
 }: ButtonProps) => {
   return (
@@ -26,7 +29,18 @@ const Button = ({
         'text-body3s',
       )}
     >
-      {children}
+      <div
+        className={cn(
+          'flex',
+          'w-full',
+          'items-center',
+          'justify-center',
+          'gap-[0.5rem]',
+        )}
+      >
+        {isLocked && <LockIcon />}
+        {children}
+      </div>
     </button>
   );
 };
