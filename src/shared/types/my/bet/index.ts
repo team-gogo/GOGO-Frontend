@@ -53,3 +53,13 @@ export type MyBetResponse = {
   count: number;
   matches: MatchData[];
 };
+
+export type TempPoint = {
+  tempPointId: number;
+  tempPoint: number;
+  expiredDate: string;
+};
+
+export type TempPointsResponse = {
+  tempPoints: TempPoint[];
+};
