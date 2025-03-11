@@ -2,7 +2,13 @@ import { HeartIcon } from '@/shared/assets/icons';
 import { PersonIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
-const CommentItem = () => {
+interface CommentItemProps {
+  authorName: string;
+  comment: string;
+  likeCount: number;
+}
+
+const CommentItem = ({ authorName, comment, likeCount }: CommentItemProps) => {
   return (
     <div
       className={cn(
@@ -18,16 +24,15 @@ const CommentItem = () => {
     >
       <div className={cn('flex', 'items-center', 'gap-8', 'whitespace-nowrap')}>
         <PersonIcon />
-        <p className={cn('text-body3s', 'text-gray-300')}>김진원</p>
+        <p className={cn('text-body3s', 'text-gray-300')}>{authorName}</p>
       </div>
 
       <p className={cn('text-body3s', 'text-white', 'flex-grow', 'px-24')}>
-        그냥 디자이너 접으셈 3D로 ㄱㄱ 그냥 디자이너 접으셈 3D로 ㄱㄱ 그냥
-        디자이너 접으셈 3D로 ㄱㄱ 그냥 디자이너 접으셈 3D로 ㄱㄱ
+        {comment}
       </p>
       <div className={cn('flex', 'items-center', 'gap-8')}>
         <HeartIcon />
-        <p className={cn('text-body3s', 'text-gray-300')}>2</p>
+        <p className={cn('text-body3s', 'text-gray-300')}>{likeCount}</p>
       </div>
     </div>
   );
