@@ -1,8 +1,8 @@
 import {
   FaqIcon,
   HelpIcon,
+  HumanIcon,
   MiniGameIcon,
-  MyIcon,
   NoticeIcon,
   StageIcon,
 } from '../assets/svg';
@@ -37,6 +37,6 @@ export const navLinks = [
   {
     name: mockUserName,
     href: '/my',
-    icon: MyIcon,
+    icon: HumanIcon,
   },
 ];

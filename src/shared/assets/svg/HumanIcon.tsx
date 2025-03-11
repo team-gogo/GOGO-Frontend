@@ -1,9 +1,9 @@
-interface MyIconProps {
+interface HumanIconProps {
   size?: number;
   color?: string;
 }
 
-const MyIcon = ({ size = 36, color = '#727272' }: MyIconProps) => (
+const HumanIcon = ({ size = 36, color = '#727272' }: HumanIconProps) => (
   <svg
     width={size}
     height={size}
@@ -20,4 +20,4 @@ const MyIcon = ({ size = 36, color = '#727272' }: MyIconProps) => (
   </svg>
 );
 
-export default MyIcon;
+export default HumanIcon;
