@@ -22,3 +22,7 @@ export { default as WarningIcon } from './WarningIcon';
 export { default as SettingIcon } from './SettingIcon';
 export { default as GrayCircle } from './GrayCircle';
 export { default as LockIcon } from './LockIcon';
+export { default as GrayAlarmIcon } from './GrayAlarmIcon';
+export { default as BlueAlarmIcon } from './BlueAlarmIcon';
+export { default as ClockIcon } from './ClockIcon';
+export { default as RightArrowIcon } from './RightArrowIcon';
