@@ -41,7 +41,7 @@ const Stage = ({
               <Tag TagType={'CONFIRMED'} />
             )}
           </div>
-          {isAdmin && <Tag TagType={'STREAMING'} />}
+          {/* {isAdmin && <Tag TagType={'STREAMING'} />} */}
         </div>
         <div
           className={cn(
@@ -52,7 +52,9 @@ const Stage = ({
             'gap-[3rem]',
           )}
         >
-          <h1 className={cn('text-h2e', 'text-white')}>{stageName}</h1>
+          <h1 className={cn('text-h2e', 'text-white', 'laptop:text-body2e')}>
+            {stageName}
+          </h1>
           <Button isLocked={isParticipating ? false : isLocked}>
             {isParticipating ? '상세보기' : '참여하기'}
           </Button>

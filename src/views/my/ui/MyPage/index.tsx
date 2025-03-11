@@ -11,6 +11,7 @@ const MyPage = () => {
         'items-center',
         'justify-center',
         'py-[3.75rem]',
+        'px-[1rem]',
       )}
     >
       <div

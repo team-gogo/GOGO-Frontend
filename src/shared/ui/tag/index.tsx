@@ -68,6 +68,8 @@ const Tag = ({ TagType }: TagProps) => {
         'flex',
         'p-[0.75rem]',
         'px-[1rem]',
+        'laptop:p-[0.25rem]',
+        'laptop:px-[0.5rem]',
         'justify-center',
         'items-center',
         'gap-[0.5rem]',
@@ -78,7 +80,13 @@ const Tag = ({ TagType }: TagProps) => {
       )}
     >
       <IconComponent />
-      <p className={cn('text-caption1s', tagStyles[TagType].text)}>
+      <p
+        className={cn(
+          'text-caption1s',
+          'laptop:text-caption3s',
+          tagStyles[TagType].text,
+        )}
+      >
         {tagTexts[TagType]}
       </p>
     </button>
