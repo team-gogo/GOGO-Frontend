@@ -1,12 +1,13 @@
 interface Props {
   color?: string;
+  size?: number;
 }
 
-const ArrowDownIcon = ({ color = '#8F8F8F' }: Props) => {
+const ArrowDownIcon = ({ color = '#8F8F8F', size = 36 }: Props) => {
   return (
     <svg
-      width="36"
-      height="36"
+      width={size}
+      height={size}
       viewBox="0 0 36 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -18,3 +18,5 @@ export { default as SoccerIcon } from './SoccerIcon';
 export { default as VolleyBallIcon } from './VolleyBallIcon';
 export { default as SelectIcon } from './SelectIcon';
 export { default as DeleteIcon } from './DeleteIcon';
+export { default as CommentIcon } from './CommentIcon';
+export { default as HeartIcon } from './HeartIcon';
