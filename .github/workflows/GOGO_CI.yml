@@ -45,7 +45,7 @@ jobs:
           title: '🎉 GOGO Frontend CI'
           description: 'CI success'
           status: ${{ job.status }}
-          content: "<@${{ secrets.ID1 }}> <@${{ secrets.ID2 }}>\n확인해주세요."
+          content: "<@${{ secrets.ID1 }}> <@${{ secrets.ID2 }}> <@${{ secrets.ID3 }}>\n확인해주세요."
           username: GOGO Frontend CI bot
           url: 'https://github.com/team-gogo/GOGO-Frontend'
           color: 4CAF50
