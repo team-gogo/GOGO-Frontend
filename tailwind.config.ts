@@ -40,6 +40,7 @@ const config: Config = {
         suit: ['SUIT', 'sans-serif'],
       },
       fontSize: {
+        title4s: ['2rem', { lineHeight: '3rem', fontWeight: '600' }],
         h1e: ['2.75rem', { lineHeight: '4.125rem', fontWeight: '800' }],
         h2e: ['2.5rem', { lineHeight: '3.75rem', fontWeight: '800' }],
         h3e: ['2.25rem', { lineHeight: '3.375rem', fontWeight: '800' }],
