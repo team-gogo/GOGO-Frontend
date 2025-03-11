@@ -18,7 +18,7 @@ const CommunityDetailPage = () => {
         'space-y-[72px]',
       )}
     >
-      <BackPageButton />
+      <BackPageButton type="push" path="/community" />
       <div className={cn('flex-1', 'space-y-[72px]')}>
         <CommunityContent
           title={communityDetail.title}
