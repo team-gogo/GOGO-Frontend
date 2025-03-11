@@ -13,3 +13,5 @@ export type CategoryType =
   | 'BADMINTON'
   | 'LOL'
   | 'ETC';
+
+export type SystemType = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';

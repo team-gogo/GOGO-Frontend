@@ -8,8 +8,8 @@ const OfficialCreatePage = () => {
         'flex',
         'h-screen',
         'w-screen',
-        'items-center',
         'justify-center',
+        'overflow-y-scroll',
       )}
     >
       <OfficialCreateContainer />
