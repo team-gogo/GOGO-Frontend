@@ -11,7 +11,6 @@ const CommunityDetailPage = () => {
     <div
       className={cn(
         'w-full',
-        'h-full',
         'max-w-[1320px]',
         'flex',
         'flex-col',

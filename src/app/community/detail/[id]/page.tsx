@@ -6,7 +6,6 @@ const page = () => {
     <div
       className={cn(
         'flex',
-        'h-full',
         'w-full',
         'items-center',
         'justify-center',

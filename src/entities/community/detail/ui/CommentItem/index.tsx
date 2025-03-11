@@ -44,10 +44,26 @@ const CommentItem = ({
     >
       <div className={cn('flex', 'items-center', 'gap-8', 'whitespace-nowrap')}>
         <PersonIcon />
-        <p className={cn('text-body3s', 'text-gray-300')}>{authorName}</p>
+        <p
+          className={cn(
+            'text-body3s',
+            'text-gray-300',
+            'mobile:text-caption1s',
+          )}
+        >
+          {authorName}
+        </p>
       </div>
 
-      <p className={cn('text-body3s', 'text-white', 'flex-grow', 'px-24')}>
+      <p
+        className={cn(
+          'text-body3s',
+          'text-white',
+          'flex-grow',
+          'px-24',
+          'mobile:text-caption1s',
+        )}
+      >
         {comment}
       </p>
       <div

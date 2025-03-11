@@ -30,7 +30,9 @@ const BackPageButton = ({
       <button onClick={handleClick} aria-label={label}>
         <LeftArrow />
       </button>
-      <p className={cn('text-h4s', 'text-white')}>{label}</p>
+      <p className={cn('text-h4s', 'text-white', 'mobile:text-body2s')}>
+        {label}
+      </p>
     </div>
   );
 };

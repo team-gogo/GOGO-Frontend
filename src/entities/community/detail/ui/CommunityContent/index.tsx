@@ -55,14 +55,28 @@ const CommunityContent = ({
       <div className={cn('space-y-24')}>
         <div className={cn('flex', 'items-center', 'gap-24')}>
           <SportTypeLabel type={stageCategory} />
-          <p className={cn('text-body1e', 'text-gray-300')}>{stageName}</p>
+          <p
+            className={cn('text-body1e', 'text-gray-300', 'mobile:text-body2e')}
+          >
+            {stageName}
+          </p>
           <div className={cn('flex', 'items-center', 'gap-8')}>
             <PersonIcon />
-            <p className={cn('text-body3s', 'text-gray-300')}>{authorName}</p>
+            <p
+              className={cn(
+                'text-body3s',
+                'text-gray-300',
+                'mobile:text-caption1s',
+              )}
+            >
+              {authorName}
+            </p>
           </div>
         </div>
         <div className={cn('flex', 'flex-col', 'gap-16')}>
-          <h1 className={cn('text-body2e', 'text-white')}>{title}</h1>
+          <h1 className={cn('text-body2e', 'text-white', 'mobile:text-body3e')}>
+            {title}
+          </h1>
           <p className={cn('text-body3s', 'text-gray-300')}>{content}</p>
         </div>
       </div>
@@ -70,7 +84,15 @@ const CommunityContent = ({
         <div className={cn('flex', 'items-center', 'gap-16')}>
           <div className={cn('flex', 'items-center', 'gap-8')}>
             <CommentIcon />
-            <p className={cn('text-gray-300', 'text-body3s')}>{commentCount}</p>
+            <p
+              className={cn(
+                'text-gray-300',
+                'text-body3s',
+                'mobile:text-caption1s',
+              )}
+            >
+              {commentCount}
+            </p>
           </div>
           <div
             className={cn('flex', 'items-center', 'gap-8', 'cursor-pointer')}
