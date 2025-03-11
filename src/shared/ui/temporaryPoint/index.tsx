@@ -33,12 +33,12 @@ const TemporaryPoint = ({ tempPoint, expiredDate }: TemPoraryPoint) => {
       });
     }, 1000);
 
-    if (initialTimeLeft <= 60) {
-      setIsSuccess(false);
-    }
-
     return () => clearInterval(timer);
   }, [expiredDate]);
+
+  useEffect(() => {
+    setIsSuccess(timeLeft > 60);
+  }, [timeLeft]);
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
