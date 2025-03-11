@@ -25,6 +25,7 @@ export interface Comment {
   comment: string;
   createdAt: string;
   likeCount: number;
+  isLiked: boolean;
   author: Author;
 }
 

@@ -1,14 +1,34 @@
+'use client';
+
+import { useState } from 'react';
 import { HeartIcon } from '@/shared/assets/icons';
-import { PersonIcon } from '@/shared/assets/svg';
+import { PersonIcon, SelectHeartIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 interface CommentItemProps {
   authorName: string;
   comment: string;
   likeCount: number;
+  commentId: number;
+  isLiked: boolean;
 }
 
-const CommentItem = ({ authorName, comment, likeCount }: CommentItemProps) => {
+const CommentItem = ({
+  authorName,
+  comment,
+  likeCount,
+  commentId,
+  isLiked,
+}: CommentItemProps) => {
+  const [liked, setLiked] = useState(isLiked);
+  const [likeCountState, setLikeCountState] = useState(likeCount);
+
+  const handleLike = () => {
+    setLiked(!liked);
+    setLikeCountState(liked ? likeCountState - 1 : likeCountState + 1);
+    console.log(`Comment ID: ${commentId}, Liked: ${!liked}`);
+  };
+
   return (
     <div
       className={cn(
@@ -30,9 +50,19 @@ const CommentItem = ({ authorName, comment, likeCount }: CommentItemProps) => {
       <p className={cn('text-body3s', 'text-white', 'flex-grow', 'px-24')}>
         {comment}
       </p>
-      <div className={cn('flex', 'items-center', 'gap-8')}>
-        <HeartIcon />
-        <p className={cn('text-body3s', 'text-gray-300')}>{likeCount}</p>
+      <div
+        className={cn('flex', 'items-center', 'gap-8', 'cursor-pointer')}
+        onClick={handleLike}
+      >
+        {liked ? <SelectHeartIcon /> : <HeartIcon />}
+        <p
+          className={cn(
+            'text-body3s',
+            liked ? 'text-system-error' : 'text-gray-300',
+          )}
+        >
+          {likeCountState}
+        </p>
       </div>
     </div>
   );

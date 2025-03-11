@@ -17,6 +17,8 @@ const CommentContainer = ({ comments }: CommentContainerProps) => {
             authorName={comment.author.name}
             comment={comment.comment}
             likeCount={comment.likeCount}
+            commentId={comment.commentId}
+            isLiked={comment.isLiked}
           />
         ))}
       </div>

@@ -26,6 +26,7 @@ export const getCommunityDetail = (): CommunityDetail => {
         comment: '좋은 정보 감사합니다! React Hook Form이 정말 유용하네요.',
         createdAt: '2025-03-10T12:30:00',
         likeCount: 10,
+        isLiked: true,
         author: {
           studentId: 20250002,
           name: '이영희',
@@ -38,6 +39,7 @@ export const getCommunityDetail = (): CommunityDetail => {
         comment: 'Zustand와 함께 사용하면 상태 관리도 간편해서 좋은 것 같아요.',
         createdAt: '2025-03-10T13:00:00',
         likeCount: 5,
+        isLiked: true,
         author: {
           studentId: 20250003,
           name: '박민수',
@@ -50,6 +52,7 @@ export const getCommunityDetail = (): CommunityDetail => {
         comment: 'Next.js 14에서의 적용 방법도 궁금합니다!',
         createdAt: '2025-03-10T14:15:00',
         likeCount: 8,
+        isLiked: false,
         author: {
           studentId: 20250004,
           name: '최유리',

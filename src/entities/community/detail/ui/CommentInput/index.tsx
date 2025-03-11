@@ -3,6 +3,7 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { SendIcon } from '@/shared/assets/svg';
 import Input from '@/shared/ui/input';
+import { cn } from '@/shared/utils/cn';
 
 interface CommentFormData {
   comment: string;
@@ -23,13 +24,18 @@ const CommentInput = ({ boardId }: { boardId: number }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className={cn('relative')}>
       <input type="hidden" {...register('boardId')} />
       <Input
         {...register('comment', { required: true })}
         placeholder="댓글을 입력해주세요"
-        icon={<SendIcon />}
       />
+      <button
+        type="submit"
+        className={cn('absolute', 'right-16', 'top-1/2', '-translate-y-1/2')}
+      >
+        <SendIcon />
+      </button>
     </form>
   );
 };

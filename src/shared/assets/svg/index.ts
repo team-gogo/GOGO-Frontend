@@ -24,3 +24,4 @@ export { default as SendIcon } from './SendIcon';
 export { default as SettingIcon } from './SettingIcon';
 export { default as GrayCircle } from './GrayCircle';
 export { default as LockIcon } from './LockIcon';
+export { default as SelectHeartIcon } from './SelectHeartIcon';

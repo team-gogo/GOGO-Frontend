@@ -29,6 +29,8 @@ const CommunityDetailPage = () => {
           createdAt={communityDetail.createdAt}
           stageCategory={communityDetail.stage.category}
           stageName={communityDetail.stage.name}
+          isLiked={communityDetail.isLiked}
+          boardId={communityDetail.boardId}
         />
         <CommentContainer comments={communityDetail.comment} />
       </div>

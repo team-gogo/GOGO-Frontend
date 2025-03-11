@@ -1,5 +1,9 @@
-import { CommentIcon, HeartIcon } from '@/shared/assets/icons';
-import { PersonIcon } from '@/shared/assets/svg';
+'use client';
+
+import { useState } from 'react';
+import { CommentIcon } from '@/shared/assets/icons';
+import HeartIcon from '@/shared/assets/icons/HeartIcon';
+import { PersonIcon, SelectHeartIcon } from '@/shared/assets/svg';
 import { formatIsoDate } from '@/shared/model/formatIsoDate';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
@@ -13,6 +17,8 @@ interface CommunityContentProps {
   createdAt: string;
   stageCategory: string;
   stageName: string;
+  isLiked: boolean;
+  boardId: number;
 }
 
 const CommunityContent = ({
@@ -24,7 +30,18 @@ const CommunityContent = ({
   createdAt,
   stageCategory,
   stageName,
+  isLiked,
+  boardId,
 }: CommunityContentProps) => {
+  const [liked, setLiked] = useState(isLiked);
+  const [likeCountState, setLikeCountState] = useState(likeCount);
+
+  const handleLike = () => {
+    setLiked(!liked);
+    setLikeCountState(liked ? likeCountState - 1 : likeCountState + 1);
+    console.log(boardId);
+  };
+
   return (
     <div
       className={cn(
@@ -55,9 +72,19 @@ const CommunityContent = ({
             <CommentIcon />
             <p className={cn('text-gray-300', 'text-body3s')}>{commentCount}</p>
           </div>
-          <div className={cn('flex', 'items-center', 'gap-8')}>
-            <HeartIcon />
-            <p className={cn('text-gray-300', 'text-body3s')}>{likeCount}</p>
+          <div
+            className={cn('flex', 'items-center', 'gap-8', 'cursor-pointer')}
+            onClick={handleLike}
+          >
+            {liked ? <SelectHeartIcon /> : <HeartIcon />}
+            <p
+              className={cn(
+                'text-body3s',
+                liked ? 'text-system-error' : 'text-gray-300',
+              )}
+            >
+              {likeCountState}
+            </p>
           </div>
         </div>
         <p className={cn('text-body3s', 'text-gray-500')}>
