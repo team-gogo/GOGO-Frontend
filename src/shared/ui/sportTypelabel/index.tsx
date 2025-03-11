@@ -8,6 +8,9 @@ interface SportTypeLabelProps {
   asButton?: boolean;
   isSelected?: boolean;
   onClick?: () => void;
+  py?: string;
+  px?: string;
+  height?: string;
 }
 
 const SportTypeLabel = ({
@@ -15,6 +18,9 @@ const SportTypeLabel = ({
   asButton = false,
   isSelected = false,
   onClick,
+  py,
+  px,
+  height,
 }: SportTypeLabelProps) => {
   const { icon, text } = SPORT_TYPES[type] || {
     icon: (color) => <EtcIcon color={color} />,
@@ -22,8 +28,6 @@ const SportTypeLabel = ({
   };
 
   const commonClasses = cn(
-    'py-8',
-    'px-12',
     'rounded-lg',
     'border-1',
     'border-solid',
@@ -36,7 +40,13 @@ const SportTypeLabel = ({
     {
       'bg-main-500 text-white': asButton && isSelected,
       'cursor-pointer': asButton,
+      'laptop:h-[1.875rem]': !!height,
+      'laptop:py-[0.25rem]': !!py,
+      'laptop:px-[0.5rem]': !!px,
     },
+    !py && 'py-8',
+    !px && 'px-12',
+    !height && 'h-auto',
   );
 
   const iconColor = asButton && isSelected ? 'white' : '#526FFE';
@@ -45,16 +55,38 @@ const SportTypeLabel = ({
   const content = (
     <>
       {icon && <label>{icon(iconColor)}</label>}
-      <p className={cn('text-body3s', textColor)}>{text}</p>
+      <p className={cn('text-body3s', 'leading-[1.3125rem]', textColor)}>
+        {text}
+      </p>
     </>
   );
 
   return asButton ? (
-    <button type="button" className={commonClasses} onClick={onClick}>
+    <button
+      type="button"
+      className={commonClasses}
+      onClick={onClick}
+      style={{
+        paddingTop: py || undefined,
+        paddingBottom: py || undefined,
+        paddingLeft: px || undefined,
+        paddingRight: px || undefined,
+      }}
+    >
       {content}
     </button>
   ) : (
-    <div className={commonClasses}>{content}</div>
+    <div
+      className={commonClasses}
+      style={{
+        paddingTop: py || undefined,
+        paddingBottom: py || undefined,
+        paddingLeft: px || undefined,
+        paddingRight: px || undefined,
+      }}
+    >
+      {content}
+    </div>
   );
 };
 
