@@ -46,7 +46,14 @@ const MyInfoContainer = ({ name, school, sex }: MyInfoContainerProps) => {
 
       <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
         <div className={cn('flex', 'items-center', 'gap-[1rem]')}>
-          <p className={cn('text-body2s', 'text-gray-500')}>커뮤니티 필터</p>
+          <p
+            className={cn(
+              'text-body2s',
+              isActive ? 'text-main-500' : 'text-gray-500',
+            )}
+          >
+            커뮤니티 필터
+          </p>
           <div
             className={cn(
               'relative',
@@ -57,7 +64,7 @@ const MyInfoContainer = ({ name, school, sex }: MyInfoContainerProps) => {
               'rounded-[3.125rem]',
               'border-[0.125rem]',
               'border-solid',
-              'border-gray-500',
+              isActive ? 'border-main-500' : 'border-gray-500',
               'cursor-pointer',
               'overflow-hidden',
             )}
@@ -72,7 +79,7 @@ const MyInfoContainer = ({ name, school, sex }: MyInfoContainerProps) => {
                 isActive ? 'translate-x-[2.125rem]' : '-translate-x-[0.125rem]',
               )}
             >
-              <GrayCircle />
+              <GrayCircle isActive={isActive} />
             </div>
           </div>
         </div>
