@@ -142,7 +142,7 @@ const getMyBetResponse = (): MyBetResponse => {
         },
       },
       {
-        matchId: 1004,
+        matchId: 1005,
         aTeam: {
           teamId: 9,
           teamName: '팀 I',
