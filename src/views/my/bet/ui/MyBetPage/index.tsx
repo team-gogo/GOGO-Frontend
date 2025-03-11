@@ -4,8 +4,11 @@ import {
   PointContainer,
   TotalPointContainer,
 } from '@/widgets/my/bet';
+import getUserBetInfo from '../Mock/getUserBetInfo';
 
 const MyBetPage = () => {
+  const userBetInfo = getUserBetInfo();
+
   return (
     <div
       className={cn(
@@ -31,7 +34,7 @@ const MyBetPage = () => {
           <TotalPointContainer point={900000} />
           <PointContainer points={[]} />
         </div>
-        <MatchContainer />
+        <MatchContainer userBetInfo={userBetInfo} />
       </div>
     </div>
   );

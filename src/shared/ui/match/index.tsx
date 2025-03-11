@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   BlueAlarmIcon,
   GrayAlarmIcon,
   RightArrowIcon,
 } from '@/shared/assets/svg';
-import { SportType } from '@/shared/model/sportTypes';
+import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
 import Button from '../button';
@@ -14,35 +14,66 @@ import SportTypeLabel from '../sportTypelabel';
 import Tag from '../tag';
 
 interface MatchProps {
-  sportType: SportType;
-  point: number;
-  team: string[];
-  isBetPossible: boolean; //시간 관련 props 추후 백엔드 api spec 나올 시 반영
-  isPlaying: boolean; //시간 관련 props 추후 백엔드 api spec 나올 시 반영
-  time: string; //시간 관련 props 추후 백엔드 api spec 나올 시 반영
-  team1Point: number;
-  team2Point: number;
-  isFinish: boolean; //시간 관련 props 추후 백엔드 api spec 나올 시 반영
-  winnerTeam: string;
-  isPredictSuccess: boolean;
-  resultPoint: number;
+  match: MatchData;
 }
 
-const Match = ({
-  sportType,
-  point,
-  team,
-  isBetPossible,
-  isPlaying,
-  time,
-  team1Point,
-  team2Point,
-  isFinish,
-  winnerTeam,
-  isPredictSuccess,
-  resultPoint,
-}: MatchProps) => {
+const Match = ({ match }: MatchProps) => {
   const [isAlarmClick, setIsAlarmClick] = useState<boolean>(false);
+
+  const {
+    aTeam,
+    bTeam,
+    startDate,
+    endDate,
+    isEnd,
+    round,
+    category,
+    isNotice,
+    betting,
+    result,
+  } = match;
+
+  useEffect(() => {
+    setIsAlarmClick(isNotice);
+  }, []);
+
+  const currentTime = new Date();
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const isPlaying = currentTime >= start && currentTime <= end;
+  const isFinish = currentTime > end;
+
+  const time = `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`;
+
+  const winnerTeam =
+    result?.victoryTeamId === aTeam.teamId
+      ? aTeam.teamName
+      : result?.victoryTeamId === bTeam.teamId
+        ? bTeam.teamName
+        : '없음';
+
+  const isPredictSuccess = result?.isPredictionSuccess;
+
+  const roundLabel = {
+    ROUND_OF_32: '32강',
+    ROUND_OF_16: '16강',
+    QUARTER_FINALS: '8강',
+    SEMI_FINALS: '4강',
+    FINALS: '결승',
+  };
+
+  const roundText =
+    round && round.length > 0 ? round.map((r) => roundLabel[r]).join(', ') : '';
+
+  const getTeamClassName = (teamId: number) => {
+    if (betting.predictedWinTeamId === teamId) {
+      return 'text-main-500';
+    }
+    return 'text-white';
+  };
+
   return (
     <div
       className={cn(
@@ -67,9 +98,9 @@ const Match = ({
               TagType={isPlaying ? 'LIVE' : isFinish ? 'FINISH' : 'TIME'}
               text={time}
             />
-            <Tag text="12강" />
+            <Tag text={roundText} />
             <SportTypeLabel
-              type={sportType}
+              type={category && category.length > 0 ? category[0] : ''}
               px="1rem"
               py="0.75rem"
               height="2.8125rem"
@@ -100,7 +131,7 @@ const Match = ({
                 isPlaying && 'hidden',
               )}
             >
-              총 포인트 : {formatPoint(point)}
+              총 포인트 : {formatPoint(aTeam.bettingPoint + bTeam.bettingPoint)}
             </p>
             {isFinish ? (
               <h2 className={cn('text-h2e', 'text-white')}>
@@ -131,9 +162,13 @@ const Match = ({
                       !isPlaying && 'hidden',
                     )}
                   >
-                    {formatPoint(team1Point)}
+                    {formatPoint(aTeam.bettingPoint)}
                   </p>
-                  <h2 className={cn('text-h2e', 'text-white')}>{team[0]}팀</h2>
+                  <h2
+                    className={cn('text-h2e', getTeamClassName(aTeam.teamId))}
+                  >
+                    {aTeam.teamName}팀
+                  </h2>
                 </div>
                 <h3 className={cn('text-body1s', 'text-gray-500')}>vs</h3>
                 <div
@@ -152,9 +187,13 @@ const Match = ({
                       !isPlaying && 'hidden',
                     )}
                   >
-                    {formatPoint(team2Point)}
+                    {formatPoint(bTeam.bettingPoint)}
                   </p>
-                  <h2 className={cn('text-h2e', 'text-white')}>{team[1]}팀</h2>
+                  <h2
+                    className={cn('text-h2e', getTeamClassName(bTeam.teamId))}
+                  >
+                    {bTeam.teamName}팀
+                  </h2>
                 </div>
               </div>
             )}
@@ -175,9 +214,7 @@ const Match = ({
               <p
                 className={cn(
                   'text-body2s',
-                  isPredictSuccess
-                    ? 'text-system-success'
-                    : 'text-system-error',
+                  isPredictSuccess ? 'text-main-500' : 'text-system-error',
                 )}
               >
                 예측 {isPredictSuccess ? '성공' : '실패'}
@@ -185,12 +222,13 @@ const Match = ({
               <p
                 className={cn(
                   'text-body1e',
-                  isPredictSuccess
-                    ? 'text-system-success'
-                    : 'text-system-error',
+                  isPredictSuccess ? 'text-main-500' : 'text-system-error',
                 )}
               >
-                {isPredictSuccess ? '+' : '-'} {formatPoint(resultPoint)}
+                {isPredictSuccess ? '+' : '-'}{' '}
+                {betting?.bettingPoint !== undefined
+                  ? formatPoint(betting.bettingPoint)
+                  : 0}
               </p>
             </div>
           ) : isPlaying ? (
@@ -210,7 +248,13 @@ const Match = ({
               <RightArrowIcon color="white" />
             </button>
           ) : (
-            <Button disabled={!isBetPossible}>베팅</Button>
+            <Button disabled={isEnd}>
+              {!isEnd
+                ? '베팅'
+                : betting.bettingPoint !== undefined
+                  ? `${formatPoint(betting.bettingPoint)} 베팅`
+                  : '베팅'}
+            </Button>
           )}
         </div>
       </div>
