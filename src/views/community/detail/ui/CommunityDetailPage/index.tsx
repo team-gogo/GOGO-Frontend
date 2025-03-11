@@ -11,14 +11,14 @@ const CommunityDetailPage = () => {
     <div
       className={cn(
         'w-full',
-        'max-w-[1320px]',
+        'max-w-[82.5rem]',
         'flex',
         'flex-col',
-        'space-y-[72px]',
+        'space-y-[4.5rem]',
       )}
     >
       <BackPageButton type="push" path="/community" />
-      <div className={cn('flex-1', 'space-y-[72px]')}>
+      <div className={cn('flex-1', 'space-y-[4.5rem]')}>
         <CommunityContent
           title={communityDetail.title}
           content={communityDetail.content}

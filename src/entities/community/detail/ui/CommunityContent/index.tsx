@@ -49,7 +49,7 @@ const CommunityContent = ({
         'py-20',
         'bg-gray-700',
         'rounded-lg',
-        'space-y-[44px]',
+        'space-y-[2.75rem]',
       )}
     >
       <div className={cn('space-y-24')}>
