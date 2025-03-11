@@ -1,5 +1,6 @@
 import {
   AdminIcon,
+  ClockIcon,
   LiveSettingIcon,
   OfficialIcon,
   RecruitIcon,
@@ -8,27 +9,30 @@ import {
 import { cn } from '@/shared/utils/cn';
 
 interface TagProps {
-  TagType:
+  TagType?:
     | 'OFFICIAL'
     | 'FAST'
-    | 'ADMIN' // ADMIN ROLE은 따로 유저 정보 불러오기를 통해 처리해야함
+    | 'ADMIN'
     | 'CONFIRMED'
-    | 'STREAMING' //streaming 기능은 확정 X 퍼블리싱만 O
-    | 'RECRUITING';
+    | 'STREAMING'
+    | 'RECRUITING'
+    | 'TIME'
+    | 'LIVE'
+    | 'FINISH';
+
+  text?: string;
 }
 
-const Tag = ({ TagType }: TagProps) => {
+const Tag = ({ TagType = 'OFFICIAL', text }: TagProps) => {
+  const defaultStyle = {
+    text: 'text-white',
+    border: 'border-white',
+    Icon: OfficialIcon,
+  };
+
   const tagStyles = {
-    OFFICIAL: {
-      text: 'text-white',
-      border: 'border-white',
-      Icon: OfficialIcon,
-    },
-    FAST: {
-      text: 'text-white',
-      border: 'border-white',
-      Icon: OfficialIcon,
-    },
+    OFFICIAL: defaultStyle,
+    FAST: defaultStyle,
     ADMIN: {
       text: 'text-main-500',
       border: 'border-main-500',
@@ -49,6 +53,21 @@ const Tag = ({ TagType }: TagProps) => {
       border: 'border-system-success',
       Icon: RecruitIcon,
     },
+    TIME: {
+      text: 'text-white',
+      border: 'border-white',
+      Icon: ClockIcon,
+    },
+    LIVE: {
+      text: 'text-system-success',
+      border: 'border-system-success',
+      Icon: ClockIcon,
+    },
+    FINISH: {
+      text: 'text-gray-400',
+      border: 'border-gray-400',
+      Icon: ClockIcon,
+    },
   };
 
   const tagTexts = {
@@ -58,12 +77,16 @@ const Tag = ({ TagType }: TagProps) => {
     CONFIRMED: '모집 확정',
     STREAMING: '중계 설정',
     RECRUITING: '모집 중',
+    TIME: text,
+    LIVE: '경기 중',
+    FINISH: '종료됨',
   };
 
-  const IconComponent = tagStyles[TagType].Icon;
+  const selectedStyle = tagStyles[TagType] || defaultStyle;
+  const IconComponent = selectedStyle.Icon;
 
   return (
-    <button
+    <div
       className={cn(
         'flex',
         'p-[0.75rem]',
@@ -76,20 +99,25 @@ const Tag = ({ TagType }: TagProps) => {
         'rounded-lg',
         'border-[0.0625rem]',
         'border-solid',
-        tagStyles[TagType].border,
+        'h-[2.8125rem]',
+        'laptop:h-[1.875rem]',
+        selectedStyle.border,
       )}
     >
-      <IconComponent />
+      <IconComponent
+        isLive={TagType === 'LIVE'}
+        isFinish={TagType === 'FINISH'}
+      />
       <p
         className={cn(
           'text-caption1s',
           'laptop:text-caption3s',
-          tagStyles[TagType].text,
+          selectedStyle.text,
         )}
       >
-        {tagTexts[TagType]}
+        {text || tagTexts[TagType]}
       </p>
-    </button>
+    </div>
   );
 };
 
