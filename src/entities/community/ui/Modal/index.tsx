@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { WarningIcon } from '@/shared/assets/svg';
-import { SportType } from '@/shared/model/sportTypes';
+import { SortType, SportType } from '@/shared/model/sportTypes';
 import ModalLayout from '@/shared/ui/modalLayout';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
@@ -10,9 +10,9 @@ import { cn } from '@/shared/utils/cn';
 interface ModalProps {
   onClose: () => void;
   selectedSport: SportType | null;
-  selectedSort: SportType | null;
+  selectedSort: SortType | null;
   toggleSportSelection: (sport: SportType) => void;
-  toggleSortSelection: (sort: SportType) => void;
+  toggleSortSelection: (sort: SortType) => void;
 }
 
 const Modal = ({
@@ -31,7 +31,7 @@ const Modal = ({
     'BADMINTON',
     'ETC',
   ];
-  const sortTypes: SportType[] = ['LATEST', 'LAST'];
+  const sortTypes: SortType[] = ['LATEST', 'LAST'];
 
   return (
     <ModalLayout
@@ -67,8 +67,8 @@ const Modal = ({
             key={sort}
             type={sort}
             asButton
-            isSelected={selectedSort === sort}
-            onClick={() => toggleSortSelection(sort)}
+            isSelected={selectedSort === sort} // 수정된 부분: selectedSort와 sort의 타입이 일치
+            onClick={() => toggleSortSelection(sort)} // 수정된 부분: toggleSortSelection에 sort 전달
           />
         ))}
       </div>

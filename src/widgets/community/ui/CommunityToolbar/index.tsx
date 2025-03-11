@@ -3,13 +3,14 @@
 import { useState } from 'react';
 import { FilterButton, Modal, WriteButton } from '@/entities/community';
 import { CommunityIcon } from '@/shared/assets/svg';
+import { SportType, SortType } from '@/shared/model/sportTypes';
 import { cn } from '@/shared/utils/cn';
 
 interface CommunityToolbarProps {
-  selectedSport: string | null;
-  selectedSort: string | null;
-  toggleSportSelection: (sport: string) => void;
-  toggleSortSelection: (sort: string) => void;
+  selectedSport: SportType | null;
+  selectedSort: SortType | null;
+  toggleSportSelection: (sport: SportType) => void;
+  toggleSortSelection: (sort: SortType) => void;
 }
 
 const CommunityToolbar = ({
