@@ -1,7 +1,12 @@
+import { MyStageResponse } from '@/shared/types/my';
 import Stage from '@/shared/ui/stage';
 import { cn } from '@/shared/utils/cn';
 
-const StageContainer = () => {
+interface StageContainerProps {
+  userStageInfo: MyStageResponse;
+}
+
+const StageContainer = ({ userStageInfo }: StageContainerProps) => {
   return (
     <div className={cn('w-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
       <h2 className={cn('text-body1e', 'text-white')}>내가 참여한 스테이지</h2>
@@ -14,34 +19,9 @@ const StageContainer = () => {
           'tablet:grid-cols-1',
         )}
       >
-        <Stage
-          isAdmin={true}
-          isRecruiting={true}
-          isLocked={true}
-          stageName={'오늘 레전드 축구경기'}
-          isParticipating={true}
-        />
-        <Stage
-          isAdmin={true}
-          isRecruiting={true}
-          isLocked={true}
-          stageName={'오늘 레전드 축구경기'}
-          isParticipating={true}
-        />
-        <Stage
-          isAdmin={true}
-          isRecruiting={true}
-          isLocked={true}
-          stageName={'오늘 레전드 축구경기'}
-          isParticipating={true}
-        />
-        <Stage
-          isAdmin={true}
-          isRecruiting={true}
-          isLocked={true}
-          stageName={'오늘 레전드 축구경기'}
-          isParticipating={true}
-        />
+        {userStageInfo.stages.map((stage) => (
+          <Stage key={stage.stageId} stage={stage} />
+        ))}
       </div>
     </div>
   );

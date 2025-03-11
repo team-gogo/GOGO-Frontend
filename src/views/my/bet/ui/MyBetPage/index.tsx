@@ -4,10 +4,12 @@ import {
   PointContainer,
   TotalPointContainer,
 } from '@/widgets/my/bet';
+import getTempPoint from '../Mock/getTempPoint';
 import getUserBetInfo from '../Mock/getUserBetInfo';
 
 const MyBetPage = () => {
   const userBetInfo = getUserBetInfo();
+  const tempPoint = getTempPoint();
 
   return (
     <div
@@ -32,7 +34,7 @@ const MyBetPage = () => {
       >
         <div className={cn('w-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
           <TotalPointContainer point={900000} />
-          <PointContainer points={[]} />
+          <PointContainer tempPoint={tempPoint} />
         </div>
         <MatchContainer userBetInfo={userBetInfo} />
       </div>

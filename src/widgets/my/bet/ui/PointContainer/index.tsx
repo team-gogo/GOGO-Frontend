@@ -1,12 +1,14 @@
 import { RightArrowIcon } from '@/shared/assets/svg';
+import { TempPointsResponse } from '@/shared/types/my/bet';
 import TemporaryPoint from '@/shared/ui/temporaryPoint';
 import { cn } from '@/shared/utils/cn';
 
 interface PointContainerProps {
-  points: { id: number; value: number }[];
+  tempPoint: TempPointsResponse;
 }
 
-const PointContainer = ({ points }: PointContainerProps) => {
+const PointContainer = ({ tempPoint }: PointContainerProps) => {
+  const { tempPoints } = tempPoint;
   return (
     <div
       className={cn(
@@ -20,7 +22,7 @@ const PointContainer = ({ points }: PointContainerProps) => {
       )}
     >
       <div className={cn('flex', 'items-center', 'gap-[0.75rem]', 'w-full')}>
-        {points.length === 0 ? (
+        {tempPoints.length === 0 ? (
           <div className={cn('flex', 'w-full', 'justify-between')}>
             <h4 className={cn('text-h4s', 'text-gray-500')}>
               임시포인트가 들어오지 않았습니다.
@@ -34,8 +36,12 @@ const PointContainer = ({ points }: PointContainerProps) => {
           </div>
         ) : (
           <div className={cn('flex', 'items-center', 'gap-[0.75rem]')}>
-            {points.map(({ id, value }) => (
-              <TemporaryPoint key={id} point={value} />
+            {tempPoints.map(({ tempPointId, tempPoint, expiredDate }) => (
+              <TemporaryPoint
+                key={tempPointId}
+                tempPoint={tempPoint}
+                expiredDate={expiredDate}
+              />
             ))}
           </div>
         )}

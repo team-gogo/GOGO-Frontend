@@ -5,26 +5,40 @@ import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
 
 interface TemPoraryPoint {
-  point: number;
+  tempPoint: number;
+  expiredDate: string;
 }
 
-const TemporaryPoint = ({ point }: TemPoraryPoint) => {
+const TemporaryPoint = ({ tempPoint, expiredDate }: TemPoraryPoint) => {
   const [timeLeft, setTimeLeft] = useState(300);
   const [isSuccess, setIsSuccess] = useState(true); //60초 아래로 내려감을 확인함
 
   useEffect(() => {
-    if (timeLeft <= 0) return;
+    const expiredTime = new Date(expiredDate).getTime();
+    const currentTime = new Date().getTime();
+    const initialTimeLeft = Math.max(
+      0,
+      Math.floor((expiredTime - currentTime) / 1000),
+    );
+
+    setTimeLeft(initialTimeLeft);
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      setTimeLeft((prev) => {
+        if (prev <= 0) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
-    if (timeLeft <= 60) {
+    if (initialTimeLeft <= 60) {
       setIsSuccess(false);
     }
 
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [expiredDate]);
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -47,7 +61,9 @@ const TemporaryPoint = ({ point }: TemPoraryPoint) => {
         'w-fit',
       )}
     >
-      <p className={cn('text-body2s', 'text-white')}>{formatPoint(point)}</p>
+      <p className={cn('text-body2s', 'text-white')}>
+        {formatPoint(tempPoint)}
+      </p>
       <p
         className={cn(
           'text-body3s',
