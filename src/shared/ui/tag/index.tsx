@@ -9,42 +9,42 @@ import { cn } from '@/shared/utils/cn';
 
 interface TagProps {
   TagType:
-    | 'official'
-    | 'private'
-    | 'admin'
-    | 'teamConfirm'
-    | 'liveSetting'
-    | 'recruiting';
+    | 'OFFICIAL'
+    | 'FAST'
+    | 'ADMIN' // ADMIN ROLE은 따로 유저 정보 불러오기를 통해 처리해야함
+    | 'CONFIRMED'
+    | 'STREAMING' //streaming 기능은 확정 X 퍼블리싱만 O
+    | 'RECRUITING';
 }
 
 const Tag = ({ TagType }: TagProps) => {
   const tagStyles = {
-    official: {
+    OFFICIAL: {
       text: 'text-white',
       border: 'border-white',
       Icon: OfficialIcon,
     },
-    private: {
+    FAST: {
       text: 'text-white',
       border: 'border-white',
       Icon: OfficialIcon,
     },
-    admin: {
+    ADMIN: {
       text: 'text-main-500',
       border: 'border-main-500',
       Icon: AdminIcon,
     },
-    teamConfirm: {
+    CONFIRMED: {
       text: 'text-gray-400',
       border: 'border-gray-400',
       Icon: TeamConfirmIcon,
     },
-    liveSetting: {
+    STREAMING: {
       text: 'text-system-error',
       border: 'border-system-error',
       Icon: LiveSettingIcon,
     },
-    recruiting: {
+    RECRUITING: {
       text: 'text-system-success',
       border: 'border-system-success',
       Icon: RecruitIcon,
@@ -52,12 +52,12 @@ const Tag = ({ TagType }: TagProps) => {
   };
 
   const tagTexts = {
-    official: '공식',
-    private: '사설',
-    admin: '관리자',
-    teamConfirm: '모집 확정',
-    liveSetting: '중계 설정',
-    recruiting: '모집 중',
+    OFFICIAL: '공식',
+    FAST: '사설',
+    ADMIN: '관리자',
+    CONFIRMED: '모집 확정',
+    STREAMING: '중계 설정',
+    RECRUITING: '모집 중',
   };
 
   const IconComponent = tagStyles[TagType].Icon;

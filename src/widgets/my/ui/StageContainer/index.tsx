@@ -8,10 +8,34 @@ const StageContainer = () => {
       <div
         className={cn('grid', 'grid-cols-2', 'gap-x-[2.5rem]', 'gap-y-[2rem]')}
       >
-        <Stage isAdmin={true} isRecruiting={true} isLocked={true} />
-        <Stage isAdmin={true} isRecruiting={true} isLocked={true} />
-        <Stage isAdmin={true} isRecruiting={true} isLocked={true} />
-        <Stage isAdmin={true} isRecruiting={true} isLocked={true} />
+        <Stage
+          isAdmin={true}
+          isRecruiting={true}
+          isLocked={true}
+          stageName={'오늘 레전드 축구경기'}
+          isParticipating={true}
+        />
+        <Stage
+          isAdmin={true}
+          isRecruiting={true}
+          isLocked={true}
+          stageName={'오늘 레전드 축구경기'}
+          isParticipating={true}
+        />
+        <Stage
+          isAdmin={true}
+          isRecruiting={true}
+          isLocked={true}
+          stageName={'오늘 레전드 축구경기'}
+          isParticipating={true}
+        />
+        <Stage
+          isAdmin={true}
+          isRecruiting={true}
+          isLocked={true}
+          stageName={'오늘 레전드 축구경기'}
+          isParticipating={true}
+        />
       </div>
     </div>
   );

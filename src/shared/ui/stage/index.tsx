@@ -5,10 +5,18 @@ import Tag from '../tag';
 interface StageProps {
   isAdmin: boolean;
   isRecruiting: boolean;
+  stageName: string;
   isLocked: boolean;
+  isParticipating: boolean;
 }
 
-const Stage = ({ isAdmin, isRecruiting, isLocked }: StageProps) => {
+const Stage = ({
+  isAdmin,
+  isRecruiting,
+  stageName,
+  isLocked,
+  isParticipating,
+}: StageProps) => {
   return (
     <div
       className={cn(
@@ -25,15 +33,15 @@ const Stage = ({ isAdmin, isRecruiting, isLocked }: StageProps) => {
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
           <div className={cn('flex', 'items-center', 'gap-[0.625rem]')}>
-            <Tag TagType={'official'} />
-            {isAdmin && <Tag TagType={'admin'} />}
+            <Tag TagType={'OFFICIAL'} />
+            {isAdmin && <Tag TagType={'ADMIN'} />}
             {isRecruiting ? (
-              <Tag TagType={'recruiting'} />
+              <Tag TagType={'RECRUITING'} />
             ) : (
-              <Tag TagType={'teamConfirm'} />
+              <Tag TagType={'CONFIRMED'} />
             )}
           </div>
-          {isAdmin && <Tag TagType={'liveSetting'} />}
+          {isAdmin && <Tag TagType={'STREAMING'} />}
         </div>
         <div
           className={cn(
@@ -44,8 +52,10 @@ const Stage = ({ isAdmin, isRecruiting, isLocked }: StageProps) => {
             'gap-[3rem]',
           )}
         >
-          <h1 className={cn('text-h2e', 'text-white')}>스테이지 이름</h1>
-          <Button isLocked={isLocked}>참여하기</Button>
+          <h1 className={cn('text-h2e', 'text-white')}>{stageName}</h1>
+          <Button isLocked={isParticipating ? false : isLocked}>
+            {isParticipating ? '상세보기' : '참여하기'}
+          </Button>
         </div>
       </div>
     </div>
