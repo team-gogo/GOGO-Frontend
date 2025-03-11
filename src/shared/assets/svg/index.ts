@@ -1,3 +1,4 @@
+export * from './TagIcon';
 export { default as Logo } from './Logo';
 export { default as GoogleLogo } from './GoogleLogo';
 export { default as FaqIcon } from './FaqIcon';
@@ -18,3 +19,6 @@ export { default as CirclePlusIcon } from './CirclePlusIcon';
 export { default as EtcIcon } from './EtcIcon';
 export { default as XIcon } from './XIcon';
 export { default as WarningIcon } from './WarningIcon';
+export { default as SettingIcon } from './SettingIcon';
+export { default as GrayCircle } from './GrayCircle';
+export { default as LockIcon } from './LockIcon';
