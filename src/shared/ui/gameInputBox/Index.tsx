@@ -36,6 +36,24 @@ const systemList: { name: string; value: SystemType }[] = [
   { name: '단판', value: 'SINGLE' },
 ];
 
+const getButtonStyles = (idx: number, totalLength: number) => {
+  if (idx === 0) {
+    return ['border-0', 'border-b-[0.5px]', 'border-solid', 'pb-10'];
+  }
+
+  if (idx === totalLength - 1) {
+    return ['border-0', 'border-t-[0.5px]', 'border-solid', 'pt-10'];
+  }
+
+  return [
+    'border-0',
+    'border-t-[0.5px]',
+    'border-b-[0.5px]',
+    'border-solid',
+    'py-10',
+  ];
+};
+
 const GameInputBox = <T extends BaseFormFields>({
   register,
   watch,
@@ -129,27 +147,7 @@ const GameInputBox = <T extends BaseFormFields>({
                     'text-gray-400',
                     'flex',
                     'border-gray-600',
-                    idx === 0
-                      ? [
-                          'border-0',
-                          'border-b-[0.5px]',
-                          'border-solid',
-                          'pb-10',
-                        ]
-                      : idx === systemList.length - 1
-                        ? [
-                            'border-0',
-                            'border-t-[0.5px]',
-                            'border-solid',
-                            'pt-10',
-                          ]
-                        : [
-                            'border-0',
-                            'border-t-[0.5px]',
-                            'border-b-[0.5px]',
-                            'border-solid',
-                            'py-10',
-                          ],
+                    getButtonStyles(idx, systemList.length),
                     hoveredOption === value && ['text-body3e', 'text-white'],
                   )}
                   type="button"
