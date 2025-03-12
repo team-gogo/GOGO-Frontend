@@ -27,7 +27,7 @@ const RankingPage = () => {
         'space-y-[3rem]',
       )}
     >
-      <BackPageButton type="back" />
+      <BackPageButton label="포인트 랭킹" type="back" />
       <div className={cn('space-y-[2.25rem]')}>
         <TopRankListContainer topRanks={reorderedTopThreeRanks} />
         <RankingUserContainer remainingRanks={remainingRanks} />
