@@ -1,9 +1,12 @@
-import { z } from 'zod';
+import createFastStageSchema from '@/shared/schema/createFastStageSchema';
 import createOfficialStageSchema from '@/shared/schema/createOfficialStageSchema';
+import { z } from 'zod';
 
 export type CreateOfficialStageFormType = z.infer<
   typeof createOfficialStageSchema
 >;
+
+export type CreateFastStageFormType = z.infer<typeof createFastStageSchema>;
 
 export type CategoryType =
   | 'SOCCER'
