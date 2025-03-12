@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction } from 'react';
 import { MyStageType } from '@/shared/types/my';
 import { StagesType } from '@/shared/types/stage';
@@ -10,10 +11,13 @@ import MatchTypeLabel from '../matchTypeLabel';
 interface StageProps {
   stage: MyStageType | StagesType;
   setIsModalOpen?: Dispatch<SetStateAction<boolean>>;
+  isMyStage?: boolean;
 }
 
-const Stage = ({ stage, setIsModalOpen }: StageProps) => {
+const Stage = ({ stage, setIsModalOpen, isMyStage = false }: StageProps) => {
   const { stageName, type, status, isMaintaining } = stage;
+
+  const { push } = useRouter();
 
   const isParticipating =
     'isParticipating' in stage ? stage.isParticipating : undefined;
@@ -64,12 +68,16 @@ const Stage = ({ stage, setIsModalOpen }: StageProps) => {
               {stageName}
             </h1>
             <Button
-              isLocked={isParticipating ? false : true}
+              isLocked={isParticipating || isMyStage ? false : true}
               onClick={() => {
-                isPassCode ? setIsModalOpen?.(true) : console.log(1);
+                isPassCode
+                  ? setIsModalOpen?.(true)
+                  : isMyStage
+                    ? push(`/my/bet?stageId=${stage.stageId}`)
+                    : console.log(1);
               }}
             >
-              {isParticipating ? '상세보기' : '참여하기'}
+              {isParticipating || isMyStage ? '상세보기' : '참여하기'}
             </Button>
           </div>
         </div>

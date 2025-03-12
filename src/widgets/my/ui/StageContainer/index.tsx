@@ -20,7 +20,7 @@ const StageContainer = ({ userStageInfo }: StageContainerProps) => {
         )}
       >
         {userStageInfo.stages.map((stage) => (
-          <Stage key={stage.stageId} stage={stage} />
+          <Stage key={stage.stageId} stage={stage} isMyStage={true} />
         ))}
       </div>
     </div>
