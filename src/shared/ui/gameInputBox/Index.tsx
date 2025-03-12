@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  FieldValues,
   Path,
   PathValue,
   UseFormRegister,
@@ -13,17 +12,7 @@ import { CategoryType, SystemType } from '@/shared/types/createStage';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 
-interface GameFormFields {
-  game: {
-    category: CategoryType;
-    name: string;
-    system: SystemType;
-    teamMinCapacity: number;
-    teamMaxCapacity: number;
-  }[];
-}
-
-interface GameInputBoxProps<T extends GameFormFields> {
+interface GameInputBoxProps<T extends Record<string, any>> {
   register: UseFormRegister<T>;
   watch: UseFormWatch<T>;
   setValue: UseFormSetValue<T>;
@@ -37,7 +26,7 @@ const systemList: { name: string; value: SystemType }[] = [
   { name: '단판', value: 'SINGLE' },
 ];
 
-const GameInputBox = <T extends GameFormFields>({
+const GameInputBox = <T extends Record<string, any>>({
   register,
   watch,
   setValue,
