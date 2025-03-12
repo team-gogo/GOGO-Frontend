@@ -1,0 +1,18 @@
+import Input from '@/shared/ui/input';
+import { cn } from '@/shared/utils/cn';
+
+const EntryNumberInput = () => {
+  return (
+    <div className={cn('space-y-16')}>
+      <div className={cn('flex', 'gap-12', 'items-center')}>
+        <p className={cn('text-white', 'text-body2e')}>입장 번호</p>
+        <p className={cn('text-caption1s', 'text-gray-500')}>
+          입장 번호은 선택사항입니다.
+        </p>
+      </div>
+      <Input placeholder="입장번호를 입력해주세요" />
+    </div>
+  );
+};
+
+export default EntryNumberInput;
