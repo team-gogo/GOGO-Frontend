@@ -1,7 +1,6 @@
 'use client';
 
 import { useForm, useFieldArray } from 'react-hook-form';
-import GameInputBox from '@/shared/ui/gameInputBox/Index';
 import {
   CircleQuestionIcon,
   CoinIcon,
@@ -18,6 +17,7 @@ import {
 } from '@/shared/types/createStage';
 import BackPageButton from '@/shared/ui/backPageButton/index';
 import Button from '@/shared/ui/button';
+import GameInputBox from '@/shared/ui/gameInputBox/Index';
 import Input from '@/shared/ui/input';
 import MiniGameButton from '@/shared/ui/miniGameButton';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
