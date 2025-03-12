@@ -1,6 +1,7 @@
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
-import { SportType } from '@/shared/model/sportTypes';
+
 import { CommunityCreateFormData } from '@/shared/types/community/create';
+import { SportType } from '@/shared/model/sportTypes';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
 
