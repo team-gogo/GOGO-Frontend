@@ -10,8 +10,8 @@ import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
 import Button from '../button';
+import MatchTypeLabel from '../matchTypeLabel';
 import SportTypeLabel from '../sportTypelabel';
-import Tag from '../tag';
 
 interface MatchProps {
   match: MatchData;
@@ -94,16 +94,18 @@ const Match = ({ match }: MatchProps) => {
               {isAlarmClick ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
             </button>
 
-            <Tag
-              TagType={isPlaying ? 'LIVE' : isFinish ? 'FINISH' : 'TIME'}
-              text={time}
+            <MatchTypeLabel
+              type={'TIME'}
+              customText={isPlaying ? '경기 중' : isFinish ? '경기 종료' : time}
+              color={isPlaying ? '#01C612' : isFinish ? '#898989' : '#FFF'}
             />
-            <Tag text={roundText} />
+            <MatchTypeLabel
+              type="OFFICIAL"
+              customText={roundText}
+              color="#FFF"
+            />
             <SportTypeLabel
               type={category && category.length > 0 ? category[0] : ''}
-              px="1rem"
-              py="0.75rem"
-              height="2.8125rem"
             />
           </div>
 

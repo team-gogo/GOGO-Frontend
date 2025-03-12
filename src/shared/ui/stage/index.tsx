@@ -1,7 +1,7 @@
 import { MyStageType } from '@/shared/types/my';
 import { cn } from '@/shared/utils/cn';
 import Button from '../button';
-import Tag from '../tag';
+import MatchTypeLabel from '../matchTypeLabel';
 
 interface StageProps {
   stage: MyStageType;
@@ -27,13 +27,13 @@ const Stage = ({ stage }: StageProps) => {
         >
           <div className={cn('flex', 'items-center', 'gap-[0.625rem]')}>
             {type.map((t) => (
-              <Tag key={t} TagType={t} />
+              <MatchTypeLabel key={t} type={t} color="#FFF" />
             ))}
-            {isMaintaining && <Tag TagType={'ADMIN'} />}
+            {isMaintaining && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
             {status === 'RECRUITING' ? (
-              <Tag TagType={'RECRUITING'} />
+              <MatchTypeLabel type="RECRUITING" color="#01C612" />
             ) : status === 'CONFIRMED' ? (
-              <Tag TagType={'CONFIRMED'} />
+              <MatchTypeLabel type="CONFIRMED" color="#898989" />
             ) : null}
           </div>
           {/* {isAdmin && <Tag TagType={'STREAMING'} />} */}

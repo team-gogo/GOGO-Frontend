@@ -8,9 +8,6 @@ interface SportTypeLabelProps {
   asButton?: boolean;
   isSelected?: boolean;
   onClick?: () => void;
-  py?: string;
-  px?: string;
-  height?: string;
 }
 
 const SportTypeLabel = ({
@@ -18,9 +15,6 @@ const SportTypeLabel = ({
   asButton = false,
   isSelected = false,
   onClick,
-  py,
-  px,
-  height,
 }: SportTypeLabelProps) => {
   const { icon, text } = SPORT_TYPES[type] || {
     icon: (color) => <EtcIcon color={color} />,
@@ -28,6 +22,10 @@ const SportTypeLabel = ({
   };
 
   const commonClasses = cn(
+    'px-[1rem]',
+    'py-[0.75rem]',
+    'laptop:p-[0.25rem]',
+    'laptop:px-[0.5rem]',
     'rounded-lg',
     'border-1',
     'border-solid',
@@ -37,16 +35,12 @@ const SportTypeLabel = ({
     'gap-8',
     'text-nowrap',
     'items-center',
+    'h-[2.8125rem]',
+    'laptop:h-[1.875rem]',
     {
       'bg-main-500 text-white': asButton && isSelected,
       'cursor-pointer': asButton,
-      'laptop:h-[1.875rem]': !!height,
-      'laptop:py-[0.25rem]': !!py,
-      'laptop:px-[0.5rem]': !!px,
     },
-    !py && 'py-8',
-    !px && 'px-12',
-    !height && 'h-auto',
   );
 
   const iconColor = asButton && isSelected ? 'white' : '#526FFE';
@@ -55,38 +49,25 @@ const SportTypeLabel = ({
   const content = (
     <>
       {icon && <label>{icon(iconColor)}</label>}
-      <p className={cn('text-body3s', 'leading-[1.3125rem]', textColor)}>
+      <p
+        className={cn(
+          'text-body3s',
+          'leading-[1.3125rem]',
+          'laptop:text-caption3s',
+          textColor,
+        )}
+      >
         {text}
       </p>
     </>
   );
 
   return asButton ? (
-    <button
-      type="button"
-      className={commonClasses}
-      onClick={onClick}
-      style={{
-        paddingTop: py || undefined,
-        paddingBottom: py || undefined,
-        paddingLeft: px || undefined,
-        paddingRight: px || undefined,
-      }}
-    >
+    <button type="button" className={commonClasses} onClick={onClick}>
       {content}
     </button>
   ) : (
-    <div
-      className={commonClasses}
-      style={{
-        paddingTop: py || undefined,
-        paddingBottom: py || undefined,
-        paddingLeft: px || undefined,
-        paddingRight: px || undefined,
-      }}
-    >
-      {content}
-    </div>
+    <div className={commonClasses}>{content}</div>
   );
 };
 
