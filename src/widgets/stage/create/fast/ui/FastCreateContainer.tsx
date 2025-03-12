@@ -231,7 +231,7 @@ const FastCreateContainer = () => {
       </div>
 
       <div className={cn('mt-[48px]')}>
-        <Button>확인</Button>
+        <Button>생성하기</Button>
       </div>
     </form>
   );
