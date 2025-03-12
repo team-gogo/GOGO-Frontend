@@ -5,11 +5,15 @@ import {
   CategoryType,
   CreateFastStageFormType,
 } from '@/shared/types/createStage';
-import { CircleQuestionIcon, CoinIcon } from '@/shared/assets/icons';
+import {
+  CircleQuestionIcon,
+  CoinIcon,
+  SearchIcon,
+} from '@/shared/assets/icons';
 
 import AddGameButton from '@/entities/stage/create/official/ui/AddGameButton';
 import Button from '@/shared/ui/button';
-import GameInputBox from '@/entities/stage/create/official/ui/GameInputBox';
+import GameInputBox from '@/shared/ui/gameInputBox/Index';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 import { useForm } from 'react-hook-form';
@@ -181,13 +185,15 @@ const FastCreateContainer = () => {
                 />
                 {miniGame.name}
               </button>
-              <Input
-                placeholder="최대 배팅 포인트"
-                icon={<PointIcon />}
-                {...register(`miniGame.${miniGame.value}.maxBettingPoint`, {
-                  valueAsNumber: true,
-                })}
-              />
+              <div className={cn('w-[424px]')}>
+                <Input
+                  placeholder="최대 배팅 포인트"
+                  icon={<PointIcon />}
+                  {...register(`miniGame.${miniGame.value}.maxBettingPoint`, {
+                    valueAsNumber: true,
+                  })}
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -204,6 +210,22 @@ const FastCreateContainer = () => {
           <Input
             placeholder="입장번호를 입력해주세요"
             {...register('passCode')}
+          />
+        </div>
+
+        <div className={cn('w-full', 'flex', 'flex-col', 'gap-16')}>
+          <div className={cn('flex', 'gap-12', 'items-end')}>
+            <h2 className={cn('text-body2e', 'text-white')}>
+              관리할 학생 (최대 5명)
+            </h2>
+            <p className={cn('text-caption1s', 'text-gray-500')}>
+              관리할 학생은 선택사항입니다.
+            </p>
+          </div>
+          <Input
+            placeholder="학생을 입력해주세요"
+            {...register('maintainer')}
+            icon={<SearchIcon size={24} />}
           />
         </div>
       </div>

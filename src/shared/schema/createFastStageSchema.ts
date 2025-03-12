@@ -37,6 +37,7 @@ const createFastStageSchema = z.object({
   }),
 
   passCode: z.string().optional(),
+  maintainer: z.array(z.number().int()).max(5),
 });
 
 export default createFastStageSchema;
