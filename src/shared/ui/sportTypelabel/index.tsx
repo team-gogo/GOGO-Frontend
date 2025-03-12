@@ -22,8 +22,10 @@ const SportTypeLabel = ({
   };
 
   const commonClasses = cn(
-    'py-8',
-    'px-12',
+    'px-[1rem]',
+    'py-[0.75rem]',
+    'laptop:p-[0.25rem]',
+    'laptop:px-[0.5rem]',
     'rounded-lg',
     'border-1',
     'border-solid',
@@ -33,6 +35,8 @@ const SportTypeLabel = ({
     'gap-8',
     'text-nowrap',
     'items-center',
+    'h-[2.8125rem]',
+    'laptop:h-[1.875rem]',
     {
       'bg-main-500 text-white': asButton && isSelected,
       'cursor-pointer': asButton,
@@ -45,7 +49,16 @@ const SportTypeLabel = ({
   const content = (
     <>
       {icon && <label>{icon(iconColor)}</label>}
-      <p className={cn('text-body3s', textColor)}>{text}</p>
+      <p
+        className={cn(
+          'text-body3s',
+          'leading-[1.3125rem]',
+          'laptop:text-caption3s',
+          textColor,
+        )}
+      >
+        {text}
+      </p>
     </>
   );
 

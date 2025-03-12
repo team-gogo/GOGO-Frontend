@@ -2,21 +2,24 @@
 
 import { useState } from 'react';
 import { GrayCircle, SettingIcon } from '@/shared/assets/svg';
+import { UserInfoType } from '@/shared/types/my';
 import { cn } from '@/shared/utils/cn';
 
 interface MyInfoContainerProps {
-  name: string;
-  school: string;
-  sex: string;
+  userInfo: UserInfoType;
 }
 
-const MyInfoContainer = ({ name, school, sex }: MyInfoContainerProps) => {
+const MyInfoContainer = ({ userInfo }: MyInfoContainerProps) => {
   const [isActive, setIsActive] = useState<boolean>(false);
+
+  const { name, schoolName, sex } = userInfo;
+
+  const setToKorean = sex === 'MALE' ? '남성' : '여성';
 
   const infoList = [
     { label: '이름', value: name },
-    { label: '학교', value: school },
-    { label: '성별', value: sex },
+    { label: '학교', value: schoolName },
+    { label: '성별', value: setToKorean },
   ];
 
   return (
