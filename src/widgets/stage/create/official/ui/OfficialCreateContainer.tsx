@@ -19,8 +19,8 @@ import {
 } from '@/shared/types/createStage';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
-import { cn } from '@/shared/utils/cn';
 import MiniGameButton from '@/shared/ui/miniGameButton';
+import { cn } from '@/shared/utils/cn';
 
 const miniGameList: {
   name: string;
