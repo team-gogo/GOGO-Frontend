@@ -17,11 +17,11 @@ import {
   CategoryType,
   CreateOfficialStageFormType,
 } from '@/shared/types/createStage';
+import BackPageButton from '@/shared/ui/backPageButton/index';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import MiniGameButton from '@/shared/ui/miniGameButton';
 import { cn } from '@/shared/utils/cn';
-import BackPageButton from '@/shared/ui/backPageButton';
 
 const miniGameList: {
   name: string;

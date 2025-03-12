@@ -9,12 +9,12 @@ import {
   CategoryType,
   CreateFastStageFormType,
 } from '@/shared/types/createStage';
+import BackPageButton from '@/shared/ui/backPageButton/index';
 import Button from '@/shared/ui/button';
 import GameInputBox from '@/shared/ui/gameInputBox/Index';
 import Input from '@/shared/ui/input';
 import MiniGameButton from '@/shared/ui/miniGameButton';
 import { cn } from '@/shared/utils/cn';
-import BackPageButton from '@/shared/ui/backPageButton/index';
 
 const miniGameList: {
   name: string;
