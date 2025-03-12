@@ -1,9 +1,9 @@
-import TopRankListItem from '@/entities/ranking/ui/TopRankListItem';
+import { RankingUserContainer } from '@/widgets/ranking';
 
 const page = () => {
   return (
     <div>
-      <TopRankListItem />
+      <RankingUserContainer />
     </div>
   );
 };
