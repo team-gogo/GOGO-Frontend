@@ -2,7 +2,6 @@ import {
   FaqIcon,
   HelpIcon,
   HumanIcon,
-  MiniGameIcon,
   NoticeIcon,
   StageIcon,
 } from '../assets/svg';
@@ -18,11 +17,6 @@ export const navLinks = [
     name: 'FAQ',
     href: '/faq',
     icon: FaqIcon,
-  },
-  {
-    name: '미니게임',
-    href: '/mini-game',
-    icon: MiniGameIcon,
   },
   {
     name: '스테이지',

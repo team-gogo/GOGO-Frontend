@@ -14,7 +14,7 @@ const Header = () => {
     <header
       className={cn(
         'w-full',
-        'py-[32px]',
+        'py-[2rem]',
         'tablet:py-[24px]',
         'flex',
         'border-b-1',
@@ -40,7 +40,7 @@ const Header = () => {
             <Link
               key={item.href}
               href={item.href}
-              className="group flex items-center gap-5"
+              className="group flex items-center gap-8"
               onMouseEnter={() => setHoveredItem(item.href)}
               onMouseLeave={() => setHoveredItem(null)}
             >
