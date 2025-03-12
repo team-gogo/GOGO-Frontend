@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   BlueAlarmIcon,
@@ -19,6 +20,8 @@ interface MatchProps {
 
 const Match = ({ match }: MatchProps) => {
   const [isAlarmClick, setIsAlarmClick] = useState<boolean>(false);
+
+  const { push } = useRouter();
 
   const {
     aTeam,
@@ -109,7 +112,10 @@ const Match = ({ match }: MatchProps) => {
             />
           </div>
 
-          <button className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
+          <button
+            className={cn('flex', 'items-center', 'gap-[0.5rem]')}
+            onClick={() => push(`/match?matchId=${match.matchId}`)}
+          >
             <p className={cn('text-body3s', 'text-gray-500')}>자세히 보기</p>
             <RightArrowIcon />
           </button>
@@ -245,6 +251,7 @@ const Match = ({ match }: MatchProps) => {
                 'rounded-lg',
                 'bg-main-600',
               )}
+              onClick={() => push('/live')}
             >
               <p className={cn('text-body3s', 'text-white')}>경기 보러가기</p>
               <RightArrowIcon color="white" />
