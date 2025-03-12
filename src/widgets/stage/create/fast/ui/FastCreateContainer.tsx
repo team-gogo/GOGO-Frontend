@@ -17,6 +17,7 @@ import Button from '@/shared/ui/button';
 import GameInputBox from '@/shared/ui/gameInputBox/Index';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
+import MiniGameButton from '@/shared/ui/miniGameButton';
 
 const miniGameList: {
   name: string;
@@ -149,42 +150,13 @@ const FastCreateContainer = () => {
               key={miniGame.value}
               className={cn('flex', 'flex-col', 'gap-16', 'w-full')}
             >
-              <button
-                className={cn(
-                  'w-[424px]',
-                  'h-[204px]',
-                  'bg-gray-700',
-                  'text-title4s',
-                  'rounded-lg',
-                  'flex',
-                  'flex-col',
-                  'gap-16',
-                  'items-center',
-                  'justify-center',
-                  'relative',
-                  'border-2',
-                  'border-solid',
-                  watch(`miniGame.${miniGame.value}.isActive`)
-                    ? ['border-main-500', 'text-main-500']
-                    : ['border-gray-700', 'text-gray-400'],
-                )}
-                type="button"
+              <MiniGameButton
+                name={miniGame.name}
+                isActive={watch(`miniGame.${miniGame.value}.isActive`)}
+                icon={miniGame.icon}
                 onClick={() => handleMiniGameToggleClick(miniGame.value)}
-              >
-                <div className={cn('absolute', 'top-22', 'right-10')}>
-                  <CircleQuestionIcon />
-                </div>
-                <miniGame.icon
-                  size={60}
-                  color={
-                    watch(`miniGame.${miniGame.value}.isActive`)
-                      ? '#526ffe'
-                      : '#898989'
-                  }
-                />
-                {miniGame.name}
-              </button>
-              <div className={cn('w-[424px]')}>
+              />
+              <div className={cn('w-[141px]')}>
                 <Input
                   placeholder="최대 배팅 포인트"
                   icon={<PointIcon />}
