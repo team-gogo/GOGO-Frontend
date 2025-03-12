@@ -26,6 +26,5 @@ export { default as GrayCircle } from './GrayCircle';
 export { default as LockIcon } from './LockIcon';
 export { default as GrayAlarmIcon } from './GrayAlarmIcon';
 export { default as BlueAlarmIcon } from './BlueAlarmIcon';
-export { default as ClockIcon } from './ClockIcon';
 export { default as RightArrowIcon } from './RightArrowIcon';
 export { default as SelectHeartIcon } from './SelectHeartIcon';
