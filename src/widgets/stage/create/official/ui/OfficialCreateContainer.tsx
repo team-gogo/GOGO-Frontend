@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import GameInputBox from '@/entities/stage/create/official/ui/\bGameInputBox';
 import AddGameButton from '@/entities/stage/create/official/ui/AddGameButton';
+import GameInputBox from '@/entities/stage/create/official/ui/GameInputBox';
 import {
   CircleQuestionIcon,
   CoinIcon,
