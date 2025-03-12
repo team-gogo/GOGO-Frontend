@@ -1,10 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Logo } from '@/shared/assets/svg';
 import { useNavigation } from '@/shared/model/useNavigation';
 import { cn } from '@/shared/utils/cn';
+
+const imageSrc = '/GOGOLogo.png' as const;
 
 const Header = () => {
   const { navItems, getColor } = useNavigation();
@@ -26,14 +28,9 @@ const Header = () => {
     >
       <div className={cn('flex', 'justify-between', 'w-full', 'w-[1320px]')}>
         <Link href="/">
-          <Logo
-            className={cn(
-              'tablet:h-[34px]',
-              'tablet:w-[100px]',
-              'h-[48px]',
-              'w-[140px]',
-            )}
-          />
+          <div className="relative h-[52px] w-[152px] tablet:h-[40px] tablet:w-[120px]">
+            <Image src={imageSrc} alt="GOGO Logo" fill />
+          </div>
         </Link>
         <nav className={cn('flex', 'gap-28', 'tablet:gap-16')}>
           {navItems.map((item) => (
