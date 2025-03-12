@@ -12,7 +12,17 @@ import { CategoryType, SystemType } from '@/shared/types/createStage';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 
-interface GameInputBoxProps<T extends Record<string, any>> {
+interface BaseFormFields {
+  game: Array<{
+    category: CategoryType;
+    name: string;
+    system: SystemType;
+    teamMinCapacity: number;
+    teamMaxCapacity: number;
+  }>;
+}
+
+interface GameInputBoxProps<T extends BaseFormFields> {
   register: UseFormRegister<T>;
   watch: UseFormWatch<T>;
   setValue: UseFormSetValue<T>;
@@ -26,7 +36,7 @@ const systemList: { name: string; value: SystemType }[] = [
   { name: '단판', value: 'SINGLE' },
 ];
 
-const GameInputBox = <T extends Record<string, any>>({
+const GameInputBox = <T extends BaseFormFields>({
   register,
   watch,
   setValue,
