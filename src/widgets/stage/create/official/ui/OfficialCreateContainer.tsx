@@ -12,6 +12,7 @@ import {
   TicketIcon,
 } from '@/shared/assets/icons';
 import { PointIcon } from '@/shared/assets/svg';
+import { SPORT_TYPES } from '@/shared/model/sportTypes';
 import {
   CategoryType,
   CreateOfficialStageFormType,
@@ -20,9 +21,8 @@ import BackPageButton from '@/shared/ui/backPageButton/index';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import MiniGameButton from '@/shared/ui/miniGameButton';
-import { cn } from '@/shared/utils/cn';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
-import { SPORT_TYPES } from '@/shared/model/sportTypes';
+import { cn } from '@/shared/utils/cn';
 
 const miniGameList: {
   name: string;

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CoinIcon, SearchIcon } from '@/shared/assets/icons';
 import { PointIcon } from '@/shared/assets/svg';
+import { SPORT_TYPES } from '@/shared/model/sportTypes';
 import {
   CategoryType,
   CreateFastStageFormType,
@@ -13,9 +14,8 @@ import Button from '@/shared/ui/button';
 import GameInputBox from '@/shared/ui/gameInputBox/Index';
 import Input from '@/shared/ui/input';
 import MiniGameButton from '@/shared/ui/miniGameButton';
-import { cn } from '@/shared/utils/cn';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
-import { SPORT_TYPES } from '@/shared/model/sportTypes';
+import { cn } from '@/shared/utils/cn';
 
 const miniGameList: {
   name: string;
