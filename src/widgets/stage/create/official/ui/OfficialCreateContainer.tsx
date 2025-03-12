@@ -12,7 +12,7 @@ import {
   ShellGameIcon,
   TicketIcon,
 } from '@/shared/assets/icons';
-import { BackIcon, PointIcon } from '@/shared/assets/svg';
+import { PointIcon } from '@/shared/assets/svg';
 import {
   CategoryType,
   CreateOfficialStageFormType,
@@ -21,6 +21,7 @@ import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import MiniGameButton from '@/shared/ui/miniGameButton';
 import { cn } from '@/shared/utils/cn';
+import BackPageButton from '@/shared/ui/backPageButton';
 
 const miniGameList: {
   name: string;
@@ -96,17 +97,12 @@ const OfficialCreateContainer = () => {
     <form
       className={cn('w-[1322px]', 'flex', 'flex-col', 'h-fit', 'my-[80px]')}
     >
-      <h1
-        className={cn(
-          'flex',
-          'items-center',
-          'gap-24',
-          'text-title4s',
-          'text-white',
-        )}
-      >
-        <BackIcon /> 스테이지 생성 (학교 공식 행사)
-      </h1>
+      <div className={cn('flex', 'items-center', 'gap-24')}>
+        <BackPageButton label="" />
+        <h1 className={cn('text-title4s', 'text-white')}>
+          스테이지 생성 (학교 공식 행사)
+        </h1>
+      </div>
 
       <div className={cn('w-full', 'flex', 'flex-col', 'gap-16', 'mt-[52px]')}>
         <h2 className={cn('text-body2e', 'text-white')}>스테이지</h2>

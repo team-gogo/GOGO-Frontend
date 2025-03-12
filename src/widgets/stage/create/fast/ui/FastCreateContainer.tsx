@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AddGameButton from '@/entities/stage/create/official/ui/AddGameButton';
 import { CoinIcon, SearchIcon } from '@/shared/assets/icons';
-import { BackIcon, PointIcon } from '@/shared/assets/svg';
+import { PointIcon } from '@/shared/assets/svg';
 import {
   CategoryType,
   CreateFastStageFormType,
@@ -14,6 +14,7 @@ import GameInputBox from '@/shared/ui/gameInputBox/Index';
 import Input from '@/shared/ui/input';
 import MiniGameButton from '@/shared/ui/miniGameButton';
 import { cn } from '@/shared/utils/cn';
+import BackPageButton from '@/shared/ui/backPageButton/index';
 
 const miniGameList: {
   name: string;
@@ -60,17 +61,12 @@ const FastCreateContainer = () => {
     <form
       className={cn('w-[1322px]', 'flex', 'flex-col', 'h-fit', 'my-[80px]')}
     >
-      <h1
-        className={cn(
-          'flex',
-          'items-center',
-          'gap-24',
-          'text-title4s',
-          'text-white',
-        )}
-      >
-        <BackIcon /> 스테이지 생성 (빠른 경기)
-      </h1>
+      <div className={cn('flex', 'items-center', 'gap-24')}>
+        <BackPageButton label="" />
+        <h1 className={cn('text-title4s', 'text-white')}>
+          스테이지 생성 (빠른 경기)
+        </h1>
+      </div>
 
       <div className={cn('w-full', 'flex', 'flex-col', 'gap-16', 'mt-[52px]')}>
         <h2 className={cn('text-body2e', 'text-white')}>스테이지</h2>
