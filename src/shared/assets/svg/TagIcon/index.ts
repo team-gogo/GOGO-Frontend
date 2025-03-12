@@ -1,5 +1,6 @@
 export { default as AdminIcon } from './AdminIcon';
-export { default as TeamConfirmIcon } from './TeamConfirmIcon';
+export { default as ConfirmedIcon } from './ConfirmedIcon';
 export { default as RecruitIcon } from './RecruitIcon';
 export { default as OfficialIcon } from './OfficialIcon';
-export { default as LiveSettingIcon } from './LiveSettingIcon';
+export { default as StreamingIcon } from './StreamingIcon';
+export { default as ClockIcon } from './ClockIcon';

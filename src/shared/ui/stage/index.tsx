@@ -1,22 +1,15 @@
+import { MyStageType } from '@/shared/types/my';
 import { cn } from '@/shared/utils/cn';
 import Button from '../button';
-import Tag from '../tag';
+import MatchTypeLabel from '../matchTypeLabel';
 
 interface StageProps {
-  isAdmin: boolean;
-  isRecruiting: boolean;
-  stageName: string;
-  isLocked: boolean;
-  isParticipating: boolean;
+  stage: MyStageType;
 }
 
-const Stage = ({
-  isAdmin,
-  isRecruiting,
-  stageName,
-  isLocked,
-  isParticipating,
-}: StageProps) => {
+const Stage = ({ stage }: StageProps) => {
+  const { stageName, type, status, isMaintaining } = stage;
+
   return (
     <div
       className={cn(
@@ -33,13 +26,15 @@ const Stage = ({
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
           <div className={cn('flex', 'items-center', 'gap-[0.625rem]')}>
-            <Tag TagType={'OFFICIAL'} />
-            {isAdmin && <Tag TagType={'ADMIN'} />}
-            {isRecruiting ? (
-              <Tag TagType={'RECRUITING'} />
-            ) : (
-              <Tag TagType={'CONFIRMED'} />
-            )}
+            {type.map((t) => (
+              <MatchTypeLabel key={t} type={t} color="#FFF" />
+            ))}
+            {isMaintaining && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
+            {status === 'RECRUITING' ? (
+              <MatchTypeLabel type="RECRUITING" color="#01C612" />
+            ) : status === 'CONFIRMED' ? (
+              <MatchTypeLabel type="CONFIRMED" color="#898989" />
+            ) : null}
           </div>
           {/* {isAdmin && <Tag TagType={'STREAMING'} />} */}
         </div>
@@ -55,8 +50,8 @@ const Stage = ({
           <h1 className={cn('text-h2e', 'text-white', 'laptop:text-body2e')}>
             {stageName}
           </h1>
-          <Button isLocked={isParticipating ? false : isLocked}>
-            {isParticipating ? '상세보기' : '참여하기'}
+          <Button isLocked={isMaintaining ? false : true}>
+            {isMaintaining ? '상세보기' : '참여하기'}
           </Button>
         </div>
       </div>

@@ -1,12 +1,12 @@
-import { MyStageResponse } from '@/shared/types/my';
-import Stage from '@/shared/ui/stage';
+import { MyBetResponse } from '@/shared/types/my/bet';
+import Match from '@/shared/ui/match';
 import { cn } from '@/shared/utils/cn';
 
-interface StageContainerProps {
-  userStageInfo: MyStageResponse;
+interface MatchContainerProps {
+  userBetInfo: MyBetResponse;
 }
 
-const StageContainer = ({ userStageInfo }: StageContainerProps) => {
+const MatchContainer = ({ userBetInfo }: MatchContainerProps) => {
   return (
     <div className={cn('w-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
       <h2 className={cn('text-body1e', 'text-white')}>내가 참여한 스테이지</h2>
@@ -19,12 +19,12 @@ const StageContainer = ({ userStageInfo }: StageContainerProps) => {
           'tablet:grid-cols-1',
         )}
       >
-        {userStageInfo.stages.map((stage) => (
-          <Stage key={stage.stageId} stage={stage} />
+        {userBetInfo.matches.map((match) => (
+          <Match key={match.matchId} match={match} />
         ))}
       </div>
     </div>
   );
 };
 
-export default StageContainer;
+export default MatchContainer;
