@@ -1,10 +1,9 @@
 'use client';
 
-import { BackIcon, PointIcon } from '@/shared/assets/svg';
-import {
-  CategoryType,
-  CreateOfficialStageFormType,
-} from '@/shared/types/createStage';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import AddGameButton from '@/entities/stage/create/official/ui/AddGameButton';
+import GameInputBox from '@/entities/stage/create/official/ui/GameInputBox';
 import {
   CircleQuestionIcon,
   CoinIcon,
@@ -13,14 +12,14 @@ import {
   ShellGameIcon,
   TicketIcon,
 } from '@/shared/assets/icons';
-
-import AddGameButton from '@/entities/stage/create/official/ui/AddGameButton';
+import { BackIcon, PointIcon } from '@/shared/assets/svg';
+import {
+  CategoryType,
+  CreateOfficialStageFormType,
+} from '@/shared/types/createStage';
 import Button from '@/shared/ui/button';
-import GameInputBox from '@/entities/stage/create/official/ui/GameInputBox';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
-import { useForm } from 'react-hook-form';
-import { useState } from 'react';
 
 const miniGameList: {
   name: string;

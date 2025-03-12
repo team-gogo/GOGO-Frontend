@@ -1,15 +1,15 @@
-import { CategoryType, SystemType } from '@/shared/types/createStage';
-import { DeleteIcon, SelectIcon } from '@/shared/assets/icons';
+import { useEffect, useState } from 'react';
 import {
+  FieldValues,
   Path,
   PathValue,
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
-import { useEffect, useState } from 'react';
-
+import { DeleteIcon, SelectIcon } from '@/shared/assets/icons';
 import { HumanIcon } from '@/shared/assets/svg';
+import { CategoryType, SystemType } from '@/shared/types/createStage';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 

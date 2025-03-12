@@ -1,5 +1,5 @@
-import FastCreateContainer from '@/widgets/stage/create/fast/ui/FastCreateContainer';
 import { cn } from '@/shared/utils/cn';
+import FastCreateContainer from '@/widgets/stage/create/fast/ui/FastCreateContainer';
 
 const FastCreatePage = () => {
   return (
