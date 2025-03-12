@@ -24,10 +24,6 @@ const TopRankListItem = ({ rank, maxPoint }: TopRankListItemProps) => {
     }
   };
 
-  const getRankText = (rank: number) => {
-    return `${rank}등`;
-  };
-
   return (
     <div className={cn('flex', 'flex-col', 'items-center', 'space-y-4')}>
       <div className={cn('flex', 'items-center', 'justify-center', 'gap-4')}>
@@ -40,7 +36,7 @@ const TopRankListItem = ({ rank, maxPoint }: TopRankListItemProps) => {
       <RankBar
         height={heightPercentage}
         color={getRankColor(rank.rank)}
-        rankText={getRankText(rank.rank)}
+        rankText={rank.rank}
       />
     </div>
   );

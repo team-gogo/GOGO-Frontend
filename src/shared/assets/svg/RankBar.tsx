@@ -1,28 +1,31 @@
+import React from 'react';
+
 interface RankBarProps {
   height: number;
   color: string;
-  rankText: string;
+  rankText: number;
 }
 
 const RankBar: React.FC<RankBarProps> = ({ height, color, rankText }) => {
-  const maxHeight = 175;
+  const maxHeight = 178;
   const adjustedHeight = (height / 100) * maxHeight;
 
   return (
     <svg
-      width="123"
+      className="w-[120px] mobile:w-[80px]"
       height={adjustedHeight}
-      viewBox={`0 0 123 ${adjustedHeight}`}
+      viewBox={`0 0 120 ${adjustedHeight}`}
+      preserveAspectRatio="none"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d={`M0 12C0 5.37259 5.37258 0 12 0H111C117.627 0 123 5.37258 123 12V${adjustedHeight}H0V12Z`}
+        d={`M0 12C0 5.37258 5.37258 0 12 0H108C114.627 0 120 5.37258 120 12V${adjustedHeight}H0V12Z`}
         fill={color}
       />
       <text
-        x="61.5"
-        y={adjustedHeight / 2}
+        x="50%"
+        y="50%"
         dominantBaseline="middle"
         textAnchor="middle"
         fill="white"
