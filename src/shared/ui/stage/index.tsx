@@ -1,3 +1,5 @@
+'use client';
+
 import { Dispatch, SetStateAction } from 'react';
 import { MyStageType } from '@/shared/types/my';
 import { StagesType } from '@/shared/types/stage';
