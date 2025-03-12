@@ -1,6 +1,12 @@
+import React from 'react';
+import { RankItem } from '@/shared/types/ranking';
 import { cn } from '@/shared/utils/cn';
 
-const RankingUserItem = () => {
+interface RankingUserItemProps {
+  rank: RankItem;
+}
+
+const RankingUserItem = ({ rank }: RankingUserItemProps) => {
   return (
     <div
       className={cn(
@@ -15,10 +21,10 @@ const RankingUserItem = () => {
       )}
     >
       <div className={cn('flex', 'items-center', 'gap-[2.5rem]')}>
-        <p className={cn('text-white', 'text-body1e')}>4등</p>
-        <p className={cn('text-gray-300', 'text-body2s')}>김진원</p>
+        <p className={cn('text-white', 'text-body1e')}>{rank.rank}등</p>
+        <p className={cn('text-gray-300', 'text-body2s')}>{rank.name}</p>
       </div>
-      <p className={cn('text-body1s', 'text-main-400')}>900P</p>
+      <p className={cn('text-body1s', 'text-main-400')}>{rank.point || 0}P</p>
     </div>
   );
 };

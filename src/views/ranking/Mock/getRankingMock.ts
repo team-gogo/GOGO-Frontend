@@ -10,6 +10,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 1,
         studentId: 20250001,
+        point: 1000,
         name: '김철수',
         classNumber: 1,
         studentNumber: 1,
@@ -17,6 +18,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 2,
         studentId: 20250015,
+        point: 900,
         name: '이영희',
         classNumber: 1,
         studentNumber: 15,
@@ -24,6 +26,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 3,
         studentId: 20250008,
+        point: 800,
         name: '박지성',
         classNumber: 2,
         studentNumber: 8,
@@ -31,6 +34,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 4,
         studentId: 20250022,
+        point: 850,
         name: '최유리',
         classNumber: 3,
         studentNumber: 22,
@@ -38,6 +42,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 5,
         studentId: 20250037,
+        point: 800,
         name: '정민수',
         classNumber: 2,
         studentNumber: 37,
@@ -45,6 +50,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 6,
         studentId: 20250044,
+        point: 750,
         name: '송혜교',
         classNumber: 1,
         studentNumber: 44,
@@ -52,6 +58,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 7,
         studentId: 20250029,
+        point: 700,
         name: '강동원',
         classNumber: 3,
         studentNumber: 29,
@@ -59,6 +66,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 8,
         studentId: 20250013,
+        point: 650,
         name: '윤아인',
         classNumber: 2,
         studentNumber: 13,
@@ -66,6 +74,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 9,
         studentId: 20250006,
+        point: 600,
         name: '홍길동',
         classNumber: 1,
         studentNumber: 6,
@@ -73,6 +82,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 10,
         studentId: 20250031,
+        point: 550,
         name: '서지혜',
         classNumber: 3,
         studentNumber: 31,
@@ -80,6 +90,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 11,
         studentId: 20250019,
+        point: 500,
         name: '장우진',
         classNumber: 2,
         studentNumber: 19,
@@ -87,6 +98,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 12,
         studentId: 20250042,
+        point: 450,
         name: '한소희',
         classNumber: 1,
         studentNumber: 42,
@@ -94,6 +106,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 13,
         studentId: 20250003,
+        point: 400,
         name: '오세훈',
         classNumber: 3,
         studentNumber: 3,
@@ -101,6 +114,7 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 14,
         studentId: 20250025,
+        point: 350,
         name: '임수정',
         classNumber: 2,
         studentNumber: 25,
@@ -108,44 +122,10 @@ export const getRankingMock = (): RankingData => {
       {
         rank: 15,
         studentId: 20250011,
+        point: 300,
         name: '권상우',
         classNumber: 1,
         studentNumber: 11,
-      },
-      {
-        rank: 16,
-        studentId: 20250039,
-        name: '신민아',
-        classNumber: 3,
-        studentNumber: 39,
-      },
-      {
-        rank: 17,
-        studentId: 20250007,
-        name: '류준열',
-        classNumber: 2,
-        studentNumber: 7,
-      },
-      {
-        rank: 18,
-        studentId: 20250033,
-        name: '문채원',
-        classNumber: 1,
-        studentNumber: 33,
-      },
-      {
-        rank: 19,
-        studentId: 20250020,
-        name: '조인성',
-        classNumber: 3,
-        studentNumber: 20,
-      },
-      {
-        rank: 20,
-        studentId: 20250046,
-        name: '백예린',
-        classNumber: 2,
-        studentNumber: 46,
       },
     ],
   };

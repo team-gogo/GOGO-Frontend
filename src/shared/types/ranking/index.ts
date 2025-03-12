@@ -1,11 +1,12 @@
-interface RankingInfo {
+export interface RankingInfo {
   totalPage: number;
   totalElement: number;
 }
 
-interface RankItem {
+export interface RankItem {
   rank: number;
   studentId: number;
+  point: number;
   name: string;
   classNumber: number;
   studentNumber: number;

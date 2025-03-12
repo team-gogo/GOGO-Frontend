@@ -1,21 +1,39 @@
-const RankBar = () => {
+interface RankBarProps {
+  height: number;
+  color: string;
+  rankText: string;
+}
+
+const RankBar = ({ height, color, rankText }: RankBarProps) => {
+  const maxHeight = 175;
+  const adjustedHeight = (height / 100) * maxHeight;
+
   return (
-    <svg
-      width="123"
-      height="175"
-      viewBox="0 0 123 175"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M0 12C0 5.37259 5.37258 0 12 0H111C117.627 0 123 5.37258 123 12V175H0V12Z"
-        fill="#2F52FE"
-      />
-      <path
-        d="M51.6554 76.236V99.66L47.5274 99.596V80.556L43.0794 82.668L41.5754 79.084L47.5594 76.236H51.6554ZM55.6639 86.572H81.7119V90.028H55.6639V86.572ZM58.7999 74.188H78.6079V77.58H63.0239V81.26H78.7679V84.62H58.7999V74.188ZM68.5919 91.66C74.7999 91.66 78.5759 93.548 78.5759 96.94C78.5759 100.332 74.7999 102.252 68.5919 102.252C62.3519 102.252 58.5759 100.332 58.5759 96.94C58.5759 93.548 62.3519 91.66 68.5919 91.66ZM68.5919 94.86C64.7839 94.86 62.8639 95.532 62.8639 96.94C62.8639 98.38 64.7839 99.02 68.5919 99.02C72.3999 99.02 74.2879 98.38 74.2879 96.94C74.2879 95.532 72.3999 94.86 68.5919 94.86Z"
-        fill="white"
-      />
-    </svg>
+    <div className="aspect-[123/175] w-full max-w-[123px]">
+      <svg
+        className="h-full w-full"
+        viewBox={`0 0 123 ${adjustedHeight}`}
+        preserveAspectRatio="none"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d={`M0 12C0 5.37259 5.37258 0 12 0H111C117.627 0 123 5.37258 123 12V${adjustedHeight}H0V12Z`}
+          fill={color}
+        />
+        <text
+          x="61.5"
+          y={adjustedHeight / 2}
+          dominantBaseline="middle"
+          textAnchor="middle"
+          fill="white"
+          fontSize="24"
+          fontWeight="bold"
+        >
+          {rankText}
+        </text>
+      </svg>
+    </div>
   );
 };
 

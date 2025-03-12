@@ -1,9 +1,19 @@
-import { TopRankListContainer } from '@/widgets/ranking';
+import { cn } from '@/shared/utils/cn';
+import { RankingPage } from '@/views/ranking';
 
 const page = () => {
   return (
-    <div>
-      <TopRankListContainer />
+    <div
+      className={cn(
+        'flex',
+        'w-full',
+        'items-center',
+        'justify-center',
+        'px-16',
+        'py-[2.5rem]',
+      )}
+    >
+      <RankingPage />
     </div>
   );
 };

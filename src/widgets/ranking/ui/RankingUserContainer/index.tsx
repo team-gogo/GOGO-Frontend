@@ -1,7 +1,15 @@
+import React from 'react';
 import { RankingUserItem } from '@/entities/ranking';
+import { RankItem } from '@/shared/types/ranking';
 import { cn } from '@/shared/utils/cn';
 
-const RankingUserContainer = () => {
+interface RankingUserContainerProps {
+  remainingRanks: RankItem[];
+}
+
+const RankingUserContainer = ({
+  remainingRanks,
+}: RankingUserContainerProps) => {
   return (
     <div
       className={cn(
@@ -17,11 +25,9 @@ const RankingUserContainer = () => {
         'px-20',
       )}
     >
-      <RankingUserItem />
-      <RankingUserItem />
-      <RankingUserItem />
-      <RankingUserItem />
-      <RankingUserItem />
+      {remainingRanks.map((rank) => (
+        <RankingUserItem key={rank.studentId} rank={rank} />
+      ))}
     </div>
   );
 };
