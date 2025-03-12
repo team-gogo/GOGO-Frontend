@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import AddGameButton from '@/entities/stage/create/official/ui/AddGameButton';
 import { CoinIcon, SearchIcon } from '@/shared/assets/icons';
 import { PointIcon } from '@/shared/assets/svg';
 import {
@@ -15,6 +14,8 @@ import GameInputBox from '@/shared/ui/gameInputBox/Index';
 import Input from '@/shared/ui/input';
 import MiniGameButton from '@/shared/ui/miniGameButton';
 import { cn } from '@/shared/utils/cn';
+import SportTypeLabel from '@/shared/ui/sportTypelabel';
+import { SPORT_TYPES } from '@/shared/model/sportTypes';
 
 const miniGameList: {
   name: string;
@@ -55,6 +56,13 @@ const FastCreateContainer = () => {
   const handleMiniGameToggleClick = (id: 'coinToss') => {
     const fieldName = `miniGame.${id}.isActive` as const;
     setValue(fieldName, !watch(fieldName));
+  };
+
+  const handleSportTypeClick = (type: string) => {
+    setGameList((prev) => [
+      ...prev,
+      `${type}-${prev.length}` as `${CategoryType}-${number}`,
+    ]);
   };
 
   return (
@@ -103,8 +111,19 @@ const FastCreateContainer = () => {
 
       <div className={cn('w-full', 'flex', 'flex-col', 'mt-[48px]')}>
         <h2 className={cn('text-body2e', 'text-white')}>경기</h2>
-        <AddGameButton gameList={gameList} setGameList={setGameList} />
-        <div className={cn('w-full', 'flex', 'flex-col', 'gap-20')}>
+        <div className={cn('w-full', 'flex', 'flex-wrap', 'gap-16', 'mt-16')}>
+          {Object.entries(SPORT_TYPES)
+            .filter(([type]) => !['LATEST', 'LAST'].includes(type))
+            .map(([type]) => (
+              <SportTypeLabel
+                key={type}
+                type={type}
+                asButton
+                onClick={() => handleSportTypeClick(type)}
+              />
+            ))}
+        </div>
+        <div className={cn('w-full', 'flex', 'flex-col', 'gap-20', 'mt-20')}>
           {gameList.map((game) => (
             <GameInputBox
               key={game}
