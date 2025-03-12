@@ -120,7 +120,6 @@ const OfficialCreateContainer = () => {
             <Input
               placeholder="이름을 입력해주세요."
               maxLength={20}
-              showCount
               {...register('stageName')}
             />
             <p
