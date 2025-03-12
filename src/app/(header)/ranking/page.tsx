@@ -1,9 +1,9 @@
-import { RankingUserContainer } from '@/widgets/ranking';
+import { TopRankListContainer } from '@/widgets/ranking';
 
 const page = () => {
   return (
     <div>
-      <RankingUserContainer />
+      <TopRankListContainer />
     </div>
   );
 };
