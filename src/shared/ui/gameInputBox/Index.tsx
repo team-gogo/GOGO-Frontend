@@ -17,8 +17,8 @@ interface BaseFormFields {
     category: CategoryType;
     name: string;
     system: SystemType;
-    teamMinCapacity: number;
-    teamMaxCapacity: number;
+    teamMinCapacity?: number;
+    teamMaxCapacity?: number;
   }>;
 }
 

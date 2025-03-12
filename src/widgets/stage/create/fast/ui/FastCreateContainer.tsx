@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { CoinIcon, SearchIcon } from '@/shared/assets/icons';
 import { PointIcon } from '@/shared/assets/svg';
 import { SPORT_TYPES } from '@/shared/model/sportTypes';
@@ -24,33 +23,23 @@ const miniGameList: {
 }[] = [{ name: '코인토스', value: 'coinToss', icon: CoinIcon }];
 
 const FastCreateContainer = () => {
-  const { register, watch, setValue, unregister } =
+  const { register, watch, setValue, control } =
     useForm<CreateFastStageFormType>({
       defaultValues: {
+        game: [],
         miniGame: {
           coinToss: { isActive: false },
         },
       },
     });
-  const [gameList, setGameList] = useState<`${CategoryType}-${number}`[]>([]);
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'game',
+  });
 
   const handleDeleteButtonClick = (idx: number) => {
-    const filteredGameList = gameList.filter((_, i) => i !== idx);
-    const newlyNumberedGameList = filteredGameList.map(
-      (game, idx) =>
-        `${game.split('-')[0]}-${idx}` as `${CategoryType}-${number}`,
-    );
-    setGameList(newlyNumberedGameList);
-    unregister(`game.${idx}.category`, undefined);
-    unregister(`game.${idx}.name`, undefined);
-    unregister(`game.${idx}.system`, undefined);
-    unregister(`game.${idx}.teamMinCapacity`, undefined);
-    unregister(`game.${idx}.teamMaxCapacity`, undefined);
-
-    setValue(
-      'game',
-      watch('game') && watch('game').filter((_, i) => i !== idx),
-    );
+    remove(idx);
   };
 
   const handleMiniGameToggleClick = (id: 'coinToss') => {
@@ -58,11 +47,12 @@ const FastCreateContainer = () => {
     setValue(fieldName, !watch(fieldName));
   };
 
-  const handleSportTypeClick = (type: string) => {
-    setGameList((prev) => [
-      ...prev,
-      `${type}-${prev.length}` as `${CategoryType}-${number}`,
-    ]);
+  const handleSportTypeClick = (type: CategoryType) => {
+    append({
+      category: type,
+      name: '',
+      system: 'SINGLE',
+    });
   };
 
   return (
@@ -108,19 +98,19 @@ const FastCreateContainer = () => {
                 key={type}
                 type={type}
                 asButton
-                onClick={() => handleSportTypeClick(type)}
+                onClick={() => handleSportTypeClick(type as CategoryType)}
               />
             ))}
         </div>
         <div className={cn('w-full', 'flex', 'flex-col', 'gap-20', 'mt-20')}>
-          {gameList.map((game) => (
+          {fields.map((field, index) => (
             <GameInputBox
-              key={game}
+              key={field.id}
               register={register}
               watch={watch}
               setValue={setValue}
-              handleDeleteButtonClick={handleDeleteButtonClick}
-              id={game}
+              handleDeleteButtonClick={() => handleDeleteButtonClick(index)}
+              id={`${field.category}-${index}`}
             />
           ))}
         </div>
