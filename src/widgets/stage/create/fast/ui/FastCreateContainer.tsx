@@ -85,19 +85,9 @@ const FastCreateContainer = () => {
             <Input
               placeholder="이름을 입력해주세요."
               maxLength={20}
+              showCount
               {...register('stageName')}
             />
-            <p
-              className={cn(
-                'text-body3s',
-                watch('stageName') && watch('stageName').length > 0
-                  ? 'text-main-600'
-                  : 'text-gray-500',
-              )}
-            >
-              {(watch('stageName') && watch('stageName').length) || 0}
-              /20
-            </p>
           </div>
           <div className={cn('w-full', 'flex', 'gap-24')}>
             <Input
