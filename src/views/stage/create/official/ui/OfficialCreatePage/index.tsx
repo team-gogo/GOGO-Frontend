@@ -24,6 +24,11 @@ const OfficialCreatePage = () => {
           coinToss: { isActive: false },
           plinko: { isActive: false },
         },
+        shop: {
+          yavarwee: { isActive: false },
+          coinToss: { isActive: false },
+          plinko: { isActive: false },
+        },
       },
     });
 
@@ -49,7 +54,7 @@ const OfficialCreatePage = () => {
         watch={watch}
         setValue={setValue}
       />
-      <StoreContainer register={register} />
+      <StoreContainer register={register} watch={watch} setValue={setValue} />
       <div className={cn('flex', 'w-full', 'gap-24', 'tablet:flex-wrap')}>
         <div className="w-full">
           <EntryNumberInput register={register} />
