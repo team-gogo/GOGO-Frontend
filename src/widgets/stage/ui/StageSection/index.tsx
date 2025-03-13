@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import PasswordModal from '@/entities/stage/ui/PasswordModal';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
+import useStageNavigation from '@/shared/model/useStageNavigation';
 import { StagesType } from '@/shared/types/stage';
 import StageContainer from '@/shared/ui/stageContainer';
 import { cn } from '@/shared/utils/cn';
@@ -15,18 +16,12 @@ const StageSection = ({
   stages: StagesType[];
 }) => {
   const visibleCount = 2;
-  const [startIndex, setStartIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const handlePrev = () => {
-    setStartIndex((prev) => (prev > 0 ? prev - 1 : prev));
-  };
-
-  const handleNext = () => {
-    setStartIndex((prev) =>
-      prev + 1 <= stages.length - visibleCount ? prev + 1 : prev,
-    );
-  };
+  const { startIndex, handlePrev, handleNext } = useStageNavigation(
+    stages.length,
+    visibleCount,
+  );
 
   return (
     <div className={cn('flex flex-col gap-[2.5rem]')}>
