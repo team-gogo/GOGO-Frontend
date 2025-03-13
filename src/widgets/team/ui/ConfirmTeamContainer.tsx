@@ -12,9 +12,13 @@ const ConfirmTeamContainer = () => {
   const [selectedTeamIds, setSelectedTeamIds] = useState<number[]>([]);
   const teams = getTeamItemMock();
 
-  const handleViewDetails = useCallback((teamId: number) => {}, []);
+  const handleViewDetails = useCallback((teamId: number) => {
+    // TODO: 팀 자세히보기 클릭했을 때
+  }, []);
 
-  const handleConfirmTeam = useCallback(() => {}, []);
+  const handleConfirmTeam = useCallback(() => {
+    // TODO: 팀 확정하기 클릭했을 때
+  }, []);
 
   const handleToggleSelect = useCallback((teamId: number) => {
     setSelectedTeamIds((prev) => {
