@@ -6,11 +6,11 @@ import {
   PointContainer,
   TotalPointContainer,
 } from '@/widgets/my/bet';
+import getMatchResponse from '../Mock/getMatchResponse';
 import getTempPoint from '../Mock/getTempPoint';
-import getUserBetInfo from '../Mock/getUserBetInfo';
 
 const MyBetPage = () => {
-  const userBetInfo = getUserBetInfo();
+  const userBetInfo = getMatchResponse();
   const tempPoint = getTempPoint();
 
   return (

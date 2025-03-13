@@ -1,6 +1,6 @@
-import { MyBetResponse } from '@/shared/types/my/bet';
+import { MatchResponse } from '@/shared/types/my/bet';
 
-const getMyBetResponse = (): MyBetResponse => {
+const getMatchResponse = (): MatchResponse => {
   return {
     count: 2,
     matches: [
@@ -55,7 +55,7 @@ const getMyBetResponse = (): MyBetResponse => {
           winCount: 9,
         },
         startDate: '2025-03-11T15:00:00',
-        endDate: '2025-03-12T17:00:00',
+        endDate: '2025-03-15T17:00:00',
         isEnd: false,
         round: ['ROUND_OF_16'],
         category: ['BASKET_BALL'],
@@ -181,4 +181,4 @@ const getMyBetResponse = (): MyBetResponse => {
   };
 };
 
-export default getMyBetResponse;
+export default getMatchResponse;
