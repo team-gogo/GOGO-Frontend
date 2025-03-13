@@ -29,7 +29,7 @@ const TeamItem = ({
       )}
     >
       <div className="text-body2s text-gray-200">{teamName}</div>
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-30">
         <button
           onClick={onViewDetails}
           className={cn(
