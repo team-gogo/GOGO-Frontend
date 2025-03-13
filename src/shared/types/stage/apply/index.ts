@@ -7,11 +7,15 @@ type MatchCategory =
   | 'LOL'
   | 'ETC';
 
+type SystemCategory = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';
+
 export interface MatchGameType {
   gameId: number;
   gameName: string;
   teamCount: number;
   category: MatchCategory[];
+  system: SystemCategory[];
+  isParticipating: boolean;
 }
 
 export interface MatchGamesResponse {
