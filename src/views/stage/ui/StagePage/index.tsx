@@ -1,66 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import PasswordModal from '@/entities/stage/ui/PasswordModal';
-import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
-import { StagesType } from '@/shared/types/stage';
 import CreateButton from '@/shared/ui/createButton';
-import StageContainer from '@/shared/ui/stageContainer';
 import { cn } from '@/shared/utils/cn';
+import StageSection from '@/widgets/stage/ui/StageSection';
 import getStageInfo from '../Mock/getStageInfo';
-
-const StageSection = ({
-  title,
-  stages,
-}: {
-  title?: string;
-  stages: StagesType[];
-}) => {
-  const visibleCount = 2;
-  const [startIndex, setStartIndex] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  const handlePrev = () => {
-    setStartIndex((prev) => (prev > 0 ? prev - 1 : prev));
-  };
-
-  const handleNext = () => {
-    setStartIndex((prev) =>
-      prev + 1 <= stages.length - visibleCount ? prev + 1 : prev,
-    );
-  };
-
-  return (
-    <div className={cn('flex flex-col gap-[2.5rem]')}>
-      {title && <h2 className={cn('text-body1e text-white')}>{title}</h2>}
-      <div className={cn('relative flex w-full')}>
-        {startIndex > 0 && (
-          <button
-            className={cn('absolute left-[-4%] top-1/2 z-10 -translate-y-1/2')}
-            onClick={handlePrev}
-          >
-            <LeftArrow color="#6B6B6B" />
-          </button>
-        )}
-        <StageContainer
-          stageInfo={{ stages }}
-          startIndex={startIndex}
-          setIsModalOpen={setIsModalOpen}
-        />
-        {startIndex < stages.length - visibleCount && (
-          <button
-            className={cn('absolute right-[-4%] top-1/2 z-10 -translate-y-1/2')}
-            onClick={handleNext}
-          >
-            <RightArrowIcon size="2.5rem" />
-          </button>
-        )}
-      </div>
-      {isModalOpen && <PasswordModal onClose={() => setIsModalOpen(false)} />}
-    </div>
-  );
-};
 
 const StagePage = () => {
   const { push } = useRouter();
