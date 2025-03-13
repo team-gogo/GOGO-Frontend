@@ -53,6 +53,16 @@ const getStageInfo = (): StageResponse => {
         isMaintaining: false,
         isPassCode: false,
       },
+      {
+        stageId: 6,
+        stageName: 'Stage 6',
+        type: ['FAST'],
+        status: 'RECRUITING',
+        participantCount: 3,
+        isParticipating: false,
+        isMaintaining: false,
+        isPassCode: false,
+      },
     ],
   };
 };

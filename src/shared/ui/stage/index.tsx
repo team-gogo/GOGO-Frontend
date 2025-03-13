@@ -68,13 +68,13 @@ const Stage = ({ stage, setIsModalOpen, isMyStage = false }: StageProps) => {
               {stageName}
             </h1>
             <Button
-              isLocked={isParticipating || isMyStage ? false : true}
+              isLocked={!(isParticipating || isMyStage) && isPassCode}
               onClick={() => {
-                isPassCode
-                  ? setIsModalOpen?.(true)
-                  : isMyStage
-                    ? push(`/my/bet?stageId=${stage.stageId}`)
-                    : console.log(1);
+                isMyStage || isParticipating
+                  ? push(`/my/bet?stageId=${stage.stageId}`)
+                  : isPassCode
+                    ? setIsModalOpen?.(true)
+                    : console.log('비밀번호 안 걸려있는 참여하기 버튼 클릭');
               }}
             >
               {isParticipating || isMyStage ? '상세보기' : '참여하기'}
