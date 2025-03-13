@@ -1,5 +1,6 @@
 'use client';
 
+import { StagesType } from '@/shared/types/stage';
 import { cn } from '@/shared/utils/cn';
 import StageHeader from '@/widgets/stage/ui/StageHeader';
 import StageSection from '@/widgets/stage/ui/StageSection';
@@ -8,15 +9,21 @@ import getStageInfo from '../Mock/getStageInfo';
 const StagePage = () => {
   const stageInfo = getStageInfo();
 
-  const participateStages = stageInfo.stages.filter(
-    (stage) => stage.isParticipating,
-  );
-  const confirmedStages = stageInfo.stages.filter(
-    (stage) => stage.status === 'CONFIRMED',
-  );
-  const recruitingStages = stageInfo.stages.filter(
-    (stage) => stage.status === 'RECRUITING',
-  );
+  const participateStages: StagesType[] = [];
+  const confirmedStages: StagesType[] = [];
+  const recruitingStages: StagesType[] = [];
+
+  stageInfo.stages.forEach((stage) => {
+    if (stage.isParticipating) {
+      participateStages.push(stage);
+    }
+    if (stage.status === 'CONFIRMED') {
+      confirmedStages.push(stage);
+    }
+    if (stage.status === 'RECRUITING') {
+      recruitingStages.push(stage);
+    }
+  });
 
   return (
     <div
