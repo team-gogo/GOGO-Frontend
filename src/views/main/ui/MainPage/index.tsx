@@ -1,8 +1,13 @@
 import { DateContainer } from '@/entities/main';
+import { MatchClockIcon } from '@/shared/assets/svg';
+import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import { SectionWrapper } from '@/widgets/main';
+import { getMatchInfo } from '../..';
 
 const MainPage = () => {
+  const matchInfo = getMatchInfo();
+
   return (
     <div
       className={cn(
@@ -31,8 +36,8 @@ const MainPage = () => {
           </div>
           <DateContainer />
         </div>
-        <SectionWrapper text={'미니게임'} icon={<>hello</>} path="/my">
-          hello2
+        <SectionWrapper text={'미니게임'} icon={<MatchClockIcon />} path="/my">
+          <StageMatchSection matches={matchInfo} />
         </SectionWrapper>
       </div>
     </div>
