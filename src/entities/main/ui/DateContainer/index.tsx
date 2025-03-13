@@ -6,36 +6,42 @@ import { cn } from '@/shared/utils/cn';
 
 const DateContainer = () => {
   const today = new Date();
-  const [selectedDate, setSelectedDate] = useState<string>(
-    `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
-  );
-
-  const [startIndex, setStartIndex] = useState(0);
-  const totalDays = 20;
+  const totalDays = 100;
   const visibleCount = 10;
+  const pastDays = Math.floor(totalDays / 2);
 
   const dates = Array.from({ length: totalDays }, (_, index) => {
     const date = new Date(today);
-    date.setDate(today.getDate() + index);
+    date.setDate(today.getDate() - pastDays + index);
 
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${month}-${day}`;
   });
 
-  const handleDateClick = (date: string) => {
-    setSelectedDate(date);
-  };
+  const todayIndex = dates.indexOf(
+    `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+  );
+  const [selectedDate, setSelectedDate] = useState<string>(dates[todayIndex]);
+  const [startIndex, setStartIndex] = useState(todayIndex);
 
   const handlePrev = () => {
-    if (startIndex > 0) {
-      setStartIndex((prev) => prev - 1);
+    const currentIndex = dates.indexOf(selectedDate);
+    if (currentIndex > 0) {
+      setSelectedDate(dates[currentIndex - 1]);
+      if (currentIndex - 1 < startIndex) {
+        setStartIndex(startIndex - 1);
+      }
     }
   };
 
   const handleNext = () => {
-    if (startIndex < totalDays - visibleCount) {
-      setStartIndex((prev) => prev + 1);
+    const currentIndex = dates.indexOf(selectedDate);
+    if (currentIndex < dates.length - 1) {
+      setSelectedDate(dates[currentIndex + 1]);
+      if (currentIndex + 1 >= startIndex + visibleCount) {
+        setStartIndex(startIndex + 1);
+      }
     }
   };
 
@@ -49,12 +55,8 @@ const DateContainer = () => {
         'gap-[1rem]',
       )}
     >
-      <button
-        onClick={handlePrev}
-        disabled={startIndex === 0}
-        className="disabled:opacity-50"
-      >
-        <LeftArrow color={startIndex === 0 ? '#D3D3D3' : '#6B6B6B'} />
+      <button onClick={handlePrev}>
+        <LeftArrow color="#6B6B6B" />
       </button>
       <div className={cn('flex', 'items-center', 'gap-[1rem]')}>
         {dates
@@ -83,17 +85,13 @@ const DateContainer = () => {
                 selectedDate === date &&
                   'border-main-600 bg-main-600 text-white',
               )}
-              onClick={() => handleDateClick(date)}
+              onClick={() => setSelectedDate(date)}
             >
               <p className={cn('text-body3s')}>{date}</p>
             </button>
           ))}
       </div>
-      <button
-        onClick={handleNext}
-        disabled={startIndex >= totalDays - visibleCount}
-        className="disabled:opacity-50"
-      >
+      <button onClick={handleNext}>
         <RightArrowIcon size="2.5rem" />
       </button>
     </div>
