@@ -74,7 +74,7 @@ const Stage = ({ stage, setIsModalOpen, isMyStage = false }: StageProps) => {
                   ? push(`/my/bet?stageId=${stage.stageId}`)
                   : isPassCode
                     ? setIsModalOpen?.(true)
-                    : console.log('비밀번호 안 걸려있는 참여하기 버튼 클릭');
+                    : push(`/stage/stageId=${stage.stageId}`);
               }}
             >
               {isParticipating || isMyStage ? '상세보기' : '참여하기'}
