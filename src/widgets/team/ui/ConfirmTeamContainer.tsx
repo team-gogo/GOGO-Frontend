@@ -41,10 +41,11 @@ const ConfirmTeamContainer = () => {
               'flex',
               'items-center',
               'gap-3',
+              'mr-20',
             )}
           >
             <span>선택된 팀 개수</span>
-            <span className="text-h4s text-gray-100">
+            <span className="text-body2s text-gray-100">
               {selectedTeamIds.length}
             </span>
           </div>
