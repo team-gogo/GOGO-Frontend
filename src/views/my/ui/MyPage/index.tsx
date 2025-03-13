@@ -1,5 +1,5 @@
 import { cn } from '@/shared/utils/cn';
-import { MyInfoContainer, StageContainer } from '@/widgets/my';
+import { MyInfoContainer, MyStageContainer } from '@/widgets/my';
 import getUserInfo from '../Mock/getUserInfo';
 import getUserStageInfo from '../Mock/getUserStageInfo';
 
@@ -29,7 +29,7 @@ const MyPage = () => {
         )}
       >
         <MyInfoContainer userInfo={userInfo} />
-        <StageContainer userStageInfo={userStageInfo} />
+        <MyStageContainer userStageInfo={userStageInfo} />
       </div>
     </div>
   );
