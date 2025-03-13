@@ -8,13 +8,12 @@ import { StagesType } from '@/shared/types/stage';
 import StageContainer from '@/shared/ui/stageContainer';
 import { cn } from '@/shared/utils/cn';
 
-const StageSection = ({
-  title,
-  stages,
-}: {
+interface StageSectionProps {
   title?: string;
   stages: StagesType[];
-}) => {
+}
+
+const StageSection = ({ title, stages }: StageSectionProps) => {
   const visibleCount = 2;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
