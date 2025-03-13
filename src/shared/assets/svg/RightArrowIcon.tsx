@@ -1,8 +1,14 @@
-const RightArrowIcon = ({ color = '#6B6B6B' }: { color?: string }) => (
+const RightArrowIcon = ({
+  color = '#6B6B6B',
+  size = '1.5rem',
+}: {
+  color?: string;
+  size?: string;
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="1.5rem"
-    height="1.5rem"
+    width={size}
+    height={size}
     viewBox="0 0 24 25"
     fill="none"
   >
