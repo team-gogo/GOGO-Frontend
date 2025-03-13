@@ -36,8 +36,8 @@ const MatchApplyPage = () => {
           'gap-[3.75rem]',
         )}
       >
+        <BackPageButton />
         <div className={cn('flex', 'w-full', 'flex-col', 'gap-[1.5rem]')}>
-          <BackPageButton />
           <MatchFilterHeader
             stageName={'테스트 이름'}
             selectedSport={selectedSport}
