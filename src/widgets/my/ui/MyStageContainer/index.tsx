@@ -2,11 +2,11 @@ import { MyStageResponse } from '@/shared/types/my';
 import Stage from '@/shared/ui/stage';
 import { cn } from '@/shared/utils/cn';
 
-interface StageContainerProps {
+interface MyStageContainerProps {
   userStageInfo: MyStageResponse;
 }
 
-const StageContainer = ({ userStageInfo }: StageContainerProps) => {
+const MyStageContainer = ({ userStageInfo }: MyStageContainerProps) => {
   return (
     <div className={cn('w-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
       <h2 className={cn('text-body1e', 'text-white')}>내가 참여한 스테이지</h2>
@@ -27,4 +27,4 @@ const StageContainer = ({ userStageInfo }: StageContainerProps) => {
   );
 };
 
-export default StageContainer;
+export default MyStageContainer;
