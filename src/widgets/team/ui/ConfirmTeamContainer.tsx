@@ -39,7 +39,15 @@ const ConfirmTeamContainer = () => {
         <h1 className={cn('text-h4s', 'text-gray-100')}>현재 등록된 팀들</h1>
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <SelectedTeamCounter count={selectedTeamIds.length} />
-          <div className={`h-[40px] w-[200px]`}>
+          <div
+            className={cn(
+              'flex',
+              'items-center',
+              'justify-center',
+              'h-[40px]',
+              'w-[200px]',
+            )}
+          >
             {selectedTeamIds.length === 0 ? (
               <Button
                 bg="None"
