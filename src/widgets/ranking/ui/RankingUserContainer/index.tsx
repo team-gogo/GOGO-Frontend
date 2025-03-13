@@ -13,7 +13,7 @@ const RankingUserContainer = ({
   return (
     <div
       className={cn(
-        'w-fulll',
+        'w-full',
         'rounded-lg',
         'bg-gray-700',
         'flex',

@@ -27,4 +27,4 @@ export { default as SettingIcon } from './SettingIcon';
 export { default as GrayCircle } from './GrayCircle';
 export { default as LockIcon } from './LockIcon';
 export { default as SelectHeartIcon } from './SelectHeartIcon';
-export { default as RankBar } from './RankBar';
+export { default as Medal } from './Medal';

@@ -8,53 +8,33 @@ interface TopRankListContainerProps {
 }
 
 const TopRankListContainer = ({ topRanks }: TopRankListContainerProps) => {
-  const maxPoint = Math.max(...topRanks.map((rank) => rank.point));
-
   return (
     <div
       className={cn(
-        'w-full',
-        'border-4',
-        'border-solid',
-        'border-gray-600',
-        'h-[292px]',
-        'rounded-lg',
         'bg-gray-700',
-        'flex',
-        'flex-col',
+        'w-full',
+        'h-[16.3125rem]',
+        'px-[2.625rem]',
+        'py-[2.25rem]',
         'relative',
+        'flex',
+        'items-center',
       )}
     >
       <p
         className={cn(
-          'absolute',
-          'top-5',
-          'left-5',
           'text-white',
           'text-h3e',
-          'mobile:text-body2e',
+          'absolute',
+          'tablet:hidden',
+          'top-[36px]',
         )}
       >
-        Top 3
+        TOP 3
       </p>
-
-      <div
-        className={cn(
-          'flex',
-          'justify-evenly',
-          'flex-grow',
-          'items-end',
-          'h-full',
-          'mobile:gap-16',
-          'mobile:px-16',
-        )}
-      >
-        {topRanks.map((rank) => (
-          <TopRankListItem
-            key={rank.studentId}
-            rank={rank}
-            maxPoint={maxPoint}
-          />
+      <div className={cn('flex', 'justify-evenly', 'w-full')}>
+        {topRanks.map((rank, index) => (
+          <TopRankListItem key={index} rank={rank} />
         ))}
       </div>
     </div>

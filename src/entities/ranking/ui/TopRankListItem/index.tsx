@@ -1,28 +1,27 @@
 import React from 'react';
-import { PointIcon, RankBar } from '@/shared/assets/svg';
+import { Medal, PointIcon } from '@/shared/assets/svg';
 import { RankItem } from '@/shared/types/ranking';
 import { cn } from '@/shared/utils/cn';
 
 interface TopRankListItemProps {
   rank: RankItem;
-  maxPoint: number;
 }
 
-const TopRankListItem = ({ rank, maxPoint }: TopRankListItemProps) => {
-  const heightPercentage = (rank.point / maxPoint) * 100;
-
-  const getRankColor = (rank: number) => {
+const TopRankListItem = ({ rank }: TopRankListItemProps) => {
+  const getMedalColors = (rank: number) => {
     switch (rank) {
       case 1:
-        return '#2F52FE';
+        return { primary: '#A07102', secondary: '#FAE28D' };
       case 2:
-        return '#748CFE';
+        return { primary: '#6F6F6F', secondary: '#D5D5D5' };
       case 3:
-        return '#BAC5FF';
+        return { primary: '#692814', secondary: '#B35933' };
       default:
-        return '#2F52FE';
+        return { primary: '#A07102', secondary: '#FAE28D' };
     }
   };
+
+  const medalColors = getMedalColors(rank.rank);
 
   return (
     <div className={cn('flex', 'flex-col', 'items-center', 'space-y-4')}>
@@ -33,10 +32,11 @@ const TopRankListItem = ({ rank, maxPoint }: TopRankListItemProps) => {
         <PointIcon size={16} fill="#748CFE" />
       </div>
       <p className={cn('text-white', 'text-body2e')}>{rank.name}</p>
-      <RankBar
-        height={heightPercentage}
-        color={getRankColor(rank.rank)}
-        rankText={rank.rank}
+      <Medal
+        primaryColor={medalColors.primary}
+        secondaryColor={medalColors.secondary}
+        rank={rank.rank}
+        className="h-[100px] w-[100px] mobile:h-[80px] mobile:w-[80px]"
       />
     </div>
   );

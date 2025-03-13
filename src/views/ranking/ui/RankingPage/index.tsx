@@ -15,8 +15,6 @@ const RankingPage = () => {
     topThreeRanks[2],
   ];
 
-  const remainingRanks: RankItem[] = rankingData.rank.slice(3);
-
   return (
     <div
       className={cn(
@@ -30,7 +28,7 @@ const RankingPage = () => {
       <BackPageButton label="포인트 랭킹" type="back" />
       <div className={cn('space-y-[2.25rem]')}>
         <TopRankListContainer topRanks={reorderedTopThreeRanks} />
-        <RankingUserContainer remainingRanks={remainingRanks} />
+        <RankingUserContainer remainingRanks={rankingData.rank} />
       </div>
     </div>
   );
