@@ -1,9 +1,24 @@
-import { CircleQuestionIcon, ShellGameIcon } from '@/shared/assets/icons';
+import { ReactNode } from 'react';
+import { CircleQuestionIcon } from '@/shared/assets/icons';
 import { cn } from '@/shared/utils/cn';
 
-const SelectStageType = () => {
+interface SelectStageTypeProps {
+  icon: ReactNode;
+  name: string;
+  isSelected: boolean;
+  onClick: () => void;
+}
+
+const SelectStageType = ({
+  icon,
+  name,
+  isSelected,
+  onClick,
+}: SelectStageTypeProps) => {
   return (
     <button
+      type="button"
+      onClick={onClick}
       className={cn(
         'rounded-lg',
         'bg-gray-700',
@@ -13,11 +28,14 @@ const SelectStageType = () => {
         'flex',
         'items-center',
         'justify-center',
+        'border-2',
+        'border-solid',
+        isSelected ? 'border-[#526FFE]' : 'border-transparent',
       )}
     >
       <div className={cn('flex', 'flex-col', 'items-center', 'gap-16')}>
-        <ShellGameIcon size={60} color="#898989" />
-        <p className={cn('text-h4s', 'text-gray-400')}>야바위</p>
+        {icon}
+        <p className={cn('text-h4s', 'text-gray-400')}>{name}</p>
       </div>
       <label className={cn('absolute', 'right-12', 'top-24')}>
         <CircleQuestionIcon />

@@ -1,7 +1,13 @@
+import { UseFormRegister } from 'react-hook-form';
+import { OfficialStageData } from '@/shared/types/stage/create/official';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 
-const EntryNumberInput = () => {
+interface Props {
+  register: UseFormRegister<OfficialStageData>;
+}
+
+const EntryNumberInput = ({ register }: Props) => {
   return (
     <div className={cn('space-y-16')}>
       <div className={cn('flex', 'gap-12', 'items-center')}>
@@ -10,7 +16,12 @@ const EntryNumberInput = () => {
           입장 번호은 선택사항입니다.
         </p>
       </div>
-      <Input placeholder="입장번호를 입력해주세요" />
+      <Input
+        {...register('passCode', {
+          required: '입장번호는 필수입니다.',
+        })}
+        placeholder="입장번호를 입력해주세요"
+      />
     </div>
   );
 };
