@@ -88,7 +88,14 @@ const Match = ({ match }: MatchProps) => {
         'bg-gray-700',
       )}
     >
-      <div className={cn('flex', 'flex-col', 'justify-center', 'gap-[2rem]')}>
+      <div
+        className={cn(
+          'flex',
+          'flex-col',
+          'justify-center',
+          isPlaying ? 'gap-[2.5rem]' : 'gap-[2rem]',
+        )}
+      >
         <div
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
@@ -126,7 +133,7 @@ const Match = ({ match }: MatchProps) => {
             'w-full',
             'flex-col',
             'items-center',
-            'gap-[2rem]',
+            isPlaying ? 'gap-[2.5rem]' : 'gap-[2rem]',
           )}
         >
           <div
