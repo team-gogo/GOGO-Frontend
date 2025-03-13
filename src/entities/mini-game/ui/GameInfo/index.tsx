@@ -1,8 +1,13 @@
 import React from 'react';
 import { CoinIcon, PlinkoIcon, ShellGameIcon } from '@/shared/assets/icons';
+import { MyTicketType } from '@/shared/types/mini-game';
 import { cn } from '@/shared/utils/cn';
 
-const GameInfo = () => {
+interface GameInfoProps {
+  getTicketCount: MyTicketType;
+}
+
+const GameInfo = ({ getTicketCount }: GameInfoProps) => {
   return (
     <div className={cn('flex', 'items-center', 'gap-16')}>
       <div
@@ -14,15 +19,21 @@ const GameInfo = () => {
       <div className={cn('flex', 'items-center', 'gap-16')}>
         <div className={cn('flex', 'items-center', 'gap-4')}>
           <ShellGameIcon />
-          <p className={cn('text-body2s', 'text-white')}>2</p>
+          <p className={cn('text-body2s', 'text-white')}>
+            {getTicketCount.yavarwee}
+          </p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-4')}>
           <CoinIcon />
-          <p className={cn('text-body2s', 'text-white')}>2</p>
+          <p className={cn('text-body2s', 'text-white')}>
+            {getTicketCount.coinToss}
+          </p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-4')}>
           <PlinkoIcon />
-          <p className={cn('text-body2s', 'text-white')}>2</p>
+          <p className={cn('text-body2s', 'text-white')}>
+            {getTicketCount.plinko}
+          </p>
         </div>
       </div>
     </div>
