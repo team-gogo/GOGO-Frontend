@@ -29,7 +29,7 @@ const SelectOption = ({
   };
 
   return (
-    <div>
+    <div className="relative w-full">
       <button
         type="button"
         className={cn(
@@ -40,7 +40,6 @@ const SelectOption = ({
           'bg-gray-700',
           'px-16',
           'py-12',
-          'max-w-[12.5rem]',
           'h-[3.5rem]',
           'w-full',
         )}
@@ -51,17 +50,19 @@ const SelectOption = ({
         </span>
         <ArrowDownIcon size={24} color="#fff" />
       </button>
+
       {isOpen && (
         <ul
           className={cn(
             'absolute',
+            'left-0',
+            'right-0',
             'mt-4',
             'rounded-md',
             'shadow-lg',
             'px-16',
             'py-24',
             'bg-gray-700',
-            'max-w-[12.5rem]',
             'w-full',
             'space-y-10',
             'z-10',

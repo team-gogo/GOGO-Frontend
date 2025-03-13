@@ -13,12 +13,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const [inputLength, setInputLength] = useState(0);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      if (maxLength && value.length > maxLength) {
+        e.target.value = value.slice(0, maxLength);
+      }
       setInputLength(e.target.value.length);
       if (attributes.onChange) {
         attributes.onChange(e);
       }
     };
-
     return (
       <div className={cn('h-[56px]', 'w-full', 'relative')}>
         <input
@@ -33,7 +36,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             'bg-gray-700',
             'px-[16px]',
             'pl-[12px]',
-            'pr-[50px]',
+            icon ? 'pr-[50px]' : 'pr-[12px]',
             'placeholder:text-gray-400',
             'rounded-lg',
             'text-body3s',
