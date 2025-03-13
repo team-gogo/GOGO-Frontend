@@ -47,8 +47,8 @@ const MatchApplyPage = () => {
             className={cn(
               'grid',
               'grid-cols-3',
-              'gap-x-[2.5rem]',
-              'gap-y-[2rem]',
+              'gap-x-[1.125rem]',
+              'gap-y-[3.125rem]',
               'tablet:grid-cols-1',
               'w-full',
             )}
