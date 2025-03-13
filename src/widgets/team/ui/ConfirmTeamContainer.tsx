@@ -39,22 +39,41 @@ const ConfirmTeamContainer = () => {
         <h1 className={cn('text-h4s', 'text-gray-100')}>현재 등록된 팀들</h1>
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <SelectedTeamCounter count={selectedTeamIds.length} />
-          <div className={`w-[200px]`}>
-            <Button
-              onClick={handleConfirmTeam}
-              className={cn(
-                'rounded-full',
-                'flex',
-                'items-center',
-                'justify-center',
-                'gap-2',
-                'bg-blue-600',
-                `h-[$40px]`,
-                'transition-colors',
-              )}
-            >
-              팀 확정하기
-            </Button>
+          <div className={`h-[40px] w-[200px]`}>
+            {selectedTeamIds.length === 0 ? (
+              <Button
+                bg="None"
+                textColor="text-blue-600"
+                borderStyle="border-solid"
+                borderColor="border-2"
+                className={cn(
+                  'rounded-full',
+                  'flex',
+                  'items-center',
+                  'justify-center',
+                  'gap-2',
+                  'h-[40px]',
+                )}
+              >
+                팀 확정하기
+              </Button>
+            ) : (
+              <Button
+                onClick={handleConfirmTeam}
+                bg="bg-blue-600"
+                textColor="text-white"
+                className={cn(
+                  'rounded-full',
+                  'flex',
+                  'items-center',
+                  'justify-center',
+                  'gap-2',
+                  'h-[40px]',
+                )}
+              >
+                팀 확정하기
+              </Button>
+            )}
           </div>
         </div>
       </div>
