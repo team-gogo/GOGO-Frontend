@@ -29,6 +29,20 @@ const ConfirmTeamContainer = () => {
     });
   }, []);
 
+  const buttonProps =
+    selectedTeamIds.length === 0
+      ? {
+          bg: 'None',
+          textColor: 'text-blue-600',
+          borderStyle: 'border-solid',
+          borderColor: 'border-2',
+        }
+      : {
+          onClick: handleConfirmTeam,
+          bg: 'bg-blue-600',
+          textColor: 'text-white',
+        };
+
   return (
     <div className={cn('min-h-screen', 'bg-black')}>
       <header className={cn('pt-16', 'pb-20')}>
@@ -48,40 +62,19 @@ const ConfirmTeamContainer = () => {
               'w-[200px]',
             )}
           >
-            {selectedTeamIds.length === 0 ? (
-              <Button
-                bg="None"
-                textColor="text-blue-600"
-                borderStyle="border-solid"
-                borderColor="border-2"
-                className={cn(
-                  'rounded-full',
-                  'flex',
-                  'items-center',
-                  'justify-center',
-                  'gap-2',
-                  'h-[40px]',
-                )}
-              >
-                팀 확정하기
-              </Button>
-            ) : (
-              <Button
-                onClick={handleConfirmTeam}
-                bg="bg-blue-600"
-                textColor="text-white"
-                className={cn(
-                  'rounded-full',
-                  'flex',
-                  'items-center',
-                  'justify-center',
-                  'gap-2',
-                  'h-[40px]',
-                )}
-              >
-                팀 확정하기
-              </Button>
-            )}
+            <Button
+              {...buttonProps}
+              className={cn(
+                'rounded-full',
+                'flex',
+                'items-center',
+                'justify-center',
+                'gap-2',
+                'h-[40px]',
+              )}
+            >
+              팀 확정하기
+            </Button>
           </div>
         </div>
       </div>
