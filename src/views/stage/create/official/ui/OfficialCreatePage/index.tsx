@@ -4,6 +4,7 @@ import { cn } from '@/shared/utils/cn';
 import {
   EntryNumberInput,
   InviteStudentInput,
+  MatchSettingContainer,
   MiniGameContainer,
   RuleInputContainer,
   StageInputContainer,
@@ -15,6 +16,7 @@ const OfficialCreatePage = () => {
     <div className={cn('w-full', 'max-w-[1320px]', 'space-y-[3rem]')}>
       <BackPageButton type="back" label="스테이지 생성 (학교 공식 행사)" />
       <StageInputContainer />
+      <MatchSettingContainer />
       <RuleInputContainer />
       <MiniGameContainer />
       <StoreContainer />

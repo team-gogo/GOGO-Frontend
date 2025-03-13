@@ -4,3 +4,4 @@ export { default as MiniGameContainer } from './ui/MiniGameContainer';
 export { default as StoreContainer } from './ui/StoreContainer';
 export { default as EntryNumberInput } from './ui/EntryNumberInput';
 export { default as InviteStudentInput } from './ui/InviteStudentInput';
+export { default as MatchSettingContainer } from './ui/MatchSettingContainer';

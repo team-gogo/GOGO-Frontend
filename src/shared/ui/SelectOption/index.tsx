@@ -11,13 +11,15 @@ type Option = {
 
 interface SelectOptionProps {
   options: Option[];
+  initialLabel?: string;
 }
 
-const SelectOption = ({ options }: SelectOptionProps) => {
+const SelectOption = ({
+  options,
+  initialLabel = '선택하세요',
+}: SelectOptionProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = useState<string>(
-    options[0].label,
-  );
+  const [selectedOption, setSelectedOption] = useState<string>(initialLabel);
 
   const toggling = () => setIsOpen(!isOpen);
 
@@ -39,6 +41,7 @@ const SelectOption = ({ options }: SelectOptionProps) => {
           'px-16',
           'py-12',
           'max-w-[12.5rem]',
+          'h-[3.5rem]',
           'w-full',
         )}
         onClick={toggling}
@@ -61,6 +64,7 @@ const SelectOption = ({ options }: SelectOptionProps) => {
             'max-w-[12.5rem]',
             'w-full',
             'space-y-10',
+            'z-10',
           )}
         >
           {options.map((option, index) => (

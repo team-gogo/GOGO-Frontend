@@ -67,8 +67,8 @@ const Modal = ({
             key={sort}
             type={sort}
             asButton
-            isSelected={selectedSort === sort} // 수정된 부분: selectedSort와 sort의 타입이 일치
-            onClick={() => toggleSortSelection(sort)} // 수정된 부분: toggleSortSelection에 sort 전달
+            isSelected={selectedSort === sort}
+            onClick={() => toggleSortSelection(sort)}
           />
         ))}
       </div>

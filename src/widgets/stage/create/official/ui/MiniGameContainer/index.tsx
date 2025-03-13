@@ -11,21 +11,16 @@ const MiniGameContainer = () => {
       <div className={cn('flex', 'items-center', 'gap-24')}>
         <div className={cn('space-y-16', 'w-full')}>
           <SelectStageType />
-          <Input
-            placeholder="최대 배팅 포인트"
-            icon={<PointIcon fill="#898989" />}
-          />
-          <Input
-            placeholder="초기 보유 티켓"
-            icon={<TicketIcon size={24} color="#898989" />}
-          />
-        </div>
-        <div className={cn('space-y-16', 'w-full')}>
-          <SelectStageType />
-          <Input
-            placeholder="최대 배팅 포인트"
-            icon={<PointIcon fill="#898989" />}
-          />
+          <div className={cn('flex', 'gap-16')}>
+            <Input
+              placeholder="최대 배팅 포인트"
+              icon={<PointIcon fill="#898989" />}
+            />
+            <Input
+              placeholder="최소 배팅 포인트"
+              icon={<PointIcon fill="#898989" />}
+            />
+          </div>
           <Input
             placeholder="초기 보유 티켓"
             icon={<TicketIcon size={24} color="#898989" />}
@@ -33,10 +28,33 @@ const MiniGameContainer = () => {
         </div>
         <div className={cn('space-y-16', 'w-full')}>
           <SelectStageType />
+          <div className={cn('flex', 'gap-16')}>
+            <Input
+              placeholder="최대 배팅 포인트"
+              icon={<PointIcon fill="#898989" />}
+            />
+            <Input
+              placeholder="최소 배팅 포인트"
+              icon={<PointIcon fill="#898989" />}
+            />
+          </div>
           <Input
-            placeholder="최대 배팅 포인트"
-            icon={<PointIcon fill="#898989" />}
+            placeholder="초기 보유 티켓"
+            icon={<TicketIcon size={24} color="#898989" />}
           />
+        </div>
+        <div className={cn('space-y-16', 'w-full')}>
+          <SelectStageType />
+          <div className={cn('flex', 'gap-16')}>
+            <Input
+              placeholder="최대 배팅 포인트"
+              icon={<PointIcon fill="#898989" />}
+            />
+            <Input
+              placeholder="최소 배팅 포인트"
+              icon={<PointIcon fill="#898989" />}
+            />
+          </div>
           <Input
             placeholder="초기 보유 티켓"
             icon={<TicketIcon size={24} color="#898989" />}
