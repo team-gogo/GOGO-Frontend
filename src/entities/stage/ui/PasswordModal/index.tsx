@@ -23,6 +23,7 @@ const PasswordModal = ({ onClose }: PasswordModalProps) => {
         'max-w-[795px]',
         'w-full',
         'space-y-24',
+        'mx-[1.25rem]',
       )}
     >
       <div className={cn('flex', 'w-full', 'flex-col', 'gap-[3.75rem]')}>
