@@ -26,6 +26,8 @@ const TeamItem = ({
         'flex',
         'justify-between',
         'items-center',
+
+        'mb-24',
       )}
     >
       <div className="text-body2s text-gray-200">{teamName}</div>

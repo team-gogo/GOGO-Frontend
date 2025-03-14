@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { cn } from '@/shared/utils/cn';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import TeamItem from '@/entities/team/ui/TeamItem';
-import { getTeamItemMock } from '../Mock/getTeamItemMock';
 import SelectedTeamCounter from '@/entities/team/ui/SelectedTeamCounter';
+import { cn } from '@/shared/utils/cn';
+
+import { getTeamItemMock } from '../Mock/getTeamItemMock';
 import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
 
 const ConfirmTeamContainer = () => {
