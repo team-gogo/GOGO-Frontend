@@ -12,6 +12,7 @@ const MyPage = () => {
       className={cn(
         'flex',
         'w-full',
+        'h-full',
         'flex-col',
         'items-center',
         'justify-center',
@@ -24,6 +25,7 @@ const MyPage = () => {
           'flex',
           'flex-col',
           'w-full',
+          'h-full',
           'max-w-[82.5rem]',
           'gap-[3.75rem]',
         )}
