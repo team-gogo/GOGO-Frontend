@@ -46,11 +46,11 @@ const MatchSettingContainer = ({
   const handleAddGame = () => {
     if (selectedSport) {
       append({
-        category: [selectedSport],
+        category: selectedSport,
         name: '',
-        system: 'TOURNAMENT',
-        teamMinCapacity: 0,
-        teamMaxCapacity: 0,
+        system: '',
+        teamMinCapacity: null,
+        teamMaxCapacity: null,
       });
     }
   };

@@ -6,14 +6,14 @@ type GameCategory =
   | 'BADMINTON'
   | 'LOL'
   | 'ETC';
-type GameSystem = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';
+type GameSystem = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE' | '';
 
 interface Game {
-  category: GameCategory[];
+  category: GameCategory;
   name: string;
   system: GameSystem;
-  teamMinCapacity: number;
-  teamMaxCapacity: number;
+  teamMinCapacity: number | null;
+  teamMaxCapacity: number | null;
 }
 
 interface MiniGame {
