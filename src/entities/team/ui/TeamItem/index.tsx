@@ -1,6 +1,5 @@
-import { cn } from '@/shared/utils/cn';
-
 import CheckboxIcon from '@/shared/assets/svg/CheckboxIcon';
+import { cn } from '@/shared/utils/cn';
 
 interface TeamItemProps {
   teamName: string;

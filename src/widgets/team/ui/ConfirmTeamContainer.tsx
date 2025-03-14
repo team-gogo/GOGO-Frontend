@@ -1,14 +1,13 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import BackPageButton from '@/shared/ui/backPageButton';
-import Button from '@/shared/ui/button';
-import TeamItem from '@/entities/team/ui/TeamItem';
 import SelectedTeamCounter from '@/entities/team/ui/SelectedTeamCounter';
+import TeamItem from '@/entities/team/ui/TeamItem';
+import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
+import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 
 import { getTeamItemMock } from '../Mock/getTeamItemMock';
-import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
 
 const ConfirmTeamContainer = () => {
   const [selectedTeamIds, setSelectedTeamIds] = useState<number[]>([]);
@@ -31,20 +30,6 @@ const ConfirmTeamContainer = () => {
     });
   }, []);
 
-  const buttonProps =
-    selectedTeamIds.length === 0
-      ? {
-          bg: 'None',
-          textColor: 'text-[#526FFE]',
-          borderStyle: 'border-solid',
-          borderColor: 'border-2',
-        }
-      : {
-          onClick: handleConfirmTeam,
-          bg: 'bg-blue-600',
-          textColor: 'text-white',
-        };
-
   return (
     <div className={cn('min-h-screen', 'bg-black')}>
       <header className={cn('pt-16', 'pb-20')}>
@@ -64,19 +49,30 @@ const ConfirmTeamContainer = () => {
               'w-[200px]',
             )}
           >
-            <Button {...buttonProps}>
-              {selectedTeamIds.length === 0 ? (
-                <>
-                  <span>팀 확정하기</span>
-                  <ButtonCheckIcon />
-                </>
-              ) : (
-                <>
-                  <span>팀 확정하기</span>
-                  <ButtonCheckIcon color={'white'} />
-                </>
+            <button
+              onClick={
+                selectedTeamIds.length > 0 ? handleConfirmTeam : undefined
+              }
+              className={cn(
+                'h-[50px]',
+                'w-[160px]',
+                'rounded-md',
+                'flex',
+                'items-center',
+                'justify-center',
+                'gap-8',
+                'px-24',
+                'text-body3s',
+                selectedTeamIds.length === 0
+                  ? 'border-[2px] border-solid border-[#526FFE] text-[#526FFE]'
+                  : 'bg-blue-600 text-white',
               )}
-            </Button>
+            >
+              <span>팀 확정하기</span>
+              <ButtonCheckIcon
+                color={selectedTeamIds.length === 0 ? '#526FFE' : 'white'}
+              />
+            </button>
           </div>
         </div>
       </div>
