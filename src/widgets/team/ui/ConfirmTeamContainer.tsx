@@ -36,9 +36,17 @@ const ConfirmTeamContainer = () => {
         <BackPageButton type="back" label="뒤로가기" />
       </header>
 
-      <div className={cn('flex', 'items-center', 'justify-between', 'mb-24')}>
+      <div
+        className={cn(
+          'flex',
+          'items-center',
+          'justify-between',
+          'mb-30',
+          'mt-30',
+        )}
+      >
         <h1 className={cn('text-h4s', 'text-gray-100')}>현재 등록된 팀들</h1>
-        <div className={cn('flex', 'items-center', 'gap-8')}>
+        <div className={cn('flex', 'items-center', 'gap-8', 'ml-auto')}>
           <SelectedTeamCounter count={selectedTeamIds.length} />
           <div
             className={cn(
@@ -46,7 +54,8 @@ const ConfirmTeamContainer = () => {
               'items-center',
               'justify-center',
               'h-[40px]',
-              'w-[200px]',
+              'w-[160px]',
+              'ml-auto',
             )}
           >
             <button
@@ -60,7 +69,6 @@ const ConfirmTeamContainer = () => {
                 'flex',
                 'items-center',
                 'justify-center',
-                'gap-8',
                 'px-24',
                 'text-body3s',
                 selectedTeamIds.length === 0
