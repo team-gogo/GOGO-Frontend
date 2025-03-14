@@ -22,6 +22,7 @@ const TopRankListContainer = ({ topRanks }: TopRankListContainerProps) => {
         'relative',
         'flex',
         'items-center',
+        'rounded-xl',
       )}
     >
       <p

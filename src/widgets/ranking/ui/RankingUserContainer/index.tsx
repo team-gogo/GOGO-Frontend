@@ -15,14 +15,11 @@ const RankingUserContainer = ({
       className={cn(
         'w-full',
         'rounded-lg',
-        'bg-gray-700',
         'flex',
         'flex-col',
         'gap-16',
         'items-center',
         'justify-center',
-        'py-24',
-        'px-20',
       )}
     >
       {remainingRanks.map((rank) => (

@@ -16,7 +16,7 @@ const RankingUserItem = ({ rank }: RankingUserItemProps) => {
         'py-12',
         'flex',
         'justify-between',
-        'bg-gray-600',
+        'bg-gray-700',
         'rounded-lg',
         'items-center',
       )}
