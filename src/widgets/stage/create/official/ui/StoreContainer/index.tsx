@@ -4,6 +4,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { SelectStageType } from '@/entities/stage/create/official';
 import { TicketIcon } from '@/shared/assets/icons';
 import { PointIcon } from '@/shared/assets/svg';
@@ -65,7 +66,7 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
                   if (isGameSelected) {
                     setValue(`shop.${item.type}.isActive`, !isActive);
                   } else {
-                    alert(`${item.name} 미니게임을 먼저 선택해주세요.`);
+                    toast.error(`${item.name} 미니게임을 먼저 선택해주세요.`);
                   }
                 }}
               />
