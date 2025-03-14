@@ -7,7 +7,7 @@ import { cn } from '@/shared/utils/cn';
 const DateContainer = () => {
   const today = new Date();
   const totalDays = 100;
-  const visibleCount = 10;
+  const visibleCount = 5;
   const pastDays = Math.floor(totalDays / 2);
 
   const dates = Array.from({ length: totalDays }, (_, index) => {
