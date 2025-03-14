@@ -6,7 +6,7 @@ type GameCategory =
   | 'BADMINTON'
   | 'LOL'
   | 'ETC';
-type GameSystem = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE' | '';
+type GameSystem = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';
 
 interface Game {
   category: GameCategory;
@@ -18,14 +18,14 @@ interface Game {
 
 interface MiniGame {
   isActive: boolean;
-  maxBettingPoint?: number;
-  minBettingPoint?: number;
+  maxBettingPoint?: number | null;
+  minBettingPoint?: number | null;
 }
 
 interface ShopItem {
   isActive: boolean;
-  price?: number;
-  quantity?: number;
+  price?: number | null;
+  quantity?: number | null;
 }
 
 export interface OfficialStageData {

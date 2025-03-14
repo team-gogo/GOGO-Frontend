@@ -58,6 +58,10 @@ const MiniGameContainer = ({ register, watch, setValue }: Props) => {
                 name={game.name}
                 isSelected={isActive}
                 onClick={() => {
+                  if (isActive) {
+                    setValue(`miniGame.${game.type}.maxBettingPoint`, null);
+                    setValue(`miniGame.${game.type}.minBettingPoint`, null);
+                  }
                   setValue(`miniGame.${game.type}.isActive`, !isActive);
                 }}
               />
@@ -65,21 +69,27 @@ const MiniGameContainer = ({ register, watch, setValue }: Props) => {
               <div className={cn('flex', 'gap-16')}>
                 <Input
                   {...register(`miniGame.${game.type}.maxBettingPoint`, {
-                    required: '최대 배팅 포인트는 필수입니다.',
+                    required: isActive
+                      ? '최대 배팅 포인트는 필수입니다.'
+                      : false,
                   })}
                   placeholder="최대 배팅 포인트"
                   icon={<PointIcon fill="#898989" />}
                   type="number"
                   onInput={preventInvalidInputNumber}
+                  disabled={!isActive}
                 />
                 <Input
                   {...register(`miniGame.${game.type}.minBettingPoint`, {
-                    required: '최소 배팅 포인트는 필수입니다.',
+                    required: isActive
+                      ? '최소 배팅 포인트는 필수입니다.'
+                      : false,
                   })}
                   placeholder="최소 배팅 포인트"
                   icon={<PointIcon fill="#898989" />}
                   type="number"
                   onInput={preventInvalidInputNumber}
+                  disabled={!isActive}
                 />
               </div>
             </div>

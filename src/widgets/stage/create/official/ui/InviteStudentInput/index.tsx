@@ -20,9 +20,7 @@ const InviteStudentInput = ({ register }: Props) => {
         </p>
       </div>
       <Input
-        {...register('maintainer', {
-          required: '최대 보유 포인트는 필수입니다.',
-        })}
+        {...register('maintainer')}
         placeholder="학생을 입력해주세요"
         icon={<SearchIcon size={24} />}
       />

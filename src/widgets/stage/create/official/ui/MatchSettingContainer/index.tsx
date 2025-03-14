@@ -48,7 +48,7 @@ const MatchSettingContainer = ({
       append({
         category: selectedSport,
         name: '',
-        system: '',
+        system: 'TOURNAMENT',
         teamMinCapacity: null,
         teamMaxCapacity: null,
       });

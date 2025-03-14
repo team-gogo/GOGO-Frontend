@@ -22,8 +22,8 @@ const StageInputContainer = ({ register }: Props) => {
         />
         <Input
           {...register('initialPoint', {
+            valueAsNumber: true,
             required: '초기 보유 포인트는 필수입니다.',
-            valueAsNumber: true, // 숫자 값으로 변환
             min: { value: 0, message: '0 이상의 값을 입력해주세요.' },
           })}
           placeholder="초기 보유 포인트"

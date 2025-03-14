@@ -31,7 +31,9 @@ const GameField: React.FC<GameFieldProps> = ({
       <div className={cn('flex', 'gap-24', 'w-4/6', 'tablet:w-full')}>
         <div className={cn('w-2/3', 'tablet:w-full')}>
           <Input
-            {...register(`game.${index}.name`)}
+            {...register(`game.${index}.name`, {
+              required: '경기 이름은 필수입니다.',
+            })}
             placeholder="이름을 입력해주세요."
             maxLength={10}
           />
@@ -40,7 +42,6 @@ const GameField: React.FC<GameFieldProps> = ({
           <SelectOption
             {...register(`game.${index}.system`)}
             options={matchTypeOptions}
-            initialLabel="경기 방식"
           />
         </div>
       </div>
@@ -49,6 +50,7 @@ const GameField: React.FC<GameFieldProps> = ({
           <Input
             {...register(`game.${index}.teamMinCapacity`, {
               valueAsNumber: true,
+              required: '최소 경기 인원은 필수입니다.',
             })}
             placeholder="최소 경기 인원"
             icon={<PersonIcon fill="#898989" />}
@@ -59,6 +61,7 @@ const GameField: React.FC<GameFieldProps> = ({
           <Input
             {...register(`game.${index}.teamMaxCapacity`, {
               valueAsNumber: true,
+              required: '최소 경기 인원은 필수입니다.',
             })}
             placeholder="최대 경기 인원"
             icon={<PersonIcon fill="#898989" />}

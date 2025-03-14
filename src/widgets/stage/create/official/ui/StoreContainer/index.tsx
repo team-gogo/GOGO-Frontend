@@ -49,6 +49,7 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
         {storeItems.map((item) => {
           const isActive = selectedShop[item.type]?.isActive;
           const iconColor = isActive ? '#526FFE' : '#898989';
+
           return (
             <div key={item.type} className={cn('space-y-16', 'w-full')}>
               <SelectStageType
@@ -56,26 +57,36 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
                 name={item.name}
                 isSelected={isActive}
                 onClick={() => {
+                  if (isActive) {
+                    setValue(`shop.${item.type}.price`, null);
+                    setValue(`shop.${item.type}.quantity`, null);
+                  }
                   setValue(`shop.${item.type}.isActive`, !isActive);
                 }}
               />
               <Input
                 {...register(`shop.${item.type}.price`, {
-                  required: `${item.name} 티켓 가격은 필수입니다.`,
+                  required: isActive
+                    ? `${item.name} 티켓 가격은 필수입니다.`
+                    : false,
                 })}
                 placeholder={`${item.name} 티켓 가격`}
                 icon={<PointIcon fill="#898989" />}
                 type="number"
                 onInput={preventInvalidInputNumber}
+                disabled={!isActive}
               />
               <Input
                 {...register(`shop.${item.type}.quantity`, {
-                  required: `${item.name} 티켓 수량은 필수입니다.`,
+                  required: isActive
+                    ? `${item.name} 티켓 수량은 필수입니다.`
+                    : false,
                 })}
                 placeholder="티켓 수량"
                 icon={<TicketIcon size={24} />}
                 type="number"
                 onInput={preventInvalidInputNumber}
+                disabled={!isActive}
               />
             </div>
           );

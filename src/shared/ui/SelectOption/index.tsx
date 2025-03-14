@@ -24,7 +24,9 @@ const SelectOption = forwardRef<HTMLSelectElement, SelectOptionProps>(
     const [selectedLabel, setSelectedLabel] = useState<string>(
       value
         ? options.find((opt) => opt.value === value)?.label || initialLabel
-        : initialLabel,
+        : options.length > 0
+          ? options[0].label
+          : initialLabel,
     );
 
     const toggling = () => setIsOpen(!isOpen);
