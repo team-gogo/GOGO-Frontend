@@ -88,11 +88,11 @@ const ConfirmTeamContainer = () => {
       <div className="space-y-10">
         {teams.map((team) => (
           <TeamItem
-            key={team.id}
-            teamName={team.name}
-            onViewDetails={() => handleViewDetails(team.id)}
-            isSelected={selectedTeamIds.includes(team.id)}
-            onToggleSelect={() => handleToggleSelect(team.id)}
+            key={team.teamId}
+            teamName={team.teamName}
+            onViewDetails={() => handleViewDetails(team.teamId)}
+            isSelected={selectedTeamIds.includes(team.teamId)}
+            onToggleSelect={() => handleToggleSelect(team.teamId)}
           />
         ))}
       </div>
