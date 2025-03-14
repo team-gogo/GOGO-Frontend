@@ -17,6 +17,7 @@ const TeamItem = ({
   return (
     <div
       className={cn(
+        '',
         'w-full',
         'py-20',
         'px-20',
@@ -25,6 +26,8 @@ const TeamItem = ({
         'flex',
         'justify-between',
         'items-center',
+        // 'mb-24',
+        // 'mt-24',
       )}
     >
       <div className="text-body2s text-white">{teamName}</div>

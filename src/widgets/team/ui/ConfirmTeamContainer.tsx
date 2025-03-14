@@ -32,7 +32,7 @@ const ConfirmTeamContainer = () => {
 
   return (
     <div className={cn('min-h-screen', 'bg-black')}>
-      <header className={cn('pt-16', 'pb-20')}>
+      <header className={cn('mt-24', 'mb-24')}>
         <BackPageButton type="back" label="뒤로가기" />
       </header>
 
