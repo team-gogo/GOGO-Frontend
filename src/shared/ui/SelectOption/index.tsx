@@ -1,32 +1,67 @@
-import React, { forwardRef, useState } from 'react';
+'use client';
+
+import { useState, forwardRef } from 'react';
 import { ArrowDownIcon } from '@/shared/assets/icons';
 import { cn } from '@/shared/utils/cn';
 
-interface Option {
+type Option = {
   value: string;
   label: string;
-}
+};
 
-interface SelectOptionProp
-  extends React.SelectHTMLAttributes<HTMLButtonElement> {
+interface SelectOptionProps
+  extends React.InputHTMLAttributes<HTMLSelectElement> {
   options: Option[];
   initialLabel?: string;
 }
 
-const SelectOption = forwardRef<HTMLButtonElement, SelectOptionProp>(
-  ({ options, initialLabel = '선택하세요', ...props }, ref) => {
+const SelectOption = forwardRef<HTMLSelectElement, SelectOptionProps>(
+  (
+    { options, initialLabel = '선택하세요', onChange, value, name, ...props },
+    ref,
+  ) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [selectedOption, setSelectedOption] = useState<string>(initialLabel);
+    const [selectedLabel, setSelectedLabel] = useState<string>(
+      value
+        ? options.find((opt) => opt.value === value)?.label || initialLabel
+        : initialLabel,
+    );
 
     const toggling = () => setIsOpen(!isOpen);
 
     const onOptionClicked = (value: string, label: string) => () => {
-      setSelectedOption(label);
+      setSelectedLabel(label);
       setIsOpen(false);
+
+      if (onChange) {
+        const event = {
+          target: {
+            name,
+            value,
+          },
+        } as React.ChangeEvent<HTMLSelectElement>;
+
+        onChange(event);
+      }
     };
 
     return (
       <div className="relative w-full">
+        <select
+          ref={ref}
+          name={name}
+          value={value}
+          onChange={onChange}
+          className="hidden"
+          {...props}
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+
         <button
           type="button"
           className={cn(
@@ -41,11 +76,9 @@ const SelectOption = forwardRef<HTMLButtonElement, SelectOptionProp>(
             'w-full',
           )}
           onClick={toggling}
-          ref={ref}
-          {...props}
         >
           <span className={cn('text-body3s', 'text-white')}>
-            {selectedOption}
+            {selectedLabel}
           </span>
           <ArrowDownIcon size={24} color="#fff" />
         </button>
@@ -73,7 +106,7 @@ const SelectOption = forwardRef<HTMLButtonElement, SelectOptionProp>(
                 className={cn(
                   'cursor-pointer',
                   'text-body3e',
-                  selectedOption === option.label
+                  selectedLabel === option.label
                     ? 'text-white'
                     : 'text-gray-400',
                   index < options.length - 1
@@ -93,4 +126,5 @@ const SelectOption = forwardRef<HTMLButtonElement, SelectOptionProp>(
 );
 
 SelectOption.displayName = 'SelectOption';
+
 export default SelectOption;
