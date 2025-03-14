@@ -1,10 +1,16 @@
+import React from 'react';
 import { CirclePlusIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
-const AddButton = () => {
+interface AddButtonProps {
+  onClick: () => void;
+}
+
+const AddButton = ({ onClick }: AddButtonProps) => {
   return (
     <button
       type="button"
+      onClick={onClick}
       className={cn(
         'border-1',
         'border-solid',

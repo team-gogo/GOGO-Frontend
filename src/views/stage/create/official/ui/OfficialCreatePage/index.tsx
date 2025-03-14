@@ -16,9 +16,10 @@ import {
 } from '@/widgets/stage/create/official';
 
 const OfficialCreatePage = () => {
-  const { register, handleSubmit, watch, setValue } =
+  const { register, handleSubmit, watch, setValue, control } =
     useForm<OfficialStageData>({
       defaultValues: {
+        game: [],
         miniGame: {
           yavarwee: { isActive: false },
           coinToss: { isActive: false },
@@ -47,7 +48,7 @@ const OfficialCreatePage = () => {
     >
       <BackPageButton type="back" label="스테이지 생성 (학교 공식 행사)" />
       <StageInputContainer register={register} />
-      <MatchSettingContainer />
+      <MatchSettingContainer control={control} register={register} />
       <RuleInputContainer register={register} />
       <MiniGameContainer
         register={register}
