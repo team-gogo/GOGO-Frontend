@@ -20,6 +20,7 @@ interface MiniGame {
   isActive: boolean;
   maxBettingPoint?: number | null;
   minBettingPoint?: number | null;
+  initialTicketCount: number | null;
 }
 
 interface ShopItem {

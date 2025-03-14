@@ -7,7 +7,6 @@ import {
 import { SelectStageType } from '@/entities/stage/create/official';
 import { TicketIcon } from '@/shared/assets/icons';
 import { PointIcon } from '@/shared/assets/svg';
-import { preventInvalidInputNumber } from '@/shared/model/preventInvalidInputNumber';
 import { OfficialStageData } from '@/shared/types/stage/create/official';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
@@ -73,7 +72,6 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
                 placeholder={`${item.name} 티켓 가격`}
                 icon={<PointIcon fill="#898989" />}
                 type="number"
-                onInput={preventInvalidInputNumber}
                 disabled={!isActive}
               />
               <Input
@@ -85,7 +83,6 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
                 placeholder="티켓 수량"
                 icon={<TicketIcon size={24} />}
                 type="number"
-                onInput={preventInvalidInputNumber}
                 disabled={!isActive}
               />
             </div>

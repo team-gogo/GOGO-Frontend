@@ -5,9 +5,13 @@ import {
   UseFormWatch,
 } from 'react-hook-form';
 import { SelectStageType } from '@/entities/stage/create/official';
-import { CoinIcon, PlinkoIcon, ShellGameIcon } from '@/shared/assets/icons';
+import {
+  CoinIcon,
+  PlinkoIcon,
+  ShellGameIcon,
+  TicketIcon,
+} from '@/shared/assets/icons';
 import { PointIcon } from '@/shared/assets/svg';
-import { preventInvalidInputNumber } from '@/shared/model/preventInvalidInputNumber';
 import { OfficialStageData } from '@/shared/types/stage/create/official';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
@@ -61,6 +65,7 @@ const MiniGameContainer = ({ register, watch, setValue }: Props) => {
                   if (isActive) {
                     setValue(`miniGame.${game.type}.maxBettingPoint`, null);
                     setValue(`miniGame.${game.type}.minBettingPoint`, null);
+                    setValue(`miniGame.${game.type}.initialTicketCount`, null);
                   }
                   setValue(`miniGame.${game.type}.isActive`, !isActive);
                 }}
@@ -76,7 +81,6 @@ const MiniGameContainer = ({ register, watch, setValue }: Props) => {
                   placeholder="최대 배팅 포인트"
                   icon={<PointIcon fill="#898989" />}
                   type="number"
-                  onInput={preventInvalidInputNumber}
                   disabled={!isActive}
                 />
                 <Input
@@ -88,10 +92,18 @@ const MiniGameContainer = ({ register, watch, setValue }: Props) => {
                   placeholder="최소 배팅 포인트"
                   icon={<PointIcon fill="#898989" />}
                   type="number"
-                  onInput={preventInvalidInputNumber}
                   disabled={!isActive}
                 />
               </div>
+              <Input
+                {...register(`miniGame.${game.type}.initialTicketCount`, {
+                  required: isActive ? '초기 보유 티켓는 필수입니다.' : false,
+                })}
+                placeholder="초기 보유 티켓"
+                icon={<TicketIcon size={24} />}
+                type="number"
+                disabled={!isActive}
+              />
             </div>
           );
         })}
