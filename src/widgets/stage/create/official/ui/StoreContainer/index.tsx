@@ -35,6 +35,7 @@ export const storeItems = [
 ];
 
 const StoreContainer = ({ register, watch, setValue }: Props) => {
+  const selectedGames = watch('miniGame') || {};
   const selectedShop = watch('shop') || {};
 
   storeItems.forEach((store) => {
@@ -47,6 +48,7 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
       <div className={cn('flex', 'items-center', 'gap-24', 'tablet:flex-wrap')}>
         {storeItems.map((item) => {
           const isActive = selectedShop[item.type]?.isActive;
+          const isGameSelected = selectedGames[item.type]?.isActive;
           const iconColor = isActive ? '#526FFE' : '#898989';
 
           return (
@@ -60,7 +62,11 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
                     setValue(`shop.${item.type}.price`, null);
                     setValue(`shop.${item.type}.quantity`, null);
                   }
-                  setValue(`shop.${item.type}.isActive`, !isActive);
+                  if (isGameSelected) {
+                    setValue(`shop.${item.type}.isActive`, !isActive);
+                  } else {
+                    alert(`${item.name} 미니게임을 먼저 선택해주세요.`);
+                  }
                 }}
               />
               <Input
@@ -72,7 +78,7 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
                 placeholder={`${item.name} 티켓 가격`}
                 icon={<PointIcon fill="#898989" />}
                 type="number"
-                disabled={!isActive}
+                disabled={!isActive || !isGameSelected}
               />
               <Input
                 {...register(`shop.${item.type}.quantity`, {
@@ -83,7 +89,7 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
                 placeholder="티켓 수량"
                 icon={<TicketIcon size={24} />}
                 type="number"
-                disabled={!isActive}
+                disabled={!isActive || !isGameSelected}
               />
             </div>
           );
