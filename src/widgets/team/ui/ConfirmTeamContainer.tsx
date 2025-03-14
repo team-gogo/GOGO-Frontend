@@ -73,10 +73,10 @@ const ConfirmTeamContainer = () => {
                 'text-body3s',
                 selectedTeamIds.length === 0
                   ? 'border-[2px] border-solid border-[#526FFE] text-[#526FFE]'
-                  : 'bg-blue-600 text-white',
+                  : 'bg-[#526FFE] text-white',
               )}
             >
-              <span>팀 확정하기</span>
+              <span className="mr-10">팀 확정하기</span>
               <ButtonCheckIcon
                 color={selectedTeamIds.length === 0 ? '#526FFE' : 'white'}
               />

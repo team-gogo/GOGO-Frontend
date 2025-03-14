@@ -25,11 +25,9 @@ const TeamItem = ({
         'flex',
         'justify-between',
         'items-center',
-
-        'mb-24',
       )}
     >
-      <div className="text-body2s text-gray-200">{teamName}</div>
+      <div className="text-body2s text-white">{teamName}</div>
       <div className="flex items-center gap-30">
         <button
           onClick={onViewDetails}
