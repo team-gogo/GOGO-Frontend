@@ -7,12 +7,13 @@ import Button from '@/shared/ui/button';
 import TeamItem from '@/entities/team/ui/TeamItem';
 import { getTeamItemMock } from '../Mock/getTeamItemMock';
 import SelectedTeamCounter from '@/entities/team/ui/SelectedTeamCounter';
+import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
 
 const ConfirmTeamContainer = () => {
   const [selectedTeamIds, setSelectedTeamIds] = useState<number[]>([]);
   const teams = getTeamItemMock();
 
-  const handleViewDetails = useCallback((teamId: number) => {
+  const handleViewDetails = useCallback((_teamId: number) => {
     // TODO: 팀 자세히보기 클릭했을 때
   }, []);
 
@@ -33,7 +34,7 @@ const ConfirmTeamContainer = () => {
     selectedTeamIds.length === 0
       ? {
           bg: 'None',
-          textColor: 'text-blue-600',
+          textColor: 'text-[#526FFE]',
           borderStyle: 'border-solid',
           borderColor: 'border-2',
         }
@@ -62,18 +63,18 @@ const ConfirmTeamContainer = () => {
               'w-[200px]',
             )}
           >
-            <Button
-              {...buttonProps}
-              className={cn(
-                'rounded-full',
-                'flex',
-                'items-center',
-                'justify-center',
-                'gap-2',
-                'h-[40px]',
+            <Button {...buttonProps}>
+              {selectedTeamIds.length === 0 ? (
+                <>
+                  <span>팀 확정하기</span>
+                  <ButtonCheckIcon />
+                </>
+              ) : (
+                <>
+                  <span>팀 확정하기</span>
+                  <ButtonCheckIcon color={'white'} />
+                </>
               )}
-            >
-              팀 확정하기
             </Button>
           </div>
         </div>
