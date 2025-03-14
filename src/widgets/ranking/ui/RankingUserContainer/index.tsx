@@ -5,11 +5,17 @@ import { cn } from '@/shared/utils/cn';
 
 interface RankingUserContainerProps {
   remainingRanks: RankItem[];
+  isMainUsed?: boolean;
 }
 
 const RankingUserContainer = ({
   remainingRanks,
+  isMainUsed = false,
 }: RankingUserContainerProps) => {
+  const ranksToDisplay = isMainUsed
+    ? remainingRanks.slice(0, 4)
+    : remainingRanks;
+
   return (
     <div
       className={cn(
@@ -17,13 +23,17 @@ const RankingUserContainer = ({
         'rounded-lg',
         'flex',
         'flex-col',
-        'gap-16',
+        isMainUsed ? 'gap-[0.75rem]' : 'gap-16',
         'items-center',
         'justify-center',
       )}
     >
-      {remainingRanks.map((rank) => (
-        <RankingUserItem key={rank.studentId} rank={rank} />
+      {ranksToDisplay.map((rank) => (
+        <RankingUserItem
+          key={rank.studentId}
+          rank={rank}
+          isMainUsed={isMainUsed}
+        />
       ))}
     </div>
   );

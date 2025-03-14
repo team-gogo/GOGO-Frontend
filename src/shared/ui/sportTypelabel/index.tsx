@@ -7,6 +7,7 @@ interface SportTypeLabelProps {
   type: string;
   asButton?: boolean;
   isSelected?: boolean;
+  isMainUsed?: boolean;
   onClick?: () => void;
 }
 
@@ -14,6 +15,7 @@ const SportTypeLabel = ({
   type,
   asButton = false,
   isSelected = false,
+  isMainUsed,
   onClick,
 }: SportTypeLabelProps) => {
   const { icon, text } = SPORT_TYPES[type] || {
@@ -35,7 +37,7 @@ const SportTypeLabel = ({
     'gap-8',
     'text-nowrap',
     'items-center',
-    'h-[2.8125rem]',
+    isMainUsed ? 'h-[2.3125rem]' : 'h-[2.8125rem]',
     'laptop:h-[1.875rem]',
     {
       'bg-main-500 text-white': asButton && isSelected,

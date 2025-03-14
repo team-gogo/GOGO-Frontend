@@ -4,17 +4,17 @@ import { CommunityItemProps } from '@/shared/types/community';
 import SportTypelabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
 
-const CommunityItem = ({
-  boardId,
-  gameType,
-  title,
-  author,
-  commentCount,
-  likeCount,
-}: CommunityItemProps) => {
+interface CommunityItemsProps {
+  item: CommunityItemProps;
+  isMainUsed?: boolean;
+}
+
+const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
   const formatCount = (count: number) => {
     return count >= 100 ? '99+' : count.toString();
   };
+
+  const { boardId, gameType, title, author, commentCount, likeCount } = item;
 
   return (
     <Link
@@ -23,8 +23,8 @@ const CommunityItem = ({
         'text-gray-600',
         'bg-gray-700',
         'text-body3s',
-        'py-12',
-        'px-16',
+        isMainUsed ? 'py-[1rem]' : 'py-12',
+        isMainUsed ? 'py-[0.75rem]' : 'px-16',
         'rounded-lg',
         'grid',
         'w-full',
@@ -34,7 +34,7 @@ const CommunityItem = ({
       )}
     >
       <div className={cn('flex', 'items-center', 'justify-center')}>
-        <SportTypelabel type={gameType} />
+        <SportTypelabel type={gameType} isMainUsed={isMainUsed} />
       </div>
       <p
         className={cn(
