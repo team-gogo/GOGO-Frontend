@@ -1,9 +1,9 @@
 'use client';
 
 import { StagesType } from '@/shared/types/stage';
+import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import StageHeader from '@/widgets/stage/ui/StageHeader';
-import StageSection from '@/widgets/stage/ui/StageSection';
 import getStageInfo from '../Mock/getStageInfo';
 
 const StagePage = () => {
@@ -35,9 +35,15 @@ const StagePage = () => {
         <div className={cn('flex flex-col gap-[2.5rem]')}>
           <StageHeader />
 
-          <StageSection stages={participateStages} />
-          <StageSection title="참여가능한 스테이지" stages={confirmedStages} />
-          <StageSection title="모집 중인 스테이지" stages={recruitingStages} />
+          <StageMatchSection stages={participateStages} />
+          <StageMatchSection
+            title="참여가능한 스테이지"
+            stages={confirmedStages}
+          />
+          <StageMatchSection
+            title="모집 중인 스테이지"
+            stages={recruitingStages}
+          />
         </div>
       </div>
     </div>

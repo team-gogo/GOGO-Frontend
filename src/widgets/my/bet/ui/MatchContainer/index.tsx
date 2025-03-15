@@ -1,9 +1,9 @@
-import { MyBetResponse } from '@/shared/types/my/bet';
+import { MatchResponse } from '@/shared/types/my/bet';
 import Match from '@/shared/ui/match';
 import { cn } from '@/shared/utils/cn';
 
 interface MatchContainerProps {
-  userBetInfo: MyBetResponse;
+  userBetInfo: MatchResponse;
 }
 
 const MatchContainer = ({ userBetInfo }: MatchContainerProps) => {

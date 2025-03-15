@@ -1,6 +1,6 @@
-import { MyBetResponse } from '@/shared/types/my/bet';
+import { MatchResponse } from '@/shared/types/my/bet';
 
-const getMyBetResponse = (): MyBetResponse => {
+const getMatchResponse = (): MatchResponse => {
   return {
     count: 2,
     matches: [
@@ -55,7 +55,7 @@ const getMyBetResponse = (): MyBetResponse => {
           winCount: 9,
         },
         startDate: '2025-03-11T15:00:00',
-        endDate: '2025-03-12T17:00:00',
+        endDate: '2025-03-22T17:00:00',
         isEnd: false,
         round: ['ROUND_OF_16'],
         category: ['BASKET_BALL'],
@@ -119,27 +119,20 @@ const getMyBetResponse = (): MyBetResponse => {
           bettingPoint: 80,
           winCount: 7,
         },
-        startDate: '2025-03-14T10:00:00',
-        endDate: '2025-03-14T12:00:00',
-        isEnd: true,
+        startDate: '2025-03-17T10:00:00',
+        endDate: '2025-03-18T12:00:00',
+        isEnd: false,
         round: ['SEMI_FINALS'],
         category: ['SOCCER'],
         system: ['FULL_LEAGUE'],
         turn: 4,
         isNotice: false,
         betting: {
-          isBetting: true,
-          bettingPoint: 800,
-          predictedWinTeamId: 8,
+          isBetting: false,
+          bettingPoint: undefined,
+          predictedWinTeamId: undefined,
         },
-        result: {
-          victoryTeamId: 7,
-          aTeamScore: 3,
-          bTeamScore: 0,
-          isPredictionSuccess: false,
-          earnedPoint: -800,
-          pointReceivingTime: '2025-03-14T14:00:00',
-        },
+        result: undefined,
       },
       {
         matchId: 1005,
@@ -155,30 +148,23 @@ const getMyBetResponse = (): MyBetResponse => {
           bettingPoint: 800,
           winCount: 7,
         },
-        startDate: '2025-03-14T10:00:00',
-        endDate: '2025-03-14T12:00:00',
+        startDate: '2025-03-20T10:00:00',
+        endDate: '2025-03-20T12:00:00',
         isEnd: false,
         round: ['FINALS'],
         category: ['SOCCER'],
         system: ['FULL_LEAGUE'],
         turn: 4,
-        isNotice: false,
+        isNotice: true,
         betting: {
           isBetting: true,
           bettingPoint: 800,
-          predictedWinTeamId: 8,
+          predictedWinTeamId: 9,
         },
-        result: {
-          victoryTeamId: 7,
-          aTeamScore: 3,
-          bTeamScore: 0,
-          isPredictionSuccess: false,
-          earnedPoint: 0,
-          pointReceivingTime: '2025-03-14T14:00:00',
-        },
+        result: undefined,
       },
     ],
   };
 };
 
-export default getMyBetResponse;
+export default getMatchResponse;
