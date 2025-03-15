@@ -106,9 +106,9 @@ const Match = ({ match }: MatchProps) => {
             </button>
             <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
               <MatchTypeLabel
-                type="OFFICIAL"
+                type={roundText === '결승전' ? 'FINAL' : 'OFFICIAL'}
                 customText={roundText}
-                color="#FFF"
+                color={roundText === '결승전' ? '#97A9FF' : '#FFF'}
               />
               <MatchTypeLabel
                 type={'TIME'}
