@@ -42,16 +42,16 @@ const Stage = ({ stage, setIsModalOpen, isMyStage = false }: StageProps) => {
           <div
             className={cn('flex', 'w-full', 'justify-between', 'items-center')}
           >
-            <div className={cn('flex', 'items-center', 'gap-[0.625rem]')}>
+            <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
               {type.map((t) => (
                 <MatchTypeLabel key={t} type={t} color="#FFF" />
               ))}
-              {isMaintaining && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
               {status === 'RECRUITING' ? (
                 <MatchTypeLabel type="RECRUITING" color="#01C612" />
               ) : status === 'CONFIRMED' ? (
                 <MatchTypeLabel type="CONFIRMED" color="#898989" />
               ) : null}
+              {isMaintaining && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
             </div>
             {/* {isAdmin && <Tag TagType={'STREAMING'} />} */}
           </div>
