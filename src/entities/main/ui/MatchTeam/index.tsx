@@ -5,16 +5,13 @@ interface Team {
   bettingPoint: number;
 }
 
-const MatchTeam = ({
-  team,
-  percentage,
-  bgColor,
-}: {
+interface MatchTeamProps {
   team: Team;
-  opponentTeam: Team;
   percentage: number;
   bgColor: string;
-}) => {
+}
+
+const MatchTeam = ({ team, percentage, bgColor }: MatchTeamProps) => {
   return (
     <div
       className={cn(

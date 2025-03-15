@@ -86,7 +86,6 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
         >
           <MatchTeam
             team={aTeam}
-            opponentTeam={bTeam}
             percentage={Number(aTeamPercentage)}
             bgColor={getBettingTeamColor(aTeam.teamId)}
           />
@@ -116,7 +115,6 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
           </div>
           <MatchTeam
             team={bTeam}
-            opponentTeam={aTeam}
             percentage={Number(bTeamPercentage)}
             bgColor={getBettingTeamColor(bTeam.teamId)}
           />
