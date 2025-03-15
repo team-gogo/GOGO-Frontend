@@ -30,14 +30,15 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
 
   const totalBettingPoints = aTeam.bettingPoint + bTeam.bettingPoint;
 
-  const aTeamPercentage = (
-    (aTeam.bettingPoint / totalBettingPoints) *
-    100
-  ).toFixed(2);
-  const bTeamPercentage = (
-    (bTeam.bettingPoint / totalBettingPoints) *
-    100
-  ).toFixed(2);
+  const aTeamPercentage =
+    totalBettingPoints === 0
+      ? '0.0'
+      : ((aTeam.bettingPoint / totalBettingPoints) * 100).toFixed(2);
+
+  const bTeamPercentage =
+    totalBettingPoints === 0
+      ? '0.0'
+      : ((bTeam.bettingPoint / totalBettingPoints) * 100).toFixed(2);
 
   const getBettingTeamColor = (teamId: number) => {
     if (betting.predictedWinTeamId === teamId) {
