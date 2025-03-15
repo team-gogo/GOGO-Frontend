@@ -52,43 +52,60 @@ const MainPage = () => {
           </div>
           <DateContainer />
         </div>
-        <SectionWrapper
-          text={'미니게임'}
-          icon={<MatchClockIcon />}
-          path="/match"
+        <div
+          className={cn(
+            'flex',
+            'w-full',
+            'flex-wrap',
+            'gap-[1.75rem]',
+            'md:flex-col',
+          )}
         >
-          <StageMatchSection matches={matchInfo} />
-        </SectionWrapper>
-        <div className={cn('flex', 'w-full', 'gap-[1.75rem]')}>
           <SectionWrapper
             text={'미니게임'}
-            icon={<MiniGameIcon />}
-            path="/mini-game"
+            icon={<MatchClockIcon />}
+            path="/my"
           >
-            <MiniGameSection />
+            <StageMatchSection matches={matchInfo} />
           </SectionWrapper>
-          <SectionWrapper
-            text={'포인트 랭킹'}
-            icon={<RankingIcon />}
-            path="/ranking"
+          <div
+            className={cn(
+              'flex',
+              'w-full',
+              'gap-[1.75rem]',
+              'tablet:flex-wrap',
+            )}
           >
-            <div
-              className={cn('flex', 'w-full', 'flex-col', 'justify-between')}
+            <SectionWrapper
+              text={'미니게임'}
+              icon={<MiniGameIcon />}
+              path="/mini-game"
             >
-              <RankingUserContainer
-                remainingRanks={rankingMock.rank}
-                isMainUsed={isMainUsed}
-              />
-            </div>
+              <MiniGameSection />
+            </SectionWrapper>
+            <SectionWrapper
+              text={'포인트 랭킹'}
+              icon={<RankingIcon />}
+              path="/ranking"
+            >
+              <div
+                className={cn('flex', 'w-full', 'flex-col', 'justify-between')}
+              >
+                <RankingUserContainer
+                  remainingRanks={rankingMock.rank}
+                  isMainUsed={isMainUsed}
+                />
+              </div>
+            </SectionWrapper>
+          </div>
+          <SectionWrapper
+            text={'커뮤니티'}
+            icon={<CommunityIcon />}
+            path="/community"
+          >
+            <CommunityItemContainer isMainUsed={isMainUsed} />
           </SectionWrapper>
         </div>
-        <SectionWrapper
-          text={'커뮤니티'}
-          icon={<CommunityIcon />}
-          path="/community"
-        >
-          <CommunityItemContainer isMainUsed={isMainUsed} />
-        </SectionWrapper>
       </div>
       {isMatchModalOpen && (
         <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
