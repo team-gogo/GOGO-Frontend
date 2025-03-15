@@ -4,20 +4,29 @@ import { cn } from '@/shared/utils/cn';
 
 interface NavigationBarProps {
   totalPairs: number;
+  onPageChange: (page: number) => void;
 }
 
-const NavigationBar = ({ totalPairs }: NavigationBarProps) => {
+const NavigationBar = ({ totalPairs, onPageChange }: NavigationBarProps) => {
   if (totalPairs <= 1) return null;
 
   const [currentPage, setCurrentPage] = useState(1);
   const maxPagesToShow = 5;
 
   const handlePrev = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+    if (currentPage > 1) {
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+      onPageChange(newPage);
+    }
   };
 
   const handleNext = () => {
-    if (currentPage < totalPairs) setCurrentPage((prev) => prev + 1);
+    if (currentPage < totalPairs) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      onPageChange(newPage);
+    }
   };
 
   let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
@@ -39,7 +48,10 @@ const NavigationBar = ({ totalPairs }: NavigationBarProps) => {
             'text-body1e',
             currentPage === startPage + i ? 'text-main-600' : 'text-gray-500',
           )}
-          onClick={() => setCurrentPage(startPage + i)}
+          onClick={() => {
+            setCurrentPage(startPage + i);
+            onPageChange(startPage + i);
+          }}
         >
           {startPage + i}
         </button>

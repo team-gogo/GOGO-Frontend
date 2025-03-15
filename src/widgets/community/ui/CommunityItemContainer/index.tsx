@@ -1,6 +1,5 @@
 import { CommunityHeader, CommunityItem } from '@/entities/community';
 import { BoardData } from '@/shared/types/community';
-
 import { cn } from '@/shared/utils/cn';
 
 interface CommunityItemProps {

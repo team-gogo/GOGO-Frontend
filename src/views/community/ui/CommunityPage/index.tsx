@@ -14,12 +14,24 @@ const CommunityPage = () => {
 
   const [selectedSort, setSelectedSort] = useState<SortType | null>(null);
   const { selectedSport, toggleSportSelection } = useSelectSport();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleSortSelection = (sort: SortType) => {
     setSelectedSort((prev) => (prev === sort ? null : sort));
   };
 
-  const totalPairs = Math.ceil(getBoardMock().board.length / 7);
+  const itemsPerPage = 7;
+  const totalPairs = boardMock.info.totalPage;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentBoardData = {
+    info: boardMock.info,
+    board: boardMock.board.slice(startIndex, startIndex + itemsPerPage),
+  };
 
   return (
     <div
@@ -48,9 +60,12 @@ const CommunityPage = () => {
             toggleSportSelection={toggleSportSelection}
             toggleSortSelection={toggleSortSelection}
           />
-          <CommunityItemContainer boardData={boardMock} />
+          <CommunityItemContainer boardData={currentBoardData} />
         </div>
-        <NavigationBar totalPairs={totalPairs} />
+        <NavigationBar
+          totalPairs={totalPairs}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );
