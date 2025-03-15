@@ -26,7 +26,7 @@ const CommunityToolbar = ({
   };
 
   return (
-    <div className={cn('flex', 'gap-[32px]', 'justify-between')}>
+    <div className={cn('flex', 'justify-between')}>
       <div className={cn('flex', 'items-center', 'gap-12')}>
         <CommunityIcon />
         <p
