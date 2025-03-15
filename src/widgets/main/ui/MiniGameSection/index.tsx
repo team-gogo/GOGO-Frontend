@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import MiniGameModal from '@/entities/main/ui/MiniGameModal';
+import { MiniGameModal } from '@/entities/main';
 import { CoinIcon, PlinkoIcon, ShellGameIcon } from '@/shared/assets/icons';
 import { cn } from '@/shared/utils/cn';
 
