@@ -1,7 +1,7 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { GrayCircle, SettingIcon } from '@/shared/assets/svg';
+import { SettingIcon } from '@/shared/assets/svg';
 import { UserInfoType } from '@/shared/types/my';
 import { cn } from '@/shared/utils/cn';
 
@@ -10,9 +10,9 @@ interface MyInfoContainerProps {
 }
 
 const MyInfoContainer = ({ userInfo }: MyInfoContainerProps) => {
-  const [isActive, setIsActive] = useState<boolean>(false);
-
+  const [iconClicked, setIconClicked] = useState<boolean>(false);
   const { name, schoolName, sex } = userInfo;
+  const { push } = useRouter();
 
   const setToKorean = sex === 'MALE' ? '남성' : '여성';
 
@@ -22,86 +22,84 @@ const MyInfoContainer = ({ userInfo }: MyInfoContainerProps) => {
     { label: '성별', value: setToKorean },
   ];
 
+  const menuItems = [
+    {
+      label: '정보 수정',
+      action: () => push('/edit'),
+      hoverClass: 'hover:text-white',
+    },
+    {
+      label: '회원 탈퇴',
+      action: () => push('/delete'),
+      hoverClass: 'hover:text-system-error',
+    },
+    {
+      label: '취소',
+      action: () => setIconClicked(false),
+      hoverClass: 'hover:text-white',
+    },
+  ];
+
   return (
     <div
       className={cn(
-        'flex',
-        'items-center',
-        'w-full',
-        'rounded-xl',
-        'bg-gray-700',
-        'p-[2rem]',
-        'px-[1.625rem]',
-        'justify-between',
+        'relative flex w-full items-center justify-between rounded-xl bg-gray-700 p-[2rem] px-[1.625rem]',
       )}
     >
-      <div className={cn('flex', 'items-center', 'gap-[2.25rem]')}>
+      <div className={cn('flex items-center gap-[2.25rem]')}>
         {infoList.map((info) => (
-          <div
-            key={info.label}
-            className={cn('flex', 'items-center', 'gap-[1rem]')}
-          >
-            <p className={cn('text-body2s', 'text-gray-500')}>{info.label}</p>
-            <p className={cn('text-body1s', 'text-white')}>{info.value}</p>
+          <div key={info.label} className={cn('flex items-center gap-[1rem]')}>
+            <p className={cn('text-body2s text-gray-500')}>{info.label}</p>
+            <p className={cn('text-body1s text-white')}>{info.value}</p>
           </div>
         ))}
       </div>
 
-      <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
-        <div className={cn('flex', 'items-center', 'gap-[1rem]')}>
-          <p
-            className={cn(
-              'text-body2s',
-              isActive ? 'text-main-500' : 'text-gray-500',
-            )}
-          >
-            커뮤니티 필터
-          </p>
+      <div className={cn('flex items-center gap-[1.5rem]')}>
+        <button
+          onClick={() => setIconClicked(!iconClicked)}
+          className={cn('flex items-center gap-[0.5rem]')}
+        >
           <div
             className={cn(
-              'relative',
-              'flex',
-              'w-[3.75rem]',
-              'h-[1.5rem]',
-              'items-center',
-              'rounded-[3.125rem]',
-              'border-[0.125rem]',
-              'border-solid',
-              isActive ? 'border-main-500' : 'border-gray-500',
-              'cursor-pointer',
-              'overflow-hidden',
+              'flex h-[1.5rem] w-[1.5rem] items-center justify-center',
             )}
-            onClick={() => setIsActive(!isActive)}
+          >
+            <SettingIcon color={iconClicked ? '#fff' : '#6B6B6B'} />
+          </div>
+          <p
+            className={cn(
+              'text-body1s',
+              iconClicked ? 'text-white' : 'text-gray-500',
+            )}
+          >
+            설정
+          </p>
+        </button>
+
+        {iconClicked && (
+          <div
+            className={cn(
+              'absolute right-0 top-0 translate-y-[35%] items-center rounded-xl bg-gray-700 px-[2.25rem] py-[2.5rem] shadow-[0px_0px_18px_0px_rgba(0,0,0,0.25)]',
+            )}
           >
             <div
               className={cn(
-                'absolute',
-                'transition-transform',
-                'duration-300',
-                '-translate-x-[0.125rem]',
-                isActive ? 'translate-x-[2.125rem]' : '-translate-x-[0.125rem]',
+                'flex flex-col items-center justify-center gap-[4.1875rem]',
               )}
             >
-              <GrayCircle isActive={isActive} />
+              {menuItems.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={item.action}
+                  className={cn('text-body2s text-gray-400', item.hoverClass)}
+                >
+                  {item.label}
+                </button>
+              ))}
             </div>
           </div>
-        </div>
-        <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
-          <div
-            className={cn(
-              'flex',
-              'w-[1.5rem]',
-              'h-[1.5rem]',
-              'items-center',
-              'justify-center',
-            )}
-          >
-            <SettingIcon />
-          </div>
-          <p className={cn('text-body1s', 'text-gray-500', 'cursor-pointer')}>
-            설정
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );
