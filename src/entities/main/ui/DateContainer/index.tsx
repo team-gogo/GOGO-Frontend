@@ -51,7 +51,7 @@ const DateContainer = () => {
         'flex',
         'w-full',
         'items-center',
-        'justify-center',
+        'justify-end',
         'gap-[1rem]',
       )}
     >
