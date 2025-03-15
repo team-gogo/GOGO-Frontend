@@ -1,7 +1,7 @@
-// import CreateTeamPage from '@/views/team/ui/CreateTeamPage';
+import CreateTeamPage from '@/views/team/ui/CreateTeamPage';
 
-// const page = () => {
-//   return <CreateTeamPage />;
-// };
+const page = () => {
+  return <CreateTeamPage />;
+};
 
-// export default page;
+export default page;
