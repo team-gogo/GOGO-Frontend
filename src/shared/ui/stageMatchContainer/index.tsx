@@ -1,21 +1,22 @@
 'use client';
 
-import { Dispatch, SetStateAction } from 'react';
 import { MyStageResponse } from '@/shared/types/my';
+import { MatchResponse } from '@/shared/types/my/bet';
 import { StageResponse } from '@/shared/types/stage';
 import { cn } from '@/shared/utils/cn';
+import Match from '../match';
 import Stage from '../stage';
 
 interface StageContainerProps {
   stageInfo: MyStageResponse | StageResponse;
+  matches?: MatchResponse;
   startIndex: number;
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const StageContainer = ({
+const StageMatchContainer = ({
   stageInfo,
+  matches,
   startIndex,
-  setIsModalOpen,
 }: StageContainerProps) => {
   const visibleCount = 2;
 
@@ -35,12 +36,21 @@ const StageContainer = ({
             }px))`,
           }}
         >
-          {stageInfo.stages.map((stage) => (
+          {stageInfo.stages?.map((stage) => (
             <div
               key={stage.stageId}
               className="w-[calc(50%-20px)] flex-shrink-0"
             >
-              <Stage stage={stage} setIsModalOpen={setIsModalOpen} />
+              <Stage stage={stage} />
+            </div>
+          ))}
+
+          {matches?.matches.map((match) => (
+            <div
+              key={match.matchId}
+              className="w-[calc(50%-20px)] flex-shrink-0"
+            >
+              <Match match={match} />
             </div>
           ))}
         </div>
@@ -49,4 +59,4 @@ const StageContainer = ({
   );
 };
 
-export default StageContainer;
+export default StageMatchContainer;

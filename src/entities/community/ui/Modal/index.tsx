@@ -55,6 +55,7 @@ const Modal = ({
             asButton
             isSelected={selectedSport === sport}
             onClick={() => toggleSportSelection(sport)}
+            isHaveBorder={true}
           />
         ))}
       </div>

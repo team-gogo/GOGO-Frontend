@@ -4,38 +4,51 @@ import { cn } from '@/shared/utils/cn';
 
 interface RankingUserItemProps {
   rank: RankItem;
+  isMainUsed?: boolean;
 }
 
-const RankingUserItem = ({ rank }: RankingUserItemProps) => {
+const RankingUserItem = ({ rank, isMainUsed }: RankingUserItemProps) => {
   return (
     <div
       className={cn(
         'w-full',
-        'h-[3.75rem]',
-        'px-24',
-        'py-12',
+        isMainUsed ? 'h-[2.375rem]' : 'h-[3.75rem]',
+        isMainUsed ? 'px-[1rem]' : 'px-24',
+        isMainUsed ? 'py-[0.5rem]' : 'py-12',
         'flex',
         'justify-between',
-        'bg-gray-600',
+        'bg-gray-700',
         'rounded-lg',
         'items-center',
       )}
     >
       <div className={cn('flex', 'items-center', 'gap-[2.5rem]')}>
-        <p className={cn('text-white', 'text-body1e', 'mobile:text-body3e')}>
+        <p
+          className={cn(
+            'text-white',
+            isMainUsed ? 'text-caption1e' : 'text-body1e',
+            'mobile:text-body3e',
+          )}
+        >
           {rank.rank}등
         </p>
         <p
           className={cn(
             'text-gray-300',
-            'text-body2s',
+            isMainUsed ? 'text-caption1s' : 'text-body2s',
             'mobile:text-caption1s',
           )}
         >
           {rank.name}
         </p>
       </div>
-      <p className={cn('text-body1s', 'text-main-400', 'mobile:text-body3s')}>
+      <p
+        className={cn(
+          isMainUsed ? 'text-caption1s' : 'text-body1s',
+          isMainUsed ? 'text-white' : 'text-main-400',
+          'mobile:text-body3s',
+        )}
+      >
         {rank.point || 0}P
       </p>
     </div>

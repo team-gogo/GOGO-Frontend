@@ -1,4 +1,5 @@
 export * from './TagIcon';
+export * from './MainIcon';
 export { default as Logo } from './Logo';
 export { default as GoogleLogo } from './GoogleLogo';
 export { default as FaqIcon } from './FaqIcon';
@@ -36,3 +37,4 @@ export { default as YavarweeIcon } from './YavarweeIcon';
 export { default as CoinTossIcon } from './CoinTossIcon';
 export { default as PlinkoIcon } from './PlinkoIcon';
 export { default as MoneyIcon } from './MoneyIcon';
+export { default as PointCircleIcon } from './PointCircleIcon';

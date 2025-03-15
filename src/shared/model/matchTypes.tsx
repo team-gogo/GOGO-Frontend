@@ -3,6 +3,7 @@ import {
   AdminIcon,
   ClockIcon,
   ConfirmedIcon,
+  FinalIcon,
   OfficialIcon,
   StreamingIcon,
   TeamCountIcon,
@@ -16,6 +17,7 @@ export type MatchType =
   | 'CONFIRMED'
   | 'RECRUITING'
   | 'TIME'
+  | 'FINAL'
   | 'TEAM';
 
 export const MATCH_TYPES: Record<
@@ -38,5 +40,6 @@ export const MATCH_TYPES: Record<
     text: '모집중',
   },
   TIME: { icon: (color) => <ClockIcon color={color} />, text: '기타' },
-  TEAM: { icon: () => <TeamCountIcon /> },
+  FINAL: { icon: () => <FinalIcon /> },
+  TEAM: { icon: (color) => <TeamCountIcon color={color} /> },
 };

@@ -1,17 +1,21 @@
 'use client';
 
+import { MatchDetailModal } from '@/entities/main';
+import { useMatchModalStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 import {
   MatchContainer,
   PointContainer,
   TotalPointContainer,
 } from '@/widgets/my/bet';
+import getMatchResponse from '../Mock/getMatchResponse';
 import getTempPoint from '../Mock/getTempPoint';
-import getUserBetInfo from '../Mock/getUserBetInfo';
 
 const MyBetPage = () => {
-  const userBetInfo = getUserBetInfo();
+  const userBetInfo = getMatchResponse();
   const tempPoint = getTempPoint();
+
+  const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
 
   return (
     <div
@@ -40,6 +44,9 @@ const MyBetPage = () => {
         </div>
         <MatchContainer userBetInfo={userBetInfo} />
       </div>
+      {isMatchModalOpen && (
+        <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+      )}
     </div>
   );
 };
