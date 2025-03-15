@@ -22,6 +22,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         attributes.onChange(e);
       }
     };
+
     return (
       <div className={cn('h-[56px]', 'w-full', 'relative')}>
         <input
@@ -42,7 +43,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             'text-body3s',
             'text-white',
             attributes.type === 'number' &&
-              '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+              '[appearance:none] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden',
           )}
         />
         {icon && (
@@ -67,6 +68,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     );
   },
 );
+
 Input.displayName = 'Input';
 
 export default Input;
