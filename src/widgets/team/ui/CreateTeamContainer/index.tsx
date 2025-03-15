@@ -28,11 +28,11 @@ const CreateTeamContainer = () => {
         <div>
           <Input placeholder="학생을 입력해주세요." />
         </div>
-        <div className={cn('mt-60')}>
-          <Button bg="bg-main-600" textColor="text-white">
-            확인
-          </Button>
-        </div>
+      </div>
+      <div className={cn('mt-60', 'mb-30')}>
+        <Button bg="bg-main-600" textColor="text-white">
+          확인
+        </Button>
       </div>
     </div>
   );
