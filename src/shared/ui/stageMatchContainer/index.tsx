@@ -21,7 +21,6 @@ const StageMatchContainer = ({
   startIndex,
   setIsModalOpen,
 }: StageContainerProps) => {
-  console.log(startIndex);
   const visibleCount = 2;
 
   return (
