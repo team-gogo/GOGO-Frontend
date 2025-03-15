@@ -34,7 +34,11 @@ const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
       )}
     >
       <div className={cn('flex', 'items-center', 'justify-center')}>
-        <SportTypelabel type={gameType} isMainUsed={isMainUsed} />
+        <SportTypelabel
+          type={gameType}
+          isMainUsed={isMainUsed}
+          isHaveBorder={true}
+        />
       </div>
       <p
         className={cn(
