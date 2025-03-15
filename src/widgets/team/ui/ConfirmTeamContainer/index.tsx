@@ -45,7 +45,9 @@ const ConfirmTeamContainer = () => {
           'mt-30',
         )}
       >
-        <h1 className={cn('text-h4s', 'text-gray-100')}>현재 등록된 팀들</h1>
+        <h1 className={cn('text-h3e', 'text-white', 'mb-24', 'mt-24')}>
+          현재 등록된 팀들
+        </h1>
         <div className={cn('flex', 'items-center', 'gap-8', 'ml-auto')}>
           <SelectedTeamCounter count={selectedTeamIds.length} />
           <div
