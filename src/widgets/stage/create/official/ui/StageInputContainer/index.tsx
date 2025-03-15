@@ -16,15 +16,22 @@ const StageInputContainer = ({ register }: Props) => {
         <Input
           {...register('stageName', {
             required: '스테이지 이름은 필수입니다.',
-            maxLength: { value: 10, message: '10자 이내로 입력해주세요.' },
+            maxLength: {
+              value: 10,
+              message: '스테이지 이름은 10자 이내로 입력해주세요.',
+            },
           })}
           placeholder="이름을 입력해주세요."
         />
+
         <Input
           {...register('initialPoint', {
             valueAsNumber: true,
             required: '초기 보유 포인트는 필수입니다.',
-            min: { value: 0, message: '0 이상의 값을 입력해주세요.' },
+            min: {
+              value: 0,
+              message: '초기 보유 포인트는 0 이상의 값을 입력해주세요.',
+            },
           })}
           placeholder="초기 보유 포인트"
           icon={<PointIcon fill="#898989" />}

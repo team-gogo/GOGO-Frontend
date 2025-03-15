@@ -1,6 +1,8 @@
 'use client';
 
 import { FieldErrors, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import { handleFormErrors } from '@/shared/model/formErrorUtils';
 import { OfficialStageData } from '@/shared/types/stage/create/official';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
@@ -34,11 +36,15 @@ const OfficialCreatePage = () => {
     });
 
   const onSubmit = (data: OfficialStageData) => {
+    if (data.game.length === 0) {
+      toast.error('경기는 한 개 이상 생성되어야 합니다.');
+      return;
+    }
     console.log('폼 제출 데이터:', data);
   };
 
   const onError = (errors: FieldErrors<OfficialStageData>) => {
-    console.error('폼 제출 에러:', errors);
+    handleFormErrors(errors, toast.error);
   };
 
   return (
@@ -48,8 +54,12 @@ const OfficialCreatePage = () => {
     >
       <BackPageButton type="back" label="스테이지 생성 (학교 공식 행사)" />
       <StageInputContainer register={register} />
-      <MatchSettingContainer control={control} register={register} />
-      <RuleInputContainer register={register} />
+      <MatchSettingContainer
+        control={control}
+        register={register}
+        watch={watch}
+      />
+      <RuleInputContainer register={register} watch={watch} />
       <MiniGameContainer
         register={register}
         watch={watch}

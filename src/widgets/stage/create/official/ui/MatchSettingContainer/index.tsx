@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { useFieldArray, UseFormRegister, Control } from 'react-hook-form';
+import {
+  useFieldArray,
+  UseFormRegister,
+  Control,
+  UseFormWatch,
+} from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { AddButton } from '@/entities/stage/create/official';
 import GameField from '@/entities/stage/create/official/ui/GameField';
 import { SportType } from '@/shared/model/sportTypes';
@@ -10,11 +16,13 @@ import { cn } from '@/shared/utils/cn';
 interface MatchSettingContainerProps {
   control: Control<OfficialStageData>;
   register: UseFormRegister<OfficialStageData>;
+  watch: UseFormWatch<OfficialStageData>;
 }
 
 const MatchSettingContainer = ({
   control,
   register,
+  watch,
 }: MatchSettingContainerProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -39,7 +47,53 @@ const MatchSettingContainer = ({
     { value: 'SINGLE', label: '단판' },
   ];
 
+  const getCategoryLabel = (category: string) => {
+    const categoryMap: { [key: string]: string } = {
+      VOLLEY_BALL: '배구',
+      SOCCER: '축구',
+      LOL: 'LOL',
+      BASE_BALL: '야구',
+      BASKET_BALL: '농구',
+      BADMINTON: '배드민턴',
+      ETC: '기타',
+    };
+    return categoryMap[category] || category;
+  };
+
+  const validateCurrentSportFields = () => {
+    if (!selectedSport) return true;
+
+    const currentFields = fields.filter(
+      (field) => field.category === selectedSport,
+    );
+    if (currentFields.length === 0) return true;
+
+    for (let i = 0; i < currentFields.length; i++) {
+      const fieldIndex = fields.findIndex(
+        (field) => field.id === currentFields[i].id,
+      );
+      const fieldName = watch(`game.${fieldIndex}.name`);
+      const fieldMinCapacity = watch(`game.${fieldIndex}.teamMinCapacity`);
+      const fieldMaxCapacity = watch(`game.${fieldIndex}.teamMaxCapacity`);
+
+      if (!fieldName || !fieldMinCapacity || !fieldMaxCapacity) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleSportSelect = (sport: SportType) => {
+    if (selectedSport && selectedSport !== sport) {
+      if (!validateCurrentSportFields()) {
+        toast.error(
+          `${getCategoryLabel(selectedSport)} 카테고리의 모든 필드를 작성해주세요.`,
+        );
+        return;
+      }
+    }
+
     setSelectedSport(sport);
   };
 
@@ -85,6 +139,7 @@ const MatchSettingContainer = ({
       <div className={cn('space-y-[40px]')}>
         {filteredFields.map((field) => (
           <GameField
+            watch={watch}
             key={field.id}
             register={register}
             index={fields.indexOf(field)}

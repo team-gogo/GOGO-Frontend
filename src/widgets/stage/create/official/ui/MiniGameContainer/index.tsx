@@ -75,8 +75,25 @@ const MiniGameContainer = ({ register, watch, setValue }: Props) => {
                 <Input
                   {...register(`miniGame.${game.type}.maxBettingPoint`, {
                     required: isActive
-                      ? '최대 배팅 포인트는 필수입니다.'
+                      ? `미니게임의 ${game.name} 최대 배팅 포인트는 필수입니다.`
                       : false,
+                    valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: `미니게임의 ${game.name} 최대 배팅 포인트는 0 이상의 값을 입력해주세요.`,
+                    },
+                    validate: (value) => {
+                      const minValue = watch(
+                        `miniGame.${game.type}.minBettingPoint`,
+                      );
+                      return (
+                        !isActive ||
+                        !value ||
+                        !minValue ||
+                        value >= minValue ||
+                        `미니게임의 ${game.name} 최대 배팅 포인트는 최소 배팅 포인트보다 크거나 같아야 합니다.`
+                      );
+                    },
                   })}
                   placeholder="최대 배팅 포인트"
                   icon={<PointIcon fill="#898989" />}
@@ -86,8 +103,25 @@ const MiniGameContainer = ({ register, watch, setValue }: Props) => {
                 <Input
                   {...register(`miniGame.${game.type}.minBettingPoint`, {
                     required: isActive
-                      ? '최소 배팅 포인트는 필수입니다.'
+                      ? `미니게임의 ${game.name} 최소 배팅 포인트는 필수입니다.`
                       : false,
+                    valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: `미니게임의 ${game.name} 최소 배팅 포인트는 0 이상의 값을 입력해주세요.`,
+                    },
+                    validate: (value) => {
+                      const maxValue = watch(
+                        `miniGame.${game.type}.maxBettingPoint`,
+                      );
+                      return (
+                        !isActive ||
+                        !value ||
+                        !maxValue ||
+                        value <= maxValue ||
+                        `미니게임의 ${game.name} 최소 배팅 포인트는 최대 배팅 포인트보다 작거나 같아야 합니다.`
+                      );
+                    },
                   })}
                   placeholder="최소 배팅 포인트"
                   icon={<PointIcon fill="#898989" />}
@@ -97,7 +131,14 @@ const MiniGameContainer = ({ register, watch, setValue }: Props) => {
               </div>
               <Input
                 {...register(`miniGame.${game.type}.initialTicketCount`, {
-                  required: isActive ? '초기 보유 티켓는 필수입니다.' : false,
+                  required: isActive
+                    ? `미니게임의 ${game.name} 초기 보유 티켓은 필수입니다.`
+                    : false,
+                  valueAsNumber: true,
+                  min: {
+                    value: 0,
+                    message: `미니게임의 ${game.name} 초기 보유 티켓은 0 이상의 값을 입력해주세요.`,
+                  },
                 })}
                 placeholder="초기 보유 티켓"
                 icon={<TicketIcon size={24} />}

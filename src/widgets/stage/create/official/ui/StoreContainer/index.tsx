@@ -17,6 +17,7 @@ interface Props {
   watch: UseFormWatch<OfficialStageData>;
   setValue: UseFormSetValue<OfficialStageData>;
 }
+
 export const storeItems = [
   {
     icon: <TicketIcon />,
@@ -73,8 +74,13 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
               <Input
                 {...register(`shop.${item.type}.price`, {
                   required: isActive
-                    ? `${item.name} 티켓 가격은 필수입니다.`
+                    ? `상점의 ${item.name} 티켓 가격은 필수입니다.`
                     : false,
+                  valueAsNumber: true,
+                  min: {
+                    value: 0,
+                    message: `상점의 ${item.name} 티켓 가격은 0 이상의 값을 입력해주세요.`,
+                  },
                 })}
                 placeholder={`${item.name} 티켓 가격`}
                 icon={<PointIcon fill="#898989" />}
@@ -84,8 +90,13 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
               <Input
                 {...register(`shop.${item.type}.quantity`, {
                   required: isActive
-                    ? `${item.name} 티켓 수량은 필수입니다.`
+                    ? `상점의 ${item.name} 티켓 수량은 필수입니다.`
                     : false,
+                  valueAsNumber: true,
+                  min: {
+                    value: 0,
+                    message: `상점의 ${item.name} 티켓 수량은 0 이상의 값을 입력해주세요.`,
+                  },
                 })}
                 placeholder="티켓 수량"
                 icon={<TicketIcon size={24} />}
