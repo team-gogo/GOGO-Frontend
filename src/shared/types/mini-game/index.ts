@@ -22,3 +22,9 @@ export interface ShopTicketStatusDto {
   yavarwee: GameTicket;
   plinko: GameTicket;
 }
+
+export interface PlinkoFormType {
+  amount: number;
+  times: number;
+  risk: 'LOW' | 'MEDIUM' | 'HIGH';
+}
