@@ -6,6 +6,7 @@ import {
   FinalIcon,
   OfficialIcon,
   StreamingIcon,
+  TeamCountIcon,
 } from '@/shared/assets/svg';
 
 export type MatchType =
@@ -16,9 +17,8 @@ export type MatchType =
   | 'CONFIRMED'
   | 'RECRUITING'
   | 'TIME'
-  | 'LIVE'
-  | 'FINISH'
-  | 'FINAL';
+  | 'FINAL'
+  | 'TEAM';
 
 export const MATCH_TYPES: Record<
   string,
@@ -41,4 +41,5 @@ export const MATCH_TYPES: Record<
   },
   TIME: { icon: (color) => <ClockIcon color={color} />, text: '기타' },
   FINAL: { icon: () => <FinalIcon /> },
+  TEAM: { icon: () => <TeamCountIcon /> },
 };

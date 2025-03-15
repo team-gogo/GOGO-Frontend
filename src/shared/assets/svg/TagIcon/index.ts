@@ -5,3 +5,4 @@ export { default as OfficialIcon } from './OfficialIcon';
 export { default as StreamingIcon } from './StreamingIcon';
 export { default as ClockIcon } from './ClockIcon';
 export { default as FinalIcon } from './FinalIcon';
+export { default as TeamCountIcon } from './TeamCountIcon';
