@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Dispatch, SetStateAction } from 'react';
+import { usePasswordModalStore } from '@/shared/stores';
 import { MyStageType } from '@/shared/types/my';
 import { StagesType } from '@/shared/types/stage';
 import { cn } from '@/shared/utils/cn';
@@ -10,11 +10,11 @@ import MatchTypeLabel from '../matchTypeLabel';
 
 interface StageProps {
   stage: MyStageType | StagesType;
-  setIsModalOpen?: Dispatch<SetStateAction<boolean>>;
   isMyStage?: boolean;
 }
 
-const Stage = ({ stage, setIsModalOpen, isMyStage = false }: StageProps) => {
+const Stage = ({ stage, isMyStage = false }: StageProps) => {
+  const { setIsPasswordModalOpen } = usePasswordModalStore();
   const { stageName, type, status, isMaintaining } = stage;
 
   const { push } = useRouter();
@@ -42,16 +42,16 @@ const Stage = ({ stage, setIsModalOpen, isMyStage = false }: StageProps) => {
           <div
             className={cn('flex', 'w-full', 'justify-between', 'items-center')}
           >
-            <div className={cn('flex', 'items-center', 'gap-[0.625rem]')}>
+            <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
               {type.map((t) => (
                 <MatchTypeLabel key={t} type={t} color="#FFF" />
               ))}
-              {isMaintaining && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
               {status === 'RECRUITING' ? (
                 <MatchTypeLabel type="RECRUITING" color="#01C612" />
               ) : status === 'CONFIRMED' ? (
                 <MatchTypeLabel type="CONFIRMED" color="#898989" />
               ) : null}
+              {isMaintaining && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
             </div>
             {/* {isAdmin && <Tag TagType={'STREAMING'} />} */}
           </div>
@@ -73,8 +73,8 @@ const Stage = ({ stage, setIsModalOpen, isMyStage = false }: StageProps) => {
                 isMyStage || isParticipating
                   ? push(`/my/bet?stageId=${stage.stageId}`)
                   : isPassCode
-                    ? setIsModalOpen?.(true)
-                    : console.log('비밀번호 안 걸려있는 참여하기 버튼 클릭');
+                    ? setIsPasswordModalOpen(true)
+                    : push(`/stage/stageId=${stage.stageId}`);
               }}
             >
               {isParticipating || isMyStage ? '상세보기' : '참여하기'}

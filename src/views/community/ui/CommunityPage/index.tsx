@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { NavigationBar } from '@/entities/community';
-import { SportType, SortType } from '@/shared/model/sportTypes';
+import { SortType } from '@/shared/model/sportTypes';
+import useSelectSport from '@/shared/model/useSelectSport';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { CommunityItemContainer, CommunityToolbar } from '@/widgets/community';
@@ -11,12 +12,8 @@ import getBoardMock from '../Mock/getBoardMock';
 const CommunityPage = () => {
   const boardMock = getBoardMock();
 
-  const [selectedSport, setSelectedSport] = useState<SportType | null>(null);
   const [selectedSort, setSelectedSort] = useState<SortType | null>(null);
-
-  const toggleSportSelection = (sport: SportType) => {
-    setSelectedSport((prev) => (prev === sport ? null : sport));
-  };
+  const { selectedSport, toggleSportSelection } = useSelectSport();
 
   const toggleSortSelection = (sort: SortType) => {
     setSelectedSort((prev) => (prev === sort ? null : sort));

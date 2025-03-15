@@ -1,12 +1,14 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   BlueAlarmIcon,
   GrayAlarmIcon,
   RightArrowIcon,
 } from '@/shared/assets/svg';
+import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
+import { useMatchModalStore, useMatchStore } from '@/shared/stores';
 import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
@@ -19,10 +21,6 @@ interface MatchProps {
 }
 
 const Match = ({ match }: MatchProps) => {
-  const [isAlarmClick, setIsAlarmClick] = useState<boolean>(false);
-
-  const { push } = useRouter();
-
   const {
     aTeam,
     bTeam,
@@ -36,9 +34,12 @@ const Match = ({ match }: MatchProps) => {
     result,
   } = match;
 
-  useEffect(() => {
-    setIsAlarmClick(isNotice);
-  }, []);
+  const { setIsMatchModalOpen } = useMatchModalStore();
+  const { setMatchStatus, setMatch } = useMatchStore();
+
+  const [isAlarmClick, setIsAlarmClick] = useState<boolean>(isNotice);
+
+  const { push } = useRouter();
 
   const currentTime = new Date();
 
@@ -60,15 +61,17 @@ const Match = ({ match }: MatchProps) => {
   const isPredictSuccess = result?.isPredictionSuccess;
 
   const roundLabel = {
-    ROUND_OF_32: '32강',
-    ROUND_OF_16: '16강',
-    QUARTER_FINALS: '8강',
-    SEMI_FINALS: '4강',
-    FINALS: '결승',
+    ROUND_OF_32: '32',
+    ROUND_OF_16: '16',
+    QUARTER_FINALS: '8',
+    SEMI_FINALS: '4',
+    FINALS: '결승전',
   };
 
   const roundText =
     round && round.length > 0 ? round.map((r) => roundLabel[r]).join(', ') : '';
+
+  const isFinal = roundText === '결승전';
 
   const getTeamClassName = (teamId: number) => {
     if (betting.predictedWinTeamId === teamId) {
@@ -77,44 +80,75 @@ const Match = ({ match }: MatchProps) => {
     return 'text-white';
   };
 
+  const updateStateu = () => {
+    setMatchStatus({
+      isPlaying,
+      isFinish,
+      time,
+      roundText,
+    });
+    setMatch(match);
+  };
+
+  const borderStyle = [
+    'border-4',
+    'border-solid',
+    'border-main-300',
+    'py-[1.25rem]',
+  ];
+
   return (
     <div
       className={cn(
         'flex',
         'flex-col',
-        'p-[1.5rem]',
+        'py-[1.5rem]',
         'px-[2rem]',
         'rounded-xl',
         'bg-gray-700',
+        isFinal && borderStyle,
       )}
     >
-      <div className={cn('flex', 'flex-col', 'justify-center', 'gap-[2rem]')}>
+      <div
+        className={cn(
+          'flex',
+          'flex-col',
+          'justify-center',
+          isPlaying ? 'gap-[2.5rem]' : 'gap-[2rem]',
+        )}
+      >
         <div
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
-          <div className={cn('flex', 'items-center', 'gap-[1rem]')}>
+          <div className={cn('flex', 'items-center', 'gap-[1.25rem]')}>
             <button onClick={() => setIsAlarmClick(!isAlarmClick)}>
               {isAlarmClick ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
             </button>
-
-            <MatchTypeLabel
-              type={'TIME'}
-              customText={isPlaying ? '경기 중' : isFinish ? '경기 종료' : time}
-              color={isPlaying ? '#01C612' : isFinish ? '#898989' : '#FFF'}
-            />
-            <MatchTypeLabel
-              type="OFFICIAL"
-              customText={roundText}
-              color="#FFF"
-            />
-            <SportTypeLabel
-              type={category && category.length > 0 ? category[0] : ''}
-            />
+            <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
+              <MatchTypeLabel
+                type={isFinal ? 'FINAL' : 'OFFICIAL'}
+                customText={roundText}
+                color={isFinal ? '#97A9FF' : '#FFF'}
+              />
+              <MatchTypeLabel
+                type={'TIME'}
+                customText={
+                  isPlaying ? '경기 중' : isFinish ? '경기 종료' : time
+                }
+                color={isPlaying ? '#01C612' : isFinish ? '#898989' : '#FFF'}
+              />
+              <SportTypeLabel
+                type={category && category.length > 0 ? category[0] : ''}
+              />
+            </div>
           </div>
 
           <button
             className={cn('flex', 'items-center', 'gap-[0.5rem]')}
-            onClick={() => push(`/match?matchId=${match.matchId}`)}
+            onClick={() => {
+              setIsMatchModalOpen(true);
+              updateStateu();
+            }}
           >
             <p className={cn('text-body3s', 'text-gray-500')}>자세히 보기</p>
             <RightArrowIcon />
@@ -126,21 +160,25 @@ const Match = ({ match }: MatchProps) => {
             'w-full',
             'flex-col',
             'items-center',
-            'gap-[2rem]',
+            isPlaying ? 'gap-[2.5rem]' : 'gap-[2rem]',
           )}
         >
           <div
             className={cn('flex', 'flex-col', 'items-center', 'gap-[0.25rem]')}
           >
-            <p
+            <div
               className={cn(
-                'text-body3s',
-                'text-gray-300',
+                'flex',
                 isPlaying && 'hidden',
+                'items-center',
+                'gap-[0.25rem]',
               )}
             >
-              총 포인트 : {formatPoint(aTeam.bettingPoint + bTeam.bettingPoint)}
-            </p>
+              <PointCircleIcon />
+              <p className={cn('text-body3s', 'text-gray-300')}>
+                {formatPoint(aTeam.bettingPoint + bTeam.bettingPoint)}
+              </p>
+            </div>
             {isFinish ? (
               <h2 className={cn('text-h2e', 'text-white')}>
                 {winnerTeam}팀 승리
@@ -257,8 +295,8 @@ const Match = ({ match }: MatchProps) => {
               <RightArrowIcon color="white" />
             </button>
           ) : (
-            <Button disabled={isEnd}>
-              {!isEnd
+            <Button disabled={isEnd || betting.isBetting}>
+              {!betting.isBetting
                 ? '베팅'
                 : betting.bettingPoint !== undefined
                   ? `${formatPoint(betting.bettingPoint)} 베팅`

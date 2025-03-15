@@ -10,9 +10,9 @@ import { cn } from '@/shared/utils/cn';
 interface ModalProps {
   onClose: () => void;
   selectedSport: SportType | null;
-  selectedSort: SortType | null;
+  selectedSort?: SortType | null;
   toggleSportSelection: (sport: SportType) => void;
-  toggleSortSelection: (sort: SortType) => void;
+  toggleSortSelection?: (sort: SortType) => void;
 }
 
 const Modal = ({
@@ -42,7 +42,7 @@ const Modal = ({
         'bg-gray-700',
         'px-[40px]',
         'py-[36px]',
-        'max-w-[795px]',
+        'max-w-[52.5rem]',
         'w-full',
         'space-y-24',
       )}
@@ -55,23 +55,26 @@ const Modal = ({
             asButton
             isSelected={selectedSport === sport}
             onClick={() => toggleSportSelection(sport)}
+            isHaveBorder={true}
           />
         ))}
       </div>
 
       <div className="my-6 h-[1px] w-full bg-gray-600" />
 
-      <div className={cn('flex', 'flex-wrap', 'gap-y-12', 'gap-x-16')}>
-        {sortTypes.map((sort) => (
-          <SportTypeLabel
-            key={sort}
-            type={sort}
-            asButton
-            isSelected={selectedSort === sort} // 수정된 부분: selectedSort와 sort의 타입이 일치
-            onClick={() => toggleSortSelection(sort)} // 수정된 부분: toggleSortSelection에 sort 전달
-          />
-        ))}
-      </div>
+      {selectedSort !== undefined && toggleSortSelection && (
+        <div className={cn('flex', 'flex-wrap', 'gap-y-12', 'gap-x-16')}>
+          {sortTypes.map((sort) => (
+            <SportTypeLabel
+              key={sort}
+              type={sort}
+              asButton
+              isSelected={selectedSort === sort}
+              onClick={() => toggleSortSelection(sort)}
+            />
+          ))}
+        </div>
+      )}
 
       <div className={cn('flex', 'gap-8', 'items-center')}>
         <WarningIcon />

@@ -6,9 +6,15 @@ interface MatchTypeLabel {
   type: MatchType;
   customText?: string;
   color?: string;
+  isHaveBorder?: boolean;
 }
 
-const MatchTypeLabel = ({ type, customText, color }: MatchTypeLabel) => {
+const MatchTypeLabel = ({
+  type,
+  customText,
+  color,
+  isHaveBorder = false,
+}: MatchTypeLabel) => {
   const { icon, text: defaultText } = MATCH_TYPES[type] || {
     icon: (color) => <EtcIcon color={color} />,
     text: '기타',
@@ -18,7 +24,7 @@ const MatchTypeLabel = ({ type, customText, color }: MatchTypeLabel) => {
 
   const isHex = color?.startsWith('#');
 
-  const commonClasses = cn(
+  const borderStyle = [
     'px-[1rem]',
     'py-[0.75rem]',
     'laptop:p-[0.25rem]',
@@ -26,6 +32,11 @@ const MatchTypeLabel = ({ type, customText, color }: MatchTypeLabel) => {
     'rounded-lg',
     'border-1',
     'border-solid',
+    `border-${color}`,
+    !isHex && color ? `border-${color}` : 'border-main-500',
+  ];
+
+  const commonClasses = cn(
     'w-fit',
     'flex',
     'gap-8',
@@ -33,8 +44,7 @@ const MatchTypeLabel = ({ type, customText, color }: MatchTypeLabel) => {
     'items-center',
     'h-[2.8125rem]',
     'laptop:h-[1.875rem]',
-    `border-${color}`,
-    !isHex && color ? `border-${color}` : 'border-main-500',
+    isHaveBorder && borderStyle,
   );
 
   const content = (
