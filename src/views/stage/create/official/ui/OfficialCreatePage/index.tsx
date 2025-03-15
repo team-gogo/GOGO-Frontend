@@ -1,9 +1,5 @@
 'use client';
 
-import { FieldErrors, useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import { handleFormErrors } from '@/shared/model/formErrorUtils';
-import { OfficialStageData } from '@/shared/types/stage/create/official';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
@@ -16,36 +12,18 @@ import {
   StageInputContainer,
   StoreContainer,
 } from '@/widgets/stage/create/official';
+import { useOfficialStageForm } from '../../model/useOfficialStageForm';
 
 const OfficialCreatePage = () => {
-  const { register, handleSubmit, watch, setValue, control } =
-    useForm<OfficialStageData>({
-      defaultValues: {
-        game: [],
-        miniGame: {
-          yavarwee: { isActive: false },
-          coinToss: { isActive: false },
-          plinko: { isActive: false },
-        },
-        shop: {
-          yavarwee: { isActive: false },
-          coinToss: { isActive: false },
-          plinko: { isActive: false },
-        },
-      },
-    });
-
-  const onSubmit = (data: OfficialStageData) => {
-    if (data.game.length === 0) {
-      toast.error('경기는 한 개 이상 생성되어야 합니다.');
-      return;
-    }
-    console.log('폼 제출 데이터:', data);
-  };
-
-  const onError = (errors: FieldErrors<OfficialStageData>) => {
-    handleFormErrors(errors, toast.error);
-  };
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    control,
+    onSubmit,
+    onError,
+  } = useOfficialStageForm();
 
   return (
     <form
