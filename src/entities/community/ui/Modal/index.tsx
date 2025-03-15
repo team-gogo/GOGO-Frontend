@@ -55,6 +55,7 @@ const Modal = ({
             asButton
             isSelected={selectedSport === sport}
             onClick={() => toggleSportSelection(sport)}
+            isHaveBorder={true}
           />
         ))}
       </div>
@@ -69,6 +70,7 @@ const Modal = ({
             asButton
             isSelected={selectedSort === sort} // 수정된 부분: selectedSort와 sort의 타입이 일치
             onClick={() => toggleSortSelection(sort)} // 수정된 부분: toggleSortSelection에 sort 전달
+            isHaveBorder={true}
           />
         ))}
       </div>

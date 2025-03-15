@@ -55,7 +55,7 @@ const getMatchResponse = (): MatchResponse => {
           winCount: 9,
         },
         startDate: '2025-03-11T15:00:00',
-        endDate: '2025-03-15T17:00:00',
+        endDate: '2025-03-22T17:00:00',
         isEnd: false,
         round: ['ROUND_OF_16'],
         category: ['BASKET_BALL'],
