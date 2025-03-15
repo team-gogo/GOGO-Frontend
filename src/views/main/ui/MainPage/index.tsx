@@ -14,11 +14,12 @@ import { formatPoint } from '@/shared/utils/formatPoint';
 import { CommunityItemContainer } from '@/widgets/community';
 import { MiniGameSection, SectionWrapper } from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
-import { getMatchInfo, getRankingMock } from '../..';
+import { getBoardMock, getMatchInfo, getRankingMock } from '../..';
 
 const MainPage = () => {
   const matchInfo = getMatchInfo();
   const rankingMock = getRankingMock();
+  const boardMock = getBoardMock();
 
   const isMainUsed = true;
 
@@ -103,7 +104,10 @@ const MainPage = () => {
             icon={<CommunityIcon />}
             path="/community"
           >
-            <CommunityItemContainer isMainUsed={isMainUsed} />
+            <CommunityItemContainer
+              isMainUsed={isMainUsed}
+              boardData={boardMock}
+            />
           </SectionWrapper>
         </div>
       </div>
