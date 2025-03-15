@@ -6,10 +6,11 @@ import { cn } from '@/shared/utils/cn';
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
   maxLength?: number;
+  bgColor?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ icon, maxLength, ...attributes }, ref) => {
+  ({ icon, maxLength, bgColor = 'bg-gray-700', ...attributes }, ref) => {
     const [inputLength, setInputLength] = useState(0);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +35,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             'h-full',
             'w-full',
-            'bg-gray-700',
+            bgColor,
             'px-[16px]',
             'pl-[12px]',
             icon ? 'pr-[50px]' : 'pr-[12px]',

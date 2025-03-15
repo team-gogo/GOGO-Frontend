@@ -1,9 +1,9 @@
-interface props {
+interface Props {
   size?: number;
   fill?: string;
 }
 
-const PointIcon = ({ size = 24, fill = '#ffffff' }: props) => (
+const PointIcon = ({ size = 24, fill = '#898989' }: Props) => (
   <svg
     width={size}
     height={size}

@@ -5,6 +5,7 @@ import {
   ConfirmedIcon,
   OfficialIcon,
   StreamingIcon,
+  TeamCountIcon,
 } from '@/shared/assets/svg';
 
 export type MatchType =
@@ -15,12 +16,11 @@ export type MatchType =
   | 'CONFIRMED'
   | 'RECRUITING'
   | 'TIME'
-  | 'LIVE'
-  | 'FINISH';
+  | 'TEAM';
 
 export const MATCH_TYPES: Record<
   string,
-  { icon: (color?: string) => JSX.Element; text: string }
+  { icon: (color?: string) => JSX.Element; text?: string }
 > = {
   OFFICIAL: { icon: () => <OfficialIcon />, text: '공식' },
   FAST: { icon: () => <OfficialIcon />, text: '사설' },
@@ -38,4 +38,5 @@ export const MATCH_TYPES: Record<
     text: '모집중',
   },
   TIME: { icon: (color) => <ClockIcon color={color} />, text: '기타' },
+  TEAM: { icon: () => <TeamCountIcon /> },
 };

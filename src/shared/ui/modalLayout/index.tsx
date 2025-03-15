@@ -25,6 +25,7 @@ const ModalLayout = ({
         'justify-center',
         'bg-black',
         'bg-opacity-50',
+        'mx-[1rem]',
       )}
     >
       <div className={containerClassName}>
