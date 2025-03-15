@@ -1,4 +1,4 @@
-import PlaceTeamPage from '@/views/team/ui/PlaceTeamPage';
+import PlaceTeamPage from '@/views/team/ui/PlaceTeamPage/index';
 
 const page = () => {
   return <PlaceTeamPage />;
