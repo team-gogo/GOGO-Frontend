@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   BlueAlarmIcon,
   GrayAlarmIcon,
@@ -20,10 +20,6 @@ interface MatchProps {
 }
 
 const Match = ({ match }: MatchProps) => {
-  const [isAlarmClick, setIsAlarmClick] = useState<boolean>(false);
-
-  const { push } = useRouter();
-
   const {
     aTeam,
     bTeam,
@@ -37,9 +33,9 @@ const Match = ({ match }: MatchProps) => {
     result,
   } = match;
 
-  useEffect(() => {
-    setIsAlarmClick(isNotice);
-  }, []);
+  const [isAlarmClick, setIsAlarmClick] = useState<boolean>(isNotice);
+
+  const { push } = useRouter();
 
   const currentTime = new Date();
 
