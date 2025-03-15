@@ -71,6 +71,8 @@ const Match = ({ match }: MatchProps) => {
   const roundText =
     round && round.length > 0 ? round.map((r) => roundLabel[r]).join(', ') : '';
 
+  const isFinal = roundText === '결승전';
+
   const getTeamClassName = (teamId: number) => {
     if (betting.predictedWinTeamId === teamId) {
       return 'text-main-500';
@@ -78,15 +80,23 @@ const Match = ({ match }: MatchProps) => {
     return 'text-white';
   };
 
+  const borderStyle = [
+    'border-4',
+    'border-solid',
+    'border-main-300',
+    'py-[1.25rem]',
+  ];
+
   return (
     <div
       className={cn(
         'flex',
         'flex-col',
-        'p-[1.5rem]',
+        'py-[1.5rem]',
         'px-[2rem]',
         'rounded-xl',
         'bg-gray-700',
+        isFinal && borderStyle,
       )}
     >
       <div
@@ -106,9 +116,9 @@ const Match = ({ match }: MatchProps) => {
             </button>
             <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
               <MatchTypeLabel
-                type={roundText === '결승전' ? 'FINAL' : 'OFFICIAL'}
+                type={isFinal ? 'FINAL' : 'OFFICIAL'}
                 customText={roundText}
-                color={roundText === '결승전' ? '#97A9FF' : '#FFF'}
+                color={isFinal ? '#97A9FF' : '#FFF'}
               />
               <MatchTypeLabel
                 type={'TIME'}
