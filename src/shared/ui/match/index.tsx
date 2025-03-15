@@ -8,6 +8,7 @@ import {
   RightArrowIcon,
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
+import { useMatchModalStore, useMatchStore } from '@/shared/stores';
 import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
@@ -32,6 +33,9 @@ const Match = ({ match }: MatchProps) => {
     betting,
     result,
   } = match;
+
+  const { setIsMatchModalOpen } = useMatchModalStore();
+  const { setMatchStatus, setMatch } = useMatchStore();
 
   const [isAlarmClick, setIsAlarmClick] = useState<boolean>(isNotice);
 
@@ -74,6 +78,16 @@ const Match = ({ match }: MatchProps) => {
       return 'text-main-500';
     }
     return 'text-white';
+  };
+
+  const updateStateu = () => {
+    setMatchStatus({
+      isPlaying,
+      isFinish,
+      time,
+      roundText,
+    });
+    setMatch(match);
   };
 
   const borderStyle = [
@@ -131,7 +145,10 @@ const Match = ({ match }: MatchProps) => {
 
           <button
             className={cn('flex', 'items-center', 'gap-[0.5rem]')}
-            onClick={() => push(`/match?matchId=${match.matchId}`)}
+            onClick={() => {
+              setIsMatchModalOpen(true);
+              updateStateu();
+            }}
           >
             <p className={cn('text-body3s', 'text-gray-500')}>자세히 보기</p>
             <RightArrowIcon />

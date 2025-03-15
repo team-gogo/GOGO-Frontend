@@ -1,10 +1,13 @@
-import { DateContainer } from '@/entities/main';
+'use client';
+
+import { DateContainer, MatchDetailModal } from '@/entities/main';
 import { MatchClockIcon } from '@/shared/assets/svg';
 import {
   CommunityIcon,
   MiniGameIcon,
   RankingIcon,
 } from '@/shared/assets/svg/MainIcon';
+import useMatchModalStore from '@/shared/stores/useMatchModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
@@ -18,6 +21,8 @@ const MainPage = () => {
   const rankingMock = getRankingMock();
 
   const isMainUsed = true;
+
+  const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
 
   return (
     <div
@@ -81,6 +86,9 @@ const MainPage = () => {
           <CommunityItemContainer isMainUsed={isMainUsed} />
         </SectionWrapper>
       </div>
+      {isMatchModalOpen && (
+        <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+      )}
     </div>
   );
 };
