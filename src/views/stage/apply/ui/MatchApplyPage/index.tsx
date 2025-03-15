@@ -48,7 +48,7 @@ const MatchApplyPage = () => {
               'grid',
               'grid-cols-3',
               'gap-x-[1.125rem]',
-              'gap-y-[3.125rem]',
+              'gap-y-[1.5rem]',
               'tablet:grid-cols-1',
               'w-full',
             )}
