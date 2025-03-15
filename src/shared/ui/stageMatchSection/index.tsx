@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import PasswordModal from '@/entities/stage/ui/PasswordModal';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
 import useStageNavigation from '@/shared/model/useStageNavigation';
+import { usePasswordModalStore } from '@/shared/stores';
 import { MatchResponse } from '@/shared/types/my/bet';
 import { StagesType } from '@/shared/types/stage';
 import { cn } from '@/shared/utils/cn';
@@ -17,7 +17,9 @@ interface StageSectionProps {
 
 const StageMatchSection = ({ title, stages, matches }: StageSectionProps) => {
   const visibleCount = 2;
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const { isPasswordModalOpen, setIsPasswordModalOpen } =
+    usePasswordModalStore();
 
   const totalStages = stages?.length ?? 0;
   const totalMatches = matches?.matches.length ?? 0;
@@ -54,7 +56,6 @@ const StageMatchSection = ({ title, stages, matches }: StageSectionProps) => {
             stageInfo={{ stages: stages ?? [] }}
             matches={matches}
             startIndex={stageStartIndex}
-            setIsModalOpen={setIsModalOpen}
           />
 
           {stageStartIndex < totalStages - visibleCount && (
@@ -85,7 +86,6 @@ const StageMatchSection = ({ title, stages, matches }: StageSectionProps) => {
             stageInfo={{ stages: [] }}
             matches={matches}
             startIndex={matchStartIndex}
-            setIsModalOpen={setIsModalOpen}
           />
         )}
 
@@ -99,7 +99,9 @@ const StageMatchSection = ({ title, stages, matches }: StageSectionProps) => {
         )}
       </div>
 
-      {isModalOpen && <PasswordModal onClose={() => setIsModalOpen(false)} />}
+      {isPasswordModalOpen && (
+        <PasswordModal onClose={() => setIsPasswordModalOpen(false)} />
+      )}
     </div>
   );
 };

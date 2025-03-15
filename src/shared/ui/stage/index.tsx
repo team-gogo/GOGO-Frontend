@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Dispatch, SetStateAction } from 'react';
+import { usePasswordModalStore } from '@/shared/stores';
 import { MyStageType } from '@/shared/types/my';
 import { StagesType } from '@/shared/types/stage';
 import { cn } from '@/shared/utils/cn';
@@ -10,11 +10,11 @@ import MatchTypeLabel from '../matchTypeLabel';
 
 interface StageProps {
   stage: MyStageType | StagesType;
-  setIsModalOpen?: Dispatch<SetStateAction<boolean>>;
   isMyStage?: boolean;
 }
 
-const Stage = ({ stage, setIsModalOpen, isMyStage = false }: StageProps) => {
+const Stage = ({ stage, isMyStage = false }: StageProps) => {
+  const { setIsPasswordModalOpen } = usePasswordModalStore();
   const { stageName, type, status, isMaintaining } = stage;
 
   const { push } = useRouter();
@@ -73,7 +73,7 @@ const Stage = ({ stage, setIsModalOpen, isMyStage = false }: StageProps) => {
                 isMyStage || isParticipating
                   ? push(`/my/bet?stageId=${stage.stageId}`)
                   : isPassCode
-                    ? setIsModalOpen?.(true)
+                    ? setIsPasswordModalOpen(true)
                     : console.log('비밀번호 안 걸려있는 참여하기 버튼 클릭');
               }}
             >
