@@ -1,4 +1,6 @@
+import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { PlinkoInputHeader, RiskBox } from '@/entities/mini-game';
+import { PlinkoFormType } from '@/shared/types/mini-game';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
@@ -6,9 +8,22 @@ import { cn } from '@/shared/utils/cn';
 interface PlinkoInputBoxProps {
   money: number;
   ticket: number;
+  isDisabled: boolean;
+  register: UseFormRegister<PlinkoFormType>;
+  setValue: UseFormSetValue<PlinkoFormType>;
+  selectedRisk: 'LOW' | 'MEDIUM' | 'HIGH';
+  setSelectedRisk: (risk: 'LOW' | 'MEDIUM' | 'HIGH') => void;
 }
 
-const PlinkoInputBox = ({ money, ticket }: PlinkoInputBoxProps) => {
+const PlinkoInputBox = ({
+  money,
+  ticket,
+  isDisabled,
+  register,
+  setValue,
+  selectedRisk,
+  setSelectedRisk,
+}: PlinkoInputBoxProps) => {
   return (
     <div
       className={cn(
@@ -26,14 +41,41 @@ const PlinkoInputBox = ({ money, ticket }: PlinkoInputBoxProps) => {
           <div className={cn('flex', 'flex-col', 'gap-[1.5rem]')}>
             <PlinkoInputHeader money={money} ticket={ticket} />
             <div className={cn('flex', 'items-center', 'gap-[0.75rem]')}>
-              <Input placeholder="포인트 입력" bgColor="bg-gray-600" />
-              <Input placeholder="x2" bgColor="bg-gray-600" />
+              <Input
+                {...register('amount', {
+                  required: '포인트 입력은 필수입니다.',
+                })}
+                placeholder="포인트 입력"
+                bgColor="bg-gray-600"
+                type="number"
+                onChange={(e) => {
+                  setValue('amount', Number(e.target.value));
+                }}
+              />
+              <Input
+                {...register('times', {
+                  required: '배수 입력은 필수입니다.',
+                })}
+                placeholder="x2"
+                bgColor="bg-gray-600"
+                type="number"
+                onChange={(e) => {
+                  setValue('times', Number(e.target.value));
+                }}
+              />
             </div>
           </div>
 
-          <RiskBox />
+          <RiskBox
+            register={register}
+            setValue={setValue}
+            selectedRisk={selectedRisk}
+            setSelectedRisk={setSelectedRisk}
+          />
         </div>
-        <Button>게임 시작</Button>
+        <Button disabled={isDisabled} type="submit">
+          게임 시작
+        </Button>
       </div>
     </div>
   );
