@@ -41,5 +41,5 @@ export const MATCH_TYPES: Record<
   },
   TIME: { icon: (color) => <ClockIcon color={color} />, text: '기타' },
   FINAL: { icon: () => <FinalIcon /> },
-  TEAM: { icon: () => <TeamCountIcon /> },
+  TEAM: { icon: (color) => <TeamCountIcon color={color} /> },
 };
