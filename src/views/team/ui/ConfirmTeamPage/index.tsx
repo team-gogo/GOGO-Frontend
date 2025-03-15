@@ -1,5 +1,5 @@
 import { cn } from '@/shared/utils/cn';
-import ConfirmTeamContainer from '@/widgets/team/ui/ConfirmTeamContainer';
+import ConfirmTeamContainer from '@/widgets/team/ui/ConfirmTeamContainer/index';
 
 const ConfirmTeamPage = () => {
   return (

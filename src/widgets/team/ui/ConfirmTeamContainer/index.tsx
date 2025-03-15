@@ -7,7 +7,7 @@ import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 
-import { getTeamItemMock } from '../Mock/getTeamItemMock';
+import { getTeamItemMock } from '@/widgets/team/Mock/getTeamItemMock';
 
 const ConfirmTeamContainer = () => {
   const [selectedTeamIds, setSelectedTeamIds] = useState<number[]>([]);
