@@ -3,7 +3,7 @@ import { BoardData } from '@/shared/types/community';
 const getBoardMock = (): BoardData => {
   return {
     info: {
-      totalPage: 5,
+      totalPage: 10,
       totalElement: 100,
     },
     board: [

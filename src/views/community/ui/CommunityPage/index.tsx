@@ -1,5 +1,6 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { NavigationBar } from '@/entities/community';
 import { SortType } from '@/shared/model/sportTypes';
@@ -10,11 +11,12 @@ import { CommunityItemContainer, CommunityToolbar } from '@/widgets/community';
 import getBoardMock from '../Mock/getBoardMock';
 
 const CommunityPage = () => {
-  const boardMock = getBoardMock();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
 
+  const boardMock = getBoardMock();
   const [selectedSort, setSelectedSort] = useState<SortType | null>(null);
   const { selectedSport, toggleSportSelection } = useSelectSport();
-  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleSortSelection = (sort: SortType) => {
     setSelectedSort((prev) => (prev === sort ? null : sort));
@@ -22,10 +24,6 @@ const CommunityPage = () => {
 
   const itemsPerPage = 7;
   const totalPairs = boardMock.info.totalPage;
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentBoardData = {
@@ -62,10 +60,7 @@ const CommunityPage = () => {
           />
           <CommunityItemContainer boardData={currentBoardData} />
         </div>
-        <NavigationBar
-          totalPairs={totalPairs}
-          onPageChange={handlePageChange}
-        />
+        <NavigationBar totalPairs={totalPairs} />
       </div>
     </div>
   );

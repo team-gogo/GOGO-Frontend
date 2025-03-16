@@ -1,32 +1,35 @@
-import { useState } from 'react';
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 interface NavigationBarProps {
   totalPairs: number;
-  onPageChange: (page: number) => void;
 }
 
-const NavigationBar = ({ totalPairs, onPageChange }: NavigationBarProps) => {
-  const safeTotalPairs = totalPairs ?? 1;
-  if (safeTotalPairs <= 1) return null;
+const NavigationBar = ({ totalPairs }: NavigationBarProps) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
 
-  const [currentPage, setCurrentPage] = useState(1);
+  if (totalPairs <= 1) return null;
+
   const maxPagesToShow = 5;
+
+  const changePage = (page: number) => {
+    router.push(`/community?page=${page}`);
+  };
 
   const handlePrev = () => {
     if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      onPageChange(newPage);
+      changePage(currentPage - 1);
     }
   };
 
   const handleNext = () => {
     if (currentPage < totalPairs) {
-      const newPage = currentPage + 1;
-      setCurrentPage(newPage);
-      onPageChange(newPage);
+      changePage(currentPage + 1);
     }
   };
 
@@ -39,7 +42,7 @@ const NavigationBar = ({ totalPairs, onPageChange }: NavigationBarProps) => {
 
   return (
     <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
-      <button onClick={handlePrev}>
+      <button onClick={handlePrev} disabled={currentPage === 1}>
         <LeftArrow color="#6B6B6B" size="1.5rem" />
       </button>
       {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
@@ -49,15 +52,12 @@ const NavigationBar = ({ totalPairs, onPageChange }: NavigationBarProps) => {
             'text-body1e',
             currentPage === startPage + i ? 'text-main-600' : 'text-gray-500',
           )}
-          onClick={() => {
-            setCurrentPage(startPage + i);
-            onPageChange(startPage + i);
-          }}
+          onClick={() => changePage(startPage + i)}
         >
           {startPage + i}
         </button>
       ))}
-      <button onClick={handleNext}>
+      <button onClick={handleNext} disabled={currentPage === totalPairs}>
         <RightArrowIcon color="#6B6B6B" />
       </button>
     </div>
