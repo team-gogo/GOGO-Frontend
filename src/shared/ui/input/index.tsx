@@ -7,10 +7,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
   maxLength?: number;
   bgColor?: string;
+  onIconClick?: () => void;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ icon, maxLength, bgColor = 'bg-gray-700', ...attributes }, ref) => {
+  (
+    { icon, maxLength, bgColor = 'bg-gray-700', onIconClick, ...attributes },
+    ref,
+  ) => {
     const [inputLength, setInputLength] = useState(0);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,17 +52,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         />
         {icon && (
-          <button
-            type="button"
+          <label
+            onClick={onIconClick}
             className={cn(
               'absolute',
               'right-[16px]',
               'top-[50%]',
               'translate-y-[-50%]',
+              onIconClick && 'cursor-pointer',
             )}
           >
             {icon}
-          </button>
+          </label>
         )}
         {maxLength && (
           <div className={cn('text-body3s', 'text-end', 'text-gray-500')}>
