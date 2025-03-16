@@ -42,6 +42,7 @@ const OfficialCreatePage = () => {
         register={register}
         watch={watch}
         setValue={setValue}
+        isFastMode={false}
       />
       <StoreContainer register={register} watch={watch} setValue={setValue} />
       <div className={cn('flex', 'w-full', 'gap-24', 'tablet:flex-wrap')}>

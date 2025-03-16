@@ -17,12 +17,22 @@ interface Props {
   register: UseFormRegister<StageData>;
   watch: UseFormWatch<StageData>;
   setValue: UseFormSetValue<StageData>;
+  isFastMode?: boolean;
 }
 
-const MiniGameContainer = ({ register, watch, setValue }: Props) => {
+const MiniGameContainer = ({
+  register,
+  watch,
+  setValue,
+  isFastMode = false,
+}: Props) => {
   const selectedGames = watch('miniGame') || {};
 
-  MINI_GAMES.forEach((game) => {
+  const displayedGames = isFastMode
+    ? MINI_GAMES.filter((game) => game.type === 'coinToss')
+    : MINI_GAMES;
+
+  displayedGames.forEach((game) => {
     register(`miniGame.${game.type}.isActive`);
   });
 
@@ -30,7 +40,7 @@ const MiniGameContainer = ({ register, watch, setValue }: Props) => {
     <div className={cn('space-y-16')}>
       <p className={cn('text-body2e', 'text-white')}>미니게임</p>
       <div className={cn('flex', 'items-center', 'gap-24', 'tablet:flex-wrap')}>
-        {MINI_GAMES.map((game) => {
+        {displayedGames.map((game) => {
           const isActive = !!selectedGames[game.type]?.isActive;
           const iconColor = getIconColor(isActive);
 

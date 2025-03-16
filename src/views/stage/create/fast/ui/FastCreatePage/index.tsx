@@ -41,6 +41,7 @@ const FastCreatePage = () => {
         register={register}
         watch={watch}
         setValue={setValue}
+        isFastMode={true}
       />
       <div className={cn('flex', 'w-full', 'gap-24', 'tablet:flex-wrap')}>
         <div className="w-full">
