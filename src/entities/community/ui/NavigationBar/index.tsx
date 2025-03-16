@@ -8,7 +8,8 @@ interface NavigationBarProps {
 }
 
 const NavigationBar = ({ totalPairs, onPageChange }: NavigationBarProps) => {
-  if (totalPairs <= 1) return null;
+  const safeTotalPairs = totalPairs ?? 1;
+  if (safeTotalPairs <= 1) return null;
 
   const [currentPage, setCurrentPage] = useState(1);
   const maxPagesToShow = 5;
