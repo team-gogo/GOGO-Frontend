@@ -1,6 +1,5 @@
 import React from 'react';
 import { UseFormRegister, UseFormWatch } from 'react-hook-form';
-
 import { CircleEliminate, PersonIcon } from '@/shared/assets/svg';
 import { OfficialStageData } from '@/shared/types/stage/create/official';
 import Input from '@/shared/ui/input';
