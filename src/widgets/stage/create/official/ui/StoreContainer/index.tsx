@@ -4,13 +4,15 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { SelectStageType } from '@/entities/stage/create/official';
 import { TicketIcon } from '@/shared/assets/icons';
 import { PointIcon } from '@/shared/assets/svg';
 import { OfficialStageData } from '@/shared/types/stage/create/official';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
+import { STORE_ITEMS } from '../../constants/storeItems';
+import { getIconColor } from '../../model/miniGameUtils';
+import { toggleStoreItem } from '../../model/storeUtils';
 
 interface Props {
   register: UseFormRegister<OfficialStageData>;
@@ -18,29 +20,11 @@ interface Props {
   setValue: UseFormSetValue<OfficialStageData>;
 }
 
-export const storeItems = [
-  {
-    icon: <TicketIcon />,
-    name: '야바위',
-    type: 'yavarwee' as const,
-  },
-  {
-    icon: <TicketIcon />,
-    name: '코인토스',
-    type: 'coinToss' as const,
-  },
-  {
-    icon: <TicketIcon />,
-    name: '플린코',
-    type: 'plinko' as const,
-  },
-];
-
 const StoreContainer = ({ register, watch, setValue }: Props) => {
   const selectedGames = watch('miniGame') || {};
   const selectedShop = watch('shop') || {};
 
-  storeItems.forEach((store) => {
+  STORE_ITEMS.forEach((store) => {
     register(`shop.${store.type}.isActive`);
   });
 
@@ -48,28 +32,20 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
     <div className={cn('space-y-16')}>
       <p className={cn('text-body2e', 'text-white')}>상점</p>
       <div className={cn('flex', 'items-center', 'gap-24', 'tablet:flex-wrap')}>
-        {storeItems.map((item) => {
+        {STORE_ITEMS.map((item) => {
           const isActive = selectedShop[item.type]?.isActive;
           const isGameSelected = selectedGames[item.type]?.isActive;
-          const iconColor = isActive ? '#526FFE' : '#898989';
+          const iconColor = getIconColor(isActive);
 
           return (
             <div key={item.type} className={cn('space-y-16', 'w-full')}>
               <SelectStageType
-                icon={cloneElement(item.icon, { color: iconColor })}
+                icon={cloneElement(<item.icon />, { color: iconColor })}
                 name={item.name}
                 isSelected={isActive}
-                onClick={() => {
-                  if (isActive) {
-                    setValue(`shop.${item.type}.price`, null);
-                    setValue(`shop.${item.type}.quantity`, null);
-                  }
-                  if (isGameSelected) {
-                    setValue(`shop.${item.type}.isActive`, !isActive);
-                  } else {
-                    toast.error(`${item.name} 미니게임을 먼저 선택해주세요.`);
-                  }
-                }}
+                onClick={() =>
+                  toggleStoreItem(item.type, isActive, isGameSelected, setValue)
+                }
               />
               <Input
                 {...register(`shop.${item.type}.price`, {
