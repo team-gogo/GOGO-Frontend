@@ -3,7 +3,7 @@
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { usePlinkoForm } from '@/views/mini-game/model/usePlinkoForm';
-import { PlinkoGame, PlinkoInputBox } from '@/widgets/mini-game';
+import { PlinkoInputBox, PlinkoTest } from '@/widgets/mini-game';
 
 const PlinkoPage = () => {
   const {
@@ -54,7 +54,9 @@ const PlinkoPage = () => {
               setSelectedRisk={setSelectedRisk}
             />
           </form>
-          <PlinkoGame watch={watch} />
+
+          {/* <PlinkoGame watch={watch} /> */}
+          <PlinkoTest />
         </div>
       </div>
     </div>

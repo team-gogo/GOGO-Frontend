@@ -1,3 +1,7 @@
+'use client';
+
+import Matter, { Bodies, Engine, Render, World } from 'matter-js';
+import { useEffect, useRef } from 'react';
 import { UseFormWatch } from 'react-hook-form';
 import { BlueCircle } from '@/shared/assets/svg';
 import { PlinkoFormType } from '@/shared/types/mini-game';
@@ -8,6 +12,46 @@ interface PlinkoGameProps {
 }
 
 const PlinkoGame = ({ watch }: PlinkoGameProps) => {
+  const engineRef = useRef<Engine | null>(null);
+  const renderRef = useRef<Render | null>(null);
+  const fallingBallRef = useRef<Matter.Body | null>(null);
+
+  useEffect(() => {
+    const engine = Engine.create();
+    const world = engine.world;
+
+    engineRef.current = engine;
+
+    const render = Render.create({
+      element: document.getElementById('plinko-container')!,
+      engine,
+      options: {
+        wireframes: false,
+      },
+    });
+
+    renderRef.current = render;
+
+    const ball = Bodies.circle(400, 0, 20, {
+      restitution: 0.8,
+      render: {
+        fillStyle: 'red',
+      },
+    });
+
+    World.add(world, ball);
+
+    Engine.run(engine);
+    Render.run(render);
+
+    fallingBallRef.current = ball;
+
+    return () => {
+      Engine.clear(engine);
+      Render.stop(render);
+    };
+  }, []);
+
   const risk = watch('risk');
 
   const getButtonValues = () => {
@@ -22,7 +66,7 @@ const PlinkoGame = ({ watch }: PlinkoGameProps) => {
 
   const buttonValues = getButtonValues();
 
-  const circleCount = Math.min(buttonValues.length + 2, 15); // 최소 3개, 최대 17개
+  const circleCount = Math.min(buttonValues.length + 2, 15);
 
   return (
     <div
@@ -35,7 +79,6 @@ const PlinkoGame = ({ watch }: PlinkoGameProps) => {
         'rounded-xl',
         'bg-gray-700',
         'max-w-[55.75rem]',
-        'overflow-x-hidden',
       )}
     >
       <div
