@@ -20,6 +20,7 @@ const MainPage = () => {
   const matchInfo = getMatchInfo();
   const rankingMock = getRankingMock();
   const boardMock = getBoardMock();
+  const slicedBoardMock = boardMock.board.slice(0, 4);
 
   const isMainUsed = true;
 
@@ -106,7 +107,10 @@ const MainPage = () => {
           >
             <CommunityItemContainer
               isMainUsed={isMainUsed}
-              boardData={boardMock}
+              boardData={{
+                info: boardMock.info,
+                board: slicedBoardMock,
+              }}
             />
           </SectionWrapper>
         </div>
