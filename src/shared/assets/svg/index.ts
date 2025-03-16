@@ -31,6 +31,7 @@ export { default as GrayAlarmIcon } from './GrayAlarmIcon';
 export { default as BlueAlarmIcon } from './BlueAlarmIcon';
 export { default as RightArrowIcon } from './RightArrowIcon';
 export { default as SelectHeartIcon } from './SelectHeartIcon';
+export { default as CircleEliminate } from './CircleEliminate';
 export { default as CreateIcon } from './CreateIcon';
 export { default as Medal } from './Medal';
 export { default as YavarweeIcon } from './YavarweeIcon';

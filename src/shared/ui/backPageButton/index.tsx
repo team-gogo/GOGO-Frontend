@@ -27,7 +27,7 @@ const BackPageButton = ({
 
   return (
     <div className={cn('flex', 'items-center', 'gap-24')}>
-      <button onClick={handleClick} aria-label={label}>
+      <button type="button" onClick={handleClick} aria-label={label}>
         <LeftArrow />
       </button>
       <p className={cn('text-h4s', 'text-white', 'mobile:text-body2s')}>
