@@ -1,10 +1,12 @@
 import React from 'react';
 import { UseFormRegister, UseFormWatch } from 'react-hook-form';
+
 import { CircleEliminate, PersonIcon } from '@/shared/assets/svg';
 import { OfficialStageData } from '@/shared/types/stage/create/official';
 import Input from '@/shared/ui/input';
 import SelectOption from '@/shared/ui/SelectOption';
 import { cn } from '@/shared/utils/cn';
+import { getCategoryLabel } from '../../constants/sportTypes';
 
 interface GameFieldProps {
   register: UseFormRegister<OfficialStageData>;
@@ -14,13 +16,13 @@ interface GameFieldProps {
   matchTypeOptions: { value: string; label: string }[];
 }
 
-const GameField: React.FC<GameFieldProps> = ({
+const GameField = ({
   register,
   watch,
   index,
   remove,
   matchTypeOptions,
-}) => {
+}: GameFieldProps) => {
   const teamMinCapacity = watch(`game.${index}.teamMinCapacity`);
   const teamMaxCapacity = watch(`game.${index}.teamMaxCapacity`);
   const category = watch(`game.${index}.category`);
@@ -30,19 +32,6 @@ const GameField: React.FC<GameFieldProps> = ({
     games?.filter((game) => game.category === category) || [];
   const sportIndex =
     currentCategoryGames.findIndex((game) => game === games[index]) + 1;
-
-  const getCategoryLabel = (category: string) => {
-    const categoryMap: { [key: string]: string } = {
-      VOLLEY_BALL: '배구',
-      SOCCER: '축구',
-      LOL: 'LOL',
-      BASE_BALL: '야구',
-      BASKET_BALL: '농구',
-      BADMINTON: '배드민턴',
-      ETC: '기타',
-    };
-    return categoryMap[category] || category;
-  };
 
   return (
     <div

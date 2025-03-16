@@ -3,7 +3,7 @@ import { Control, useFieldArray, UseFormWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { SportType } from '@/shared/model/sportTypes';
 import { OfficialStageData } from '@/shared/types/stage/create/official';
-import { getCategoryLabel } from '../constants/sportTypes';
+import { getCategoryLabel } from '../../../../../entities/stage/create/official/constants/sportTypes';
 import { validateCurrentSportFields } from './validateFields';
 
 export const useMatchSetting = (

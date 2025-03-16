@@ -1,12 +1,12 @@
 import React from 'react';
 import { UseFormRegister, Control, UseFormWatch } from 'react-hook-form';
 import { AddButton } from '@/entities/stage/create/official';
+import { categoryTypes } from '@/entities/stage/create/official/constants/sportTypes';
 import GameField from '@/entities/stage/create/official/ui/GameField';
 import { OfficialStageData } from '@/shared/types/stage/create/official';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
 import { matchTypeOptions } from '../../constants/matchTypes';
-import { categoryTypes } from '../../constants/sportTypes';
 import { useMatchSetting } from '../../model/useMatchSetting';
 
 interface MatchSettingContainerProps {
