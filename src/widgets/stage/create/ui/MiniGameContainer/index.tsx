@@ -52,7 +52,11 @@ const MiniGameContainer = ({
                 })}
                 name={game.name}
                 isSelected={isActive}
-                onClick={() => toggleMiniGame(game.type, isActive, setValue)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleMiniGame(game.type, isActive, setValue);
+                }}
+                isFastMode={isFastMode}
               />
               <div className={cn('flex', 'gap-16')}>
                 <Input

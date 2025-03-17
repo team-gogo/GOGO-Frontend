@@ -3,7 +3,7 @@ import { cn } from '@/shared/utils/cn';
 
 interface ModalLayoutProps {
   title: string;
-  onClose: () => void;
+  onClose: (e: React.MouseEvent) => void;
   children: React.ReactNode;
   containerClassName?: string;
 }
@@ -27,8 +27,9 @@ const ModalLayout = ({
         'bg-opacity-50',
         'mx-[1rem]',
       )}
+      onClick={onClose}
     >
-      <div className={containerClassName}>
+      <div className={containerClassName} onClick={(e) => e.stopPropagation()}>
         <div className={cn('mb-4', 'flex', 'items-center', 'justify-between')}>
           <p className={cn('text-white', 'text-body1s')}>{title}</p>
           <button onClick={onClose}>

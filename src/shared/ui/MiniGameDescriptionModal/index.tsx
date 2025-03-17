@@ -1,23 +1,33 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GameType } from '@/shared/model/sportTypes';
 import ModalLayout from '@/shared/ui/modalLayout';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
 
-interface MiniGameModalProps {
-  onClose: () => void;
+interface MiniGameDescriptionModalProps {
+  onClose: (e: React.MouseEvent) => void;
   selectedGame: GameType | null;
   toggleGameSelection: (sort: GameType) => void;
+  isFastMode?: boolean;
 }
 
-const MiniGameModal = ({
+const MiniGameDescriptionModal = ({
   onClose,
   selectedGame,
   toggleGameSelection,
-}: MiniGameModalProps) => {
-  const gameTypes: GameType[] = ['YAVARWEE', 'COINTOSS', 'PLINKO'];
+  isFastMode = false,
+}: MiniGameDescriptionModalProps) => {
+  const gameTypes: GameType[] = isFastMode
+    ? ['COINTOSS']
+    : ['YAVARWEE', 'COINTOSS', 'PLINKO'];
+
+  useEffect(() => {
+    if (isFastMode && selectedGame !== 'COINTOSS') {
+      toggleGameSelection('COINTOSS');
+    }
+  }, [isFastMode, selectedGame, toggleGameSelection]);
 
   const gameDescription = {
     YAVARWEE:
@@ -50,6 +60,7 @@ const MiniGameModal = ({
             asButton
             isSelected={selectedGame === game}
             onClick={() => toggleGameSelection(game)}
+            isHaveBorder={true}
           />
         ))}
       </div>
@@ -72,4 +83,4 @@ const MiniGameModal = ({
   );
 };
 
-export default MiniGameModal;
+export default MiniGameDescriptionModal;

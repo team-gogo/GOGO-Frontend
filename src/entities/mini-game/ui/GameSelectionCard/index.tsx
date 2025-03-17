@@ -3,8 +3,8 @@ import { CircleQuestionIcon } from '@/shared/assets/icons';
 import { GameType } from '@/shared/model/sportTypes';
 import { GameTicket } from '@/shared/types/mini-game';
 import Button from '@/shared/ui/button';
+import MiniGameDescriptionModal from '@/shared/ui/MiniGameDescriptionModal';
 import { cn } from '@/shared/utils/cn';
-import MiniGameModal from '../MiniGameModal';
 
 interface GameSelectionCardProps {
   icon: (isActive: boolean) => ReactNode;
@@ -96,7 +96,7 @@ const GameSelectionCard = ({
         )}
       </div>
       {isModalOpen && (
-        <MiniGameModal
+        <MiniGameDescriptionModal
           onClose={() => setIsModalOpen(false)}
           selectedGame={selectedGame}
           toggleGameSelection={toggleGameSelection}
