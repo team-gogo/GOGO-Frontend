@@ -3,7 +3,7 @@
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { usePlinkoForm } from '@/views/mini-game/model/usePlinkoForm';
-import { PlinkoInputBox, PlinkoTest } from '@/widgets/mini-game';
+import { PlinkoGame, PlinkoInputBox, PlinkoTest } from '@/widgets/mini-game';
 
 const PlinkoPage = () => {
   const {

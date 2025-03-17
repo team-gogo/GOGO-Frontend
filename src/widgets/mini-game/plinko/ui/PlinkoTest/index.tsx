@@ -16,27 +16,10 @@ const PlinkoGame = () => {
   const [engine, setEngine] = useState<Matter.Engine | null>(null);
   const [balls, setBalls] = useState<Matter.Body[]>([]);
   const [directionSequence, setDirectionSequence] = useState<string[]>([]);
+  const [reached, setReached] = useState<boolean>(false);
 
   useEffect(() => {
-    setDirectionSequence([
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-      'L',
-    ]);
-
+    setDirectionSequence(['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L']);
     return () => {
       setGameInitialized(false);
     };
@@ -51,21 +34,16 @@ const PlinkoGame = () => {
 
   const initializePlinkoGame = () => {
     const worldWidth = 840;
-    const startPins = 3;
     const pinLines = 16;
     const pinSize = 5;
     const pinGap = 35;
 
     const newEngine = Engine.create();
-    newEngine.world.gravity.y = 0.4;
+    newEngine.world.gravity.y = 1.3;
 
     const plinkoGameElement = document.getElementById('plinko-game');
     if (!plinkoGameElement) return;
-
-    if (plinkoGameElement.querySelector('canvas')) {
-      console.log('Canvas already exists, skipping initialization');
-      return;
-    }
+    if (plinkoGameElement.querySelector('canvas')) return;
 
     const render = Render.create({
       element: plinkoGameElement,
@@ -78,17 +56,13 @@ const PlinkoGame = () => {
     });
 
     const pins: Matter.Body[] = [];
-    const pinPositions: { x: number; y: number }[] = [];
-
     for (let l = 0; l < pinLines; l++) {
-      const linePins = startPins + l;
+      const linePins = 3 + l;
       const lineWidth = linePins * pinGap;
 
       for (let i = 0; i < linePins; i++) {
         const pinX = worldWidth / 2 - lineWidth / 2 + i * pinGap;
         const pinY = 40 + l * pinGap;
-
-        pinPositions.push({ x: pinX, y: pinY });
 
         const pin = Bodies.circle(pinX, pinY, pinSize, {
           isStatic: true,
@@ -98,8 +72,25 @@ const PlinkoGame = () => {
       }
     }
 
-    Composite.add(newEngine.world, pins);
+    const yellowLine = Bodies.rectangle(315, 325, 2, 650, {
+      isStatic: true,
+      render: { fillStyle: 'yellow' },
+      collisionFilter: {
+        category: 0x0004, // 다른 그룹으로 설정
+        mask: 0x0000, // 아무것도 충돌하지 않도록 설정
+      },
+    });
+    const redLine = Bodies.rectangle(280, 325, 2, 650, {
+      isStatic: true,
+      render: { fillStyle: 'red' },
+      collisionFilter: {
+        category: 0x0003, // 다른 그룹으로 설정
+        mask: 0x0000, // 아무것도 충돌하지 않도록 설정
+      },
+    });
+    Composite.add(newEngine.world, [yellowLine, redLine]);
 
+    Composite.add(newEngine.world, pins);
     const runner = Runner.create();
     Runner.run(runner, newEngine);
     Render.run(render);
@@ -108,106 +99,81 @@ const PlinkoGame = () => {
   };
 
   const spawnBall = () => {
-    if (!engine || directionSequence.length === 0) return;
+    if (!engine) return;
 
-    const ballSize = 7;
-    const ballElastity = 0.3;
-    const ballFriction = 0.05;
-    const ballAirFriction = 0.01;
-    const pinGap = 25;
-
-    // 첫 번째 핀과 두 번째 핀 사이의 중앙에서 공 생성
-    const startX = (395 + 405) / 2;
-
+    const ballSize = 9;
+    const startX = 400;
     const newBall = Bodies.circle(startX, 0, ballSize, {
-      restitution: ballElastity,
-      friction: ballFriction,
-      frictionAir: ballAirFriction,
+      restitution: 0.4,
+      friction: 0.01,
+      frictionAir: 0.03,
       render: { fillStyle: 'red' },
       collisionFilter: {
-        category: 0x0002,
-        mask: 0x0001,
+        category: 0x0002, // 다른 그룹으로 설정
+        mask: 0x001, // 아무것도 충돌하지 않도록 설정
       },
     });
 
     Composite.add(engine.world, newBall);
-
     setBalls((prevBalls) => [...prevBalls, newBall]);
-    moveBallTowardsTarget(newBall, [...directionSequence]);
-    applyBounceEffect(newBall);
+
+    moveBallTowardsTarget(newBall);
   };
 
-  const moveBallTowardsTarget = (
-    ball: Matter.Body,
-    ballDirectionSequence: string[],
-  ) => {
-    let ballReached = false;
-    let ballMoving = false;
+  const moveBallTowardsTarget = (ball: Matter.Body) => {
+    if (!engine) return;
 
-    const intervalId = setInterval(() => {
-      if (ball.position.y > 200 && !ballMoving) {
+    let ballMoving = false;
+    let targetX = 350; // 초기 목표 X 좌표
+    let reachedTarget = false; // 목표에 도달했는지 여부를 추적
+
+    // 핀에 닿았을 때 목표를 새로 계산하기 위한 변수
+    Events.on(engine, 'beforeUpdate', () => {
+      if (ball.position.y > 100 && !ballMoving) {
         ballMoving = true;
       }
 
-      if (ballMoving && !ballReached) {
-        const direction = ballDirectionSequence.shift();
-        if (!direction) {
-          clearInterval(intervalId);
-          return;
-        }
-
-        const targetX =
-          direction === 'L' ? ball.position.x - 15 : ball.position.x + 15;
-
+      if (ballMoving && !reachedTarget) {
         const dx = targetX - ball.position.x;
-        const dy = ball.position.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const speed = Math.min(0.1 * distance, 2);
-        const angle = Math.atan2(dy, dx);
-        const velocityX = Math.cos(angle) * speed;
-        const velocityY = Math.sin(angle) * speed;
+        const distance = Math.abs(dx);
 
-        if (distance < 5) {
-          ballReached = true;
-          Body.setPosition(ball, { x: targetX, y: ball.position.y });
-          Body.setVelocity(ball, { x: 0, y: 0 });
-          clearInterval(intervalId);
+        if (distance > 5) {
+          const forceX = (dx / distance) * 0.0002;
+          const forceY = 0.0001; // 지속적인 아래쪽 힘 추가
+          Body.applyForce(ball, ball.position, { x: forceX, y: forceY });
+        } else {
+          reachedTarget = true; // 목표에 도달하면 업데이트를 중지
         }
-
-        Body.setVelocity(ball, { x: velocityX, y: velocityY });
       }
-    }, 30);
-  };
+    });
 
-  const applyBounceEffect = (ball: Matter.Body) => {
-    if (!engine) return;
+    // 충돌 시작 시 핀에 닿은 후 목표 X 계산
+    Events.on(engine, 'collisionStart', (event) => {
+      event.pairs.forEach((pair) => {
+        if (pair.bodyA === ball || pair.bodyB === ball) {
+          // 충돌한 핀의 위치를 기반으로 방향을 계산
+          const collisionBody = pair.bodyA === ball ? pair.bodyB : pair.bodyA;
+          const pinX = collisionBody.position.x;
+          const pinY = collisionBody.position.y;
 
-    Events.on(engine, 'collisionStart', (event: { pairs: Pair[] }) => {
-      const pairs = event.pairs;
-      pairs.forEach((pair) => {
-        const bodyA = pair.bodyA;
-        const bodyB = pair.bodyB;
+          // 충돌 후 목표 지점 계산 (현재 위치에서 핀까지의 방향으로)
+          const dx = pinX - ball.position.x;
+          const dy = pinY - ball.position.y;
+          const angle = Math.atan2(dy, dx);
 
-        if (bodyA === ball || bodyB === ball) {
-          const bounceForce = 0.7;
+          // 목표 위치를 핀 방향으로 업데이트 (좌우 랜덤으로 추가적인 오차)
+          targetX = ball.position.x + Math.cos(angle) * 50;
+
+          // 공이 튕겨나가는 힘을 증가
+          const randomDirection = Math.random() > 0.5 ? 1 : -1;
+          const randomForceX =
+            randomDirection * (Math.random() * 0.005 + 0.002);
+          const randomForceY = -0.002; // 튕기는 힘을 증가 (기존보다 강한 값)
+
           Body.applyForce(ball, ball.position, {
-            x: bounceForce * (Math.random() - 0.5),
-            y: -bounceForce,
+            x: randomForceX,
+            y: randomForceY,
           });
-
-          if (directionSequence.length > 0) {
-            const currentDirection = directionSequence[0];
-            const ballPosition = ball.position.x;
-            const pinX = bodyA.position.x || bodyB.position.x;
-
-            if (ballPosition < pinX) {
-              directionSequence[0] = 'L';
-            } else {
-              directionSequence[0] = 'R';
-            }
-
-            setDirectionSequence([...directionSequence]);
-          }
         }
       });
     });
