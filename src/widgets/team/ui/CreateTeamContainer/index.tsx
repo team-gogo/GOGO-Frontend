@@ -8,9 +8,8 @@ import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 
 const CreateTeamContainer = () => {
-  const [passCode, setPassCode] = useState('');
-  const [teamName, setTeamName] = useState('');
   const [members, setMembers] = useState('');
+  const [passCode, setPassCode] = useState('');
 
   // const handleSubmit = async () => {
   //   try {
@@ -26,32 +25,21 @@ const CreateTeamContainer = () => {
       <header className={cn('mb-30')}>
         <BackPageButton type="back" label="팀 생성하기" />
       </header>
-      <div className={cn('flex-1', 'flex', 'flex-col', 'mt-20')}>
-        <h1 className={cn('text-h3e', 'text-white', 'mb-24', 'mt-24')}>
+      <div className={cn('flex-1', 'flex', 'flex-col', 'mt-32')}>
+        <h1 className={cn('text-h3e', 'text-white', 'mb-32', 'mt-32')}>
           경기 이름
         </h1>
-        <h2 className={cn('text-body2e', 'text-white', 'mb-16')}>입장 번호</h2>
-        <div className={cn('mb-24')}>
+        <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>
+          {'입장 번호'}
+        </h2>
+        <div className={cn('mt-24')}>
           <Input
             placeholder="입장 번호 입력"
             value={passCode}
             onChange={(e) => setPassCode(e.target.value)}
           />
         </div>
-
-        <h2 className={cn('text-body2e', 'text-white', 'mb-16')}>팀 이름</h2>
-        <div className={cn('mb-30')}>
-          <Input
-            placeholder="이름을 입력해주세요."
-            maxLength={10}
-            value={teamName}
-            onChange={(e) => setTeamName(e.target.value)}
-          />
-        </div>
-
-        <h2 className={cn('text-body2e', 'text-white', 'mb-16', 'mt-30')}>
-          인원
-        </h2>
+        <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>{'인원'}</h2>
         <div>
           <Input
             placeholder="학생을 입력해주세요."
