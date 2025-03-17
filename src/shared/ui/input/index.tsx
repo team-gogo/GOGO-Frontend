@@ -66,7 +66,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           </label>
         )}
         {maxLength && (
-          <div className={cn('text-body3s', 'text-end', 'text-gray-500')}>
+          <div
+            className={cn(
+              'text-body3s',
+              'text-end',
+              inputLength > 0 ? 'text-main-600' : 'text-gray-500',
+            )}
+          >
             {inputLength}/{maxLength}
           </div>
         )}

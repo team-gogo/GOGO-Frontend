@@ -36,6 +36,7 @@ const OfficialCreatePage = () => {
         control={control}
         register={register}
         watch={watch}
+        mode="official"
       />
       <RuleInputContainer register={register} watch={watch} />
       <MiniGameContainer

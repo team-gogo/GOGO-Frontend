@@ -8,7 +8,7 @@ export const MINI_GAMES = [
   },
   {
     type: 'coinToss' as const,
-    name: '코인 플립',
+    name: '코인토스',
     icon: CoinIcon,
   },
   {

@@ -22,6 +22,7 @@ const StageInputContainer = ({ register }: Props) => {
             },
           })}
           placeholder="이름을 입력해주세요."
+          maxLength={10}
         />
 
         <Input

@@ -56,34 +56,6 @@ const MiniGameContainer = ({
               />
               <div className={cn('flex', 'gap-16')}>
                 <Input
-                  {...register(`miniGame.${game.type}.maxBettingPoint`, {
-                    required: isActive
-                      ? `미니게임의 ${game.name} 최대 배팅 포인트는 필수입니다.`
-                      : false,
-                    valueAsNumber: true,
-                    min: {
-                      value: 0,
-                      message: `미니게임의 ${game.name} 최대 배팅 포인트는 0 이상의 값을 입력해주세요.`,
-                    },
-                    validate: (value) => {
-                      const minValue = watch(
-                        `miniGame.${game.type}.minBettingPoint`,
-                      );
-                      return (
-                        !isActive ||
-                        !value ||
-                        !minValue ||
-                        value >= minValue ||
-                        `미니게임의 ${game.name} 최대 배팅 포인트는 최소 배팅 포인트보다 크거나 같아야 합니다.`
-                      );
-                    },
-                  })}
-                  placeholder="최대 배팅 포인트"
-                  icon={<PointIcon fill="#898989" />}
-                  type="number"
-                  disabled={!isActive}
-                />
-                <Input
                   {...register(`miniGame.${game.type}.minBettingPoint`, {
                     required: isActive
                       ? `미니게임의 ${game.name} 최소 배팅 포인트는 필수입니다.`
@@ -107,6 +79,34 @@ const MiniGameContainer = ({
                     },
                   })}
                   placeholder="최소 배팅 포인트"
+                  icon={<PointIcon fill="#898989" />}
+                  type="number"
+                  disabled={!isActive}
+                />
+                <Input
+                  {...register(`miniGame.${game.type}.maxBettingPoint`, {
+                    required: isActive
+                      ? `미니게임의 ${game.name} 최대 배팅 포인트는 필수입니다.`
+                      : false,
+                    valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: `미니게임의 ${game.name} 최대 배팅 포인트는 0 이상의 값을 입력해주세요.`,
+                    },
+                    validate: (value) => {
+                      const minValue = watch(
+                        `miniGame.${game.type}.minBettingPoint`,
+                      );
+                      return (
+                        !isActive ||
+                        !value ||
+                        !minValue ||
+                        value >= minValue ||
+                        `미니게임의 ${game.name} 최대 배팅 포인트는 최소 배팅 포인트보다 크거나 같아야 합니다.`
+                      );
+                    },
+                  })}
+                  placeholder="최대 배팅 포인트"
                   icon={<PointIcon fill="#898989" />}
                   type="number"
                   disabled={!isActive}

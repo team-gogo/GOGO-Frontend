@@ -11,12 +11,14 @@ interface MatchSettingContainerProps {
   control: Control<StageData>;
   register: UseFormRegister<StageData>;
   watch: UseFormWatch<StageData>;
+  mode: 'fast' | 'official';
 }
 
 const MatchSettingContainer = ({
   control,
   register,
   watch,
+  mode,
 }: MatchSettingContainerProps) => {
   const {
     selectedSport,
@@ -25,7 +27,7 @@ const MatchSettingContainer = ({
     remove,
     handleSportSelect,
     handleAddGame,
-  } = useMatchSetting(control, watch);
+  } = useMatchSetting(control, watch, mode);
 
   return (
     <div className={cn('space-y-16')}>

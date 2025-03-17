@@ -9,6 +9,7 @@ import { validateCurrentSportFields } from './validateFields';
 export const useMatchSetting = (
   control: Control<StageData>,
   watch: UseFormWatch<StageData>,
+  mode: 'fast' | 'official',
 ) => {
   const [selectedSport, setSelectedSport] = useState<SportType | null>(null);
   const { fields, append, remove } = useFieldArray({
@@ -37,6 +38,12 @@ export const useMatchSetting = (
 
   const handleAddGame = () => {
     if (selectedSport) {
+      // Fast 모드에서는 하나의 경기만 생성 가능
+      if (mode === 'fast' && fields.length >= 1) {
+        toast.error('빠른 경기 모드에서는 하나의 경기만 생성할 수 있습니다.');
+        return;
+      }
+
       append({
         category: selectedSport,
         name: '',

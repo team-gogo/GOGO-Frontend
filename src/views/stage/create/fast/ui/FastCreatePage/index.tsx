@@ -35,6 +35,7 @@ const FastCreatePage = () => {
         control={control}
         register={register}
         watch={watch}
+        mode="fast"
       />
       <RuleInputContainer register={register} watch={watch} />
       <MiniGameContainer

@@ -23,9 +23,10 @@ const AddButton = ({ onClick }: AddButtonProps) => {
         'w-fit',
         'h-fit',
         'whitespace-nowrap',
+        'items-center',
       )}
     >
-      <CirclePlusIcon />
+      <CirclePlusIcon size={20} color="#898989" />
       <p className={cn('text-gray-400', 'text-body3s', 'whitespace-nowrap')}>
         추가
       </p>
