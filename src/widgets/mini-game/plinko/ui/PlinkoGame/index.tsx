@@ -19,11 +19,12 @@ interface PlinkoGameProps {
 const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
   const [gameInitialized, setGameInitialized] = useState<boolean>(false);
   const [engine, setEngine] = useState<Matter.Engine | null>(null);
-  // const [ballStates, setBallStates] = useState<Map<number, boolean>>(new Map());
   const [btnClickIdxs, setBtnClickIdxs] = useState<number[]>([]);
-  // const [ballArrivalOrder, setBallArrivalOrder] = useState<
-  //   { idx: number; bodyId: number }[]
-  // >([]);
+  const [fallingOrder, setFallingOrder] = useState<
+    { id: number; index: number; passed550: boolean }[]
+  >([]);
+  const [passed550Indexes, setPassed550Indexes] = useState<number[]>([]);
+
   const risk = watch('risk');
 
   const getButtonValues = () => {
@@ -37,6 +38,27 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
   };
 
   const buttonValues = getButtonValues();
+
+  useEffect(() => {
+    setPassed550Indexes(
+      fallingOrder.filter((item) => item.passed550).map((item) => item.index),
+    );
+
+    setFallingOrder((prev) => {
+      const updatedFallingOrder = prev.filter((item) => !item.passed550);
+
+      const updatedWithPassed550 = [
+        ...updatedFallingOrder,
+        ...fallingOrder.filter((item) => item.passed550),
+      ];
+
+      if (JSON.stringify(prev) !== JSON.stringify(updatedWithPassed550)) {
+        return updatedWithPassed550;
+      }
+
+      return prev;
+    });
+  }, [fallingOrder]);
 
   useEffect(() => {
     return () => {
@@ -70,32 +92,21 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
           Body.setVelocity(body, { x: 0, y: 10 });
         }
 
-        // if (body.position.y > 550) {
-        //   const bodyId = body.id;
+        if (body.position.y >= 550) {
+          const index = btnClickIdxs.findIndex((idx) => idx === body.id);
+          if (index !== undefined) {
+            setFallingOrder((prev) => {
+              const updatedFallingOrder = prev.map((item) => {
+                if (item.id === body.id && !item.passed550) {
+                  return { ...item, passed550: true };
+                }
+                return item;
+              });
 
-        //   if (!ballArrivalOrder.some((entry) => entry.bodyId === bodyId)) {
-        //     setBallArrivalOrder((prev) => [
-        //       ...prev,
-        //       { idx: btnClickIdxs[0], bodyId },
-        //     ]);
-
-        //     setBtnClickIdxs((prev) => prev.slice(1));
-
-        //     setBallStates((prevStates) => {
-        //       const newState = new Map(prevStates);
-        //       newState.set(btnClickIdxs[0], true);
-        //       return newState;
-        //     });
-
-        //     setTimeout(() => {
-        //       setBallStates((prevStates) => {
-        //         const newState = new Map(prevStates);
-        //         newState.set(btnClickIdxs[0], false);
-        //         return newState;
-        //       });
-        //     }, 300);
-        //   }
-        // }
+              return updatedFallingOrder;
+            });
+          }
+        }
       });
     };
 
@@ -104,11 +115,7 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
     return () => {
       Matter.Events.off(engine, 'afterUpdate', updateBallState);
     };
-  }, [
-    engine,
-    btnClickIdxs,
-    // ballStates, ballArrivalOrder
-  ]);
+  }, [engine, btnClickIdxs]); // fallingOrder는 의존성 배열에 포함하지 않아도 됨, 내부 상태 업데이트에서 관리됨 // fallingOrder를 의존성 배열에 추가
 
   const initializePlinkoGame = () => {
     const worldWidth = 840;
@@ -160,7 +167,7 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
     setEngine(newEngine);
   };
 
-  const spawnBall = (targetX: number) => {
+  const spawnBall = (targetX: number, index: number) => {
     if (!engine) return;
 
     const ballSize = 9;
@@ -187,6 +194,11 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
     Body.setVelocity(newBall, { x: velocityX, y: velocityY });
 
     Composite.add(engine.world, newBall);
+
+    setFallingOrder((prev) => [
+      ...prev,
+      { id: newBall.id, index, passed550: false },
+    ]);
   };
 
   useEffect(() => {
@@ -199,10 +211,16 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
       if (plinkoData.multi >= 0 && plinkoData.multi < targetXValues.length) {
         const targetX = targetXValues[plinkoData.multi];
         setBtnClickIdxs((prev) => [...prev, plinkoData.multi]);
-        spawnBall(targetX);
+        spawnBall(targetX, plinkoData.multi);
       }
     }
   }, [plinkoData]);
+
+  const buttonValuesForPassed550 = passed550Indexes.map((index) => {
+    return buttonValues[index];
+  });
+
+  const lastPassedIndex = passed550Indexes[0];
 
   return (
     <div
@@ -213,6 +231,7 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
         'max-w-[52.8125rem]',
         'p-[1rem]',
         'rounded-xl',
+        'relative',
       )}
     >
       <div id="plinko-game" />
@@ -227,54 +246,77 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
         )}
       >
         <div className={cn('flex', 'items-center', 'gap-[0.3rem]')}>
-          {buttonValues.map((value, index) => (
+          {buttonValues.map((value, index) => {
+            return (
+              <div
+                key={index}
+                className={cn(
+                  'flex',
+                  'w-full',
+                  'px-[0.5rem]',
+                  'py-[0.1rem]',
+                  'justify-center',
+                  'items-center',
+                  'rounded-lg',
+                  'bg-main-100',
+                  'w-[1.9rem]',
+                  'transition-all',
+                  'duration-100',
+                  index === lastPassedIndex && 'animate-bounce', // indexOf로 포함 여부만 확인
+                )}
+              >
+                <p className={cn('text-caption3s', 'text-main-600')}>{value}</p>
+
+                <style>
+                  {`
+                  @keyframes bounce {
+                    0% {
+                      transform: translateY(0);
+                      }
+                      50% {
+                        transform: translateY(30%);
+                        }
+                        100% {
+                          transform: translateY(0);
+                          }
+                          }
+                          
+                          .animate-bounce {
+                            animation: bounce 300ms cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+                            }
+                            `}
+                </style>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div
+        className={cn(
+          'absolute',
+          'top-[50%]',
+          'right-[2.5%]',
+          'transform',
+          'translate-y-[-50%]',
+        )}
+      >
+        <div className={cn('flex', 'flex-col', 'gap-[0.25rem]')}>
+          {buttonValuesForPassed550.slice(0, 4).map((value, idx) => (
             <div
-              key={index}
+              key={`${value}-${idx}`}
               className={cn(
                 'flex',
-                'w-full',
-                'px-[0.5rem]',
-                'py-[0.1rem]',
-                'justify-center',
+                'flex-col',
+                'bg-gray-400',
+                'rounded-md',
+                'px-[1rem]',
+                'py-[0.5rem]',
                 'items-center',
-                'rounded-lg',
-                'bg-main-100',
-                'w-[1.9rem]',
-                'transition-all',
-                // 'duration-100',
-                // ballStates.has(index) && ballStates.get(index)
-                //   ? 'translate-y-12 scale-90'
-                //   : 'translate-y-0 scale-100',
-                // ballStates.has(index) && ballStates.get(index)
-                //   ? 'ease-out'
-                //   : '',
+                'justify-center',
+                'w-[4.25rem]',
               )}
-              // style={
-              //   ballStates.has(index) && ballStates.get(index)
-              //     ? {
-              //         animation:
-              //           'bounce 300ms cubic-bezier(0.18, 0.89, 0.32, 1.28)',
-              //       }
-              //     : {}
-              // }
             >
-              <p className={cn('text-caption3s', 'text-main-600')}>{value}</p>
-
-              <style>
-                {`
-                @keyframes bounce {
-                  0% {
-                    transform: translateY(0);
-                    }
-                    50% {
-                      transform: translateY(30%);
-                      }
-                      100% {
-                        transform: translateY(0);
-                  }
-                }
-                `}
-              </style>
+              <p>{value}X</p>
             </div>
           ))}
         </div>
