@@ -115,7 +115,7 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
     return () => {
       Matter.Events.off(engine, 'afterUpdate', updateBallState);
     };
-  }, [engine, btnClickIdxs]); // fallingOrder는 의존성 배열에 포함하지 않아도 됨, 내부 상태 업데이트에서 관리됨 // fallingOrder를 의존성 배열에 추가
+  }, [engine, btnClickIdxs]);
 
   const initializePlinkoGame = () => {
     const worldWidth = 840;
@@ -262,7 +262,7 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
                   'w-[1.9rem]',
                   'transition-all',
                   'duration-100',
-                  index === lastPassedIndex && 'animate-bounce', // indexOf로 포함 여부만 확인
+                  index === lastPassedIndex && 'animate-bounce',
                 )}
               >
                 <p className={cn('text-caption3s', 'text-main-600')}>{value}</p>
