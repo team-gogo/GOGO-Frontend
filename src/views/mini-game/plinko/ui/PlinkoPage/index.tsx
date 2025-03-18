@@ -100,7 +100,7 @@ const PlinkoPage = () => {
         )}
       >
         <BackPageButton type="push" path="/mini-game" label="플린코" />
-        <div className={cn('w-full', 'flex', 'gap-[2.25rem]')}>
+        <div className={cn('w-full', 'flex', 'justify-between')}>
           <form
             onSubmit={handleSubmit(onSubmit, onError)}
             className={cn('flex', 'gap-[2.5rem]', 'flex-col')}

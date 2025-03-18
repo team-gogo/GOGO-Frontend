@@ -24,6 +24,7 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
     { id: number; index: number; passed550: boolean }[]
   >([]);
   const [passed550Indexes, setPassed550Indexes] = useState<number[]>([]);
+  const [opacity, setOpacity] = useState(1);
 
   const risk = watch('risk');
 
@@ -167,6 +168,24 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
     setEngine(newEngine);
   };
 
+  const useCanvasStyleFix = () => {
+    useEffect(() => {
+      const style = document.createElement('style');
+      style.innerHTML = `
+        #plinko-game canvas {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      `;
+      document.head.appendChild(style);
+
+      return () => {
+        document.head.removeChild(style);
+      };
+    }, []);
+  };
+  useCanvasStyleFix();
+
   const spawnBall = (targetX: number, index: number) => {
     if (!engine) return;
 
@@ -216,6 +235,18 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
     }
   }, [plinkoData]);
 
+  useEffect(() => {
+    if (passed550Indexes.length > 0) {
+      setOpacity(1);
+
+      const timer = setTimeout(() => {
+        setOpacity(0);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [passed550Indexes]);
+
   const buttonValuesForPassed550 = passed550Indexes.map((index) => {
     return buttonValues[index];
   });
@@ -228,13 +259,16 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
         'flex',
         'flex-col',
         'bg-[#303030]',
+        'w-full',
         'max-w-[52.8125rem]',
         'p-[1rem]',
         'rounded-xl',
         'relative',
       )}
     >
-      <div id="plinko-game" />
+      <div className={cn('w-full', 'relative')}>
+        <div id="plinko-game" />
+      </div>
       <div
         className={cn(
           'flex',
@@ -245,7 +279,15 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
           'gap-[10rem]',
         )}
       >
-        <div className={cn('flex', 'items-center', 'gap-[0.3rem]')}>
+        <div
+          className={cn(
+            'flex',
+            'items-center',
+            'w-[70%]',
+            'justify-center',
+            'gap-[0.3rem]',
+          )}
+        >
           {buttonValues.map((value, index) => {
             return (
               <div
@@ -259,7 +301,8 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
                   'items-center',
                   'rounded-lg',
                   'bg-main-100',
-                  'w-[1.9rem]',
+                  'w-full',
+                  'max-w-[1.9rem]',
                   'transition-all',
                   'duration-100',
                   index === lastPassedIndex && 'animate-bounce',
@@ -300,7 +343,16 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
           'translate-y-[-50%]',
         )}
       >
-        <div className={cn('flex', 'flex-col', 'gap-[0.25rem]')}>
+        <div
+          className={cn(
+            'flex',
+            'flex-col',
+            'gap-[0.25rem]',
+            'transition-opacity',
+            'duration-1000',
+          )}
+          style={{ opacity }}
+        >
           {buttonValuesForPassed550.slice(0, 4).map((value, idx) => (
             <div
               key={`${value}-${idx}`}
