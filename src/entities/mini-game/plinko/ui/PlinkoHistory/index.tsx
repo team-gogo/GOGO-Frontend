@@ -35,7 +35,7 @@ const PlinkoHistory = ({
             className={cn(
               'flex',
               'flex-col',
-              'bg-gray-400',
+              'bg-main-500',
               'rounded-md',
               'px-[1rem]',
               'py-[0.5rem]',
@@ -44,7 +44,7 @@ const PlinkoHistory = ({
               'w-[4.25rem]',
             )}
           >
-            <p>{value}X</p>
+            <p className={cn('text-white')}>{value}X</p>
           </div>
         ))}
       </div>
