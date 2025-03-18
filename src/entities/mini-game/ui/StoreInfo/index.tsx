@@ -1,5 +1,5 @@
 import React from 'react';
-import { PointIcon } from '@/shared/assets/icons';
+import { PointIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 const StoreInfo = () => {

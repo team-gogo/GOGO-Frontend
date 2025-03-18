@@ -8,7 +8,6 @@ export { default as ShellGameIcon } from './ShellGameIcon';
 export { default as CoinIcon } from './CoinIcon';
 export { default as PlinkoIcon } from './PlinkoIcon';
 export { default as StoreIcon } from './StoreIcon';
-export { default as PointIcon } from './PointIcon';
 export { default as TicketIcon } from './TicketIcon';
 export { default as BadmintonIcon } from './BadmintonIcon';
 export { default as BaseBallIcon } from './BaseBallIcon';
