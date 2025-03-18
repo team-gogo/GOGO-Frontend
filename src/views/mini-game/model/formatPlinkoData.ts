@@ -6,7 +6,7 @@ export const formatPlinkoData = (
 ) => {
   return {
     deviceToken: null,
-    amount: data.amount * data.times,
+    amount: data.amount,
     risk: selectedRisk,
   };
 };

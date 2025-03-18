@@ -28,3 +28,8 @@ export interface PlinkoFormType {
   times: number;
   risk: 'LOW' | 'MEDIUM' | 'HIGH';
 }
+
+export interface PlinkoResponse {
+  amount: number;
+  multi: number;
+}

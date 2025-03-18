@@ -13,6 +13,7 @@ interface PlinkoInputBoxProps {
   setValue: UseFormSetValue<PlinkoFormType>;
   selectedRisk: 'LOW' | 'MEDIUM' | 'HIGH';
   setSelectedRisk: (risk: 'LOW' | 'MEDIUM' | 'HIGH') => void;
+  onClick: () => void;
 }
 
 const PlinkoInputBox = ({
@@ -23,6 +24,7 @@ const PlinkoInputBox = ({
   setValue,
   selectedRisk,
   setSelectedRisk,
+  onClick,
 }: PlinkoInputBoxProps) => {
   return (
     <div
@@ -34,6 +36,7 @@ const PlinkoInputBox = ({
         'items-center',
         'rounded-xl',
         'bg-gray-700',
+        'min-w-[24.5rem]',
       )}
     >
       <div className={cn('flex', 'w-full', 'flex-col', 'gap-[6.25rem]')}>
@@ -52,17 +55,6 @@ const PlinkoInputBox = ({
                   setValue('amount', Number(e.target.value));
                 }}
               />
-              <Input
-                {...register('times', {
-                  required: '배수 입력은 필수입니다.',
-                })}
-                placeholder="x2"
-                bgColor="bg-gray-600"
-                type="number"
-                onChange={(e) => {
-                  setValue('times', Number(e.target.value));
-                }}
-              />
             </div>
           </div>
 
@@ -73,7 +65,7 @@ const PlinkoInputBox = ({
             setSelectedRisk={setSelectedRisk}
           />
         </div>
-        <Button disabled={isDisabled} type="submit">
+        <Button disabled={isDisabled} onClick={onClick} type="submit">
           게임 시작
         </Button>
       </div>

@@ -4,15 +4,18 @@ import { PlinkoFormType } from '@/shared/types/mini-game';
 import { formatPlinkoData } from './formatPlinkoData';
 
 export const usePlinkoForm = () => {
-  const { register, handleSubmit, setValue, watch } = useForm<PlinkoFormType>();
+  const { register, handleSubmit, setValue, watch } = useForm<PlinkoFormType>({
+    defaultValues: {
+      risk: 'LOW',
+    },
+  });
   const [selectedRisk, setSelectedRisk] = useState<'LOW' | 'MEDIUM' | 'HIGH'>(
     'LOW',
   );
   const amount = watch('amount');
-  const times = watch('times');
-  const risk = watch('risk');
+  const risk = watch('risk') ?? selectedRisk;
 
-  const isDisabled = !amount || !times || !risk;
+  const isDisabled = !amount || !risk;
 
   const onSubmit = (data: PlinkoFormType) => {
     const formattedData = formatPlinkoData(data, selectedRisk);
