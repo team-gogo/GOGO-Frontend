@@ -8,6 +8,7 @@ interface RiskBox {
   setValue: UseFormSetValue<PlinkoFormType>;
   selectedRisk: 'LOW' | 'MEDIUM' | 'HIGH';
   setSelectedRisk: (risk: 'LOW' | 'MEDIUM' | 'HIGH') => void;
+  gameRunningCount: number;
 }
 
 const RiskBox = ({
@@ -15,10 +16,12 @@ const RiskBox = ({
   setValue,
   selectedRisk,
   setSelectedRisk,
+  gameRunningCount,
 }: RiskBox) => {
   register('risk', { required: '위험도 선택은 필수입니다.' });
 
   const handleRiskSelect = (risk: 'LOW' | 'MEDIUM' | 'HIGH') => {
+    if (gameRunningCount > 0) return;
     setSelectedRisk(risk);
     setValue('risk', risk, { shouldValidate: true });
   };

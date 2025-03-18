@@ -1,3 +1,5 @@
+'use client';
+
 import Matter, {
   Engine,
   Render,
@@ -6,17 +8,24 @@ import Matter, {
   Composite,
   Body,
 } from 'matter-js';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { UseFormWatch } from 'react-hook-form';
+import { PlinkoBottomDiv, PlinkoHistory } from '@/entities/mini-game';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 import { cn } from '@/shared/utils/cn';
+import { getButtonValues } from '../../model/getButtonValues';
 
 interface PlinkoGameProps {
   watch: UseFormWatch<PlinkoFormType>;
   plinkoData: PlinkoResponse | null;
+  setGameRunningCount: Dispatch<SetStateAction<number>>;
 }
 
-const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
+const PlinkoGame = ({
+  watch,
+  plinkoData,
+  setGameRunningCount,
+}: PlinkoGameProps) => {
   const [gameInitialized, setGameInitialized] = useState<boolean>(false);
   const [engine, setEngine] = useState<Matter.Engine | null>(null);
   const [btnClickIdxs, setBtnClickIdxs] = useState<number[]>([]);
@@ -25,20 +34,26 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
   >([]);
   const [passed550Indexes, setPassed550Indexes] = useState<number[]>([]);
   const [opacity, setOpacity] = useState(1);
+  const [buttonValuesForPassed550, setButtonValuesForPassed550] = useState<
+    number[]
+  >([]);
 
   const risk = watch('risk');
 
-  const getButtonValues = () => {
-    if (risk === 'MEDIUM') {
-      return [110, 41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 1, 1.5, 3, 5, 10, 41, 110];
-    }
-    if (risk === 'HIGH') {
-      return [1000, 130, 26, 9, 4, 2, 0.2, 0.2, 0.2, 2, 2, 4, 9, 26, 130, 1000];
-    }
-    return [16, 9, 2, 1.4, 1.2, 1.1, 1, 0.5, 0.5, 1, 1.1, 1.2, 1.4, 2, 9, 16];
-  };
+  const buttonValues = getButtonValues(risk);
 
-  const buttonValues = getButtonValues();
+  useEffect(() => {
+    return () => {
+      setGameInitialized(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!gameInitialized) {
+      initializePlinkoGame();
+      setGameInitialized(true);
+    }
+  }, [gameInitialized]);
 
   useEffect(() => {
     setPassed550Indexes(
@@ -62,19 +77,6 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
   }, [fallingOrder]);
 
   useEffect(() => {
-    return () => {
-      setGameInitialized(false);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!gameInitialized) {
-      initializePlinkoGame();
-      setGameInitialized(true);
-    }
-  }, [gameInitialized]);
-
-  useEffect(() => {
     if (!engine) return;
 
     const updateBallState = () => {
@@ -83,6 +85,7 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
       bodies.forEach((body) => {
         if (body.position.y > 700) {
           Composite.remove(engine.world, body);
+          setGameRunningCount((prev) => prev - 1);
         } else if (body.position.y > 530) {
           Body.set(body, {
             friction: 0.01,
@@ -184,6 +187,7 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
       };
     }, []);
   };
+
   useCanvasStyleFix();
 
   const spawnBall = (targetX: number, index: number) => {
@@ -213,6 +217,8 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
     Body.setVelocity(newBall, { x: velocityX, y: velocityY });
 
     Composite.add(engine.world, newBall);
+
+    setGameRunningCount((prev) => prev + 1);
 
     setFallingOrder((prev) => [
       ...prev,
@@ -247,9 +253,11 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
     }
   }, [passed550Indexes]);
 
-  const buttonValuesForPassed550 = passed550Indexes.map((index) => {
-    return buttonValues[index];
-  });
+  useEffect(() => {
+    setButtonValuesForPassed550(
+      passed550Indexes.map((index) => buttonValues[index]),
+    );
+  }, [passed550Indexes]);
 
   const lastPassedIndex = passed550Indexes[0];
 
@@ -269,110 +277,16 @@ const PlinkoGame = ({ watch, plinkoData }: PlinkoGameProps) => {
       <div className={cn('w-full', 'relative')}>
         <div id="plinko-game" />
       </div>
-      <div
-        className={cn(
-          'flex',
-          'items-center',
-          'justify-around',
-          'gap-[0.5rem]',
-          'flex-col',
-          'gap-[10rem]',
-        )}
-      >
-        <div
-          className={cn(
-            'flex',
-            'items-center',
-            'w-[70%]',
-            'justify-center',
-            'gap-[0.3rem]',
-          )}
-        >
-          {buttonValues.map((value, index) => {
-            return (
-              <div
-                key={index}
-                className={cn(
-                  'flex',
-                  'w-full',
-                  'px-[0.5rem]',
-                  'py-[0.1rem]',
-                  'justify-center',
-                  'items-center',
-                  'rounded-lg',
-                  'bg-main-100',
-                  'w-full',
-                  'max-w-[1.9rem]',
-                  'transition-all',
-                  'duration-100',
-                  index === lastPassedIndex && 'animate-bounce',
-                )}
-              >
-                <p className={cn('text-caption3s', 'text-main-600')}>{value}</p>
 
-                <style>
-                  {`
-                  @keyframes bounce {
-                    0% {
-                      transform: translateY(0);
-                      }
-                      50% {
-                        transform: translateY(30%);
-                        }
-                        100% {
-                          transform: translateY(0);
-                          }
-                          }
-                          
-                          .animate-bounce {
-                            animation: bounce 300ms cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
-                            }
-                            `}
-                </style>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <div
-        className={cn(
-          'absolute',
-          'top-[50%]',
-          'right-[2.5%]',
-          'transform',
-          'translate-y-[-50%]',
-        )}
-      >
-        <div
-          className={cn(
-            'flex',
-            'flex-col',
-            'gap-[0.25rem]',
-            'transition-opacity',
-            'duration-1000',
-          )}
-          style={{ opacity }}
-        >
-          {buttonValuesForPassed550.slice(0, 4).map((value, idx) => (
-            <div
-              key={`${value}-${idx}`}
-              className={cn(
-                'flex',
-                'flex-col',
-                'bg-gray-400',
-                'rounded-md',
-                'px-[1rem]',
-                'py-[0.5rem]',
-                'items-center',
-                'justify-center',
-                'w-[4.25rem]',
-              )}
-            >
-              <p>{value}X</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <PlinkoBottomDiv
+        buttonValues={buttonValues}
+        lastPassedIndex={lastPassedIndex}
+      />
+
+      <PlinkoHistory
+        opacity={opacity}
+        buttonValuesForPassed550={buttonValuesForPassed550}
+      />
     </div>
   );
 };

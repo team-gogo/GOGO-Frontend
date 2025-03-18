@@ -14,6 +14,7 @@ interface PlinkoInputBoxProps {
   selectedRisk: 'LOW' | 'MEDIUM' | 'HIGH';
   setSelectedRisk: (risk: 'LOW' | 'MEDIUM' | 'HIGH') => void;
   onClick: () => void;
+  gameRunningCount: number;
 }
 
 const PlinkoInputBox = ({
@@ -25,6 +26,7 @@ const PlinkoInputBox = ({
   selectedRisk,
   setSelectedRisk,
   onClick,
+  gameRunningCount,
 }: PlinkoInputBoxProps) => {
   return (
     <div
@@ -63,6 +65,7 @@ const PlinkoInputBox = ({
             setValue={setValue}
             selectedRisk={selectedRisk}
             setSelectedRisk={setSelectedRisk}
+            gameRunningCount={gameRunningCount}
           />
         </div>
         <Button disabled={isDisabled} onClick={onClick} type="submit">

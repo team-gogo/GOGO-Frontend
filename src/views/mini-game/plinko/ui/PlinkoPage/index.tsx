@@ -25,6 +25,7 @@ import getPlinkoMock9 from '../Mock/getPlinkoMock9';
 
 const PlinkoPage = () => {
   const [plinkoMock, setPlinkoMock] = useState<PlinkoResponse | null>(null);
+  const [gameRunningCount, setGameRunningCount] = useState<number>(0);
 
   const {
     register,
@@ -114,10 +115,15 @@ const PlinkoPage = () => {
               selectedRisk={selectedRisk}
               setSelectedRisk={setSelectedRisk}
               onClick={onClickSubmitBtn}
+              gameRunningCount={gameRunningCount}
             />
           </form>
 
-          <PlinkoGame watch={watch} plinkoData={plinkoMock} />
+          <PlinkoGame
+            watch={watch}
+            plinkoData={plinkoMock}
+            setGameRunningCount={setGameRunningCount}
+          />
         </div>
       </div>
     </div>
