@@ -31,14 +31,7 @@ const getMatchInfo = (): MatchResponse => {
           bettingPoint: 1000,
           predictedWinTeamId: 1,
         },
-        result: {
-          victoryTeamId: 1,
-          aTeamScore: 2,
-          bTeamScore: 1,
-          isPredictionSuccess: true,
-          earnedPoint: 200,
-          pointReceivingTime: '2025-03-10T16:00:00',
-        },
+        result: undefined,
       },
       {
         matchId: 1002,
