@@ -8,7 +8,7 @@ import { SearchIcon } from '@/shared/assets/icons';
 import { School, SignupFormData } from '@/shared/types/signup';
 import Input from '@/shared/ui/input';
 import { useSchoolQuery } from '../../model/useSchoolQuery';
-import SchoolSearchResults from '../SchoolSearchResults';
+import SearchResults from '../SearchResults';
 
 interface SchoolInputProps {
   register: UseFormRegister<SignupFormData>;
@@ -30,10 +30,13 @@ const SchoolInput = ({
   const schoolName = watch('schoolName');
   const { data: schools, isLoading } = useSchoolQuery(schoolName);
 
-  const handleSchoolSelect = (school: School) => {
-    setSelectedSchool(school);
-    setValue('schoolName', school.SCHUL_NM);
-    setSearchResultsVisible(false);
+  const handleSchoolSelect = (selectedSchools: School[]) => {
+    if (selectedSchools.length > 0) {
+      const school = selectedSchools[0];
+      setSelectedSchool(school);
+      setValue('schoolName', school.SCHUL_NM);
+      setSearchResultsVisible(false);
+    }
   };
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -66,10 +69,14 @@ const SchoolInput = ({
       />
       {schoolName && !selectedSchool && isSearchResultsVisible && (
         <div ref={searchResultsRef}>
-          <SchoolSearchResults
-            schools={schools}
+          <SearchResults<School>
+            items={schools}
             isLoading={isLoading}
             onSelect={handleSchoolSelect}
+            getDisplayName={(school) => school.SCHUL_NM}
+            getSubText={(school) => school.ORG_RDNMA}
+            isAbsolute={true}
+            multiSelect={false}
           />
         </div>
       )}

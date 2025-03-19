@@ -2,10 +2,11 @@ import { XIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 interface ModalLayoutProps {
-  title: string;
+  title?: string;
   onClose: (e: React.MouseEvent) => void;
   children: React.ReactNode;
   containerClassName?: string;
+  showHeader?: boolean;
 }
 
 const ModalLayout = ({
@@ -13,6 +14,7 @@ const ModalLayout = ({
   onClose,
   children,
   containerClassName,
+  showHeader = true,
 }: ModalLayoutProps) => {
   return (
     <div
@@ -30,12 +32,16 @@ const ModalLayout = ({
       onClick={onClose}
     >
       <div className={containerClassName} onClick={(e) => e.stopPropagation()}>
-        <div className={cn('mb-4', 'flex', 'items-center', 'justify-between')}>
-          <p className={cn('text-white', 'text-body1s')}>{title}</p>
-          <button onClick={onClose}>
-            <XIcon />
-          </button>
-        </div>
+        {showHeader && (
+          <div
+            className={cn('mb-4', 'flex', 'items-center', 'justify-between')}
+          >
+            <p className={cn('text-white', 'text-body1s')}>{title}</p>
+            <button onClick={onClose}>
+              <XIcon />
+            </button>
+          </div>
+        )}
         {children}
       </div>
     </div>

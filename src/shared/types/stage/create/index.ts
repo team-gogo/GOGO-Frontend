@@ -51,3 +51,15 @@ export interface StageData {
   passCode?: string;
   maintainer: number[];
 }
+
+export interface Student {
+  studentId: number;
+  grade: number;
+  studentNumber: number;
+  classNumber: number;
+  name: string;
+}
+
+export interface StudentResponse {
+  students: Student[];
+}

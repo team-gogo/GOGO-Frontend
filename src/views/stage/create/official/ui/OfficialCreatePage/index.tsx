@@ -51,7 +51,7 @@ const OfficialCreatePage = () => {
           <EntryNumberInput register={register} />
         </div>
         <div className="w-full">
-          <InviteStudentInput register={register} />
+          <InviteStudentInput register={register} setValue={setValue} />
         </div>
       </div>
       <Button type="submit">확인</Button>
