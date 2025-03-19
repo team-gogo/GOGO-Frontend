@@ -78,7 +78,7 @@ const MainPage = () => {
           <SectionWrapper
             text={'미니게임'}
             icon={<MatchClockIcon />}
-            path="/my"
+            path="/match"
           >
             <StageMatchSection matches={matchInfo} />
           </SectionWrapper>
