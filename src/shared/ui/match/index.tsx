@@ -1,14 +1,18 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   BlueAlarmIcon,
   GrayAlarmIcon,
   RightArrowIcon,
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
-import { useMatchModalStore, useMatchStore } from '@/shared/stores';
+import {
+  useMatchModalStore,
+  useMatchStore,
+  useMyStageIdStore,
+} from '@/shared/stores';
 import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
@@ -36,6 +40,17 @@ const Match = ({ match }: MatchProps) => {
 
   const { setIsMatchModalOpen } = useMatchModalStore();
   const { setMatchStatus, setMatch } = useMatchStore();
+  const { stageId } = useMyStageIdStore();
+
+  const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
+
+  useEffect(() => {
+    setAdminIdxArr(JSON.parse(localStorage.getItem('stageAdminArr') || '[]'));
+  }, []);
+
+  const isStageAdmin = adminIdxArr.includes(stageId);
+
+  console.log(isStageAdmin);
 
   const [isAlarmClick, setIsAlarmClick] = useState<boolean>(isNotice);
 
@@ -43,11 +58,15 @@ const Match = ({ match }: MatchProps) => {
 
   const currentTime = new Date();
 
+  console.log(isStageAdmin);
+
   const start = new Date(startDate);
   const end = new Date(endDate);
 
   const isPlaying = currentTime >= start && currentTime <= end;
-  const isFinish = currentTime > end;
+  const isFinish = currentTime > end && isEnd === true;
+
+  const adminAndMatchEnd = isStageAdmin && !isFinish && !isPlaying;
 
   const time = `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`;
 
@@ -106,9 +125,26 @@ const Match = ({ match }: MatchProps) => {
         'px-[2rem]',
         'rounded-xl',
         'bg-gray-700',
+        'relative',
         isFinal && borderStyle,
       )}
     >
+      {adminAndMatchEnd && (
+        <div
+          className={cn(
+            'absolute',
+            'inset-0',
+            'backdrop-blur-sm',
+            'bg-gray-900/50',
+            'flex',
+            'items-center',
+            'justify-center',
+            'rounded-xl',
+          )}
+        >
+          <button className={cn('text-h3e', 'text-white')}>정산하기</button>
+        </div>
+      )}
       <div
         className={cn(
           'flex',
@@ -295,7 +331,7 @@ const Match = ({ match }: MatchProps) => {
               <RightArrowIcon color="white" />
             </button>
           ) : (
-            <Button disabled={isEnd || betting.isBetting}>
+            <Button disabled={isFinish || betting.isBetting}>
               {!betting.isBetting
                 ? '베팅'
                 : betting.bettingPoint !== undefined

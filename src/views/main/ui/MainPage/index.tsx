@@ -1,5 +1,7 @@
 'use client';
 
+import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { DateContainer, MatchDetailModal } from '@/entities/main';
 import { MatchClockIcon } from '@/shared/assets/svg';
 import {
@@ -7,6 +9,8 @@ import {
   MiniGameIcon,
   RankingIcon,
 } from '@/shared/assets/svg/MainIcon';
+
+import { useMyStageIdStore } from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
@@ -21,6 +25,14 @@ const MainPage = () => {
   const rankingMock = getRankingMock();
   const boardMock = getBoardMock();
   const slicedBoardMock = boardMock.board.slice(0, 4);
+
+  const { stageId } = useParams();
+
+  const { setStageId } = useMyStageIdStore();
+
+  useEffect(() => {
+    setStageId(Number(stageId));
+  }, []);
 
   const isMainUsed = true;
 

@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useStageAdminStore } from '@/shared/stores';
 import { StagesType } from '@/shared/types/stage';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
@@ -9,9 +11,25 @@ import getStageInfo from '../Mock/getStageInfo';
 const StagePage = () => {
   const stageInfo = getStageInfo();
 
+  const { stageAdminArr, addStageAdmin } = useStageAdminStore();
+
+  useEffect(() => {
+    localStorage.setItem('stageAdminArr', JSON.stringify(stageAdminArr));
+  }, [stageAdminArr]);
+
   const participateStages: StagesType[] = [];
   const confirmedStages: StagesType[] = [];
   const recruitingStages: StagesType[] = [];
+
+  const maintainingStageIds: number[] = stageInfo.stages
+    .filter((stage) => stage.isMaintaining)
+    .map((stage) => stage.stageId);
+
+  useEffect(() => {
+    maintainingStageIds.forEach((id) => {
+      addStageAdmin(id);
+    });
+  }, []);
 
   stageInfo.stages.forEach((stage) => {
     if (stage.isParticipating) {
