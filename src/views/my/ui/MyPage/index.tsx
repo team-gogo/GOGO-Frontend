@@ -1,7 +1,12 @@
 import { cn } from '@/shared/utils/cn';
-import { MyInfoContainer, StageContainer } from '@/widgets/my';
+import { MyInfoContainer, MyStageContainer } from '@/widgets/my';
+import getUserInfo from '../Mock/getUserInfo';
+import getUserStageInfo from '../Mock/getUserStageInfo';
 
 const MyPage = () => {
+  const userStageInfo = getUserStageInfo();
+  const userInfo = getUserInfo();
+
   return (
     <div
       className={cn(
@@ -23,12 +28,8 @@ const MyPage = () => {
           'gap-[3.75rem]',
         )}
       >
-        <MyInfoContainer
-          name={'김재균'}
-          school={'광주소프트웨어마이스터고등학교'}
-          sex={'남성'}
-        />
-        <StageContainer />
+        <MyInfoContainer userInfo={userInfo} />
+        <MyStageContainer userStageInfo={userStageInfo} />
       </div>
     </div>
   );

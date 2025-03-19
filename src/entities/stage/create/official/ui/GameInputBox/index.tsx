@@ -10,7 +10,7 @@ import {
   CategoryType,
   CreateOfficialStageFormType,
   SystemType,
-} from '@/shared/types/createStage';
+} from '@/shared/types/stage/create/fast';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 

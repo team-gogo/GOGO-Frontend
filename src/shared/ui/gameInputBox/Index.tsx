@@ -8,7 +8,7 @@ import {
 } from 'react-hook-form';
 import { DeleteIcon, SelectIcon } from '@/shared/assets/icons';
 import { HumanIcon } from '@/shared/assets/svg';
-import { CategoryType, SystemType } from '@/shared/types/createStage';
+import { CategoryType, SystemType } from '@/shared/types/stage/create/fast';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 

@@ -7,7 +7,7 @@ import {
   SoccerIcon,
   VolleyBallIcon,
 } from '@/shared/assets/icons';
-import { CategoryType } from '@/shared/types/createStage';
+import { CategoryType } from '@/shared/types/stage/create/fast';
 import { cn } from '@/shared/utils/cn';
 
 const categoryList: {

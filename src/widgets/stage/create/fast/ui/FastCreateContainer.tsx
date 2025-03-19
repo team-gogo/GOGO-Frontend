@@ -7,7 +7,7 @@ import { SPORT_TYPES } from '@/shared/model/sportTypes';
 import {
   CategoryType,
   CreateFastStageFormType,
-} from '@/shared/types/createStage';
+} from '@/shared/types/stage/create/fast';
 import BackPageButton from '@/shared/ui/backPageButton/index';
 import Button from '@/shared/ui/button';
 import GameInputBox from '@/shared/ui/gameInputBox/Index';
