@@ -50,15 +50,11 @@ const Match = ({ match }: MatchProps) => {
 
   const isStageAdmin = adminIdxArr.includes(stageId);
 
-  console.log(isStageAdmin);
-
   const [isAlarmClick, setIsAlarmClick] = useState<boolean>(isNotice);
 
   const { push } = useRouter();
 
   const currentTime = new Date();
-
-  console.log(isStageAdmin);
 
   const start = new Date(startDate);
   const end = new Date(endDate);
