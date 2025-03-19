@@ -1,9 +1,9 @@
 import { BoardData } from '@/shared/types/community';
 
-export const getBoardMock = (): BoardData => {
+const getBoardMock = (): BoardData => {
   return {
     info: {
-      totalPage: 5,
+      totalPage: 10,
       totalElement: 100,
     },
     board: [
@@ -186,3 +186,5 @@ export const getBoardMock = (): BoardData => {
     ],
   };
 };
+
+export default getBoardMock;
