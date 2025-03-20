@@ -42,7 +42,7 @@ const MyBetPage = () => {
           <TotalPointContainer point={900000} />
           <PointContainer tempPoint={tempPoint} />
         </div>
-        <MatchContainer userBetInfo={userBetInfo} />
+        <MatchContainer matchInfo={userBetInfo} isMyBetInfo={true} />
       </div>
       {isMatchModalOpen && (
         <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
