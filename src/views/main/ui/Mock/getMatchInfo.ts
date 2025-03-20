@@ -95,7 +95,7 @@ const getMatchInfo = (): MatchResponse => {
           bTeamScore: 2,
           isPredictionSuccess: false,
           earnedPoint: 0,
-          pointReceivingTime: '2025-03-13T16:00:00',
+          tempPointExpiredDate: '2025-03-13T16:00:00',
         },
       },
       {
