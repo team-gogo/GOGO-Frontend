@@ -38,3 +38,4 @@ export { default as YavarweeIcon } from './YavarweeIcon';
 export { default as CoinTossIcon } from './CoinTossIcon';
 export { default as PlinkoIcon } from './PlinkoIcon';
 export { default as PointCircleIcon } from './PointCircleIcon';
+export { default as LineStroke } from './LineStroke';

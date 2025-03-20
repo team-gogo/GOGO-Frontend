@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import SearchResults from '@/entities/signup/ui/SearchResults';
 import { SearchIcon } from '@/shared/assets/icons';
 import { StageData, Student } from '@/shared/types/stage/create';
 import Input from '@/shared/ui/input';
 import ModalLayout from '@/shared/ui/modalLayout';
+import SearchResults from '@/shared/ui/SearchResults';
 import { cn } from '@/shared/utils/cn';
 import getStudentListInfoMock from '../../mock/getStudentListInfoMock';
 
@@ -23,6 +23,11 @@ const InviteStudentInput = ({ register, setValue }: Props) => {
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
 
   useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setStudents([]);
+      return;
+    }
+
     const allStudents = getStudentListInfoMock().students;
     const filteredStudents = allStudents.filter((student) =>
       student.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -48,8 +53,11 @@ const InviteStudentInput = ({ register, setValue }: Props) => {
       'maintainer',
       students.map((student) => student.studentId),
     );
+    setSearchTerm('');
     setIsModalOpen(false);
   };
+
+  const getStudentId = (student: Student) => student.studentId;
 
   return (
     <div className={cn('space-y-16')}>
@@ -64,13 +72,13 @@ const InviteStudentInput = ({ register, setValue }: Props) => {
       <Input
         {...register('maintainer')}
         placeholder="학생을 입력해주세요"
-        icon={<SearchIcon size={24} />}
+        icon={<SearchIcon size={24} color="#fff" />}
         onClick={handleInputClick}
         readOnly
         value={selectedStudents
           .map(
             (s) =>
-              `${s.grade}학년 ${s.classNumber}반 ${s.studentNumber}번 ${s.name}`,
+              `${s.grade}${s.classNumber}${String(s.studentNumber).padStart(2, '0')} ${s.name}`,
           )
           .join(', ')}
       />
@@ -79,22 +87,32 @@ const InviteStudentInput = ({ register, setValue }: Props) => {
         <ModalLayout
           showHeader={false}
           onClose={handleCloseModal}
-          containerClassName="bg-gray-700 p-24 rounded-lg w-full max-w-[40.5rem]"
+          containerClassName="bg-gray-700 rounded-lg w-full max-w-[40.5rem]"
         >
-          <Input
-            placeholder="학생을 입력해주세요"
-            showBorder={true}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div className={cn('px-24', 'pt-24')}>
+            <Input
+              placeholder="학생을 입력해주세요"
+              showBorder={true}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              icon={<SearchIcon size={24} color="#fff" />}
+            />
+          </div>
           <SearchResults<Student>
             items={students}
             isLoading={false}
+            SearchinputValue={searchTerm}
             onSelect={handleStudentSelect}
-            getDisplayName={(student) => student.name}
+            getDisplayName={(student) =>
+              `${student.grade}${student.classNumber}${String(student.studentNumber).padStart(2, '0')} ${student.name}`
+            }
             isAbsolute={false}
             multiSelect={true}
             selectedItems={selectedStudents}
+            getItemId={getStudentId}
+            showCheckbox={true}
+            istotalSelect={true}
+            isDisabled={false}
           />
         </ModalLayout>
       )}

@@ -16,12 +16,7 @@ const EntryNumberInput = ({ register }: Props) => {
           입장 번호은 선택사항입니다.
         </p>
       </div>
-      <Input
-        {...register('passCode', {
-          required: '입장번호는 필수입니다.',
-        })}
-        placeholder="입장번호를 입력해주세요"
-      />
+      <Input {...register('passCode')} placeholder="입장번호를 입력해주세요" />
     </div>
   );
 };

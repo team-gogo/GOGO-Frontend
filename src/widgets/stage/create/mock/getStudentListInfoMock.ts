@@ -41,7 +41,7 @@ const getStudentListInfoMock = (): StudentResponse => {
       {
         studentId: 6,
         grade: 3,
-        studentNumber: 1,
+        studentNumber: 17,
         classNumber: 3,
         name: '정태관',
       },
