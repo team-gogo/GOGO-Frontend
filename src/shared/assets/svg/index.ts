@@ -38,5 +38,4 @@ export { default as YavarweeIcon } from './YavarweeIcon';
 export { default as CoinTossIcon } from './CoinTossIcon';
 export { default as PlinkoIcon } from './PlinkoIcon';
 export { default as PointCircleIcon } from './PointCircleIcon';
-export { default as CheckedBoxIcon } from './CheckedBoxIcon';
-export { default as CheckBoxIcon } from './CheckBoxIcon';
+export { default as CheckingBoxIcon } from './CheckingBoxIcon';
