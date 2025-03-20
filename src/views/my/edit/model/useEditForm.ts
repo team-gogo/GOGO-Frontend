@@ -21,11 +21,7 @@ export const useEditForm = ({ defaultValues }: UseEditFormProps = {}) => {
     defaultValues?.isFiltered || false,
   );
 
-  const name = watch('name');
-  const grade = watch('grade');
-  const classNumber = watch('classNumber');
-  const studentNumber = watch('studentNumber');
-  const sex = watch('sex');
+  const { name, grade, classNumber, studentNumber, sex } = watch();
 
   const isDisabled = !name || !grade || !classNumber || !studentNumber || !sex;
 
