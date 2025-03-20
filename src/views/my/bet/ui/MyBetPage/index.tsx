@@ -1,7 +1,7 @@
 'use client';
 
 import { MatchDetailModal } from '@/entities/main';
-import { useMatchModalStore } from '@/shared/stores';
+import { useBatchModalStore, useMatchModalStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 import {
   MatchContainer,
@@ -16,6 +16,7 @@ const MyBetPage = () => {
   const tempPoint = getTempPoint();
 
   const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
+  const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
 
   return (
     <div

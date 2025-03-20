@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { DateContainer, MatchDetailModal } from '@/entities/main';
+import BatchModal from '@/entities/main/ui/BatchModal';
 import { MatchClockIcon } from '@/shared/assets/svg';
 import {
   CommunityIcon,
@@ -10,7 +11,7 @@ import {
   RankingIcon,
 } from '@/shared/assets/svg/MainIcon';
 
-import { useMyStageIdStore } from '@/shared/stores';
+import { useBatchModalStore, useMyStageIdStore } from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
@@ -37,6 +38,7 @@ const MainPage = () => {
   const isMainUsed = true;
 
   const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
+  const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
 
   return (
     <div
@@ -129,6 +131,9 @@ const MainPage = () => {
       </div>
       {isMatchModalOpen && (
         <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+      )}
+      {isBatchModalOpen && (
+        <BatchModal onClose={() => setIsBatchModalOpen(false)} />
       )}
     </div>
   );

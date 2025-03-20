@@ -1,8 +1,9 @@
 'use client';
 
 import { DateContainer, MatchDetailModal } from '@/entities/main';
+import BatchModal from '@/entities/main/ui/BatchModal';
 import useSelectSport from '@/shared/model/useSelectSport';
-import { useMatchModalStore } from '@/shared/stores';
+import { useBatchModalStore, useMatchModalStore } from '@/shared/stores';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { getMatchInfo } from '@/views/main';
@@ -15,6 +16,7 @@ const MatchPage = () => {
   const { selectedSport, toggleSportSelection } = useSelectSport();
 
   const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
+  const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
 
   return (
     <div
@@ -53,6 +55,9 @@ const MatchPage = () => {
       </div>
       {isMatchModalOpen && (
         <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+      )}
+      {isBatchModalOpen && (
+        <BatchModal onClose={() => setIsBatchModalOpen(false)} />
       )}
     </div>
   );

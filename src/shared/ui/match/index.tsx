@@ -9,6 +9,7 @@ import {
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
 import {
+  useBatchModalStore,
   useMatchModalStore,
   useMatchStore,
   useMyStageIdStore,
@@ -41,6 +42,7 @@ const Match = ({ match }: MatchProps) => {
   const { setIsMatchModalOpen } = useMatchModalStore();
   const { setMatchStatus, setMatch } = useMatchStore();
   const { stageId } = useMyStageIdStore();
+  const { setIsBatchModalOpen } = useBatchModalStore();
 
   const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
 
@@ -138,7 +140,14 @@ const Match = ({ match }: MatchProps) => {
             'rounded-xl',
           )}
         >
-          <button className={cn('text-h3e', 'text-white')}>정산하기</button>
+          <button
+            onClick={() => {
+              setIsBatchModalOpen(true);
+            }}
+            className={cn('text-h3e', 'text-white')}
+          >
+            정산하기
+          </button>
         </div>
       )}
       <div
