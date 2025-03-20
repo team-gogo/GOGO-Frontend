@@ -69,7 +69,7 @@ const Match = ({ match }: MatchProps) => {
   const end = new Date(endDate);
 
   const isPlaying = currentTime >= start && currentTime <= end;
-  const isFinish = currentTime > end;
+  const isMatchFinish = currentTime > end;
 
   const tempPointExpiredDate = result?.tempPointExpiredDate
     ? new Date(result.tempPointExpiredDate)
@@ -80,7 +80,7 @@ const Match = ({ match }: MatchProps) => {
     : false;
 
   const adminAndMatchEnd =
-    isStageAdmin && isFinish && !isPlaying && !isBatchEnd && !isExpired;
+    isStageAdmin && isMatchFinish && !isPlaying && !isBatchEnd && !isExpired;
 
   const isTimerStart = isStageAdmin && isBatchEnd && !isExpired;
 
@@ -118,7 +118,7 @@ const Match = ({ match }: MatchProps) => {
   const updateStateu = () => {
     setMatchStatus({
       isPlaying,
-      isFinish,
+      isMatchFinish,
       time,
       roundText,
     });
@@ -178,9 +178,11 @@ const Match = ({ match }: MatchProps) => {
               <MatchTypeLabel
                 type={'TIME'}
                 customText={
-                  isPlaying ? '경기 중' : isFinish ? '경기 종료' : time
+                  isPlaying ? '경기 중' : isMatchFinish ? '경기 종료' : time
                 }
-                color={isPlaying ? '#01C612' : isFinish ? '#898989' : '#FFF'}
+                color={
+                  isPlaying ? '#01C612' : isMatchFinish ? '#898989' : '#FFF'
+                }
               />
               <SportTypeLabel
                 type={category && category.length > 0 ? category[0] : ''}
@@ -224,7 +226,7 @@ const Match = ({ match }: MatchProps) => {
                 {formatPoint(aTeam.bettingPoint + bTeam.bettingPoint)}
               </p>
             </div>
-            {isFinish && isBatchEnd ? (
+            {isMatchFinish && isBatchEnd ? (
               <h2 className={cn('text-h2e', 'text-white')}>
                 {winnerTeam}팀 승리
               </h2>
@@ -289,7 +291,7 @@ const Match = ({ match }: MatchProps) => {
               </div>
             )}
           </div>
-          {isFinish && isBatchEnd && betting.isBetting ? (
+          {isMatchFinish && isBatchEnd && betting.isBetting ? (
             <div
               className={cn(
                 'flex',
@@ -340,7 +342,7 @@ const Match = ({ match }: MatchProps) => {
               <RightArrowIcon color="white" />
             </button>
           ) : (
-            <Button disabled={isFinish || betting.isBetting || isBatchEnd}>
+            <Button disabled={isMatchFinish || betting.isBetting || isBatchEnd}>
               {!betting.isBetting
                 ? '베팅'
                 : betting.bettingPoint !== undefined
