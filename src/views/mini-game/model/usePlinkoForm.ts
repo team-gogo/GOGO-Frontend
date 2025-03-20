@@ -13,7 +13,7 @@ export const usePlinkoForm = () => {
     'LOW',
   );
   const amount = watch('amount');
-  const risk = watch('risk') ?? selectedRisk;
+  const risk = watch('risk');
 
   const isDisabled = !amount || !risk;
 
