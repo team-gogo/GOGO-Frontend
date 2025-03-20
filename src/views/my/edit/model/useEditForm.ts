@@ -3,13 +3,23 @@ import { useForm, FieldErrors } from 'react-hook-form';
 import { PatchStudentInfo } from '@/shared/types/my/edit';
 import { formatEditData } from './formatEditData';
 
-export const useEditForm = () => {
-  const { register, handleSubmit, setValue, watch } =
-    useForm<PatchStudentInfo>();
-  const [selectedSex, setSelectedSex] = useState<'MALE' | 'FEMALE' | null>(
-    null,
+interface UseEditFormProps {
+  defaultValues?: Partial<PatchStudentInfo>;
+}
+
+export const useEditForm = ({ defaultValues }: UseEditFormProps = {}) => {
+  const { register, handleSubmit, setValue, watch } = useForm<PatchStudentInfo>(
+    {
+      defaultValues,
+    },
   );
-  const [filtered, setFiltered] = useState<boolean>(false);
+
+  const [selectedSex, setSelectedSex] = useState<'MALE' | 'FEMALE' | null>(
+    defaultValues?.sex || null,
+  );
+  const [filtered, setFiltered] = useState<boolean>(
+    defaultValues?.isFiltered || false,
+  );
 
   const name = watch('name');
   const grade = watch('grade');

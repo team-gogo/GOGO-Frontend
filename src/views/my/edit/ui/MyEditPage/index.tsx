@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
@@ -27,16 +26,16 @@ const MyEditPage = () => {
     setFiltered,
     selectedSex,
     setSelectedSex,
-  } = useEditForm();
-
-  useEffect(() => {
-    setValue('name', name);
-    setValue('grade', grade);
-    setValue('classNumber', classNumber);
-    setValue('studentNumber', studentNumber);
-    setValue('sex', sex);
-    setValue('isFiltered', isFiltered);
-  }, []);
+  } = useEditForm({
+    defaultValues: {
+      name,
+      grade,
+      classNumber,
+      studentNumber,
+      sex,
+      isFiltered,
+    },
+  });
 
   return (
     <div
