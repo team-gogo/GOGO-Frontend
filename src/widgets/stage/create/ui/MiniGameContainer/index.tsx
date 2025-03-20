@@ -45,7 +45,10 @@ const MiniGameContainer = ({
           const iconColor = getIconColor(isActive);
 
           return (
-            <div key={game.type} className={cn('space-y-16', 'w-full')}>
+            <div
+              key={game.type}
+              className={cn('space-y-16', 'tablet:w-full', 'w-1/3')}
+            >
               <SelectStageType
                 icon={cloneElement(<game.icon size={60} />, {
                   color: iconColor,
