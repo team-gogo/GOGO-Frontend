@@ -1,6 +1,7 @@
 'use client';
 
 import { MatchDetailModal } from '@/entities/main';
+import BatchModal from '@/entities/main/ui/BatchModal';
 import { useBatchModalStore, useMatchModalStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 import {
@@ -47,6 +48,9 @@ const MyBetPage = () => {
       </div>
       {isMatchModalOpen && (
         <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+      )}
+      {isBatchModalOpen && (
+        <BatchModal onClose={() => setIsBatchModalOpen(false)} />
       )}
     </div>
   );
