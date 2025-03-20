@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import SportMap from '@/entities/team/ui/Map';
 import { Player } from '@/entities/team/ui/Map/types';
+import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { SportType } from '@/shared/model/sportTypes';
@@ -195,18 +196,18 @@ const PlaceTeamContainer = () => {
                       </div>
                     )}
                   </div>
-                  <div className="flex w-52 px-10">
+                  <div className="flex w-52 justify-between px-10">
                     <button
                       onClick={handleAddPlayer}
-                      className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full border-2 border-white bg-transparent"
+                      className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent"
                       disabled={
                         !selectedPlayer || selectedPlayer === '인원 선택'
                       }
                     >
                       <PlusButtonIcon />
                     </button>
-                    <button className="ml-2 flex h-[30px] w-[30px] items-center justify-center rounded-full bg-[#2a2a2a]">
-                      <span className="text-body2s">-</span>
+                    <button className="ml-20 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent">
+                      <MinusButtonIcon />
                     </button>
                   </div>
                 </div>
