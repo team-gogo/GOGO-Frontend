@@ -3,7 +3,7 @@ import { PatchStudentInfo } from '@/shared/types/my/edit';
 export const formatEditData = (
   data: PatchStudentInfo,
   selectedSex: 'MALE' | 'FEMALE' | null,
-  filterd: boolean,
+  isFiltered: boolean,
 ) => {
   return {
     deviceToken: null,
@@ -12,6 +12,6 @@ export const formatEditData = (
     grade: Number(data.grade),
     classNumber: Number(data.classNumber),
     studentNumber: Number(data.studentNumber),
-    isFiltered: filterd,
+    isFiltered: isFiltered,
   };
 };
