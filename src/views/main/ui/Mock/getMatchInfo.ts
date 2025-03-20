@@ -167,7 +167,7 @@ const getMatchInfo = (): MatchResponse => {
           bTeamScore: 2,
           isPredictionSuccess: true,
           earnedPoint: 1000,
-          tempPointExpiredDate: '2025-03-20T24:00:00',
+          tempPointExpiredDate: '2025-03-21T08:00:00',
         },
       },
     ],

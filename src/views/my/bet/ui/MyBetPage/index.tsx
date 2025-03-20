@@ -1,7 +1,7 @@
 'use client';
 
 import { MatchDetailModal } from '@/entities/main';
-import BatchCancleModal from '@/entities/main/ui/BatchCancleModal';
+import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
 import {
   useBatchModalStore,
@@ -60,7 +60,7 @@ const MyBetPage = () => {
         <BatchModal onClose={() => setIsBatchModalOpen(false)} />
       )}
       {isCheckAgainModalOpen && (
-        <BatchCancleModal onClose={() => setIsCheckAgainModalOpen(false)} />
+        <BatchCancelModal onClose={() => setIsCheckAgainModalOpen(false)} />
       )}
     </div>
   );

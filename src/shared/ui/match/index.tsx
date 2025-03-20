@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { BatchCancleController, BatchController } from '@/entities/main';
+import { BatchCancelController, BatchController } from '@/entities/main';
 import {
   BlueAlarmIcon,
   GrayAlarmIcon,
@@ -149,7 +149,7 @@ const Match = ({ match }: MatchProps) => {
         <BatchController aTeam={aTeam} bTeam={bTeam} matchId={matchId} />
       )}
       {isTimerStart && (
-        <BatchCancleController
+        <BatchCancelController
           tempPointExpiredDate={result?.tempPointExpiredDate}
           matchId={matchId}
         />

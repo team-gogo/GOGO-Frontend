@@ -9,11 +9,11 @@ import Button from '@/shared/ui/button';
 import ModalLayout from '@/shared/ui/modalLayout';
 import { cn } from '@/shared/utils/cn';
 
-interface BatchCancleModalProps {
+interface BatchCancelModalProps {
   onClose: () => void;
 }
 
-const BatchCancleModal = ({ onClose }: BatchCancleModalProps) => {
+const BatchCancelModal = ({ onClose }: BatchCancelModalProps) => {
   const { matchId } = useMatchTeamStore();
   const { tempPointExpiredDate } = useExpiredDateStore();
   const { matchBatchArr, setMatchBatchArr } = useMatchBatchArrStore();
@@ -144,4 +144,4 @@ const BatchCancleModal = ({ onClose }: BatchCancleModalProps) => {
   );
 };
 
-export default BatchCancleModal;
+export default BatchCancelModal;

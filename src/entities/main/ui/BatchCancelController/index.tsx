@@ -8,15 +8,15 @@ import {
 } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 
-interface BatchCancleController {
+interface BatchCancelController {
   tempPointExpiredDate?: string;
   matchId: number;
 }
 
-const BatchCancleController = ({
+const BatchCancelController = ({
   tempPointExpiredDate,
   matchId,
-}: BatchCancleController) => {
+}: BatchCancelController) => {
   const { setIsCheckAgainModalOpen } = useCheckAgainModalStore();
   const { matchBatchArr, setMatchBatchArr } = useMatchBatchArrStore();
   const { setTempPointExpiredDate } = useExpiredDateStore();
@@ -110,4 +110,4 @@ const BatchCancleController = ({
   );
 };
 
-export default BatchCancleController;
+export default BatchCancelController;

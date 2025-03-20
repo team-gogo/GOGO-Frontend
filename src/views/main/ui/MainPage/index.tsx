@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { DateContainer, MatchDetailModal } from '@/entities/main';
-import BatchCancleModal from '@/entities/main/ui/BatchCancleModal';
+import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
 import { MatchClockIcon } from '@/shared/assets/svg';
 import {
@@ -143,7 +143,7 @@ const MainPage = () => {
         <BatchModal onClose={() => setIsBatchModalOpen(false)} />
       )}
       {isCheckAgainModalOpen && (
-        <BatchCancleModal onClose={() => setIsCheckAgainModalOpen(false)} />
+        <BatchCancelModal onClose={() => setIsCheckAgainModalOpen(false)} />
       )}
     </div>
   );
