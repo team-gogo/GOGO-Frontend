@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { BatchCancleController, BatchController } from '@/entities/main';
 import {
   BlueAlarmIcon,
   GrayAlarmIcon,
@@ -9,7 +10,7 @@ import {
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
 import {
-  useBatchModalStore,
+  useMatchBatchArrStore,
   useMatchModalStore,
   useMatchStore,
   useMyStageIdStore,
@@ -27,11 +28,11 @@ interface MatchProps {
 
 const Match = ({ match }: MatchProps) => {
   const {
+    matchId,
     aTeam,
     bTeam,
     startDate,
     endDate,
-    isEnd,
     round,
     category,
     isNotice,
@@ -42,7 +43,7 @@ const Match = ({ match }: MatchProps) => {
   const { setIsMatchModalOpen } = useMatchModalStore();
   const { setMatchStatus, setMatch } = useMatchStore();
   const { stageId } = useMyStageIdStore();
-  const { setIsBatchModalOpen } = useBatchModalStore();
+  const { matchBatchArr } = useMatchBatchArrStore();
 
   const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
 
@@ -52,6 +53,12 @@ const Match = ({ match }: MatchProps) => {
 
   const isStageAdmin = adminIdxArr.includes(stageId);
 
+  const matchItem = matchBatchArr.find((item) => item.matchId === matchId);
+  const isBatchEnd = matchItem ? matchItem.isEnd : false; // matchId가 일치하는 항목의 isEnd 값을 반환, 없으면 false
+
+  // if (matchItem) {
+  //   console.log(`Match ID: ${matchItem.matchId}, isEnd: ${isBatchEnd}`);
+  // }
   const [isAlarmClick, setIsAlarmClick] = useState<boolean>(isNotice);
 
   const { push } = useRouter();
@@ -62,9 +69,20 @@ const Match = ({ match }: MatchProps) => {
   const end = new Date(endDate);
 
   const isPlaying = currentTime >= start && currentTime <= end;
-  const isFinish = currentTime > end && isEnd === true;
+  const isFinish = currentTime > end;
 
-  const adminAndMatchEnd = isStageAdmin && !isFinish && !isPlaying;
+  const tempPointExpiredDate = result?.tempPointExpiredDate
+    ? new Date(result.tempPointExpiredDate)
+    : null;
+
+  const isExpired = tempPointExpiredDate
+    ? currentTime > tempPointExpiredDate
+    : false;
+
+  const adminAndMatchEnd =
+    isStageAdmin && isFinish && !isPlaying && !isBatchEnd && !isExpired;
+
+  const isTimerStart = isStageAdmin && isBatchEnd && !isExpired;
 
   const time = `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`;
 
@@ -128,27 +146,13 @@ const Match = ({ match }: MatchProps) => {
       )}
     >
       {adminAndMatchEnd && (
-        <div
-          className={cn(
-            'absolute',
-            'inset-0',
-            'backdrop-blur-sm',
-            'bg-gray-900/50',
-            'flex',
-            'items-center',
-            'justify-center',
-            'rounded-xl',
-          )}
-        >
-          <button
-            onClick={() => {
-              setIsBatchModalOpen(true);
-            }}
-            className={cn('text-h3e', 'text-white')}
-          >
-            정산하기
-          </button>
-        </div>
+        <BatchController aTeam={aTeam} bTeam={bTeam} matchId={matchId} />
+      )}
+      {isTimerStart && (
+        <BatchCancleController
+          tempPointExpiredDate={result?.tempPointExpiredDate}
+          matchId={matchId}
+        />
       )}
       <div
         className={cn(
@@ -220,7 +224,7 @@ const Match = ({ match }: MatchProps) => {
                 {formatPoint(aTeam.bettingPoint + bTeam.bettingPoint)}
               </p>
             </div>
-            {isFinish ? (
+            {isFinish && isBatchEnd ? (
               <h2 className={cn('text-h2e', 'text-white')}>
                 {winnerTeam}팀 승리
               </h2>
@@ -285,7 +289,7 @@ const Match = ({ match }: MatchProps) => {
               </div>
             )}
           </div>
-          {isFinish ? (
+          {isFinish && isBatchEnd && betting.isBetting ? (
             <div
               className={cn(
                 'flex',
@@ -336,7 +340,7 @@ const Match = ({ match }: MatchProps) => {
               <RightArrowIcon color="white" />
             </button>
           ) : (
-            <Button disabled={isFinish || betting.isBetting}>
+            <Button disabled={isFinish || betting.isBetting || isBatchEnd}>
               {!betting.isBetting
                 ? '베팅'
                 : betting.bettingPoint !== undefined
