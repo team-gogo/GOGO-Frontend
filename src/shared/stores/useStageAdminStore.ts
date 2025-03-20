@@ -2,17 +2,17 @@ import { create } from 'zustand';
 
 interface StageAdminType {
   stageAdminArr: number[];
-  addStageAdmin: (id: number) => void;
+  addStageAdmin: (ids: number[]) => void;
 }
 
 const useStageAdminStore = create<StageAdminType>((set) => ({
   stageAdminArr: [],
-  addStageAdmin: (id) =>
+  addStageAdmin: (ids) =>
     set((state) => {
-      if (!state.stageAdminArr.includes(id)) {
-        return { stageAdminArr: [...state.stageAdminArr, id] };
-      }
-      return state;
+      const uniqueIds = ids.filter((id) => !state.stageAdminArr.includes(id));
+      return uniqueIds.length > 0
+        ? { stageAdminArr: [...state.stageAdminArr, ...uniqueIds] }
+        : state;
     }),
 }));
 

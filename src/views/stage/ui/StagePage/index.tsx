@@ -26,9 +26,7 @@ const StagePage = () => {
     .map((stage) => stage.stageId);
 
   useEffect(() => {
-    maintainingStageIds.forEach((id) => {
-      addStageAdmin(id);
-    });
+    addStageAdmin(maintainingStageIds);
   }, []);
 
   stageInfo.stages.forEach((stage) => {
