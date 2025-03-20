@@ -6,13 +6,22 @@ import { cn } from '@/shared/utils/cn';
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
   maxLength?: number;
+  bgColor?: string;
+  onIconClick?: () => void;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ icon, maxLength, ...attributes }, ref) => {
+  (
+    { icon, maxLength, bgColor = 'bg-gray-700', onIconClick, ...attributes },
+    ref,
+  ) => {
     const [inputLength, setInputLength] = useState(0);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      if (maxLength && value.length > maxLength) {
+        e.target.value = value.slice(0, maxLength);
+      }
       setInputLength(e.target.value.length);
       if (attributes.onChange) {
         attributes.onChange(e);
@@ -30,30 +39,31 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             'h-full',
             'w-full',
-            'bg-gray-700',
+            bgColor,
             'px-[16px]',
             'pl-[12px]',
-            'pr-[50px]',
+            icon ? 'pr-[50px]' : 'pr-[12px]',
             'placeholder:text-gray-400',
             'rounded-lg',
             'text-body3s',
             'text-white',
             attributes.type === 'number' &&
-              '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+              '[appearance:none] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden',
           )}
         />
         {icon && (
-          <button
-            type="button"
+          <label
+            onClick={onIconClick}
             className={cn(
               'absolute',
               'right-[16px]',
               'top-[50%]',
               'translate-y-[-50%]',
+              onIconClick && 'cursor-pointer',
             )}
           >
             {icon}
-          </button>
+          </label>
         )}
         {maxLength && (
           <div className={cn('text-body3s', 'text-end', 'text-gray-500')}>
@@ -64,6 +74,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     );
   },
 );
+
 Input.displayName = 'Input';
 
 export default Input;

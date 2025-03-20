@@ -1,15 +1,26 @@
 import { CommunityHeader, CommunityItem } from '@/entities/community';
+import { BoardData } from '@/shared/types/community';
 import { cn } from '@/shared/utils/cn';
-import { getBoardMock } from '../../Mock/getBoardMock';
 
-const CommunityItemContainer = () => {
-  const BoardData = getBoardMock();
+interface CommunityItemProps {
+  isMainUsed?: boolean;
+  boardData: BoardData;
+}
+
+const CommunityItemContainer = ({
+  isMainUsed = false,
+  boardData,
+}: CommunityItemProps) => {
   return (
     <div className={cn('w-full', 'space-y-12')}>
-      <CommunityHeader />
+      {!isMainUsed && <CommunityHeader />}
       <div className={cn('space-y-16')}>
-        {BoardData.board.map((item) => (
-          <CommunityItem key={item.boardId} {...item} />
+        {boardData.board.map((item) => (
+          <CommunityItem
+            key={item.boardId}
+            item={item}
+            isMainUsed={isMainUsed}
+          />
         ))}
       </div>
     </div>

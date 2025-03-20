@@ -49,7 +49,7 @@ export type MatchData = {
   };
 };
 
-export type MyBetResponse = {
+export type MatchResponse = {
   count: number;
   matches: MatchData[];
 };

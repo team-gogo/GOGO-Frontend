@@ -1,13 +1,15 @@
 import React from 'react';
-import { ArrowDownIcon, ArrowUpIcon } from '@/shared/assets/icons';
+import { ArrowDownIcon, ArrowUpIcon, PlinkoIcon } from '@/shared/assets/icons';
 import {
   BadmintonIcon,
   BaseballIcon,
   BasketballIcon,
+  CoinTossIcon,
   EtcIcon,
   LoLIcon,
   SoccerIcon,
   VolleyballIcon,
+  YavarweeIcon,
 } from '@/shared/assets/svg';
 
 export type SportType =
@@ -20,6 +22,8 @@ export type SportType =
   | 'ETC';
 
 export type SortType = 'LATEST' | 'LAST';
+
+export type GameType = 'YAVARWEE' | 'COINTOSS' | 'PLINKO';
 
 export const SPORT_TYPES: Record<
   string,
@@ -48,5 +52,17 @@ export const SPORT_TYPES: Record<
   LAST: {
     icon: (color) => <ArrowDownIcon color={color || '#526FFE'} size={20} />,
     text: '오래된순',
+  },
+  YAVARWEE: {
+    icon: (color) => <YavarweeIcon color={color || '#526FFE'} />,
+    text: '야바위',
+  },
+  COINTOSS: {
+    icon: (color) => <CoinTossIcon color={color || '#526FFE'} />,
+    text: '코인토스',
+  },
+  PLINKO: {
+    icon: (color) => <PlinkoIcon color={color || '#526FFE'} />,
+    text: '플린코',
   },
 };

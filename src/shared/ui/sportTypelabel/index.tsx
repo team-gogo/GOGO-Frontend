@@ -7,21 +7,25 @@ interface SportTypeLabelProps {
   type: string;
   asButton?: boolean;
   isSelected?: boolean;
+  isMainUsed?: boolean;
   onClick?: () => void;
+  isHaveBorder?: boolean;
 }
 
 const SportTypeLabel = ({
   type,
   asButton = false,
   isSelected = false,
+  isMainUsed,
   onClick,
+  isHaveBorder = false,
 }: SportTypeLabelProps) => {
   const { icon, text } = SPORT_TYPES[type] || {
     icon: (color) => <EtcIcon color={color} />,
     text: '기타',
   };
 
-  const commonClasses = cn(
+  const borderStyle = [
     'px-[1rem]',
     'py-[0.75rem]',
     'laptop:p-[0.25rem]',
@@ -30,17 +34,21 @@ const SportTypeLabel = ({
     'border-1',
     'border-solid',
     'border-main-500',
+  ];
+
+  const commonClasses = cn(
     'w-fit',
     'flex',
     'gap-8',
     'text-nowrap',
     'items-center',
-    'h-[2.8125rem]',
+    isMainUsed ? 'h-[2.3125rem]' : 'h-[2.8125rem]',
     'laptop:h-[1.875rem]',
     {
       'bg-main-500 text-white': asButton && isSelected,
       'cursor-pointer': asButton,
     },
+    isHaveBorder && borderStyle,
   );
 
   const iconColor = asButton && isSelected ? 'white' : '#526FFE';
