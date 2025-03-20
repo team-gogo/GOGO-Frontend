@@ -42,6 +42,7 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
       <div className={cn('flex', 'items-center', 'gap-24', 'tablet:flex-wrap')}>
         {STORE_ITEMS.map((item) => {
           const storeType = item.type as StoreItemType;
+          const storeName = item.name;
           const isActive = selectedShop[storeType]?.isActive || false;
           const isGameSelected = selectedGames[storeType]?.isActive || false;
           const iconColor = getIconColor(isActive);
@@ -53,7 +54,13 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
                 name={item.name}
                 isSelected={isActive}
                 onClick={() =>
-                  toggleStoreItem(storeType, isActive, isGameSelected, setValue)
+                  toggleStoreItem(
+                    storeType,
+                    storeName,
+                    isActive,
+                    isGameSelected,
+                    setValue,
+                  )
                 }
               />
               <Input

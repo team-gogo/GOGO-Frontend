@@ -8,6 +8,7 @@ export const getIconColor = (isActive: boolean) =>
 
 export const toggleStoreItem = (
   item: StoreItemType,
+  itemName: string,
   isActive: boolean,
   isGameSelected: boolean,
   setValue: UseFormSetValue<StageData>,
@@ -19,6 +20,6 @@ export const toggleStoreItem = (
   if (isGameSelected) {
     setValue(`shop.${item}.isActive`, !isActive);
   } else {
-    toast.error(`${item} 미니게임을 먼저 선택해주세요.`);
+    toast.error(`${itemName} 미니게임을 먼저 선택해주세요.`);
   }
 };

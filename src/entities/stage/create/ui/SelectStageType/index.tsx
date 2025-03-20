@@ -49,7 +49,14 @@ const SelectStageType = ({
       >
         <div className={cn('flex', 'flex-col', 'items-center', 'gap-16')}>
           {icon}
-          <p className={cn('text-h4s', 'text-gray-400')}>{name}</p>
+          <p
+            className={cn(
+              'text-h4s',
+              isSelected ? 'text-main-500' : 'text-gray-400',
+            )}
+          >
+            {name}
+          </p>
         </div>
         <label
           onClick={(e) => {

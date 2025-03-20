@@ -14,6 +14,10 @@ export const toggleMiniGame = (
     setValue(`miniGame.${game}.maxBettingPoint`, null);
     setValue(`miniGame.${game}.minBettingPoint`, null);
     setValue(`miniGame.${game}.initialTicketCount`, null);
+
+    setValue(`shop.${game}.isActive`, false);
+    setValue(`shop.${game}.price`, null);
+    setValue(`shop.${game}.quantity`, null);
   }
   setValue(`miniGame.${game}.isActive`, !isActive);
 };

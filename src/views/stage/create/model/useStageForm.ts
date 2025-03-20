@@ -10,7 +10,14 @@ export const useStageForm = (formType: 'fast' | 'official') => {
         ? {
             stageName: '',
             game: [],
-            miniGame: { coinToss: { isActive: false } },
+            miniGame: {
+              coinToss: {
+                isActive: false,
+                maxBettingPoint: null,
+                minBettingPoint: null,
+                initialTicketCount: null,
+              },
+            },
             passCode: '',
             maintainer: [],
           }
@@ -18,14 +25,33 @@ export const useStageForm = (formType: 'fast' | 'official') => {
             stageName: '',
             game: [],
             miniGame: {
-              coinToss: { isActive: false },
-              yavarwee: { isActive: false },
-              plinko: { isActive: false },
+              coinToss: {
+                isActive: false,
+                maxBettingPoint: null,
+                minBettingPoint: null,
+                initialTicketCount: null,
+              },
+              yavarwee: {
+                isActive: false,
+                maxBettingPoint: null,
+                minBettingPoint: null,
+                initialTicketCount: null,
+              },
+              plinko: {
+                isActive: false,
+                maxBettingPoint: null,
+                minBettingPoint: null,
+                initialTicketCount: null,
+              },
             },
             shop: {
-              coinToss: { isActive: false },
-              yavarwee: { isActive: false },
-              plinko: { isActive: false },
+              coinToss: {
+                isActive: false,
+                price: null,
+                quantity: null,
+              },
+              yavarwee: { isActive: false, price: null, quantity: null },
+              plinko: { isActive: false, price: null, quantity: null },
             },
             passCode: '',
             maintainer: [],
