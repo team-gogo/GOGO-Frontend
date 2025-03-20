@@ -1,4 +1,4 @@
-import CheckboxIcon from '@/shared/assets/svg/CheckboxIcon';
+import CheckBoxIcon from '@/shared/assets/svg/CheckBoxIcon';
 import { cn } from '@/shared/utils/cn';
 
 interface TeamItemProps {
@@ -56,7 +56,7 @@ const TeamItem = ({
             'h-30',
           )}
         >
-          <CheckboxIcon isChecked={isSelected} />
+          <CheckBoxIcon isChecked={isSelected} />
         </button>
       </div>
     </div>

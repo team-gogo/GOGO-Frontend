@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import { CheckBoxIcon, CheckedBoxIcon } from '@/shared/assets/svg';
+import CheckBoxIcon from '@/shared/assets/svg/CheckBoxIcon';
 import { PatchStudentInfo } from '@/shared/types/my/edit';
 import { cn } from '@/shared/utils/cn';
 
@@ -49,7 +49,7 @@ const FilterSelect = ({
           'items-center',
         )}
       >
-        {filtered ? <CheckedBoxIcon /> : <CheckBoxIcon />}
+        <CheckBoxIcon isChecked={filtered} />
       </button>
     </div>
   );
