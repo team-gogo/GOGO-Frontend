@@ -5,6 +5,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import SportMap from '@/entities/team/ui/Map';
 import { Player } from '@/entities/team/ui/Map/types';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
+import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { SportType } from '@/shared/model/sportTypes';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
@@ -133,7 +134,7 @@ const PlaceTeamContainer = () => {
   );
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen w-full bg-black text-white">
       <header className="mt-20 p-4 pt-5">
         <BackPageButton type="back" label="팀 생성하기" />
       </header>
@@ -142,8 +143,7 @@ const PlaceTeamContainer = () => {
         <h1 className={cn('text-h3e', 'text-white', 'mb-24', 'mt-24')}>
           경기 이름
         </h1>
-
-        <div className="mb-4 flex items-center gap-1">
+        <div className="mb-28 mt-28 flex items-center gap-1">
           <PlayerIcon className="mr-1" />
           <span className="text-body1s">인원을 배치 하세요</span>
         </div>
@@ -152,13 +152,13 @@ const PlaceTeamContainer = () => {
             onDragEnd={onDragEnd}
             className="flex justify-between"
           >
-            <div className="flex">
+            <div className="flex justify-between">
               <div className="w-[45%] pr-4">
                 <div className="mb-3 flex items-center">
-                  <div className="relative mr-2 flex-1">
+                  <div className="relative mr-2 flex-1 py-8">
                     <div
                       onClick={toggleDropdown}
-                      className="flex cursor-pointer items-center justify-between rounded-md bg-[#1e1e1e] px-3 py-2 text-body3s"
+                      className="flex cursor-pointer items-center justify-between rounded-md bg-[#2a2a2a] p-18 text-body3s"
                     >
                       <span>{selectedPlayer || '인원 선택'}</span>
                       <svg
@@ -195,15 +195,15 @@ const PlaceTeamContainer = () => {
                       </div>
                     )}
                   </div>
-                  <div className="flex">
+                  <div className="flex w-52 px-10">
                     <button
                       onClick={handleAddPlayer}
-                      className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-[#2a2a2a]"
+                      className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full border-2 border-white bg-transparent"
                       disabled={
                         !selectedPlayer || selectedPlayer === '인원 선택'
                       }
                     >
-                      <span className="text-body2s">+</span>
+                      <PlusButtonIcon />
                     </button>
                     <button className="ml-2 flex h-[30px] w-[30px] items-center justify-center rounded-full bg-[#2a2a2a]">
                       <span className="text-body2s">-</span>
@@ -216,22 +216,27 @@ const PlaceTeamContainer = () => {
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="bg-transparent"
+                      className="flex flex-row flex-wrap gap-4 bg-transparent"
                     >
                       {unplacedPlayers.map((player, index) => (
                         <Draggable
                           key={player.id}
                           draggableId={player.id}
                           index={index}
+                          className="h-20"
                         >
                           {(provided) => (
                             <div
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              className="mb-[1px] bg-[#2a2a2a] px-3 py-2 text-body3s"
+                              className={cn(
+                                'mx-8 my-10 flex h-30 w-30 flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-30 text-center',
+                                'h-20',
+                              )}
                             >
-                              {player.name}
+                              <PlayerIcon className="mb-1" />
+                              <span className="text-body3s">{player.name}</span>
                             </div>
                           )}
                         </Draggable>

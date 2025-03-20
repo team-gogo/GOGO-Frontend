@@ -60,7 +60,7 @@ const DefaultMap = ({ players, onPlayerDrag }: MapComponentProps) => {
           className="flex flex-col items-center"
           onMouseDown={(e) => handleMouseDown(e, player.id)}
         >
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-black">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full text-white">
             <PlayerIcon className="h-3.5 w-3.5" />
           </div>
           <span className="mt-1 text-body3s">

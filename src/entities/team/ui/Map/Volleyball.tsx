@@ -38,14 +38,12 @@ const VolleyballMap = ({ players, onPlayerDrag }: MapComponentProps) => {
   return (
     <div
       ref={courtRef}
-      className="relative h-full w-full rounded-lg bg-[#1e1e1e]"
+      className="relative flex h-full w-full justify-end rounded-lg bg-[#1e1e1e]"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      <div className="absolute inset-0">
-        <VolleyballSvg />
-      </div>
+      <VolleyballSvg />
 
       {players.map((player) => (
         <div
@@ -61,7 +59,7 @@ const VolleyballMap = ({ players, onPlayerDrag }: MapComponentProps) => {
           className="flex flex-col items-center"
           onMouseDown={(e) => handleMouseDown(e, player.id)}
         >
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-black">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full text-center text-white">
             <PlayerIcon className="h-3.5 w-3.5" />
           </div>
           <span className="mt-1 text-body3s">
