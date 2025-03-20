@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { DateContainer, MatchDetailModal } from '@/entities/main';
+import BatchCancleModal from '@/entities/main/ui/BatchCancleModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
 import { MatchClockIcon } from '@/shared/assets/svg';
 import {
@@ -11,7 +12,11 @@ import {
   RankingIcon,
 } from '@/shared/assets/svg/MainIcon';
 
-import { useBatchModalStore, useMyStageIdStore } from '@/shared/stores';
+import {
+  useBatchModalStore,
+  useCheckAgainModalStore,
+  useMyStageIdStore,
+} from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
@@ -39,6 +44,8 @@ const MainPage = () => {
 
   const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
   const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
+  const { isCheckAgainModalOpen, setIsCheckAgainModalOpen } =
+    useCheckAgainModalStore();
 
   return (
     <div
@@ -134,6 +141,9 @@ const MainPage = () => {
       )}
       {isBatchModalOpen && (
         <BatchModal onClose={() => setIsBatchModalOpen(false)} />
+      )}
+      {isCheckAgainModalOpen && (
+        <BatchCancleModal onClose={() => setIsCheckAgainModalOpen(false)} />
       )}
     </div>
   );

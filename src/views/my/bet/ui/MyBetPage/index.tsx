@@ -1,8 +1,13 @@
 'use client';
 
 import { MatchDetailModal } from '@/entities/main';
+import BatchCancleModal from '@/entities/main/ui/BatchCancleModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
-import { useBatchModalStore, useMatchModalStore } from '@/shared/stores';
+import {
+  useBatchModalStore,
+  useCheckAgainModalStore,
+  useMatchModalStore,
+} from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 import {
   MatchContainer,
@@ -18,6 +23,8 @@ const MyBetPage = () => {
 
   const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
   const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
+  const { isCheckAgainModalOpen, setIsCheckAgainModalOpen } =
+    useCheckAgainModalStore();
 
   return (
     <div
@@ -51,6 +58,9 @@ const MyBetPage = () => {
       )}
       {isBatchModalOpen && (
         <BatchModal onClose={() => setIsBatchModalOpen(false)} />
+      )}
+      {isCheckAgainModalOpen && (
+        <BatchCancleModal onClose={() => setIsCheckAgainModalOpen(false)} />
       )}
     </div>
   );
