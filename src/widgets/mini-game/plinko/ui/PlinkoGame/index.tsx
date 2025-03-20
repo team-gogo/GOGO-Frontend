@@ -131,8 +131,7 @@ const PlinkoGame = ({
     newEngine.world.gravity.y = 1.3;
 
     const plinkoGameElement = document.getElementById('plinko-game');
-    if (!plinkoGameElement) return;
-    if (plinkoGameElement.querySelector('canvas')) return;
+    if (!plinkoGameElement || plinkoGameElement.querySelector('canvas')) return;
 
     const render = Render.create({
       element: plinkoGameElement,
