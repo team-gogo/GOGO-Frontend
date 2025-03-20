@@ -199,15 +199,19 @@ const PlaceTeamContainer = () => {
                   <div className="flex w-52 justify-between px-10">
                     <button
                       onClick={handleAddPlayer}
-                      className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent"
+                      className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent"
                       disabled={
                         !selectedPlayer || selectedPlayer === '인원 선택'
                       }
                     >
-                      <PlusButtonIcon />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <PlusButtonIcon />
+                      </div>
                     </button>
-                    <button className="ml-20 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent">
-                      <MinusButtonIcon />
+                    <button className="relative ml-20 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <MinusButtonIcon />
+                      </div>
                     </button>
                   </div>
                 </div>
@@ -232,8 +236,7 @@ const PlaceTeamContainer = () => {
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                               className={cn(
-                                'mx-8 my-10 flex h-30 w-30 flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-30 text-center',
-                                'h-20',
+                                'mx-8 my-10 flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center',
                               )}
                             >
                               <PlayerIcon className="mb-1" />
