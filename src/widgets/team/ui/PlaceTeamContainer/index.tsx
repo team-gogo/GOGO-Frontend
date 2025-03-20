@@ -2,18 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import Volleyball from '@/entities/team/ui/Map/Vollyball';
+import SportMap from '@/entities/team/ui/Map';
+import { Player } from '@/entities/team/ui/Map/types';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
+import { SportType } from '@/shared/model/sportTypes';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
-
-interface Player {
-  id: string;
-  name: string;
-  x: number;
-  y: number;
-}
 
 const StrictModeDroppable = ({
   children,
@@ -32,21 +27,24 @@ const StrictModeDroppable = ({
     };
   }, []);
 
-  if (!enabled) {
-    return null;
-  }
+  if (!enabled) return null;
 
   return <Droppable {...props}>{children}</Droppable>;
 };
 
+interface DragEndResult {
+  source: { droppableId: string; index: number };
+  destination: { droppableId: string; index: number } | null;
+  draggableId: string;
+}
+
 const PlaceTeamContainer = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [selectedPlayer, setSelectedPlayer] = useState<string>('');
-  const isMounted = useRef(false);
-  const courtRef = useRef<HTMLDivElement>(null);
-  const [isDraggingInCourt, setIsDraggingInCourt] = useState(false);
-  const [activePlayerId, setActivePlayerId] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const isMounted = useRef(false);
+
+  const sportType: SportType = 'VOLLEY_BALL';
 
   useEffect(() => {
     isMounted.current = true;
@@ -68,38 +66,15 @@ const PlaceTeamContainer = () => {
     }
   };
 
-  const handleCourtMouseMove = (e: React.MouseEvent) => {
-    if (isDraggingInCourt && activePlayerId && courtRef.current) {
-      const courtRect = courtRef.current.getBoundingClientRect();
-      const x = Math.max(
-        0,
-        Math.min(e.clientX - courtRect.left - 15, courtRect.width - 30),
-      );
-      const y = Math.max(
-        0,
-        Math.min(e.clientY - courtRect.top - 15, courtRect.height - 30),
-      );
-
-      setPlayers((prev) =>
-        prev.map((player) =>
-          player.id === activePlayerId ? { ...player, x, y } : player,
-        ),
-      );
-    }
+  const handlePlayerDrag = (playerId: string, x: number, y: number) => {
+    setPlayers((prev) =>
+      prev.map((player) =>
+        player.id === playerId ? { ...player, x, y } : player,
+      ),
+    );
   };
 
-  const handleCourtMouseUp = () => {
-    setIsDraggingInCourt(false);
-    setActivePlayerId(null);
-  };
-
-  const handlePlayerMouseDown = (e: React.MouseEvent, playerId: string) => {
-    e.stopPropagation();
-    setIsDraggingInCourt(true);
-    setActivePlayerId(playerId);
-  };
-
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result: DragEndResult) => {
     const { source, destination, draggableId } = result;
 
     if (!destination) {
@@ -131,17 +106,11 @@ const PlaceTeamContainer = () => {
 
     if (
       source.droppableId === 'playersList' &&
-      destination.droppableId === 'court' &&
-      courtRef.current
+      destination.droppableId === 'court'
     ) {
-      const courtRect = courtRef.current.getBoundingClientRect();
-
-      const x = courtRect.width / 2 - 15;
-      const y = courtRect.height / 2 - 15;
-
       setPlayers((prev) =>
         prev.map((player) =>
-          player.id === draggableId ? { ...player, x, y } : player,
+          player.id === draggableId ? { ...player, x: 200, y: 200 } : player,
         ),
       );
     }
@@ -155,6 +124,13 @@ const PlaceTeamContainer = () => {
     setSelectedPlayer(player);
     setIsDropdownOpen(false);
   };
+
+  const placedPlayers = players.filter(
+    (player) => player.x !== 0 || player.y !== 0,
+  );
+  const unplacedPlayers = players.filter(
+    (player) => player.x === 0 && player.y === 0,
+  );
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -242,76 +218,42 @@ const PlaceTeamContainer = () => {
                       {...provided.droppableProps}
                       className="bg-transparent"
                     >
-                      {players
-                        .filter((player) => player.x === 0 && player.y === 0)
-                        .map((player, index) => (
-                          <Draggable
-                            key={player.id}
-                            draggableId={player.id}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mb-[1px] bg-[#2a2a2a] px-3 py-2 text-body3s"
-                              >
-                                {player.name}
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
+                      {unplacedPlayers.map((player, index) => (
+                        <Draggable
+                          key={player.id}
+                          draggableId={player.id}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className="mb-[1px] bg-[#2a2a2a] px-3 py-2 text-body3s"
+                            >
+                              {player.name}
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
                       {provided.placeholder}
                     </div>
                   )}
                 </StrictModeDroppable>
               </div>
-              <div className="w-[40%]">
+              <div className="h-[500px] w-[55%]">
                 <StrictModeDroppable droppableId="court">
                   {(provided) => (
                     <div
-                      ref={(el) => {
-                        provided.innerRef(el);
-                        courtRef.current = el;
-                      }}
+                      ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="relative aspect-square h-[500px] w-[600px] max-w-full rounded-lg bg-[#1e1e1e]"
-                      onMouseMove={handleCourtMouseMove}
-                      onMouseUp={handleCourtMouseUp}
-                      onMouseLeave={handleCourtMouseUp}
+                      className="h-full"
                     >
-                      <div className="absolute inset-0">
-                        <Volleyball />
-                      </div>
-
-                      {players
-                        .filter((player) => player.x !== 0 || player.y !== 0)
-                        .map((player) => (
-                          <div
-                            key={player.id}
-                            style={{
-                              position: 'absolute',
-                              left: `${player.x}px`,
-                              top: `${player.y}px`,
-                              zIndex: 10,
-                              cursor: 'grab',
-                            }}
-                            className="flex flex-col items-center"
-                            onMouseDown={(e) =>
-                              handlePlayerMouseDown(e, player.id)
-                            }
-                          >
-                            <div className="flex h-7 w-7 items-center justify-center rounded-full text-black">
-                              <PlayerIcon className="h-3.5 w-3.5" />
-                            </div>
-                            <span className="mt-1 text-body3s">
-                              {player.name.includes(' ')
-                                ? player.name.split(' ')[1]
-                                : player.name}
-                            </span>
-                          </div>
-                        ))}
+                      <SportMap
+                        type={sportType}
+                        players={placedPlayers}
+                        onPlayerDrag={handlePlayerDrag}
+                      />
                       {provided.placeholder}
                     </div>
                   )}
