@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import SearchIcon from '@/shared/assets/icons/SearchIcon';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
@@ -62,6 +63,7 @@ const CreateTeamContainer = () => {
             placeholder="학생을 입력해주세요."
             value={members}
             onChange={(e) => setMembers(e.target.value)}
+            icon={<SearchIcon size={30} />}
           />
         </div>
       </div>
