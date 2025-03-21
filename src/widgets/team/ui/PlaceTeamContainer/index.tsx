@@ -1,5 +1,6 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import SportMap from '@/entities/team/ui/Map';
@@ -46,7 +47,17 @@ const PlaceTeamContainer = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const isMounted = useRef(false);
 
-  const sportType: SportType = 'VOLLEY_BALL';
+  const searchParams = useSearchParams();
+  const sportParam = searchParams.get('sport');
+
+  const getSportType = (): SportType => {
+    if (sportParam === 'BASKET_BALL' || sportParam === 'BADMINTON') {
+      return sportParam;
+    }
+    return 'VOLLEY_BALL';
+  };
+
+  const sportType: SportType = getSportType();
 
   useEffect(() => {
     isMounted.current = true;
