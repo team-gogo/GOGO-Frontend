@@ -8,6 +8,7 @@ import {
   Droppable,
   Draggable,
   DragStart,
+  DroppableProvided,
 } from 'react-beautiful-dnd';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
@@ -100,7 +101,7 @@ const PlaceTeamContainer = () => {
     }
   }, [teamNameParam, membersParam]);
 
-  const handleAddPlayer = () => {
+  const handleAddPlayer = useCallback(() => {
     if (selectedPlayer && selectedPlayer !== '인원 선택') {
       const newPlayer: Player = {
         id: `player-${Date.now()}`,
@@ -108,10 +109,10 @@ const PlaceTeamContainer = () => {
         x: 0,
         y: 0,
       };
-      setPlayers([...players, newPlayer]);
+      setPlayers((prev) => [...prev, newPlayer]);
       setSelectedPlayer('인원 선택');
     }
-  };
+  }, [selectedPlayer]);
 
   const handlePlayerDrag = useCallback(
     (playerId: string, x: number, y: number) => {
@@ -140,80 +141,79 @@ const PlaceTeamContainer = () => {
     draggedPlayerRef.current = start.draggableId;
   }, []);
 
-  const onDragEnd = useCallback(
-    (result: DragEndResult) => {
-      setIsDragging(false);
-      const { source, destination, draggableId } = result;
+  const onDragEnd = useCallback((result: DragEndResult) => {
+    setIsDragging(false);
+    const { source, destination, draggableId } = result;
 
-      if (!destination) {
-        return;
-      }
+    if (!destination) {
+      return;
+    }
 
-      if (
-        source.droppableId === 'playersList' &&
-        destination.droppableId === 'playersList'
-      ) {
-        const newPlayers = Array.from(players);
+    if (
+      source.droppableId === 'playersList' &&
+      destination.droppableId === 'playersList'
+    ) {
+      setPlayers((prev) => {
+        const newPlayers = Array.from(prev);
         const [removed] = newPlayers.splice(source.index, 1);
         newPlayers.splice(destination.index, 0, removed);
-        setPlayers(newPlayers);
-        return;
-      }
+        return newPlayers;
+      });
+      return;
+    }
 
-      if (
-        source.droppableId === 'court' &&
-        destination.droppableId === 'playersList'
-      ) {
-        setPlayers((prev) =>
-          prev.map((player) =>
-            player.id === draggableId ? { ...player, x: 0, y: 0 } : player,
-          ),
-        );
-        return;
-      }
+    if (
+      source.droppableId === 'court' &&
+      destination.droppableId === 'playersList'
+    ) {
+      setPlayers((prev) =>
+        prev.map((player) =>
+          player.id === draggableId ? { ...player, x: 0, y: 0 } : player,
+        ),
+      );
+      return;
+    }
 
-      if (
-        source.droppableId === 'playersList' &&
-        destination.droppableId === 'court'
-      ) {
-        const courtElement = document.querySelector(
-          '[data-rbd-droppable-id="court"]',
-        );
+    if (
+      source.droppableId === 'playersList' &&
+      destination.droppableId === 'court'
+    ) {
+      const courtElement = document.querySelector(
+        '[data-rbd-droppable-id="court"]',
+      );
 
-        if (!courtElement) return;
+      if (!courtElement) return;
 
-        const courtRect = courtElement.getBoundingClientRect();
-        const { x: mouseX, y: mouseY } = mousePositionRef.current;
+      const courtRect = courtElement.getBoundingClientRect();
+      const { x: mouseX, y: mouseY } = mousePositionRef.current;
 
-        const relativeX = Math.max(
-          0,
-          Math.min(mouseX - courtRect.left, courtRect.width),
-        );
-        const relativeY = Math.max(
-          0,
-          Math.min(mouseY - courtRect.top, courtRect.height),
-        );
+      const relativeX = Math.max(
+        0,
+        Math.min(mouseX - courtRect.left, courtRect.width),
+      );
+      const relativeY = Math.max(
+        0,
+        Math.min(mouseY - courtRect.top, courtRect.height),
+      );
 
-        setPlayers((prev) =>
-          prev.map((player) =>
-            player.id === draggableId
-              ? { ...player, x: relativeX, y: relativeY }
-              : player,
-          ),
-        );
-      }
-    },
-    [players],
-  );
+      setPlayers((prev) =>
+        prev.map((player) =>
+          player.id === draggableId
+            ? { ...player, x: relativeX, y: relativeY }
+            : player,
+        ),
+      );
+    }
+  }, []);
 
-  const toggleDropdown = () => {
+  const toggleDropdown = useCallback(() => {
     setIsDropdownOpen((prev) => !prev);
-  };
+  }, []);
 
-  const selectPlayer = (player: string) => {
+  const selectPlayer = useCallback((player: string) => {
     setSelectedPlayer(player);
     setIsDropdownOpen(false);
-  };
+  }, []);
 
   const placedPlayers = useMemo(
     () => players.filter((player) => player.x !== 0 || player.y !== 0),
@@ -225,7 +225,7 @@ const PlaceTeamContainer = () => {
     [players],
   );
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     try {
       const participants = placedPlayers.map((player) => ({
         studentId: Number(
@@ -243,7 +243,46 @@ const PlaceTeamContainer = () => {
     } catch (error) {
       console.error('팀 생성 실패:', error);
     }
-  };
+  }, [placedPlayers, membersList, players, teamName, router]);
+
+  const PlayerList = useMemo(() => {
+    const MemoizedPlayerList = ({
+      players,
+      provided,
+    }: {
+      players: Player[];
+      provided: DroppableProvided;
+    }) => (
+      <div
+        ref={provided.innerRef}
+        {...provided.droppableProps}
+        className="flex min-h-[120px] flex-row flex-wrap gap-4 bg-transparent text-white"
+      >
+        {players.map((player, index) => (
+          <Draggable key={player.id} draggableId={player.id} index={index}>
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                className={cn(
+                  'mx-8 my-10 flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center text-white',
+                  snapshot.isDragging && 'opacity-50',
+                )}
+              >
+                <PlayerIcon className="mb-1" />
+                <span className="text-body3s text-white">{player.name}</span>
+              </div>
+            )}
+          </Draggable>
+        ))}
+        {provided.placeholder}
+      </div>
+    );
+
+    MemoizedPlayerList.displayName = 'PlayerList';
+    return MemoizedPlayerList;
+  }, []);
 
   return (
     <div className={cn('h-screen', 'bg-black', 'p-30', 'flex', 'flex-col')}>
@@ -294,37 +333,7 @@ const PlaceTeamContainer = () => {
                   type="PLAYER"
                 >
                   {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="flex min-h-[120px] flex-row flex-wrap gap-4 bg-transparent text-white"
-                    >
-                      {unplacedPlayers.map((player, index) => (
-                        <Draggable
-                          key={player.id}
-                          draggableId={player.id}
-                          index={index}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={cn(
-                                'mx-8 my-10 flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center text-white',
-                                snapshot.isDragging && 'opacity-50',
-                              )}
-                            >
-                              <PlayerIcon className="mb-1" />
-                              <span className="text-body3s text-white">
-                                {player.name}
-                              </span>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
+                    <PlayerList players={unplacedPlayers} provided={provided} />
                   )}
                 </StrictModeDroppable>
               </div>
