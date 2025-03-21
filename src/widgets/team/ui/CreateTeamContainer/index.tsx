@@ -25,8 +25,8 @@ const CreateTeamContainer = () => {
       <header className={cn('mb-30')}>
         <BackPageButton type="back" label="팀 생성하기" />
       </header>
-      <div className={cn('flex-1', 'flex', 'flex-col', 'mt-32')}>
-        <h1 className={cn('text-h3e', 'text-white', 'mb-32', 'mt-32')}>
+      <div className={cn('flex-1', 'flex', 'flex-col', 'mt-28')}>
+        <h1 className={cn('text-h3e', 'text-white', 'mb-28', 'mt-28')}>
           경기 이름
         </h1>
         <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>
@@ -40,7 +40,7 @@ const CreateTeamContainer = () => {
           />
         </div>
         <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>{'인원'}</h2>
-        <div>
+        <div className={cn('mt-24')}>
           <Input
             placeholder="학생을 입력해주세요."
             value={members}
