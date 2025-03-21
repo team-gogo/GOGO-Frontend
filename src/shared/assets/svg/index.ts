@@ -37,5 +37,7 @@ export { default as Medal } from './Medal';
 export { default as YavarweeIcon } from './YavarweeIcon';
 export { default as CoinTossIcon } from './CoinTossIcon';
 export { default as PlinkoIcon } from './PlinkoIcon';
+export { default as MoneyIcon } from './MoneyIcon';
 export { default as PointCircleIcon } from './PointCircleIcon';
 export { default as CheckingBoxIcon } from './CheckingBoxIcon';
+export { default as BlueCircle } from './BlueCircle';

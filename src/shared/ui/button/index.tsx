@@ -8,6 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   borderColor?: string;
   borderStyle?: string;
   isLocked?: boolean;
+  border?: string;
 }
 
 const Button = ({
@@ -17,6 +18,7 @@ const Button = ({
   borderColor = 'none',
   borderStyle = 'none',
   isLocked,
+  border,
   ...attributes
 }: ButtonProps) => {
   return (
@@ -33,6 +35,9 @@ const Button = ({
         borderStyle,
         borderColor,
         'text-body3s',
+        border && 'border-1',
+        border && 'border-solid',
+        border,
       )}
     >
       <div
