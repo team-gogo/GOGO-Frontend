@@ -37,7 +37,7 @@ const getMatchResponse = (): MatchResponse => {
           bTeamScore: 1,
           isPredictionSuccess: true,
           earnedPoint: 200,
-          pointReceivingTime: '2025-03-10T16:00:00',
+          tempPointExpiredDate: '2025-03-10T16:00:00',
         },
       },
       {
@@ -102,7 +102,7 @@ const getMatchResponse = (): MatchResponse => {
           bTeamScore: 2,
           isPredictionSuccess: false,
           earnedPoint: 0,
-          pointReceivingTime: '2025-03-13T16:00:00',
+          tempPointExpiredDate: '2025-03-13T16:00:00',
         },
       },
       {
@@ -138,7 +138,7 @@ const getMatchResponse = (): MatchResponse => {
           bTeamScore: 0,
           isPredictionSuccess: false,
           earnedPoint: -800,
-          pointReceivingTime: '2025-03-14T14:00:00',
+          tempPointExpiredDate: '2025-03-14T14:00:00',
         },
       },
       {
@@ -174,7 +174,7 @@ const getMatchResponse = (): MatchResponse => {
           bTeamScore: 0,
           isPredictionSuccess: false,
           earnedPoint: 0,
-          pointReceivingTime: '2025-03-14T14:00:00',
+          tempPointExpiredDate: '2025-03-14T14:00:00',
         },
       },
     ],

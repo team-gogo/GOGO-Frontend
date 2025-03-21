@@ -1,15 +1,17 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { ReactNode, useState } from 'react';
 import { CircleQuestionIcon } from '@/shared/assets/icons';
 import { GameType } from '@/shared/model/sportTypes';
 import { GameTicket } from '@/shared/types/mini-game';
 import Button from '@/shared/ui/button';
+import MiniGameDescriptionModal from '@/shared/ui/MiniGameDescriptionModal';
 import { cn } from '@/shared/utils/cn';
-import MiniGameModal from '../MiniGameModal';
 
 interface GameSelectionCardProps {
   icon: (isActive: boolean) => ReactNode;
   name: string;
-  action: () => void;
   type: string;
   isActive: boolean;
   ticketCount?: number;
@@ -19,7 +21,6 @@ interface GameSelectionCardProps {
 const GameSelectionCard = ({
   icon,
   name,
-  action,
   type,
   isActive,
   ticketCount,
@@ -33,6 +34,27 @@ const GameSelectionCard = ({
 
   const toggleGameSelection = (sort: GameType) => {
     setSelectedGame((prev) => (prev === sort ? null : sort));
+  };
+
+  const { push } = useRouter();
+
+  const handleAction = () => {
+    let gamePath = '';
+    switch (name) {
+      case '야바위':
+        gamePath = '/mini-game/yavarwee';
+        break;
+      case '코인 토스':
+        gamePath = '/mini-game/coin-toss';
+        break;
+      case '플링코':
+        gamePath = '/mini-game/plinko';
+        break;
+      default:
+        return;
+    }
+
+    push(gamePath);
   };
 
   return (
@@ -76,7 +98,10 @@ const GameSelectionCard = ({
         </div>
       </div>
       <div className={cn('gap-[0.5rem]', 'flex', 'flex-col')}>
-        <Button disabled={!isActive || ticketCount === 0} onClick={action}>
+        <Button
+          disabled={!isActive || ticketCount === 0}
+          onClick={handleAction}
+        >
           {ticketCount === 0
             ? '게임 티켓을 구매하세요'
             : isActive
@@ -96,7 +121,7 @@ const GameSelectionCard = ({
         )}
       </div>
       {isModalOpen && (
-        <MiniGameModal
+        <MiniGameDescriptionModal
           onClose={() => setIsModalOpen(false)}
           selectedGame={selectedGame}
           toggleGameSelection={toggleGameSelection}

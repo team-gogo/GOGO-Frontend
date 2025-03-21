@@ -25,7 +25,7 @@ const Header = () => {
       )}
     >
       <div className={cn('flex', 'justify-between', 'w-full', 'w-[1320px]')}>
-        <Link href="/">
+        <Link href="/stage">
           <Logo
             className={cn(
               'tablet:h-[34px]',

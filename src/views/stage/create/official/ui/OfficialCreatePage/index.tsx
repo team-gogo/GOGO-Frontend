@@ -11,8 +11,8 @@ import {
   RuleInputContainer,
   StageInputContainer,
   StoreContainer,
-} from '@/widgets/stage/create/official';
-import { useOfficialStageForm } from '../../model/useOfficialStageForm';
+} from '@/widgets/stage/create';
+import { useStageForm } from '../../../model/useStageForm';
 
 const OfficialCreatePage = () => {
   const {
@@ -23,7 +23,7 @@ const OfficialCreatePage = () => {
     control,
     onSubmit,
     onError,
-  } = useOfficialStageForm();
+  } = useStageForm('official');
 
   return (
     <form
@@ -36,12 +36,14 @@ const OfficialCreatePage = () => {
         control={control}
         register={register}
         watch={watch}
+        mode="official"
       />
       <RuleInputContainer register={register} watch={watch} />
       <MiniGameContainer
         register={register}
         watch={watch}
         setValue={setValue}
+        isFastMode={false}
       />
       <StoreContainer register={register} watch={watch} setValue={setValue} />
       <div className={cn('flex', 'w-full', 'gap-24', 'tablet:flex-wrap')}>
@@ -49,7 +51,7 @@ const OfficialCreatePage = () => {
           <EntryNumberInput register={register} />
         </div>
         <div className="w-full">
-          <InviteStudentInput register={register} />
+          <InviteStudentInput register={register} setValue={setValue} />
         </div>
       </div>
       <Button type="submit">확인</Button>
