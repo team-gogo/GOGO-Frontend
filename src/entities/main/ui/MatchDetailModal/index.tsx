@@ -24,7 +24,7 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
 
   const { aTeam, bTeam, category, betting } = match;
 
-  const { isPlaying, isFinish, time, roundText } = matchStatus;
+  const { isPlaying, isMatchFinish, time, roundText } = matchStatus;
 
   const isFinal = roundText === '결승전';
 
@@ -70,8 +70,10 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
           />
           <MatchTypeLabel
             type={'TIME'}
-            customText={isPlaying ? '경기 중' : isFinish ? '경기 종료' : time}
-            color={isPlaying ? '#01C612' : isFinish ? '#898989' : '#FFF'}
+            customText={
+              isPlaying ? '경기 중' : isMatchFinish ? '경기 종료' : time
+            }
+            color={isPlaying ? '#01C612' : isMatchFinish ? '#898989' : '#FFF'}
           />
           <SportTypeLabel
             type={category && category.length > 0 ? category[0] : ''}

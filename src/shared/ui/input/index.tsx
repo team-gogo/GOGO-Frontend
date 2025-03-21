@@ -9,6 +9,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   bgColor?: string;
   onIconClick?: () => void;
   showBorder?: boolean;
+  isPlcCenter?: boolean;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -19,6 +20,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       bgColor = 'bg-gray-700',
       onIconClick,
       showBorder = false,
+      isPlcCenter = false,
       ...attributes
     },
     ref,
@@ -52,6 +54,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             'pl-[12px]',
             icon ? 'pr-[50px]' : 'pr-[12px]',
             'placeholder:text-gray-400',
+            isPlcCenter && 'placeholder:text-center',
             'rounded-lg',
             'text-body3s',
             'text-white',

@@ -25,7 +25,7 @@ const MyInfoContainer = ({ userInfo }: MyInfoContainerProps) => {
   const menuItems = [
     {
       label: '정보 수정',
-      action: () => push('/edit'),
+      action: () => push('/my/edit'),
       hoverClass: 'hover:text-white',
     },
     {

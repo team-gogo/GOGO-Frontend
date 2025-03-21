@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useMatchBatchArrStore } from '@/shared/stores';
 import { MyStageResponse } from '@/shared/types/my';
 import { MatchResponse } from '@/shared/types/my/bet';
 import { StageResponse } from '@/shared/types/stage';
@@ -19,6 +21,16 @@ const StageMatchContainer = ({
   startIndex,
 }: StageContainerProps) => {
   const visibleCount = 2;
+
+  const { matchBatchArr, setMatchBatchArr } = useMatchBatchArrStore();
+
+  useEffect(() => {
+    if (matches?.matches && matchBatchArr.length === 0) {
+      setMatchBatchArr(
+        matches.matches.map(({ matchId, isEnd }) => ({ matchId, isEnd })),
+      );
+    }
+  }, [matches, matchBatchArr]);
 
   return (
     <div className={cn('w-full', 'flex', 'justify-center', 'itmes-center')}>

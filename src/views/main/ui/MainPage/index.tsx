@@ -1,12 +1,22 @@
 'use client';
 
+import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { DateContainer, MatchDetailModal } from '@/entities/main';
+import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
+import BatchModal from '@/entities/main/ui/BatchModal';
 import { MatchClockIcon } from '@/shared/assets/svg';
 import {
   CommunityIcon,
   MiniGameIcon,
   RankingIcon,
 } from '@/shared/assets/svg/MainIcon';
+
+import {
+  useBatchModalStore,
+  useCheckAgainModalStore,
+  useMyStageIdStore,
+} from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
@@ -22,9 +32,20 @@ const MainPage = () => {
   const boardMock = getBoardMock();
   const slicedBoardMock = boardMock.board.slice(0, 4);
 
+  const { stageId } = useParams();
+
+  const { setStageId } = useMyStageIdStore();
+
+  useEffect(() => {
+    setStageId(Number(stageId));
+  }, []);
+
   const isMainUsed = true;
 
   const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
+  const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
+  const { isCheckAgainModalOpen, setIsCheckAgainModalOpen } =
+    useCheckAgainModalStore();
 
   return (
     <div
@@ -66,7 +87,7 @@ const MainPage = () => {
           <SectionWrapper
             text={'미니게임'}
             icon={<MatchClockIcon />}
-            path="/my"
+            path="/match"
           >
             <StageMatchSection matches={matchInfo} />
           </SectionWrapper>
@@ -117,6 +138,12 @@ const MainPage = () => {
       </div>
       {isMatchModalOpen && (
         <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+      )}
+      {isBatchModalOpen && (
+        <BatchModal onClose={() => setIsBatchModalOpen(false)} />
+      )}
+      {isCheckAgainModalOpen && (
+        <BatchCancelModal onClose={() => setIsCheckAgainModalOpen(false)} />
       )}
     </div>
   );

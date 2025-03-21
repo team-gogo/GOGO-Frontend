@@ -3,7 +3,7 @@ interface CheckboxIconProps {
   isChecked?: boolean;
 }
 
-const CheckboxIcon = ({ size = 40, isChecked }: CheckboxIconProps) => {
+const CheckingBoxIcon = ({ size = 40, isChecked }: CheckboxIconProps) => {
   return (
     <svg
       width={size}
@@ -37,4 +37,4 @@ const CheckboxIcon = ({ size = 40, isChecked }: CheckboxIconProps) => {
   );
 };
 
-export default CheckboxIcon;
+export default CheckingBoxIcon;

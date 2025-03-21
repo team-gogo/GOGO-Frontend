@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { LineStroke } from '@/shared/assets/svg';
-import CheckboxIcon from '@/shared/assets/svg/CheckboxIcon';
+import { CheckingBoxIcon, LineStroke } from '@/shared/assets/svg';
+
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
 
@@ -119,7 +119,7 @@ function SearchResults<T>({
             onClick={() => handleItemClick(item)}
           >
             {showCheckbox && (
-              <CheckboxIcon size={20} isChecked={isItemSelected(item)} />
+              <CheckingBoxIcon size={20} isChecked={isItemSelected(item)} />
             )}
             <div className={cn('flex', 'flex-col')}>
               {getDisplayName(item)}

@@ -3,7 +3,7 @@ import { MatchData } from '../types/my/bet';
 
 interface MatchStatus {
   isPlaying: boolean;
-  isFinish: boolean;
+  isMatchFinish: boolean;
   time: string;
   roundText: string;
 }
@@ -18,7 +18,7 @@ interface MatchType {
 const useMatchStore = create<MatchType>((set) => ({
   matchStatus: {
     isPlaying: false,
-    isFinish: false,
+    isMatchFinish: false,
     time: '',
     roundText: '',
   },
