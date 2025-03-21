@@ -3,11 +3,12 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import instance from '@/shared/api/instance';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get('code');
-
     if (!code) {
       throw new Error('Authorization code not found');
     }
@@ -32,7 +33,6 @@ export async function GET(request: Request) {
     );
 
     const googleAccessToken = tokenResponse.data.access_token;
-
     const backendResponse = await instance.post('/user/auth/login', {
       oauthToken: googleAccessToken,
     });
@@ -57,7 +57,6 @@ export async function GET(request: Request) {
       maxAge: Number.MAX_SAFE_INTEGER,
     });
 
-    console.log('🍒🐶' + authority);
     if (authority === 'UNAUTHENTICATED') {
       return NextResponse.redirect(new URL('/signup', request.url));
     }
