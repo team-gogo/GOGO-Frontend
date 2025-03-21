@@ -280,7 +280,6 @@ const PlaceTeamContainer = () => {
       </div>
     );
 
-    MemoizedPlayerList.displayName = 'PlayerList';
     return MemoizedPlayerList;
   }, []);
 
