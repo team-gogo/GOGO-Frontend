@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useRef } from 'react';
 import {
   UseFormRegister,
@@ -7,8 +9,8 @@ import {
 import { SearchIcon } from '@/shared/assets/icons';
 import { School, SignupFormData } from '@/shared/types/signup';
 import Input from '@/shared/ui/input';
+import SearchResults from '@/shared/ui/SearchResults';
 import { useSchoolQuery } from '../../model/useSchoolQuery';
-import SchoolSearchResults from '../SchoolSearchResults';
 
 interface SchoolInputProps {
   register: UseFormRegister<SignupFormData>;
@@ -26,15 +28,23 @@ const SchoolInput = ({
   setSelectedSchool,
 }: SchoolInputProps) => {
   const [isSearchResultsVisible, setSearchResultsVisible] = useState(true);
+  const [localSelectedSchool, setLocalSelectedSchool] = useState<School | null>(
+    selectedSchool,
+  );
   const searchResultsRef = useRef<HTMLDivElement | null>(null);
   const schoolName = watch('schoolName');
   const { data: schools, isLoading } = useSchoolQuery(schoolName);
 
-  const handleSchoolSelect = (school: School) => {
-    setSelectedSchool(school);
-    setValue('schoolName', school.SCHUL_NM);
-    setSearchResultsVisible(false);
+  const handleSchoolSelect = (selectedSchools: School[]) => {
+    if (selectedSchools.length > 0) {
+      const school = selectedSchools[0];
+      setSelectedSchool(school);
+      setValue('schoolName', school.SCHUL_NM);
+      setSearchResultsVisible(false);
+    }
   };
+
+  const getSchoolId = (school: School) => school.SD_SCHUL_CODE;
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -61,15 +71,24 @@ const SchoolInput = ({
         onChange={(e) => {
           setValue('schoolName', e.target.value);
           setSelectedSchool(null);
+          setLocalSelectedSchool(null);
           setSearchResultsVisible(true);
         }}
       />
       {schoolName && !selectedSchool && isSearchResultsVisible && (
         <div ref={searchResultsRef}>
-          <SchoolSearchResults
-            schools={schools}
+          <SearchResults<School>
+            items={schools}
             isLoading={isLoading}
+            SearchinputValue={schoolName}
             onSelect={handleSchoolSelect}
+            getDisplayName={(school) => school.SCHUL_NM}
+            getSubText={(school) => school.ORG_RDNMA}
+            isAbsolute={true}
+            multiSelect={false}
+            selectedItems={localSelectedSchool ? [localSelectedSchool] : []}
+            getItemId={getSchoolId}
+            showCheckbox={false}
           />
         </div>
       )}

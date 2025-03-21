@@ -8,6 +8,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   maxLength?: number;
   bgColor?: string;
   onIconClick?: () => void;
+  showBorder?: boolean;
   isPlcCenter?: boolean;
 }
 
@@ -18,6 +19,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       maxLength,
       bgColor = 'bg-gray-700',
       onIconClick,
+      showBorder = false,
       isPlcCenter = false,
       ...attributes
     },
@@ -56,6 +58,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             'rounded-lg',
             'text-body3s',
             'text-white',
+            showBorder && 'border border-solid border-gray-600',
             attributes.type === 'number' &&
               '[appearance:none] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden',
           )}
@@ -75,7 +78,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           </label>
         )}
         {maxLength && (
-          <div className={cn('text-body3s', 'text-end', 'text-gray-500')}>
+          <div
+            className={cn(
+              'text-body3s',
+              'text-end',
+              inputLength > 0 ? 'text-main-600' : 'text-gray-500',
+            )}
+          >
             {inputLength}/{maxLength}
           </div>
         )}

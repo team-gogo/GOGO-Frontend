@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useForm, FieldErrors } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { School, SignupFormData } from '@/shared/types/signup';
 import { formatSignupData } from './formatSignupData';
 
@@ -27,7 +28,7 @@ export const useSignupForm = () => {
 
   const onSubmit = (data: SignupFormData) => {
     if (!selectedSchool) {
-      console.error('학교를 선택해야 합니다.');
+      toast.error('학교를 선택해야 합니다.');
       return;
     }
 
