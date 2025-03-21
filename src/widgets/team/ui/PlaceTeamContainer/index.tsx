@@ -349,6 +349,37 @@ const PlaceTeamContainer = () => {
                         players={placedPlayers}
                         onPlayerDrag={handlePlayerDrag}
                       />
+                      {placedPlayers.map((player, index) => (
+                        <Draggable
+                          key={player.id}
+                          draggableId={player.id}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={{
+                                ...provided.draggableProps.style,
+                                position: 'absolute',
+                                left: `${player.x}px`,
+                                top: `${player.y}px`,
+                                transform: snapshot.isDragging
+                                  ? provided.draggableProps.style?.transform
+                                  : 'none',
+                                opacity: snapshot.isDragging ? 0.5 : 1,
+                              }}
+                              className="flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center text-white"
+                            >
+                              <PlayerIcon className="mb-1" />
+                              <span className="text-body3s text-white">
+                                {player.name}
+                              </span>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
                       {provided.placeholder}
                     </div>
                   )}
