@@ -7,6 +7,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
 import { Player } from '@/entities/team/ui/Map/types';
+import PlayerDropdown from '@/entities/team/ui/PlayerDropdown';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
@@ -221,39 +222,13 @@ const PlaceTeamContainer = () => {
             <div className="flex justify-between">
               <div className="w-[45%] pr-4">
                 <div className="mb-3 flex items-center">
-                  <div className="relative mr-2 flex-1 py-8">
-                    <div
-                      onClick={toggleDropdown}
-                      className="flex cursor-pointer items-center justify-between rounded-md bg-[#2a2a2a] p-18 text-body3s"
-                    >
-                      <span>{selectedPlayer || '인원 선택'}</span>
-                      <svg
-                        className={`h-4 w-4 text-gray-400`}
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-
-                    {isDropdownOpen && (
-                      <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md bg-[#1e1e1e]">
-                        {membersList.map((member) => (
-                          <div
-                            key={member}
-                            className="cursor-pointer border-b border-[#2a2a2a] px-3 py-2 text-body3s"
-                            onClick={() => selectPlayer(member)}
-                          >
-                            {member}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <PlayerDropdown
+                    selectedPlayer={selectedPlayer}
+                    isOpen={isDropdownOpen}
+                    membersList={membersList}
+                    onToggle={toggleDropdown}
+                    onSelect={selectPlayer}
+                  />
                   <div className="flex w-52 justify-between px-10">
                     <button
                       onClick={handleAddPlayer}
