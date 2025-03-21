@@ -1,8 +1,14 @@
 'use client';
 
 import { DateContainer, MatchDetailModal } from '@/entities/main';
+import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
+import BatchModal from '@/entities/main/ui/BatchModal';
 import useSelectSport from '@/shared/model/useSelectSport';
-import { useMatchModalStore } from '@/shared/stores';
+import {
+  useBatchModalStore,
+  useCheckAgainModalStore,
+  useMatchModalStore,
+} from '@/shared/stores';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { getMatchInfo } from '@/views/main';
@@ -15,6 +21,9 @@ const MatchPage = () => {
   const { selectedSport, toggleSportSelection } = useSelectSport();
 
   const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
+  const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
+  const { isCheckAgainModalOpen, setIsCheckAgainModalOpen } =
+    useCheckAgainModalStore();
 
   return (
     <div
@@ -53,6 +62,12 @@ const MatchPage = () => {
       </div>
       {isMatchModalOpen && (
         <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+      )}
+      {isBatchModalOpen && (
+        <BatchModal onClose={() => setIsBatchModalOpen(false)} />
+      )}
+      {isCheckAgainModalOpen && (
+        <BatchCancelModal onClose={() => setIsCheckAgainModalOpen(false)} />
       )}
     </div>
   );

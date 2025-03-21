@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={suit.variable}>
-      <body className={cn('h-screen', 'w-screen')}>
+      <body className={cn('h-screen')}>
         <TanstackProviders>
           <ToastProvider>{children}</ToastProvider>
         </TanstackProviders>

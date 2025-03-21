@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { usePasswordModalStore } from '@/shared/stores';
+import { usePathname } from 'next/navigation';
+import { useMyStageIdStore, usePasswordModalStore } from '@/shared/stores';
 import { MyStageType } from '@/shared/types/my';
 import { StagesType } from '@/shared/types/stage';
 import { cn } from '@/shared/utils/cn';
@@ -14,15 +15,37 @@ interface StageProps {
 }
 
 const Stage = ({ stage, isMyStage = false }: StageProps) => {
-  const { setIsPasswordModalOpen } = usePasswordModalStore();
-  const { stageName, type, status, isMaintaining } = stage;
+  const { stageId, stageName, type, status, isMaintaining } = stage;
 
   const { push } = useRouter();
+  const pathname = usePathname();
+
+  const { setIsPasswordModalOpen } = usePasswordModalStore();
+  const { setStageId } = useMyStageIdStore();
 
   const isParticipating =
     'isParticipating' in stage ? stage.isParticipating : undefined;
 
   const isPassCode = 'isPassCode' in stage ? stage.isPassCode : undefined;
+
+  const Participate = isParticipating || isMyStage || isMaintaining;
+
+  const isStagePage = pathname === '/stage';
+
+  const handleClick = () => {
+    if (Participate) {
+      setStageId(stageId);
+      if (isStagePage) {
+        push(`/${stageId}`);
+      } else {
+        push(`/my/bet?stageId=${stageId}`);
+      }
+    } else if (isPassCode) {
+      setIsPasswordModalOpen(true);
+    } else {
+      push(`/stage/stageId=${stage.stageId}`);
+    }
+  };
 
   return (
     <>
@@ -53,7 +76,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
               ) : null}
               {isMaintaining && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
             </div>
-            {/* {isAdmin && <Tag TagType={'STREAMING'} />} */}
+            {/* {isStageAdmin && <Tag TagType={'STREAMING'} />} */}
           </div>
           <div
             className={cn(
@@ -68,16 +91,10 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
               {stageName}
             </h1>
             <Button
-              isLocked={!(isParticipating || isMyStage) && isPassCode}
-              onClick={() => {
-                isMyStage || isParticipating
-                  ? push(`/my/bet?stageId=${stage.stageId}`)
-                  : isPassCode
-                    ? setIsPasswordModalOpen(true)
-                    : push(`/stage/stageId=${stage.stageId}`);
-              }}
+              isLocked={!Participate && isPassCode}
+              onClick={() => handleClick()}
             >
-              {isParticipating || isMyStage ? '상세보기' : '참여하기'}
+              {isStagePage ? '참여하기' : '상세보기'}
             </Button>
           </div>
         </div>
