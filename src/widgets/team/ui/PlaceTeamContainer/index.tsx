@@ -201,118 +201,115 @@ const PlaceTeamContainer = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black text-white">
-      <header className="mt-20 p-4 pt-5">
-        <BackPageButton type="back" label="팀 생성하기" />
+    <div className={cn('h-screen', 'bg-black', 'p-30', 'flex', 'flex-col')}>
+      <header className={cn('mb-30')}>
+        <BackPageButton type="back" label="팀 배치하기" />
       </header>
-
-      <div className="px-4">
-        <h1 className={cn('text-h3e', 'text-white', 'mb-24', 'mt-24')}>
+      <div className={cn('flex-1', 'flex', 'flex-col', 'mt-28')}>
+        <h1 className={cn('text-h3e', 'text-white', 'mb-28', 'mt-28')}>
           경기 이름
         </h1>
-        <div className="mb-28 mt-28 flex items-center gap-1">
-          <PlayerIcon className="mr-1" />
-          <span className="text-body1s">인원을 배치 하세요</span>
-        </div>
-        <div>
-          <DragDropContext
-            onDragEnd={onDragEnd}
-            className="flex justify-between"
-          >
-            <div className="flex justify-between">
-              <div className="w-[45%] pr-4">
-                <div className="mb-3 flex items-center">
-                  <PlayerDropdown
-                    selectedPlayer={selectedPlayer}
-                    isOpen={isDropdownOpen}
-                    membersList={membersList}
-                    onToggle={toggleDropdown}
-                    onSelect={selectPlayer}
-                  />
-                  <div className="flex w-52 justify-between px-10">
-                    <button
-                      onClick={handleAddPlayer}
-                      className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent"
-                      disabled={
-                        !selectedPlayer || selectedPlayer === '인원 선택'
-                      }
-                    >
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <PlusButtonIcon />
-                      </div>
-                    </button>
-                    <button className="relative ml-20 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <MinusButtonIcon />
-                      </div>
-                    </button>
+        <div className="px-4">
+          <div className="mb-28 mt-28 flex items-center gap-1">
+            <PlayerIcon className="mr-1" />
+            <span className="text-body1s text-white">인원을 배치 하세요</span>
+          </div>
+          <div>
+            <DragDropContext
+              onDragEnd={onDragEnd}
+              className="flex justify-between"
+            >
+              <div className="flex justify-between">
+                <div className="w-[45%] pr-4">
+                  <div className="mb-3 flex items-center">
+                    <PlayerDropdown
+                      selectedPlayer={selectedPlayer}
+                      isOpen={isDropdownOpen}
+                      membersList={membersList}
+                      onToggle={toggleDropdown}
+                      onSelect={selectPlayer}
+                    />
+                    <div className="flex w-52 justify-between px-10">
+                      <button
+                        onClick={handleAddPlayer}
+                        className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent text-white"
+                        disabled={
+                          !selectedPlayer || selectedPlayer === '인원 선택'
+                        }
+                      >
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <PlusButtonIcon />
+                        </div>
+                      </button>
+                      <button className="relative ml-20 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <MinusButtonIcon />
+                        </div>
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                <StrictModeDroppable droppableId="playersList">
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="flex flex-row flex-wrap gap-4 bg-transparent"
-                    >
-                      {unplacedPlayers.map((player, index) => (
-                        <Draggable
-                          key={player.id}
-                          draggableId={player.id}
-                          index={index}
-                          className="h-20"
-                        >
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={cn(
-                                'mx-8 my-10 flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center',
-                              )}
-                            >
-                              <PlayerIcon className="mb-1" />
-                              <span className="text-body3s">{player.name}</span>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </StrictModeDroppable>
+                  <StrictModeDroppable droppableId="playersList">
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="flex flex-row flex-wrap gap-4 bg-transparent text-white"
+                      >
+                        {unplacedPlayers.map((player, index) => (
+                          <Draggable
+                            key={player.id}
+                            draggableId={player.id}
+                            index={index}
+                            className="h-20"
+                          >
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className={cn(
+                                  'mx-8 my-10 flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center text-white',
+                                )}
+                              >
+                                <PlayerIcon className="mb-1" />
+                                <span className="text-body3s text-white">
+                                  {player.name}
+                                </span>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </StrictModeDroppable>
+                </div>
+                <div className="h-[500px] w-[55%]">
+                  <StrictModeDroppable droppableId="court">
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="h-full"
+                      >
+                        <SportMap
+                          type={sportType}
+                          players={placedPlayers}
+                          onPlayerDrag={handlePlayerDrag}
+                        />
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </StrictModeDroppable>
+                </div>
               </div>
-              <div className="h-[500px] w-[55%]">
-                <StrictModeDroppable droppableId="court">
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="h-full"
-                    >
-                      <SportMap
-                        type={sportType}
-                        players={placedPlayers}
-                        onPlayerDrag={handlePlayerDrag}
-                      />
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </StrictModeDroppable>
-              </div>
-            </div>
-          </DragDropContext>
+            </DragDropContext>
+          </div>
         </div>
       </div>
-
-      <div className="relative bottom-4 left-0 right-0 mt-32 px-4">
-        <Button
-          bg="bg-blue-600"
-          textColor="text-white"
-          className="w-full rounded-lg py-3 text-center text-body1s"
-          onClick={handleSubmit}
-        >
+      <div className={cn('mt-30', 'mb-30')}>
+        <Button bg="bg-main-600" textColor="text-white" onClick={handleSubmit}>
           확인
         </Button>
       </div>
