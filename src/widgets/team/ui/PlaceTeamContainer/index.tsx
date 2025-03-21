@@ -305,6 +305,7 @@ const PlaceTeamContainer = () => {
                     membersList={membersList}
                     onToggle={toggleDropdown}
                     onSelect={selectPlayer}
+                    selectedPlayers={players.map((player) => player.name)}
                   />
                   <div className="flex w-52 justify-between px-10">
                     <button

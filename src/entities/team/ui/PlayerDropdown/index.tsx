@@ -6,6 +6,7 @@ interface PlayerDropdownProps {
   membersList: string[];
   onToggle: () => void;
   onSelect: (player: string) => void;
+  selectedPlayers: string[];
 }
 
 const PlayerDropdown = ({
@@ -14,7 +15,12 @@ const PlayerDropdown = ({
   membersList,
   onToggle,
   onSelect,
+  selectedPlayers,
 }: PlayerDropdownProps) => {
+  const availablePlayers = membersList.filter(
+    (member) => !selectedPlayers.includes(member),
+  );
+
   return (
     <div className="relative">
       <div
@@ -47,7 +53,7 @@ const PlayerDropdown = ({
             'z-10',
           )}
         >
-          {membersList.map((member, index) => (
+          {availablePlayers.map((member, index) => (
             <div
               key={index}
               onClick={() => onSelect(member)}
