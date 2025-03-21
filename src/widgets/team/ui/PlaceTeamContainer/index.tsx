@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
@@ -104,55 +104,61 @@ const PlaceTeamContainer = () => {
     }
   };
 
-  const handlePlayerDrag = (playerId: string, x: number, y: number) => {
-    setPlayers((prev) =>
-      prev.map((player) =>
-        player.id === playerId ? { ...player, x, y } : player,
-      ),
-    );
-  };
-
-  const onDragEnd = (result: DragEndResult) => {
-    const { source, destination, draggableId } = result;
-
-    if (!destination) {
-      return;
-    }
-
-    if (
-      source.droppableId === 'playersList' &&
-      destination.droppableId === 'playersList'
-    ) {
-      const newPlayers = Array.from(players);
-      const [removed] = newPlayers.splice(source.index, 1);
-      newPlayers.splice(destination.index, 0, removed);
-      setPlayers(newPlayers);
-      return;
-    }
-
-    if (
-      source.droppableId === 'court' &&
-      destination.droppableId === 'playersList'
-    ) {
+  const handlePlayerDrag = useCallback(
+    (playerId: string, x: number, y: number) => {
       setPlayers((prev) =>
         prev.map((player) =>
-          player.id === draggableId ? { ...player, x: 0, y: 0 } : player,
+          player.id === playerId ? { ...player, x, y } : player,
         ),
       );
-      return;
-    }
+    },
+    [],
+  );
 
-    if (
-      source.droppableId === 'playersList' &&
-      destination.droppableId === 'court'
-    ) {
-      setPlayers((prev) =>
-        prev.map((player) =>
-          player.id === draggableId ? { ...player, x: 200, y: 200 } : player,
-        ),
-      );
-    }
-  };
+  const onDragEnd = useCallback(
+    (result: DragEndResult) => {
+      const { source, destination, draggableId } = result;
+
+      if (!destination) {
+        return;
+      }
+
+      if (
+        source.droppableId === 'playersList' &&
+        destination.droppableId === 'playersList'
+      ) {
+        const newPlayers = Array.from(players);
+        const [removed] = newPlayers.splice(source.index, 1);
+        newPlayers.splice(destination.index, 0, removed);
+        setPlayers(newPlayers);
+        return;
+      }
+
+      if (
+        source.droppableId === 'court' &&
+        destination.droppableId === 'playersList'
+      ) {
+        setPlayers((prev) =>
+          prev.map((player) =>
+            player.id === draggableId ? { ...player, x: 0, y: 0 } : player,
+          ),
+        );
+        return;
+      }
+
+      if (
+        source.droppableId === 'playersList' &&
+        destination.droppableId === 'court'
+      ) {
+        setPlayers((prev) =>
+          prev.map((player) =>
+            player.id === draggableId ? { ...player, x: 200, y: 200 } : player,
+          ),
+        );
+      }
+    },
+    [players],
+  );
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -163,11 +169,14 @@ const PlaceTeamContainer = () => {
     setIsDropdownOpen(false);
   };
 
-  const placedPlayers = players.filter(
-    (player) => player.x !== 0 || player.y !== 0,
+  const placedPlayers = useMemo(
+    () => players.filter((player) => player.x !== 0 || player.y !== 0),
+    [players],
   );
-  const unplacedPlayers = players.filter(
-    (player) => player.x === 0 && player.y === 0,
+
+  const unplacedPlayers = useMemo(
+    () => players.filter((player) => player.x === 0 && player.y === 0),
+    [players],
   );
 
   const handleSubmit = async () => {
