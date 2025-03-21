@@ -73,10 +73,10 @@ const MapComponent = ({
           className="flex flex-col items-center"
           onMouseDown={(e) => handleMouseDown(e, player.id)}
         >
-          <div className="flex h-7 w-7 items-center justify-center rounded-full text-center text-white">
+          <div className="flex h-7 w-7 items-center rounded-full text-center text-white">
             <PlayerIcon className="h-3.5 w-3.5" />
           </div>
-          <span className="mt-1 text-body3s">
+          <span className="mt-1 text-center text-body3s text-white">
             {player.name.includes(' ')
               ? player.name.split(' ')[1]
               : player.name}
