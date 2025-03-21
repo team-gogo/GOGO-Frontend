@@ -10,11 +10,10 @@ import {
   MiniGameContainer,
   RuleInputContainer,
   StageInputContainer,
-  StoreContainer,
 } from '@/widgets/stage/create';
 import { useStageForm } from '../../../model/useStageForm';
 
-const OfficialCreatePage = () => {
+const FastCreatePage = () => {
   const {
     register,
     handleSubmit,
@@ -23,29 +22,28 @@ const OfficialCreatePage = () => {
     control,
     onSubmit,
     onError,
-  } = useStageForm('official');
+  } = useStageForm('fast');
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit, onError)}
       className={cn('w-full', 'max-w-[1320px]', 'space-y-[3rem]')}
     >
-      <BackPageButton type="back" label="스테이지 생성 (학교 공식 행사)" />
+      <BackPageButton type="back" label="스테이지 생성 (빠른 경기)" />
       <StageInputContainer register={register} />
       <MatchSettingContainer
         control={control}
         register={register}
         watch={watch}
-        mode="official"
+        mode="fast"
       />
       <RuleInputContainer register={register} watch={watch} />
       <MiniGameContainer
         register={register}
         watch={watch}
         setValue={setValue}
-        isFastMode={false}
+        isFastMode={true}
       />
-      <StoreContainer register={register} watch={watch} setValue={setValue} />
       <div className={cn('flex', 'w-full', 'gap-24', 'tablet:flex-wrap')}>
         <div className="w-full">
           <EntryNumberInput register={register} />
@@ -59,4 +57,4 @@ const OfficialCreatePage = () => {
   );
 };
 
-export default OfficialCreatePage;
+export default FastCreatePage;

@@ -1,12 +1,13 @@
-interface CheckingBoxIconProps {
+interface CheckboxIconProps {
+  size?: number;
   isChecked?: boolean;
 }
 
-const CheckingBoxIcon = ({ isChecked }: CheckingBoxIconProps) => {
+const CheckingBoxIcon = ({ size = 40, isChecked }: CheckboxIconProps) => {
   return (
     <svg
-      width="40"
-      height="40"
+      width={size}
+      height={size}
       viewBox="0 0 40 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
