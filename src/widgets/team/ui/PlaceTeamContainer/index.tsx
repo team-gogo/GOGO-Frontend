@@ -51,7 +51,11 @@ const PlaceTeamContainer = () => {
   const sportParam = searchParams.get('sport');
 
   const getSportType = (): SportType => {
-    if (sportParam === 'BASKET_BALL' || sportParam === 'BADMINTON') {
+    if (
+      sportParam === 'BASKET_BALL' ||
+      sportParam === 'BADMINTON' ||
+      sportParam === 'BASE_BALL'
+    ) {
       return sportParam;
     }
     return 'VOLLEY_BALL';

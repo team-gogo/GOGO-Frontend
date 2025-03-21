@@ -1,5 +1,6 @@
 // import { SportType } from '@/shared/model/sportTypes';
 import BadmintonMap from './Badminton';
+import BaseballMap from './Baseball';
 import BasketballMap from './Basketball';
 import DefaultMap from './Default';
 import { SportMapProps } from './types';
@@ -13,6 +14,8 @@ const SportMap = ({ type, onPlayerDrag, players }: SportMapProps) => {
       return <BasketballMap onPlayerDrag={onPlayerDrag} players={players} />;
     case 'BADMINTON':
       return <BadmintonMap onPlayerDrag={onPlayerDrag} players={players} />;
+    case 'BASE_BALL':
+      return <BaseballMap onPlayerDrag={onPlayerDrag} players={players} />;
     default:
       return <DefaultMap onPlayerDrag={onPlayerDrag} players={players} />;
   }
