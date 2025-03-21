@@ -5,6 +5,14 @@ export interface SignupFormData {
   schoolClass: string;
   schoolNumber: string;
   gender: 'MALE' | 'FEMALE';
+  school: {
+    sdCode: string;
+    name: string;
+    type: string;
+    address: string;
+    region: string;
+    phoneNumber: string;
+  };
 }
 
 export interface School {
@@ -17,4 +25,20 @@ export interface School {
   HMPG_ADRES: string; // 홈페이지 주소
   ORG_RDNMA: string; // 도로명 주소
   LCTN_SC_NM: string; // 지역 정보 (추가된 속성)
+}
+
+export interface FormattedSignupData {
+  name: string;
+  grade: number;
+  classNumber: number;
+  studentNumber: number;
+  sex: 'MALE' | 'FEMALE' | null;
+  school: {
+    sdCode: string;
+    name: string;
+    type: string;
+    address: string;
+    region: string;
+    phoneNumber: string;
+  };
 }

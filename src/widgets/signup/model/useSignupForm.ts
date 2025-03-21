@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { useForm, FieldErrors } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { School, SignupFormData } from '@/shared/types/signup';
+import {
+  FormattedSignupData,
+  School,
+  SignupFormData,
+} from '@/shared/types/signup';
 import { formatSignupData } from './formatSignupData';
+import { useSignup } from './useSignup';
 
 export const useSignupForm = () => {
+  const { mutate: signup, isPending, isSuccess } = useSignup();
   const { register, handleSubmit, setValue, watch } = useForm<SignupFormData>();
   const [selectedGender, setSelectedGender] = useState<
     'MALE' | 'FEMALE' | null
@@ -32,12 +38,12 @@ export const useSignupForm = () => {
       return;
     }
 
-    const formattedData = formatSignupData(
+    const formattedData: FormattedSignupData = formatSignupData(
       data,
       selectedSchool,
       selectedGender,
     );
-    console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
+    signup(formattedData);
   };
 
   const onError = (errors: FieldErrors<SignupFormData>) => {
@@ -56,5 +62,7 @@ export const useSignupForm = () => {
     isDisabled,
     onSubmit,
     onError,
+    isPending,
+    isSuccess,
   };
 };
