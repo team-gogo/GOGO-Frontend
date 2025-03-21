@@ -206,9 +206,7 @@ const PlaceTeamContainer = () => {
         <BackPageButton type="back" label="팀 배치하기" />
       </header>
       <div className={cn('flex-1', 'flex', 'flex-col', 'mt-28')}>
-        <h1 className={cn('text-h3e', 'text-white', 'mb-28', 'mt-28')}>
-          경기 이름
-        </h1>
+        <h1 className={cn('text-h3e', 'text-white', 'mb-28')}>경기 이름</h1>
         <div className="px-4">
           <div className="mb-28 mt-28 flex items-center gap-1">
             <PlayerIcon className="mr-1" />

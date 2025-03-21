@@ -44,27 +44,29 @@ const CreateTeamContainer = () => {
       <header className={cn('mb-30')}>
         <BackPageButton type="back" label="팀 생성하기" />
       </header>
-      <div className={cn('flex-1', 'flex', 'flex-col', 'mt-28')}>
-        <h1 className={cn('text-h3e', 'text-white', 'mb-28', 'mt-28')}>
-          경기 이름
-        </h1>
-        <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>팀 이름</h2>
-        <div className={cn('mt-24')}>
-          <Input
-            placeholder="팀 이름을 입력해주세요."
-            value={teamName}
-            onChange={(e) => setTeamName(e.target.value)}
-            maxLength={10}
-          />
+      <div className={cn('flex-1', 'flex', 'flex-col', 'mt-28', 'gap-28')}>
+        <h1 className={cn('text-h3e', 'text-white', 'mb-28')}>경기 이름</h1>
+        <div>
+          <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>팀 이름</h2>
+          <div className={cn('mt-24')}>
+            <Input
+              placeholder="팀 이름을 입력해주세요."
+              value={teamName}
+              onChange={(e) => setTeamName(e.target.value)}
+              maxLength={10}
+            />
+          </div>
         </div>
-        <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>인원</h2>
-        <div className={cn('mt-24')}>
-          <Input
-            placeholder="학생을 입력해주세요."
-            value={members}
-            onChange={(e) => setMembers(e.target.value)}
-            icon={<SearchIcon size={30} />}
-          />
+        <div>
+          <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>인원</h2>
+          <div className={cn('mt-24')}>
+            <Input
+              placeholder="학생을 입력해주세요."
+              value={members}
+              onChange={(e) => setMembers(e.target.value)}
+              icon={<SearchIcon size={30} />}
+            />
+          </div>
         </div>
       </div>
       <div className={cn('mt-60', 'mb-30')}>
