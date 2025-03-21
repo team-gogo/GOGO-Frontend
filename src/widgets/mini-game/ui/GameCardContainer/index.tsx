@@ -10,7 +10,6 @@ import { cn } from '@/shared/utils/cn';
 interface GameItem {
   icon: (isActive: boolean) => ReactNode;
   name: string;
-  action: () => void;
   type: string;
 }
 
@@ -53,7 +52,6 @@ const GameCardContainer = ({
             key={index}
             icon={item.icon}
             name={item.name}
-            action={item.action}
             type={item.type}
             isActive={activeList[index]}
             ticketCount={ticketCounts[index]}
