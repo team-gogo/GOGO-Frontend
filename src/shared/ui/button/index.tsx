@@ -5,14 +5,20 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: string;
   bg?: string;
   textColor?: string;
+  borderColor?: string;
+  borderStyle?: string;
   isLocked?: boolean;
+  border?: string;
 }
 
 const Button = ({
   children,
   bg = 'bg-main-600',
   textColor = 'text-white',
+  borderColor = 'none',
+  borderStyle = 'none',
   isLocked,
+  border,
   ...attributes
 }: ButtonProps) => {
   return (
@@ -26,7 +32,12 @@ const Button = ({
         'disabled:bg-gray-400',
         bg,
         textColor,
+        borderStyle,
+        borderColor,
         'text-body3s',
+        border && 'border-1',
+        border && 'border-solid',
+        border,
       )}
     >
       <div
