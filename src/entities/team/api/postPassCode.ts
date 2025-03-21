@@ -1,29 +1,18 @@
-// const getToken = (): string => {
-//   return '';
-// };
+import instance from '@/shared/api/instance';
 
-// export const postPassCode = async (stageId: string, passCode: string) => {
-//   try {
-//     const token = getToken();
+export const postPassCode = async (stageId: string, passCode: string) => {
+  try {
+    const response = await instance.post(`/join/${stageId}`, {
+      passCode: passCode,
+    });
 
-//     const response = await fetch(`/api/join/${stageId}`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: token,
-//       },
-//       body: JSON.stringify({
-//         passCode: passCode,
-//       }),
-//     });
+    if (!response.data) {
+      throw new Error('스테이지 참가 실패');
+    }
 
-//     if (!response.ok) {
-//       throw new Error(response.status.toString());
-//     }
-
-//     return await response.json();
-//   } catch (error) {
-//     console.error(error);
-//     return null;
-//   }
-// };
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

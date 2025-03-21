@@ -4,7 +4,14 @@ import BaseballSvg from '@/shared/assets/svg/Map/Baseball';
 import BasketballSvg from '@/shared/assets/svg/Map/Basketball';
 import VolleyballSvg from '@/shared/assets/svg/Map/Volleyball';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
-import { MapComponentProps, SportMapProps } from './types';
+import { SportType } from '@/shared/model/sportTypes';
+import { MapComponentProps, Player } from './types';
+
+interface SportMapProps {
+  type: SportType;
+  players: Player[];
+  onPlayerDrag?: (playerId: string, x: number, y: number) => void;
+}
 
 const MapComponent = ({
   players,

@@ -1,7 +1,7 @@
 'use client';
-
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-// import { postPassCode } from '@/entities/team/api/postPassCode';
+import { postPassCode } from '@/entities/team/api/postPassCode';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
@@ -10,15 +10,19 @@ import { cn } from '@/shared/utils/cn';
 const CreateTeamContainer = () => {
   const [members, setMembers] = useState('');
   const [passCode, setPassCode] = useState('');
+  const searchParams = useSearchParams();
 
-  // const handleSubmit = async () => {
-  //   try {
-  //     const stageId =
-  //     const response = await postPassCode(stageId, passCode);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const handleSubmit = async () => {
+    try {
+      const stageId = searchParams.get('stageId');
+      if (!stageId) {
+        throw new Error('스테이지 ID가 없어요');
+      }
+      await postPassCode(stageId, passCode);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className={cn('h-screen', 'bg-black', 'p-30', 'flex', 'flex-col')}>
@@ -49,7 +53,7 @@ const CreateTeamContainer = () => {
         </div>
       </div>
       <div className={cn('mt-60', 'mb-30')}>
-        <Button bg="bg-main-600" textColor="text-white">
+        <Button bg="bg-main-600" textColor="text-white" onClick={handleSubmit}>
           확인
         </Button>
       </div>
