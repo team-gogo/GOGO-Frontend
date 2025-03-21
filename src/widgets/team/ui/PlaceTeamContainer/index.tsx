@@ -3,7 +3,12 @@
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DragStart,
+} from 'react-beautiful-dnd';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
 import { Player } from '@/entities/team/ui/Map/types';
@@ -130,7 +135,7 @@ const PlaceTeamContainer = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [isDragging]);
 
-  const onDragStart = useCallback((start: any) => {
+  const onDragStart = useCallback((start: DragStart) => {
     setIsDragging(true);
     draggedPlayerRef.current = start.draggableId;
   }, []);
