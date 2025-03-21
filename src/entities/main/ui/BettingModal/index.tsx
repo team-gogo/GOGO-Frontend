@@ -1,33 +1,50 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { PointCircleIcon, RightArrowIcon } from '@/shared/assets/svg';
+import { PointCircleIcon } from '@/shared/assets/svg';
 import { useMatchStore } from '@/shared/stores';
+import { BettingFormData } from '@/shared/types/main';
+import Button from '@/shared/ui/button';
+import Input from '@/shared/ui/input';
 import MatchTypeLabel from '@/shared/ui/matchTypeLabel';
 import ModalLayout from '@/shared/ui/modalLayout';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
+import { formatBettingData } from '../../model/formatBettingData';
+import { useBettingForm } from '../../model/useBettingForm';
 import MatchTeam from '../MatchTeam';
 
-interface MatchDetailModalProps {
+interface BettingModalProps {
   onClose: () => void;
 }
 
-const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
-  const { matchStatus, match } = useMatchStore();
+const BettingModal = ({ onClose }: BettingModalProps) => {
+  const {
+    register,
+    handleSubmit,
+    isDisabled,
+    onError,
+    setValue,
+    selectedTeamId,
+    setSelectedTeamId,
+  } = useBettingForm();
 
-  const { push } = useRouter();
+  const onSubmit = (data: BettingFormData) => {
+    const formattedData = formatBettingData(data, selectedTeamId);
+    onClose();
+
+    console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
+  };
+
+  const { matchStatus, match } = useMatchStore();
 
   if (!match) {
     return null;
   }
 
   const { aTeam, bTeam, category, betting } = match;
-
   const { isPlaying, isFinish, time, roundText } = matchStatus;
 
   const isFinal = roundText === '결승전';
-
   const totalBettingPoints = aTeam.bettingPoint + bTeam.bettingPoint;
 
   const aTeamPercentage =
@@ -41,10 +58,15 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
       : ((bTeam.bettingPoint / totalBettingPoints) * 100).toFixed(2);
 
   const getBettingTeamColor = (teamId: number) => {
-    if (betting.predictedWinTeamId === teamId) {
+    if (selectedTeamId === teamId || betting.predictedWinTeamId === teamId) {
       return 'bg-main-600';
     }
     return 'bg-gray-500';
+  };
+
+  const handleTeamClick = (teamId: number) => {
+    setSelectedTeamId(teamId);
+    setValue('predictedWinTeamId', teamId, { shouldValidate: true });
   };
 
   return (
@@ -61,7 +83,10 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
         'space-y-24',
       )}
     >
-      <div className={cn('flex', 'gap-[2.5rem]', 'flex-col')}>
+      <form
+        onSubmit={handleSubmit(onSubmit, onError)}
+        className={cn('flex', 'gap-[2.5rem]', 'flex-col')}
+      >
         <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
           <MatchTypeLabel
             type={isFinal ? 'FINAL' : 'OFFICIAL'}
@@ -89,6 +114,7 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
             team={aTeam}
             percentage={Number(aTeamPercentage)}
             bgColor={getBettingTeamColor(aTeam.teamId)}
+            onClick={() => handleTeamClick(aTeam.teamId)}
           />
           <div
             className={cn(
@@ -109,7 +135,7 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
             >
               <PointCircleIcon />
               <p className={cn('text-body3s', 'text-gray-300')}>
-                {aTeam.bettingPoint + bTeam.bettingPoint}
+                {totalBettingPoints}
               </p>
             </div>
             <h2 className={cn('text-h1e', 'text-gray-500')}>VS</h2>
@@ -118,29 +144,31 @@ const MatchDetailModal = ({ onClose }: MatchDetailModalProps) => {
             team={bTeam}
             percentage={Number(bTeamPercentage)}
             bgColor={getBettingTeamColor(bTeam.teamId)}
+            onClick={() => handleTeamClick(bTeam.teamId)}
           />
         </div>
-
         <div
           className={cn(
-            'w-full',
             'flex',
+            'w-full',
             'flex-col',
             'items-center',
             'gap-[0.75rem]',
           )}
         >
-          <button
-            className={cn('flex', 'items-center', 'gap-[0.5rem]')}
-            onClick={() => push(`/match?matchId=${match.matchId}`)}
-          >
-            <p className={cn('text-body3s', 'text-gray-500')}>자세히 보기</p>
-            <RightArrowIcon />
-          </button>
+          <Input
+            {...register('bettingPoint', { required: true, min: 0 })}
+            type="number"
+            placeholder="포인트를 입력해주세요."
+            bgColor="bg-gray-600"
+          />
+          <Button disabled={isDisabled} type="submit">
+            베팅
+          </Button>
         </div>
-      </div>
+      </form>
     </ModalLayout>
   );
 };
 
-export default MatchDetailModal;
+export default BettingModal;

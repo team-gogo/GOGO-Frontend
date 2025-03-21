@@ -1,6 +1,6 @@
 'use client';
 
-import { DateContainer, MatchDetailModal } from '@/entities/main';
+import { DateContainer, BettingModal } from '@/entities/main';
 import useSelectSport from '@/shared/model/useSelectSport';
 import { useMatchModalStore } from '@/shared/stores';
 import BackPageButton from '@/shared/ui/backPageButton';
@@ -52,7 +52,7 @@ const MatchPage = () => {
         </div>
       </div>
       {isMatchModalOpen && (
-        <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+        <BettingModal onClose={() => setIsMatchModalOpen(false)} />
       )}
     </div>
   );

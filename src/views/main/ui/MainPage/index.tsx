@@ -1,6 +1,6 @@
 'use client';
 
-import { DateContainer, MatchDetailModal } from '@/entities/main';
+import { DateContainer, BettingModal } from '@/entities/main';
 import { MatchClockIcon } from '@/shared/assets/svg';
 import {
   CommunityIcon,
@@ -116,7 +116,7 @@ const MainPage = () => {
         </div>
       </div>
       {isMatchModalOpen && (
-        <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+        <BettingModal onClose={() => setIsMatchModalOpen(false)} />
       )}
     </div>
   );

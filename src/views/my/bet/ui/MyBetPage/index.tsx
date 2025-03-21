@@ -1,6 +1,6 @@
 'use client';
 
-import { MatchDetailModal } from '@/entities/main';
+import { BettingModal } from '@/entities/main';
 import { useMatchModalStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 import {
@@ -45,7 +45,7 @@ const MyBetPage = () => {
         <MatchContainer matchInfo={userBetInfo} isMyBetInfo={true} />
       </div>
       {isMatchModalOpen && (
-        <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+        <BettingModal onClose={() => setIsMatchModalOpen(false)} />
       )}
     </div>
   );
