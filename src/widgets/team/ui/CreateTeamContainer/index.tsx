@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
@@ -14,7 +15,22 @@ const CreateTeamContainer = () => {
   const searchParams = useSearchParams();
 
   const handleSubmit = () => {
+    if (
+      !teamName.trim() ||
+      teamName.trim().length > 10 ||
+      teamName.trim().length < 1
+    ) {
+      toast.error('팀 이름을 올바르게 입력해주세요. (1~10글자)');
+      return;
+    }
+
     const membersList = members.split(',').map((member) => member.trim());
+
+    if (!members.trim() || membersList.some((member) => !member)) {
+      toast.error('인원을 올바르게 입력해주세요.');
+      return;
+    }
+
     const stageId = searchParams.get('stageId');
 
     router.push(
@@ -37,6 +53,7 @@ const CreateTeamContainer = () => {
             placeholder="팀 이름을 입력해주세요."
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
+            maxLength={10}
           />
         </div>
         <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>인원</h2>
