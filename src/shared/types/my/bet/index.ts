@@ -45,7 +45,7 @@ export type MatchData = {
     bTeamScore: number;
     isPredictionSuccess?: boolean;
     earnedPoint?: number;
-    pointReceivingTime?: string;
+    tempPointExpiredDate: string;
   };
 };
 

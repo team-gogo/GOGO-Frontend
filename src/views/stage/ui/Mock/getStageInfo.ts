@@ -31,7 +31,7 @@ const getStageInfo = (): StageResponse => {
         participantCount: 3,
         isParticipating: true,
         isMaintaining: false,
-        isPassCode: false,
+        isPassCode: true,
       },
       {
         stageId: 4,
@@ -41,7 +41,7 @@ const getStageInfo = (): StageResponse => {
         participantCount: 3,
         isParticipating: false,
         isMaintaining: true,
-        isPassCode: true,
+        isPassCode: false,
       },
       {
         stageId: 5,

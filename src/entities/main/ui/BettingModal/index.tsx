@@ -28,6 +28,8 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
     setSelectedTeamId,
   } = useBettingForm();
 
+  console.log(selectedTeamId);
+
   const onSubmit = (data: BettingFormData) => {
     const formattedData = formatBettingData(data, selectedTeamId);
     onClose();
@@ -42,7 +44,8 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
   }
 
   const { aTeam, bTeam, category, betting } = match;
-  const { isPlaying, isFinish, time, roundText } = matchStatus;
+
+  const { isPlaying, isMatchFinish, time, roundText } = matchStatus;
 
   const isFinal = roundText === '결승전';
   const totalBettingPoints = aTeam.bettingPoint + bTeam.bettingPoint;
@@ -95,8 +98,10 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
           />
           <MatchTypeLabel
             type={'TIME'}
-            customText={isPlaying ? '경기 중' : isFinish ? '경기 종료' : time}
-            color={isPlaying ? '#01C612' : isFinish ? '#898989' : '#FFF'}
+            customText={
+              isPlaying ? '경기 중' : isMatchFinish ? '경기 종료' : time
+            }
+            color={isPlaying ? '#01C612' : isMatchFinish ? '#898989' : '#FFF'}
           />
           <SportTypeLabel
             type={category && category.length > 0 ? category[0] : ''}

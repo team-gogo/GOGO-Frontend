@@ -1,14 +1,20 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { BatchCancelController, BatchController } from '@/entities/main';
 import {
   BlueAlarmIcon,
   GrayAlarmIcon,
   RightArrowIcon,
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
-import { useMatchModalStore, useMatchStore } from '@/shared/stores';
+import {
+  useMatchBatchArrStore,
+  useMatchModalStore,
+  useMatchStore,
+  useMyStageIdStore,
+} from '@/shared/stores';
 import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
@@ -27,7 +33,6 @@ const Match = ({ match }: MatchProps) => {
     bTeam,
     startDate,
     endDate,
-    isEnd,
     round,
     category,
     isNotice,
@@ -37,7 +42,23 @@ const Match = ({ match }: MatchProps) => {
 
   const { setIsMatchModalOpen } = useMatchModalStore();
   const { setMatchStatus, setMatch } = useMatchStore();
+  const { stageId } = useMyStageIdStore();
+  const { matchBatchArr } = useMatchBatchArrStore();
 
+  const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
+
+  useEffect(() => {
+    setAdminIdxArr(JSON.parse(localStorage.getItem('stageAdminArr') || '[]'));
+  }, []);
+
+  const isStageAdmin = adminIdxArr.includes(stageId);
+
+  const matchItem = matchBatchArr.find((item) => item.matchId === matchId);
+  const isBatchEnd = matchItem ? matchItem.isEnd : false; // matchId가 일치하는 항목의 isEnd 값을 반환, 없으면 false
+
+  // if (matchItem) {
+  //   console.log(`Match ID: ${matchItem.matchId}, isEnd: ${isBatchEnd}`);
+  // }
   const [isAlarmClick, setIsAlarmClick] = useState<boolean>(isNotice);
 
   const { push } = useRouter();
@@ -48,7 +69,20 @@ const Match = ({ match }: MatchProps) => {
   const end = new Date(endDate);
 
   const isPlaying = currentTime >= start && currentTime <= end;
-  const isFinish = currentTime > end;
+  const isMatchFinish = currentTime > end;
+
+  const tempPointExpiredDate = result?.tempPointExpiredDate
+    ? new Date(result.tempPointExpiredDate)
+    : null;
+
+  const isExpired = tempPointExpiredDate
+    ? currentTime > tempPointExpiredDate
+    : false;
+
+  const adminAndMatchEnd =
+    isStageAdmin && isMatchFinish && !isPlaying && !isBatchEnd && !isExpired;
+
+  const isTimerStart = isStageAdmin && isBatchEnd && !isExpired;
 
   const time = `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`;
 
@@ -84,7 +118,7 @@ const Match = ({ match }: MatchProps) => {
   const updateStatus = () => {
     setMatchStatus({
       isPlaying,
-      isFinish,
+      isMatchFinish,
       time,
       roundText,
     });
@@ -107,9 +141,19 @@ const Match = ({ match }: MatchProps) => {
         'px-[2rem]',
         'rounded-xl',
         'bg-gray-700',
+        'relative',
         isFinal && borderStyle,
       )}
     >
+      {adminAndMatchEnd && (
+        <BatchController aTeam={aTeam} bTeam={bTeam} matchId={matchId} />
+      )}
+      {isTimerStart && (
+        <BatchCancelController
+          tempPointExpiredDate={result?.tempPointExpiredDate}
+          matchId={matchId}
+        />
+      )}
       <div
         className={cn(
           'flex',
@@ -134,9 +178,11 @@ const Match = ({ match }: MatchProps) => {
               <MatchTypeLabel
                 type={'TIME'}
                 customText={
-                  isPlaying ? '경기 중' : isFinish ? '경기 종료' : time
+                  isPlaying ? '경기 중' : isMatchFinish ? '경기 종료' : time
                 }
-                color={isPlaying ? '#01C612' : isFinish ? '#898989' : '#FFF'}
+                color={
+                  isPlaying ? '#01C612' : isMatchFinish ? '#898989' : '#FFF'
+                }
               />
               <SportTypeLabel
                 type={category && category.length > 0 ? category[0] : ''}
@@ -177,7 +223,7 @@ const Match = ({ match }: MatchProps) => {
                 {formatPoint(aTeam.bettingPoint + bTeam.bettingPoint)}
               </p>
             </div>
-            {isFinish ? (
+            {isMatchFinish && isBatchEnd ? (
               <h2 className={cn('text-h2e', 'text-white')}>
                 {winnerTeam}팀 승리
               </h2>
@@ -242,7 +288,7 @@ const Match = ({ match }: MatchProps) => {
               </div>
             )}
           </div>
-          {isFinish ? (
+          {isMatchFinish && isBatchEnd && betting.isBetting ? (
             <div
               className={cn(
                 'flex',
@@ -294,7 +340,7 @@ const Match = ({ match }: MatchProps) => {
             </button>
           ) : (
             <Button
-              disabled={isEnd || betting.isBetting}
+              disabled={isMatchFinish || betting.isBetting || isBatchEnd}
               onClick={() => {
                 updateStatus();
                 setIsMatchModalOpen(true);
