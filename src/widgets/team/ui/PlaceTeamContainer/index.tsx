@@ -1,8 +1,10 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
 import { Player } from '@/entities/team/ui/Map/types';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
@@ -45,10 +47,15 @@ const PlaceTeamContainer = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [selectedPlayer, setSelectedPlayer] = useState<string>('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [teamName, setTeamName] = useState('');
+  const [membersList, setMembersList] = useState<string[]>([]);
   const isMounted = useRef(false);
+  const router = useRouter();
 
   const searchParams = useSearchParams();
   const sportParam = searchParams.get('sport');
+  const teamNameParam = searchParams.get('teamName');
+  const membersParam = searchParams.get('members');
 
   const getSportType = (): SportType => {
     if (
@@ -69,6 +76,20 @@ const PlaceTeamContainer = () => {
       isMounted.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (teamNameParam) {
+      setTeamName(teamNameParam);
+    }
+    if (membersParam) {
+      try {
+        const parsedMembers = JSON.parse(decodeURIComponent(membersParam));
+        setMembersList(parsedMembers);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [teamNameParam, membersParam]);
 
   const handleAddPlayer = () => {
     if (selectedPlayer && selectedPlayer !== '인원 선택') {
@@ -149,6 +170,26 @@ const PlaceTeamContainer = () => {
     (player) => player.x === 0 && player.y === 0,
   );
 
+  const handleSubmit = async () => {
+    try {
+      const participants = placedPlayers.map((player) => ({
+        studentId: Number(
+          membersList[players.findIndex((p) => p.id === player.id)],
+        ),
+        positionX: player.x.toString(),
+        positionY: player.y.toString(),
+      }));
+
+      await postTeam({
+        teamName,
+        participants,
+      });
+      router.push('/');
+    } catch (error) {
+      console.error('팀 생성 실패:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full bg-black text-white">
       <header className="mt-20 p-4 pt-5">
@@ -192,20 +233,13 @@ const PlaceTeamContainer = () => {
 
                     {isDropdownOpen && (
                       <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md bg-[#1e1e1e]">
-                        {[
-                          '김진원',
-                          '이진원',
-                          '박진원',
-                          '최진원',
-                          '정진원',
-                          '강진원',
-                        ].map((player) => (
+                        {membersList.map((member) => (
                           <div
-                            key={player}
+                            key={member}
                             className="cursor-pointer border-b border-[#2a2a2a] px-3 py-2 text-body3s"
-                            onClick={() => selectPlayer(player)}
+                            onClick={() => selectPlayer(member)}
                           >
-                            {player}
+                            {member}
                           </div>
                         ))}
                       </div>
@@ -293,6 +327,7 @@ const PlaceTeamContainer = () => {
           bg="bg-blue-600"
           textColor="text-white"
           className="w-full rounded-lg py-3 text-center text-body1s"
+          onClick={handleSubmit}
         >
           확인
         </Button>
