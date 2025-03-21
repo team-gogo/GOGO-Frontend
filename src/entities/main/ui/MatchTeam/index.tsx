@@ -31,6 +31,7 @@ const MatchTeam = ({ team, percentage, bgColor, onClick }: MatchTeamProps) => {
       </div>
       <button
         onClick={onClick}
+        type="button"
         className={cn(
           'flex',
           'h-full',

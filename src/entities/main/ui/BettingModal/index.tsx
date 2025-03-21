@@ -28,8 +28,6 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
     setSelectedTeamId,
   } = useBettingForm();
 
-  console.log(selectedTeamId);
-
   const onSubmit = (data: BettingFormData) => {
     const formattedData = formatBettingData(data, selectedTeamId);
     onClose();
