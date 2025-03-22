@@ -3,10 +3,14 @@ import { toast } from 'react-toastify';
 import { handleFormErrors } from '@/shared/model/formErrorUtils';
 import { StageData } from '@/shared/types/stage/create';
 import { formatStageCreateData } from './formatStageCreateData';
-import { useOfficialStage } from './useOfficialStage';
+import { useStageMutation } from './useStageMutation';
 
 export const useStageForm = (formType: 'fast' | 'official') => {
-  const { mutate: officialStage, isPending, isSuccess } = useOfficialStage();
+  const {
+    mutate: officialStage,
+    isPending,
+    isSuccess,
+  } = useStageMutation(formType);
   const formMethods = useForm<StageData>({
     defaultValues:
       formType === 'fast'
@@ -21,7 +25,7 @@ export const useStageForm = (formType: 'fast' | 'official') => {
                 initialTicketCount: null,
               },
             },
-            passCode: '',
+            passCode: null,
             maintainer: [],
           }
         : {
@@ -68,7 +72,9 @@ export const useStageForm = (formType: 'fast' | 'official') => {
       toast.error('경기는 한 개 이상 생성되어야 합니다.');
       return;
     }
+
     const formattedData = formatStageCreateData(data);
+
     officialStage(formattedData);
   };
 
