@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { SearchIcon } from '@/shared/assets/icons';
@@ -9,31 +9,28 @@ import Input from '@/shared/ui/input';
 import ModalLayout from '@/shared/ui/modalLayout';
 import SearchResults from '@/shared/ui/SearchResults';
 import { cn } from '@/shared/utils/cn';
-import getStudentListInfoMock from '../../mock/getStudentListInfoMock';
+import { useSearchStudentQuery } from '../../model/useSearchStudentQuery';
 
 interface Props {
   register: UseFormRegister<StageData>;
   setValue: UseFormSetValue<StageData>;
 }
 
+interface StudentResponse {
+  students: Student[];
+}
+
 const InviteStudentInput = ({ register, setValue }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
 
-  useEffect(() => {
-    if (searchTerm.trim() === '') {
-      setStudents([]);
-      return;
-    }
+  const { data, isLoading } = useSearchStudentQuery(searchTerm) as {
+    data: StudentResponse | undefined;
+    isLoading: boolean;
+  };
 
-    const allStudents = getStudentListInfoMock().students;
-    const filteredStudents = allStudents.filter((student) =>
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-    setStudents(filteredStudents);
-  }, [searchTerm]);
+  const students = data?.students || [];
 
   const handleInputClick = () => {
     setIsModalOpen(true);
@@ -100,7 +97,7 @@ const InviteStudentInput = ({ register, setValue }: Props) => {
           </div>
           <SearchResults<Student>
             items={students}
-            isLoading={false}
+            isLoading={isLoading}
             SearchinputValue={searchTerm}
             onSelect={handleStudentSelect}
             getDisplayName={(student) =>
