@@ -5,6 +5,7 @@ import PersonalInfoInputs from '@/entities/signup/ui/PersonalInfoInputs';
 import SchoolInput from '@/entities/signup/ui/SchoolInput.tsx';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
+
 import { useSignupForm } from '../model/useSignupForm';
 
 const SignupContainer = () => {
@@ -20,6 +21,8 @@ const SignupContainer = () => {
     setSelectedSchool,
     selectedGender,
     setSelectedGender,
+    isPending,
+    isSuccess,
   } = useSignupForm();
 
   return (
@@ -44,7 +47,7 @@ const SignupContainer = () => {
           setValue={setValue}
         />
       </div>
-      <Button disabled={isDisabled} type="submit">
+      <Button disabled={isDisabled || isPending || isSuccess} type="submit">
         확인
       </Button>
     </form>
