@@ -23,6 +23,8 @@ const OfficialCreatePage = () => {
     control,
     onSubmit,
     onError,
+    isPending,
+    isSuccess,
   } = useStageForm('official');
 
   return (
@@ -54,7 +56,9 @@ const OfficialCreatePage = () => {
           <InviteStudentInput register={register} setValue={setValue} />
         </div>
       </div>
-      <Button type="submit">확인</Button>
+      <Button disabled={isPending || isSuccess} type="submit">
+        확인
+      </Button>
     </form>
   );
 };

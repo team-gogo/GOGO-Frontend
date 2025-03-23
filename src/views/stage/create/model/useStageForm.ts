@@ -2,8 +2,15 @@ import { useForm, FieldErrors } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { handleFormErrors } from '@/shared/model/formErrorUtils';
 import { StageData } from '@/shared/types/stage/create';
+import { formatStageCreateData } from './formatStageCreateData';
+import { useStageMutation } from './useStageMutation';
 
 export const useStageForm = (formType: 'fast' | 'official') => {
+  const {
+    mutate: officialStage,
+    isPending,
+    isSuccess,
+  } = useStageMutation(formType);
   const formMethods = useForm<StageData>({
     defaultValues:
       formType === 'fast'
@@ -18,7 +25,7 @@ export const useStageForm = (formType: 'fast' | 'official') => {
                 initialTicketCount: null,
               },
             },
-            passCode: '',
+            passCode: null,
             maintainer: [],
           }
         : {
@@ -53,7 +60,7 @@ export const useStageForm = (formType: 'fast' | 'official') => {
               yavarwee: { isActive: false, price: null, quantity: null },
               plinko: { isActive: false, price: null, quantity: null },
             },
-            passCode: '',
+            passCode: null,
             maintainer: [],
           },
   });
@@ -65,7 +72,10 @@ export const useStageForm = (formType: 'fast' | 'official') => {
       toast.error('경기는 한 개 이상 생성되어야 합니다.');
       return;
     }
-    console.log('폼 제출 데이터:', data);
+
+    const formattedData = formatStageCreateData(data, formType);
+
+    officialStage(formattedData);
   };
 
   const onError = (errors: FieldErrors<StageData>) => {
@@ -80,5 +90,7 @@ export const useStageForm = (formType: 'fast' | 'official') => {
     control,
     onSubmit,
     onError,
+    isPending,
+    isSuccess,
   };
 };

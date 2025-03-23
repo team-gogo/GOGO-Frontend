@@ -8,19 +8,22 @@ export async function POST(request: Request) {
   const body = await request.json();
   const cookieStore = cookies();
   const accessToken = cookieStore.get('accessToken')?.value;
+
   try {
-    const response = await post<AxiosResponse>('/user/auth/signup', body, {
+    const response = await post<AxiosResponse>('/stage/fast', body, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;
-
+    console.log(axiosError);
     const status = axiosError.response?.status || 500;
+
     const message =
-      axiosError.response?.data?.message || '회원가입에 실패했습니다.';
+      axiosError.response?.data?.message || '빠른 경기 생성을 실패 했습니다.';
 
     return NextResponse.json({ error: message, status }, { status });
   }
