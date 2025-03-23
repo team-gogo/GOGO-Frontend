@@ -1,8 +1,8 @@
 import { MapComponentProps } from './types';
-import { BasketballMap } from './index';
+import SportMap from './index';
 
 const BasketballMapComponent = (props: MapComponentProps) => {
-  return <BasketballMap {...props} />;
+  return <SportMap type="BASKET_BALL" {...props} />;
 };
 
 export default BasketballMapComponent;
