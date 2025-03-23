@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const callbackUrl = new URL('/api/auth/callback', request.nextUrl.origin);
+  const callbackUrl = new URL('/api/user/auth/signin', request.nextUrl.origin);
   callbackUrl.searchParams.set('code', code);
 
   return NextResponse.redirect(callbackUrl);

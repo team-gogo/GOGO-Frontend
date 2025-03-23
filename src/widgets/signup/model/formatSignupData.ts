@@ -6,7 +6,6 @@ export const formatSignupData = (
   selectedGender: 'MALE' | 'FEMALE' | null,
 ) => {
   return {
-    deviceToken: null,
     name: data.name,
     grade: Number(data.schoolGrade),
     classNumber: Number(data.schoolClass),
@@ -17,8 +16,8 @@ export const formatSignupData = (
       name: selectedSchool.SCHUL_NM,
       type:
         selectedSchool.SCHUL_KND_SC_NM === '중학교'
-          ? 'MiddleSchool'
-          : 'HighSchool',
+          ? 'MIDDLE_SCHOOL'
+          : 'HIGH_SCHOOL',
       address: selectedSchool.ORG_RDNMA,
       region: selectedSchool.LCTN_SC_NM,
       phoneNumber: selectedSchool.ORG_TELNO,
