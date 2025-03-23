@@ -1,115 +1,140 @@
-import { useRef, useState } from 'react';
-import PlayerItem from '@/entities/team/ui/PlayerItem';
+import { useRef, useCallback } from 'react';
 import BadmintonSvg from '@/shared/assets/svg/Map/Badminton';
 import BaseballSvg from '@/shared/assets/svg/Map/Baseball';
 import BasketballSvg from '@/shared/assets/svg/Map/Basketball';
 import VolleyballSvg from '@/shared/assets/svg/Map/Volleyball';
 import { SportType } from '@/shared/model/sportTypes';
-import { MapComponentProps, Player } from './types';
 
 interface SportMapProps {
   type: SportType;
-  players: Player[];
-  onPlayerDrag: (playerId: string, x: number, y: number) => void;
+  onPositionChange?: (x: number, y: number) => void;
+  isMapDragging?: boolean;
 }
 
 const MapComponent = ({
-  players,
-  onPlayerDrag,
   children,
-}: MapComponentProps & { children: React.ReactNode }) => {
-  const courtRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [activePlayerId, setActivePlayerId] = useState<string | null>(null);
+  onPositionChange,
+  isMapDragging,
+}: {
+  children: React.ReactNode;
+  onPositionChange?: (x: number, y: number) => void;
+  isMapDragging?: boolean;
+}) => {
+  const mapRef = useRef<HTMLDivElement>(null);
 
-  // const handleMouseDown = (e: React.MouseEvent, playerId: string) => {
-  //   e.stopPropagation();
-  //   setIsDragging(true);
-  //   setActivePlayerId(playerId);
-  // };
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!mapRef.current || !onPositionChange || !isMapDragging) return;
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging && activePlayerId && courtRef.current && onPlayerDrag) {
-      const courtRect = courtRef.current.getBoundingClientRect();
-      const x = Math.max(
-        0,
-        Math.min(e.clientX - courtRect.left - 15, courtRect.width - 30),
-      );
-      const y = Math.max(
-        0,
-        Math.min(e.clientY - courtRect.top - 15, courtRect.height - 30),
-      );
+      const rect = mapRef.current.getBoundingClientRect();
+      const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width - 50));
+      const y = Math.max(0, Math.min(e.clientY - rect.top, rect.height - 50));
 
-      onPlayerDrag(activePlayerId, x, y);
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    setActivePlayerId(null);
-  };
+      onPositionChange(x, y);
+    },
+    [onPositionChange, isMapDragging],
+  );
 
   return (
     <div
-      ref={courtRef}
-      className="relative flex h-full w-full justify-end rounded-lg bg-[#1e1e1e]"
+      ref={mapRef}
+      className="absolute inset-0 flex h-full w-full justify-end rounded-lg bg-[#1e1e1e]"
       onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      onMouseLeave={() => {
+        if (isMapDragging && onPositionChange) {
+          onPositionChange(-1, -1);
+        }
+      }}
+      style={{
+        touchAction: 'none',
+        userSelect: 'none',
+        pointerEvents: isMapDragging ? 'none' : 'auto',
+      }}
     >
       {children}
-
-      {players.map((player) => (
-        <PlayerItem
-          key={player.id}
-          name={player.name}
-          style={{
-            position: 'absolute',
-            left: `${player.x}px`,
-            top: `${player.y}px`,
-          }}
-        />
-      ))}
     </div>
   );
 };
 
-const BadmintonMap = (props: MapComponentProps) => (
-  <MapComponent {...props}>
+const BadmintonMap = (props: {
+  onPositionChange?: (x: number, y: number) => void;
+  isMapDragging?: boolean;
+}) => (
+  <MapComponent
+    onPositionChange={props.onPositionChange}
+    isMapDragging={props.isMapDragging}
+  >
     <BadmintonSvg />
   </MapComponent>
 );
 
-const BaseballMap = (props: MapComponentProps) => (
-  <MapComponent {...props}>
+const BaseballMap = (props: {
+  onPositionChange?: (x: number, y: number) => void;
+  isMapDragging?: boolean;
+}) => (
+  <MapComponent
+    onPositionChange={props.onPositionChange}
+    isMapDragging={props.isMapDragging}
+  >
     <BaseballSvg />
   </MapComponent>
 );
 
-const BasketballMap = (props: MapComponentProps) => (
-  <MapComponent {...props}>
+const BasketballMap = (props: {
+  onPositionChange?: (x: number, y: number) => void;
+  isMapDragging?: boolean;
+}) => (
+  <MapComponent
+    onPositionChange={props.onPositionChange}
+    isMapDragging={props.isMapDragging}
+  >
     <BasketballSvg />
   </MapComponent>
 );
 
-const VolleyballMap = (props: MapComponentProps) => (
-  <MapComponent {...props}>
+const VolleyballMap = (props: {
+  onPositionChange?: (x: number, y: number) => void;
+  isMapDragging?: boolean;
+}) => (
+  <MapComponent
+    onPositionChange={props.onPositionChange}
+    isMapDragging={props.isMapDragging}
+  >
     <VolleyballSvg />
   </MapComponent>
 );
 
-const SportMap = ({ type, players, onPlayerDrag }: SportMapProps) => {
+const SportMap = ({ type, onPositionChange, isMapDragging }: SportMapProps) => {
   switch (type) {
     case 'BASKET_BALL':
-      return <BasketballMap onPlayerDrag={onPlayerDrag} players={players} />;
+      return (
+        <BasketballMap
+          onPositionChange={onPositionChange}
+          isMapDragging={isMapDragging}
+        />
+      );
     case 'BADMINTON':
-      return <BadmintonMap onPlayerDrag={onPlayerDrag} players={players} />;
+      return (
+        <BadmintonMap
+          onPositionChange={onPositionChange}
+          isMapDragging={isMapDragging}
+        />
+      );
     case 'BASE_BALL':
-      return <BaseballMap onPlayerDrag={onPlayerDrag} players={players} />;
+      return (
+        <BaseballMap
+          onPositionChange={onPositionChange}
+          isMapDragging={isMapDragging}
+        />
+      );
     default:
-      return <VolleyballMap onPlayerDrag={onPlayerDrag} players={players} />;
+      return (
+        <VolleyballMap
+          onPositionChange={onPositionChange}
+          isMapDragging={isMapDragging}
+        />
+      );
   }
 };
 
 export default SportMap;
-export { BadmintonMap, BaseballMap, BasketballMap, VolleyballMap };
