@@ -73,7 +73,7 @@ export const useStageForm = (formType: 'fast' | 'official') => {
       return;
     }
 
-    const formattedData = formatStageCreateData(data);
+    const formattedData = formatStageCreateData(data, formType);
 
     officialStage(formattedData);
   };

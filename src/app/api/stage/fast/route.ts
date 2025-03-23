@@ -15,11 +15,13 @@ export async function POST(request: Request) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    return NextResponse.json(response.data);
+
+    return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;
-
+    console.log(axiosError);
     const status = axiosError.response?.status || 500;
+
     const message =
       axiosError.response?.data?.message || '빠른 경기 생성을 실패 했습니다.';
 

@@ -14,7 +14,7 @@ export async function POST(request: Request) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    return NextResponse.json(response.data);
+    return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;
 
