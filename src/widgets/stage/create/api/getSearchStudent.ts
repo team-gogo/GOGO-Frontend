@@ -5,7 +5,7 @@ export const getSearchStudent = async (
   searchTerm: string,
 ): Promise<StudentResponse[]> => {
   try {
-    const response = await axios.get('/api/user/student/search', {
+    const response = await axios.get('/api/server/user/student/search', {
       params: { name: searchTerm },
     });
     return response.data;
