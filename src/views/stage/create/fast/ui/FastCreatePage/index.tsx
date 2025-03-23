@@ -22,6 +22,8 @@ const FastCreatePage = () => {
     control,
     onSubmit,
     onError,
+    isPending,
+    isSuccess,
   } = useStageForm('fast');
 
   return (
@@ -52,7 +54,9 @@ const FastCreatePage = () => {
           <InviteStudentInput register={register} setValue={setValue} />
         </div>
       </div>
-      <Button type="submit">확인</Button>
+      <Button disabled={isPending || isSuccess} type="submit">
+        확인
+      </Button>
     </form>
   );
 };

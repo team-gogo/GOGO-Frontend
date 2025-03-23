@@ -48,7 +48,7 @@ export interface StageData {
     yavarwee: ShopItem;
     plinko: ShopItem;
   };
-  passCode?: string;
+  passCode?: string | null;
   maintainer: number[];
 }
 
