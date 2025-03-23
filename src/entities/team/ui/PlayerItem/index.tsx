@@ -5,14 +5,24 @@ interface PlayerItemProps {
   name: string;
   className?: string;
   style?: React.CSSProperties;
+  isDragging?: boolean;
 }
 
-const PlayerItem = ({ name, className, style }: PlayerItemProps) => {
+const PlayerItem = ({
+  name,
+  className,
+  style,
+  isDragging,
+}: PlayerItemProps) => {
   return (
     <div
-      style={style}
+      style={{
+        ...style,
+        zIndex: isDragging ? 99999 : 'auto',
+      }}
       className={cn(
-        'flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center text-white',
+        'flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center text-white transition-all duration-200',
+        isDragging && 'scale-110 shadow-lg',
         className,
       )}
     >

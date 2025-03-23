@@ -271,13 +271,14 @@ const PlaceTeamContainer = () => {
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
+                style={{
+                  ...provided.draggableProps.style,
+                }}
               >
                 <PlayerItem
                   name={player.name}
-                  className={cn(
-                    'mx-8 my-10',
-                    snapshot.isDragging && 'opacity-50',
-                  )}
+                  isDragging={snapshot.isDragging}
+                  className="mx-8 my-10"
                 />
               </div>
             )}
@@ -376,10 +377,6 @@ const PlaceTeamContainer = () => {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className={cn(
-                                  'absolute cursor-grab select-none',
-                                  snapshot.isDragging && 'z-[99999]',
-                                )}
                                 style={{
                                   position: 'absolute',
                                   left: `${player.x}px`,
@@ -387,15 +384,12 @@ const PlaceTeamContainer = () => {
                                   transform: snapshot.isDragging
                                     ? provided.draggableProps.style?.transform
                                     : 'none',
+                                  ...provided.draggableProps.style,
                                 }}
                               >
                                 <PlayerItem
                                   name={player.name}
-                                  className={cn(
-                                    'transition-all duration-200',
-                                    snapshot.isDragging &&
-                                      'scale-110 !opacity-100',
-                                  )}
+                                  isDragging={snapshot.isDragging}
                                 />
                               </div>
                             )}
