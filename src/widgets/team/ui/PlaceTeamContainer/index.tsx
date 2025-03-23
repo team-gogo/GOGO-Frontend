@@ -21,6 +21,7 @@ import { SportType } from '@/shared/model/sportTypes';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
+import PlayerItem from '@/entities/team/ui/PlayerItem';
 
 const StrictModeDroppable = ({
   children,
@@ -239,9 +240,9 @@ const PlaceTeamContainer = () => {
         teamName,
         participants,
       });
-      router.push('/');
+      // router.push('/');
     } catch (error) {
-      console.error('팀 생성 실패:', error);
+      console.error(error);
     }
   }, [placedPlayers, membersList, players, teamName, router]);
 
@@ -265,13 +266,14 @@ const PlaceTeamContainer = () => {
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
-                className={cn(
-                  'mx-8 my-10 flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center text-white',
-                  snapshot.isDragging && 'opacity-50',
-                )}
               >
-                <PlayerIcon className="mb-1" />
-                <span className="text-body3s text-white">{player.name}</span>
+                <PlayerItem
+                  name={player.name}
+                  className={cn(
+                    'mx-8 my-10',
+                    snapshot.isDragging && 'opacity-50',
+                  )}
+                />
               </div>
             )}
           </Draggable>
@@ -361,22 +363,19 @@ const PlaceTeamContainer = () => {
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              style={{
-                                ...provided.draggableProps.style,
-                                position: 'absolute',
-                                left: `${player.x}px`,
-                                top: `${player.y}px`,
-                                transform: snapshot.isDragging
-                                  ? provided.draggableProps.style?.transform
-                                  : 'none',
-                                opacity: snapshot.isDragging ? 0.5 : 1,
-                              }}
-                              className="flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center text-white"
                             >
-                              <PlayerIcon className="mb-1" />
-                              <span className="text-body3s text-white">
-                                {player.name}
-                              </span>
+                              <PlayerItem
+                                name={player.name}
+                                style={{
+                                  position: 'absolute',
+                                  left: `${player.x}px`,
+                                  top: `${player.y}px`,
+                                  transform: snapshot.isDragging
+                                    ? provided.draggableProps.style?.transform
+                                    : 'none',
+                                  opacity: snapshot.isDragging ? 0.5 : 1,
+                                }}
+                              />
                             </div>
                           )}
                         </Draggable>
