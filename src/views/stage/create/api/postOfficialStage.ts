@@ -3,7 +3,7 @@ import { StageData } from '@/shared/types/stage/create';
 
 export const postOfficialStage = async (data: StageData) => {
   try {
-    await axios.post('/api/stage/official', data);
+    await axios.post('/api/server/stage/official', data);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
