@@ -14,6 +14,7 @@ import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
 import { Player } from '@/entities/team/ui/Map/types';
 import PlayerDropdown from '@/entities/team/ui/PlayerDropdown';
+import PlayerItem from '@/entities/team/ui/PlayerItem';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
@@ -21,7 +22,6 @@ import { SportType } from '@/shared/model/sportTypes';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
-import PlayerItem from '@/entities/team/ui/PlayerItem';
 
 const StrictModeDroppable = ({
   children,
@@ -142,70 +142,75 @@ const PlaceTeamContainer = () => {
     draggedPlayerRef.current = start.draggableId;
   }, []);
 
-  const onDragEnd = useCallback((result: DragEndResult) => {
-    setIsDragging(false);
-    const { source, destination, draggableId } = result;
+  const onDragEnd = useCallback(
+    (result: DragEndResult) => {
+      setIsDragging(false);
+      const { source, destination, draggableId } = result;
 
-    if (!destination) {
-      return;
-    }
+      if (!destination) {
+        return;
+      }
 
-    if (
-      source.droppableId === 'playersList' &&
-      destination.droppableId === 'playersList'
-    ) {
-      setPlayers((prev) => {
-        const newPlayers = Array.from(prev);
-        const [removed] = newPlayers.splice(source.index, 1);
-        newPlayers.splice(destination.index, 0, removed);
-        return newPlayers;
-      });
-      return;
-    }
+      if (
+        source.droppableId === 'playersList' &&
+        destination.droppableId === 'playersList'
+      ) {
+        setPlayers((prev) => {
+          const newPlayers = Array.from(prev);
+          const [removed] = newPlayers.splice(source.index, 1);
+          newPlayers.splice(destination.index, 0, removed);
+          return newPlayers;
+        });
+        return;
+      }
 
-    if (
-      source.droppableId === 'court' &&
-      destination.droppableId === 'playersList'
-    ) {
-      setPlayers((prev) =>
-        prev.map((player) =>
-          player.id === draggableId ? { ...player, x: 0, y: 0 } : player,
-        ),
-      );
-      return;
-    }
+      if (
+        source.droppableId === 'court' &&
+        destination.droppableId === 'playersList'
+      ) {
+        setPlayers((prev) =>
+          prev.map((player) =>
+            player.id === draggableId ? { ...player, x: 0, y: 0 } : player,
+          ),
+        );
+        return;
+      }
 
-    if (
-      source.droppableId === 'playersList' &&
-      destination.droppableId === 'court'
-    ) {
-      const courtElement = document.querySelector(
-        '[data-rbd-droppable-id="court"]',
-      );
+      if (
+        source.droppableId === 'playersList' &&
+        destination.droppableId === 'court'
+      ) {
+        const courtElement = document.querySelector(
+          '[data-rbd-droppable-id="court"]',
+        );
 
-      if (!courtElement) return;
+        if (!courtElement) return;
 
-      const courtRect = courtElement.getBoundingClientRect();
-      const { x: mouseX, y: mouseY } = mousePositionRef.current;
+        const courtRect = courtElement.getBoundingClientRect();
+        const { x: mouseX, y: mouseY } = mousePositionRef.current;
 
-      const relativeX = Math.max(
-        0,
-        Math.min(mouseX - courtRect.left, courtRect.width),
-      );
-      const relativeY = Math.max(
-        0,
-        Math.min(mouseY - courtRect.top, courtRect.height),
-      );
+        const relativeX = Math.max(
+          0,
+          Math.min(mouseX - courtRect.left, courtRect.width - 100),
+        );
+        const relativeY = Math.max(
+          0,
+          Math.min(mouseY - courtRect.top, courtRect.height - 100),
+        );
 
-      setPlayers((prev) =>
-        prev.map((player) =>
-          player.id === draggableId
-            ? { ...player, x: relativeX, y: relativeY }
-            : player,
-        ),
-      );
-    }
-  }, []);
+        setPlayers((prev) =>
+          prev.map((player) =>
+            player.id === draggableId
+              ? { ...player, x: relativeX, y: relativeY }
+              : player,
+          ),
+        );
+
+        handlePlayerDrag(draggableId, relativeX, relativeY);
+      }
+    },
+    [handlePlayerDrag],
+  );
 
   const toggleDropdown = useCallback(() => {
     setIsDropdownOpen((prev) => !prev);
@@ -286,20 +291,21 @@ const PlaceTeamContainer = () => {
   }, []);
 
   return (
-    <div className={cn('h-screen', 'bg-black', 'p-30', 'flex', 'flex-col')}>
-      <header className={cn('mb-30')}>
-        <BackPageButton type="back" label="팀 배치하기" />
-      </header>
-      <div className={cn('flex-1', 'flex', 'flex-col', 'mt-28')}>
-        <h1 className={cn('text-h3e', 'text-white', 'mb-28')}>경기 이름</h1>
-        <div className="px-4">
-          <div className="mb-28 mt-28 flex items-center gap-1">
-            <PlayerIcon className="mr-1" />
-            <span className="text-body1s text-white">인원을 배치 하세요</span>
-          </div>
-          <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-            <div className="flex justify-between">
-              <div className="w-[60%] pr-4">
+    <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+      <div className="pointer-events-none fixed inset-0 z-[9999]" />
+      <div className="relative flex h-screen flex-col bg-black p-30">
+        <header className="mb-30">
+          <BackPageButton type="back" label="팀 배치하기" />
+        </header>
+        <div className="mt-28 flex flex-1 flex-col">
+          <h1 className="mb-28 text-h3e text-white">경기 이름</h1>
+          <div className="px-4">
+            <div className="mb-28 mt-28 flex items-center gap-1">
+              <PlayerIcon className="mr-1" />
+              <span className="text-body1s text-white">인원을 배치 하세요</span>
+            </div>
+            <div className="relative flex justify-between">
+              <div className="relative w-[60%] pr-4">
                 <div className="mb-3 flex items-center">
                   <PlayerDropdown
                     selectedPlayer={selectedPlayer}
@@ -335,37 +341,45 @@ const PlaceTeamContainer = () => {
                   type="PLAYER"
                 >
                   {(provided) => (
-                    <PlayerList players={unplacedPlayers} provided={provided} />
+                    <div className="relative">
+                      <PlayerList
+                        players={unplacedPlayers}
+                        provided={provided}
+                      />
+                    </div>
                   )}
                 </StrictModeDroppable>
               </div>
-              <div className="h-[500px] w-[55%]">
+
+              <div className="relative h-[500px] w-[55%]">
                 <StrictModeDroppable droppableId="court" type="PLAYER">
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="relative h-full"
+                      className="relative h-full overflow-hidden rounded-lg"
                     >
                       <SportMap
                         type={sportType}
-                        players={placedPlayers}
+                        players={[]}
                         onPlayerDrag={handlePlayerDrag}
                       />
-                      {placedPlayers.map((player, index) => (
-                        <Draggable
-                          key={player.id}
-                          draggableId={player.id}
-                          index={index}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <PlayerItem
-                                name={player.name}
+                      <div className="absolute inset-0">
+                        {placedPlayers.map((player, index) => (
+                          <Draggable
+                            key={player.id}
+                            draggableId={player.id}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className={cn(
+                                  'absolute cursor-grab select-none',
+                                  snapshot.isDragging && 'z-[99999]',
+                                )}
                                 style={{
                                   position: 'absolute',
                                   left: `${player.x}px`,
@@ -373,28 +387,40 @@ const PlaceTeamContainer = () => {
                                   transform: snapshot.isDragging
                                     ? provided.draggableProps.style?.transform
                                     : 'none',
-                                  opacity: snapshot.isDragging ? 0.5 : 1,
                                 }}
-                              />
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
+                              >
+                                <PlayerItem
+                                  name={player.name}
+                                  className={cn(
+                                    'transition-all duration-200',
+                                    snapshot.isDragging &&
+                                      'scale-110 !opacity-100',
+                                  )}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                      </div>
                       {provided.placeholder}
                     </div>
                   )}
                 </StrictModeDroppable>
               </div>
             </div>
-          </DragDropContext>
+          </div>
+        </div>
+        <div className="mb-30 mt-30">
+          <Button
+            bg="bg-main-600"
+            textColor="text-white"
+            onClick={handleSubmit}
+          >
+            확인
+          </Button>
         </div>
       </div>
-      <div className={cn('mt-30', 'mb-30')}>
-        <Button bg="bg-main-600" textColor="text-white" onClick={handleSubmit}>
-          확인
-        </Button>
-      </div>
-    </div>
+    </DragDropContext>
   );
 };
 
