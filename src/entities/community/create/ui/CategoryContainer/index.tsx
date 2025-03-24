@@ -43,6 +43,7 @@ const CategoryContainer = ({
           asButton
           isSelected={selectedSport === sport}
           onClick={() => handleSportSelection(sport)}
+          isHaveBorder={true}
         />
       ))}
     </div>

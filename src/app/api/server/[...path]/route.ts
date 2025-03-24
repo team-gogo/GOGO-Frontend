@@ -48,6 +48,10 @@ async function handleRequest(req: NextRequest) {
       },
     });
 
+    if (response.status === 204) {
+      return new NextResponse(null, { status: 204 });
+    }
+
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;

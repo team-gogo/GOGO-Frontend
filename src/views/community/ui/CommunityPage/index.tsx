@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { NavigationBar } from '@/entities/community';
 import { SortType } from '@/shared/model/sportTypes';
@@ -13,7 +13,8 @@ import getBoardMock from '../Mock/getBoardMock';
 const CommunityPage = () => {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
-
+  const { stageId } = useParams();
+  const safeStageId = Array.isArray(stageId) ? stageId[0] : stageId || '';
   const boardMock = getBoardMock();
   const [selectedSort, setSelectedSort] = useState<SortType | null>(null);
   const { selectedSport, toggleSportSelection } = useSelectSport();
@@ -57,6 +58,7 @@ const CommunityPage = () => {
             selectedSort={selectedSort}
             toggleSportSelection={toggleSportSelection}
             toggleSortSelection={toggleSortSelection}
+            stageId={safeStageId}
           />
           <CommunityItemContainer boardData={currentBoardData} />
         </div>

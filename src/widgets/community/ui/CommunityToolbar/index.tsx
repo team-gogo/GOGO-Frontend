@@ -11,6 +11,7 @@ interface CommunityToolbarProps {
   selectedSort: SortType | null;
   toggleSportSelection: (sport: SportType) => void;
   toggleSortSelection: (sort: SortType) => void;
+  stageId: string;
 }
 
 const CommunityToolbar = ({
@@ -18,6 +19,7 @@ const CommunityToolbar = ({
   selectedSort,
   toggleSportSelection,
   toggleSortSelection,
+  stageId,
 }: CommunityToolbarProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -41,7 +43,7 @@ const CommunityToolbar = ({
         </p>
       </div>
       <div className={cn('flex', 'items-center', 'gap-12')}>
-        <WriteButton />
+        <WriteButton stageId={stageId} />
         <FilterButton onClick={toggleModal} />
       </div>
       {isModalOpen && (

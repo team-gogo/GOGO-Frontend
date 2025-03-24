@@ -124,7 +124,7 @@ const MainPage = () => {
           <SectionWrapper
             text={'커뮤니티'}
             icon={<CommunityIcon />}
-            path="/community"
+            path={`/community/${stageId}`}
           >
             <CommunityItemContainer
               isMainUsed={isMainUsed}
