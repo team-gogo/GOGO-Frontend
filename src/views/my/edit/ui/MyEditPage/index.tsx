@@ -1,18 +1,19 @@
 'use client';
 
+import { useEffect } from 'react';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 import { useEditForm } from '@/views/my/edit/model/useEditForm';
+import { useGetMyInfo } from '@/views/my/model/useGetMyInfo';
 import { FilterSelect, InputWrapper, SexSelect } from '@/widgets/my/edit';
-import getMockStudentInfo from '../../Mock/getMyInfo';
 
 const MyEditPage = () => {
-  const myInfoMock = getMockStudentInfo();
+  const { data: myInfo } = useGetMyInfo();
 
   const { name, grade, classNumber, studentNumber, sex, isFiltered } =
-    myInfoMock;
+    myInfo || {};
 
   const {
     register,
@@ -28,21 +29,29 @@ const MyEditPage = () => {
     setSelectedSex,
   } = useEditForm({
     defaultValues: {
-      name,
-      grade,
-      classNumber,
-      studentNumber,
-      sex,
-      isFiltered,
+      name: '',
     },
   });
+
+  useEffect(() => {
+    if (myInfo) {
+      setValue('name', name || '');
+      setValue('grade', grade || 0);
+      setValue('classNumber', classNumber || 0);
+      setValue('studentNumber', studentNumber || 0);
+      setValue('sex', sex || 'MALE');
+      setSelectedSex(sex || null);
+      setValue('isFiltered', isFiltered || false);
+      setFiltered(isFiltered || false);
+    }
+  }, [myInfo]);
 
   return (
     <div
       className={cn(
         'flex',
         'w-full',
-        'h-full',
+        'h-[calc(100vh-120px)]',
         'flex-col',
         'items-center',
         'justify-center',

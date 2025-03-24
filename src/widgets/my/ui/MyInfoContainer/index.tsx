@@ -6,12 +6,13 @@ import { UserInfoType } from '@/shared/types/my';
 import { cn } from '@/shared/utils/cn';
 
 interface MyInfoContainerProps {
-  userInfo: UserInfoType;
+  myInfo?: UserInfoType;
+  isPending: boolean;
 }
 
-const MyInfoContainer = ({ userInfo }: MyInfoContainerProps) => {
+const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
   const [iconClicked, setIconClicked] = useState<boolean>(false);
-  const { name, schoolName, sex } = userInfo;
+  const { name, schoolName, sex } = myInfo || {};
   const { push } = useRouter();
 
   const setToKorean = sex === 'MALE' ? '남성' : '여성';
@@ -47,12 +48,21 @@ const MyInfoContainer = ({ userInfo }: MyInfoContainerProps) => {
       )}
     >
       <div className={cn('flex items-center gap-[2.25rem]')}>
-        {infoList.map((info) => (
-          <div key={info.label} className={cn('flex items-center gap-[1rem]')}>
-            <p className={cn('text-body2s text-gray-500')}>{info.label}</p>
-            <p className={cn('text-body1s text-white')}>{info.value}</p>
+        {isPending ? (
+          <div className={cn('text-body1s text-white')}>
+            내 정보를 불러오는 중...
           </div>
-        ))}
+        ) : (
+          infoList.map((info) => (
+            <div
+              key={info.label}
+              className={cn('flex items-center gap-[1rem]')}
+            >
+              <p className={cn('text-body2s text-gray-500')}>{info.label}</p>
+              <p className={cn('text-body1s text-white')}>{info.value}</p>
+            </div>
+          ))
+        )}
       </div>
 
       <div className={cn('flex items-center gap-[1.5rem]')}>
