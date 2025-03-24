@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { DateContainer, MatchDetailModal } from '@/entities/main';
+import { DateContainer, BettingModal } from '@/entities/main';
 import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
 import { MatchClockIcon } from '@/shared/assets/svg';
@@ -137,7 +137,7 @@ const MainPage = () => {
         </div>
       </div>
       {isMatchModalOpen && (
-        <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+        <BettingModal onClose={() => setIsMatchModalOpen(false)} />
       )}
       {isBatchModalOpen && (
         <BatchModal onClose={() => setIsBatchModalOpen(false)} />
