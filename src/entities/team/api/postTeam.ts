@@ -9,12 +9,12 @@ interface Participant {
 interface CreateTeamRequest {
   teamName: string;
   participants: Participant[];
-  gameId: string;
+  matchId: string;
 }
 
 export const postTeam = async (data: CreateTeamRequest) => {
   try {
-    const response = await instance.post(`/team/${data.gameId}`, data);
+    const response = await instance.post(`/team/${data.matchId}`, data);
     return response.data;
   } catch (error) {
     console.error(error);

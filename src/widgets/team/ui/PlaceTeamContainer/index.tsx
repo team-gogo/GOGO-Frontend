@@ -19,7 +19,7 @@ import PlayerItem from '@/entities/team/ui/PlayerItem';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
-import { GameType, SportType } from '@/shared/model/sportTypes';
+import { SportType } from '@/shared/model/sportTypes';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 
@@ -62,6 +62,7 @@ const PlaceTeamContainer = () => {
   const sportParam = searchParams.get('sport');
   const teamNameParam = searchParams.get('teamName');
   const membersParam = searchParams.get('members');
+  const matchIdParam = searchParams.get('matchId');
 
   const getSportType = (): SportType => {
     if (
@@ -239,13 +240,13 @@ const PlaceTeamContainer = () => {
       await postTeam({
         teamName,
         participants,
-        gameId: sportType as GameType,
+        matchId: String(matchIdParam),
       });
       // router.push('/');
     } catch (error) {
       console.error(error);
     }
-  }, [placedPlayers, membersList, players, teamName, router]);
+  }, [placedPlayers, membersList, players, teamName, router, matchIdParam]);
 
   const PlayerList = useMemo(() => {
     const MemoizedPlayerList = ({
