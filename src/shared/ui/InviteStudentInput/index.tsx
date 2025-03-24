@@ -9,18 +9,25 @@ import Input from '@/shared/ui/input';
 import ModalLayout from '@/shared/ui/modalLayout';
 import SearchResults from '@/shared/ui/SearchResults';
 import { cn } from '@/shared/utils/cn';
-import { useSearchStudentQuery } from '../../model/useSearchStudentQuery';
+import { useSearchStudentQuery } from '@/widgets/stage/create/model/useSearchStudentQuery';
 
 interface Props {
   register: UseFormRegister<StageData>;
   setValue: UseFormSetValue<StageData>;
+  title?: string;
+  description?: string;
 }
 
 interface StudentResponse {
   students: Student[];
 }
 
-const InviteStudentInput = ({ register, setValue }: Props) => {
+const InviteStudentInput = ({
+  register,
+  setValue,
+  title = '관리할 학생 (최대 5명)',
+  description = '관리할 학생은 선택사항입니다.',
+}: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
@@ -59,12 +66,8 @@ const InviteStudentInput = ({ register, setValue }: Props) => {
   return (
     <div className={cn('space-y-16')}>
       <div className={cn('flex', 'gap-12', 'items-center')}>
-        <p className={cn('text-white', 'text-body2e')}>
-          관리할 학생 (최대 5명)
-        </p>
-        <p className={cn('text-caption1s', 'text-gray-500')}>
-          관리할 학생은 선택사항입니다.
-        </p>
+        <p className={cn('text-white', 'text-body2e')}>{title}</p>
+        <p className={cn('text-caption1s', 'text-gray-500')}>{description}</p>
       </div>
       <Input
         {...register('maintainer')}

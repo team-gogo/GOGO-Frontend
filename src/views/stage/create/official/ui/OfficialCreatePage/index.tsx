@@ -2,10 +2,10 @@
 
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
+import InviteStudentInput from '@/shared/ui/InviteStudentInput';
 import { cn } from '@/shared/utils/cn';
 import {
   EntryNumberInput,
-  InviteStudentInput,
   MatchSettingContainer,
   MiniGameContainer,
   RuleInputContainer,
