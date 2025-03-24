@@ -27,7 +27,6 @@ const PasswordModal = ({ onClose }: PasswordModalProps) => {
   const Disabled = !passCode;
 
   const onSubmit: SubmitHandler<PassCodeType> = async (data) => {
-    console.log(data);
     PostPassCode(data);
   };
 
