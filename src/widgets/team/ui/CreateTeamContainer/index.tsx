@@ -13,7 +13,6 @@ import InviteStudentInput, {
   InviteStudentInputRef,
 } from '@/shared/ui/InviteStudentInput';
 import { cn } from '@/shared/utils/cn';
-import { useSearchStudentQuery } from '@/widgets/stage/create/model/useSearchStudentQuery';
 
 const CreateTeamContainer = () => {
   const [teamName, setTeamName] = useState('');
@@ -24,11 +23,7 @@ const CreateTeamContainer = () => {
     register,
     setValue,
     handleSubmit: handleFormSubmit,
-    watch,
   } = useForm<StageData>();
-
-  const maintainerIds = watch('maintainer') || [];
-  const { data: studentData } = useSearchStudentQuery(maintainerIds.join(','));
 
   const onSubmit = (_data: StageData) => {
     if (
@@ -40,17 +35,17 @@ const CreateTeamContainer = () => {
       return;
     }
 
-    if (maintainerIds.length === 0) {
+    const selectedStudents =
+      inviteStudentRef.current?.getSelectedStudents() || [];
+
+    if (selectedStudents.length === 0) {
       toast.error('인원을 올바르게 입력해주세요.');
       return;
     }
 
     const stageId = searchParams.get('stageId');
     sessionStorage.setItem('teamName', teamName);
-    sessionStorage.setItem(
-      'members',
-      JSON.stringify(studentData?.[0]?.students || []),
-    );
+    sessionStorage.setItem('members', JSON.stringify(selectedStudents));
 
     router.push(`/team/place?stageId=${stageId}`);
   };
