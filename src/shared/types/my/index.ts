@@ -20,3 +20,15 @@ export interface UserInfoType {
   schoolName: string;
   sex: Sex;
 }
+
+export interface userInfoResponse {
+  studentId: number;
+  name: string;
+  schoolId: number;
+  grade: number;
+  schoolName: string;
+  classNumber: number;
+  studentNumber: number;
+  sex: Sex;
+  isFiltered: boolean;
+}
