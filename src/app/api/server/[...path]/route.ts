@@ -26,6 +26,7 @@ export async function PUT(req: NextRequest) {
 async function handleRequest(req: NextRequest) {
   const cookieStore = cookies();
   const accessToken = cookieStore.get('accessToken')?.value;
+
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}${req.nextUrl.pathname.replace('/api/server', '')}`;
 
   const method = req.method;
