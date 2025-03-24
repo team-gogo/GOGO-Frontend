@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import ExclamationIcon from '@/shared/assets/svg/ExclamationIcon';
@@ -9,20 +9,28 @@ import { StageData } from '@/shared/types/stage/create';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
-import InviteStudentInput from '@/shared/ui/InviteStudentInput';
+import InviteStudentInput, {
+  InviteStudentInputRef,
+} from '@/shared/ui/InviteStudentInput';
 import { cn } from '@/shared/utils/cn';
+import { useSearchStudentQuery } from '@/widgets/stage/create/model/useSearchStudentQuery';
 
 const CreateTeamContainer = () => {
   const [teamName, setTeamName] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
+  const inviteStudentRef = useRef<InviteStudentInputRef>(null);
   const {
     register,
     setValue,
     handleSubmit: handleFormSubmit,
+    watch,
   } = useForm<StageData>();
 
-  const onSubmit = (data: StageData) => {
+  const maintainerIds = watch('maintainer') || [];
+  const { data: studentData } = useSearchStudentQuery(maintainerIds.join(','));
+
+  const onSubmit = (_data: StageData) => {
     if (
       !teamName.trim() ||
       teamName.trim().length > 10 ||
@@ -32,16 +40,17 @@ const CreateTeamContainer = () => {
       return;
     }
 
-    const membersList = data.maintainer || [];
-
-    if (membersList.length === 0) {
+    if (maintainerIds.length === 0) {
       toast.error('인원을 올바르게 입력해주세요.');
       return;
     }
 
     const stageId = searchParams.get('stageId');
     sessionStorage.setItem('teamName', teamName);
-    sessionStorage.setItem('members', JSON.stringify(membersList));
+    sessionStorage.setItem(
+      'members',
+      JSON.stringify(studentData?.[0]?.students || []),
+    );
 
     router.push(`/team/place?stageId=${stageId}`);
   };
@@ -87,6 +96,7 @@ const CreateTeamContainer = () => {
           </div>
           <div className={cn('mt-24')}>
             <InviteStudentInput
+              ref={inviteStudentRef}
               register={register}
               setValue={setValue}
               title=" "
