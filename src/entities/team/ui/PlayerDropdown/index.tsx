@@ -24,7 +24,7 @@ const PlayerDropdown = ({
   return (
     <div className="relative">
       <div
-        onClick={onToggle}
+        onClick={() => availablePlayers.length > 0 && onToggle()}
         className={cn(
           'flex',
           'items-center',
@@ -36,10 +36,13 @@ const PlayerDropdown = ({
           'bg-[#2a2a2a]',
           'cursor-pointer',
           'text-white',
+          availablePlayers.length === 0 && 'cursor-not-allowed opacity-50',
         )}
       >
         <span>{selectedPlayer || '인원 선택'}</span>
-        <span className={cn(isOpen ? 'rotate-180' : '')}>▼</span>
+        {availablePlayers.length > 0 && (
+          <span className={cn(isOpen ? 'rotate-180' : '')}>▼</span>
+        )}
       </div>
       {isOpen && (
         <div
