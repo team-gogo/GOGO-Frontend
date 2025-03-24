@@ -33,7 +33,15 @@ const StageMatchContainer = ({
   }, [matches, matchBatchArr]);
 
   return (
-    <div className={cn('w-full', 'flex', 'justify-center', 'itmes-center')}>
+    <div
+      className={cn(
+        'w-full',
+        'h-full',
+        'flex',
+        'justify-center',
+        'itmes-center',
+      )}
+    >
       <div className={cn('relative', 'w-full', 'overflow-hidden')}>
         <div
           className={cn(
