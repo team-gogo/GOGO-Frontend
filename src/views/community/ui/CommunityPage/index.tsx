@@ -1,36 +1,48 @@
 'use client';
 
 import { useParams, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
 import { NavigationBar } from '@/entities/community';
-import { SortType } from '@/shared/model/sportTypes';
+import useSelectSort from '@/shared/model/useSelectSort';
 import useSelectSport from '@/shared/model/useSelectSport';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { CommunityItemContainer, CommunityToolbar } from '@/widgets/community';
-import getBoardMock from '../Mock/getBoardMock';
+import { useGetCommunityQuery } from '../../model/useGetCommunityQuery';
 
 const CommunityPage = () => {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
   const { stageId } = useParams();
   const safeStageId = Array.isArray(stageId) ? stageId[0] : stageId || '';
-  const boardMock = getBoardMock();
-  const [selectedSort, setSelectedSort] = useState<SortType | null>(null);
+
+  const { selectedSort, toggleSortSelection } = useSelectSort();
   const { selectedSport, toggleSportSelection } = useSelectSport();
 
-  const toggleSortSelection = (sort: SortType) => {
-    setSelectedSort((prev) => (prev === sort ? null : sort));
-  };
+  const { data } = useGetCommunityQuery(
+    safeStageId,
+    selectedSport,
+    selectedSort,
+    currentPage,
+  );
 
   const itemsPerPage = 7;
-  const totalPairs = boardMock.info.totalPage;
+  const totalPairs = data?.info?.totalPage || 0;
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentBoardData = {
-    info: boardMock.info,
-    board: boardMock.board.slice(startIndex, startIndex + itemsPerPage),
-  };
+  const currentBoardData = data
+    ? {
+        info: data.info,
+        board: data.board.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage,
+        ),
+      }
+    : {
+        info: {
+          totalPage: 0,
+          totalElement: 0,
+        },
+        board: [],
+      };
 
   return (
     <div
@@ -62,7 +74,7 @@ const CommunityPage = () => {
           />
           <CommunityItemContainer boardData={currentBoardData} />
         </div>
-        <NavigationBar totalPairs={totalPairs} />
+        <NavigationBar stageId={safeStageId} totalPairs={totalPairs} />
       </div>
     </div>
   );

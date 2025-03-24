@@ -74,9 +74,7 @@ const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
       >
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <CommentIcon />
-          <p className={cn('text-body3s', 'text-gray-300')}>
-            {formatCount(commentCount)}
-          </p>
+          <p className={cn('text-body3s', 'text-gray-300')}>{commentCount}</p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <HeartIcon />

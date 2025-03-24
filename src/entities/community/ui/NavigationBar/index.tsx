@@ -5,10 +5,11 @@ import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 interface NavigationBarProps {
+  stageId: string;
   totalPairs: number;
 }
 
-const NavigationBar = ({ totalPairs }: NavigationBarProps) => {
+const NavigationBar = ({ stageId, totalPairs }: NavigationBarProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
@@ -18,7 +19,7 @@ const NavigationBar = ({ totalPairs }: NavigationBarProps) => {
   const maxPagesToShow = 5;
 
   const changePage = (page: number) => {
-    router.push(`/community?page=${page}`);
+    router.push(`/community/${stageId}?page=${page}`);
   };
 
   const handlePrev = () => {
