@@ -43,7 +43,7 @@ const StagePage = () => {
     if (stage.isParticipating) {
       participateStages.push(stage);
     }
-    if (stage.status === 'CONFIRMED' || stage.status === 'RECRUITING') {
+    if (stage.status === 'CONFIRMED') {
       confirmedStages.push(stage);
     }
     if (stage.status === 'RECRUITING') {
