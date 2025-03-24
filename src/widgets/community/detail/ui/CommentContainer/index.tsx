@@ -29,7 +29,7 @@ const CommentContainer = ({ comments }: CommentContainerProps) => {
             <CommentItem
               key={comment.commentId}
               authorName={comment.author.name}
-              comment={comment.comment}
+              content={comment.content}
               likeCount={comment.likeCount}
               commentId={comment.commentId}
               isLiked={comment.isLiked}

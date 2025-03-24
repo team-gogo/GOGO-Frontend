@@ -7,7 +7,7 @@ import { cn } from '@/shared/utils/cn';
 
 interface CommentItemProps {
   authorName: string;
-  comment: string;
+  content: string;
   likeCount: number;
   commentId: number;
   isLiked: boolean;
@@ -15,7 +15,7 @@ interface CommentItemProps {
 
 const CommentItem = ({
   authorName,
-  comment,
+  content,
   likeCount,
   commentId,
   isLiked,
@@ -64,7 +64,7 @@ const CommentItem = ({
           'mobile:text-caption1s',
         )}
       >
-        {comment}
+        {content}
       </p>
       <div
         className={cn('flex', 'items-center', 'gap-8', 'cursor-pointer')}
