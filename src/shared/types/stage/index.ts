@@ -4,11 +4,11 @@ type StageStatus = 'RECRUITING' | 'CONFIRMED' | 'END';
 export interface StagesType {
   stageId: number;
   stageName: string;
-  type: StageType[];
+  type: StageType;
   status: StageStatus;
   participantCount: number;
   isParticipating: boolean;
-  isMaintaining: boolean;
+  isMaintainer: boolean;
   isPassCode: boolean;
 }
 

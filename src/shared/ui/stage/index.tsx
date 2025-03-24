@@ -15,7 +15,7 @@ interface StageProps {
 }
 
 const Stage = ({ stage, isMyStage = false }: StageProps) => {
-  const { stageId, stageName, type, status, isMaintaining } = stage;
+  const { stageId, stageName, type, status, isMaintainer } = stage;
 
   const { push } = useRouter();
   const pathname = usePathname();
@@ -28,7 +28,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
 
   const isPassCode = 'isPassCode' in stage ? stage.isPassCode : undefined;
 
-  const Participate = isParticipating || isMyStage || isMaintaining;
+  const Participate = isParticipating || isMyStage || isMaintainer;
 
   const isStagePage = pathname === '/stage';
 
@@ -66,15 +66,17 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
             className={cn('flex', 'w-full', 'justify-between', 'items-center')}
           >
             <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
-              {type.map((t) => (
-                <MatchTypeLabel key={t} type={t} color="#FFF" />
-              ))}
+              <MatchTypeLabel
+                type={type === 'OFFICIAL' ? 'OFFICIAL' : 'FAST'}
+                color="#FFF"
+              />
+
               {status === 'RECRUITING' ? (
                 <MatchTypeLabel type="RECRUITING" color="#01C612" />
               ) : status === 'CONFIRMED' ? (
                 <MatchTypeLabel type="CONFIRMED" color="#898989" />
               ) : null}
-              {isMaintaining && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
+              {isMaintainer && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
             </div>
             {/* {isStageAdmin && <Tag TagType={'STREAMING'} />} */}
           </div>
