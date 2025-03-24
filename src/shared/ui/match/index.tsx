@@ -115,7 +115,7 @@ const Match = ({ match }: MatchProps) => {
     return 'text-white';
   };
 
-  const updateStateu = () => {
+  const updateStatus = () => {
     setMatchStatus({
       isPlaying,
       isMatchFinish,
@@ -192,10 +192,7 @@ const Match = ({ match }: MatchProps) => {
 
           <button
             className={cn('flex', 'items-center', 'gap-[0.5rem]')}
-            onClick={() => {
-              setIsMatchModalOpen(true);
-              updateStateu();
-            }}
+            onClick={() => push(`/match/matchId=${matchId}`)}
           >
             <p className={cn('text-body3s', 'text-gray-500')}>자세히 보기</p>
             <RightArrowIcon />
@@ -342,7 +339,13 @@ const Match = ({ match }: MatchProps) => {
               <RightArrowIcon color="white" />
             </button>
           ) : (
-            <Button disabled={isMatchFinish || betting.isBetting || isBatchEnd}>
+            <Button
+              disabled={isMatchFinish || betting.isBetting || isBatchEnd}
+              onClick={() => {
+                updateStatus();
+                setIsMatchModalOpen(true);
+              }}
+            >
               {!betting.isBetting
                 ? '베팅'
                 : betting.bettingPoint !== undefined
