@@ -9,6 +9,7 @@ import {
   Draggable,
   DragStart,
   DroppableProvided,
+  DropResult,
 } from 'react-beautiful-dnd';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
@@ -43,12 +44,6 @@ const StrictModeDroppable = ({
 
   return <Droppable {...props}>{children}</Droppable>;
 };
-
-interface DragEndResult {
-  source: { droppableId: string; index: number };
-  destination: { droppableId: string; index: number } | null;
-  draggableId: string;
-}
 
 const PlaceTeamContainer = () => {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -143,7 +138,7 @@ const PlaceTeamContainer = () => {
   }, []);
 
   const onDragEnd = useCallback(
-    (result: DragEndResult) => {
+    (result: DropResult) => {
       setIsDragging(false);
       const { source, destination, draggableId } = result;
 
