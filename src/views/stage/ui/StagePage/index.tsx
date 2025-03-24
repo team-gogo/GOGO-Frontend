@@ -7,11 +7,20 @@ import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import StageHeader from '@/widgets/stage/ui/StageHeader';
 import getStageInfo from '../Mock/getStageInfo';
+import { useGetStageList } from '../model/useGetStageList';
 
 const StagePage = () => {
-  const stageInfo = getStageInfo();
-
+  // const stageInfo = getStageInfo();
+  const {
+    data: stageListInfo,
+    refetch: stageListRefetch,
+    isPending,
+  } = useGetStageList();
   const { stageAdminArr, addStageAdmin } = useStageAdminStore();
+
+  useEffect(() => {
+    stageListRefetch();
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('stageAdminArr', JSON.stringify(stageAdminArr));
@@ -21,19 +30,20 @@ const StagePage = () => {
   const confirmedStages: StagesType[] = [];
   const recruitingStages: StagesType[] = [];
 
-  const maintainingStageIds: number[] = stageInfo.stages
-    .filter((stage) => stage.isMaintaining)
-    .map((stage) => stage.stageId);
+  const maintainingStageIds: number[] =
+    stageListInfo?.stages
+      .filter((stage) => stage.isMaintainer)
+      .map((stage) => stage.stageId) || [];
 
   useEffect(() => {
     addStageAdmin(maintainingStageIds);
   }, []);
 
-  stageInfo.stages.forEach((stage) => {
+  stageListInfo?.stages.forEach((stage) => {
     if (stage.isParticipating) {
       participateStages.push(stage);
     }
-    if (stage.status === 'CONFIRMED') {
+    if (stage.status === 'CONFIRMED' || stage.status === 'RECRUITING') {
       confirmedStages.push(stage);
     }
     if (stage.status === 'RECRUITING') {
@@ -44,21 +54,27 @@ const StagePage = () => {
   return (
     <div
       className={cn(
-        'flex w-full flex-col items-center justify-center gap-[2.5rem] px-[1rem] py-[3.75rem]',
+        'flex min-h-screen w-full flex-col items-center justify-center gap-[2.5rem] px-[1rem] py-[3.75rem]',
       )}
     >
-      <div className={cn('flex w-full max-w-[82.5rem] flex-col gap-[4rem]')}>
-        <div className={cn('flex flex-col gap-[2.5rem]')}>
+      <div
+        className={cn(
+          'flex min-h-screen w-full max-w-[82.5rem] flex-col gap-[4rem]',
+        )}
+      >
+        <div className={cn('flex h-full flex-col gap-[2.5rem]')}>
           <StageHeader />
 
-          <StageMatchSection stages={participateStages} />
+          <StageMatchSection stages={participateStages} isPending={isPending} />
           <StageMatchSection
             title="참여가능한 스테이지"
             stages={confirmedStages}
+            isPending={isPending}
           />
           <StageMatchSection
             title="모집 중인 스테이지"
             stages={recruitingStages}
+            isPending={isPending}
           />
         </div>
       </div>

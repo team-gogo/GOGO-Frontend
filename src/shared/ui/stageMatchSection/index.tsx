@@ -13,9 +13,15 @@ interface StageSectionProps {
   title?: string;
   stages?: StagesType[];
   matches?: MatchResponse;
+  isPending?: boolean;
 }
 
-const StageMatchSection = ({ title, stages, matches }: StageSectionProps) => {
+const StageMatchSection = ({
+  title,
+  stages,
+  matches,
+  isPending,
+}: StageSectionProps) => {
   const visibleCount = 2;
 
   const { isPasswordModalOpen, setIsPasswordModalOpen } =
@@ -37,10 +43,51 @@ const StageMatchSection = ({ title, stages, matches }: StageSectionProps) => {
   } = useStageNavigation(totalMatches, visibleCount);
 
   return (
-    <div className={cn('flex', 'w-full', 'flex-col', 'gap-[2.5rem]')}>
-      {title && <h2 className={cn('text-body1e', 'text-white')}>{title}</h2>}
+    <div className={cn('flex', 'w-full', 'h-full', 'flex-col')}>
+      {title && (
+        <h2
+          className={cn('h-full', 'text-body1e', 'text-white', 'pb-[2.5rem]')}
+        >
+          {title}
+        </h2>
+      )}
+      {isPending && (
+        <div
+          className={cn(
+            'flex',
+            'min-h-[18.25rem]',
+            'justify-center',
+            'items-center',
+            'text-body1e',
+            'text-white',
+          )}
+        >
+          정보를 불러오는중...
+        </div>
+      )}
+      {totalStages === 0 && !isPending && (
+        <div
+          className={cn(
+            'flex',
+            'min-h-[18.25rem]',
+            'justify-center',
+            'items-center',
+            'text-body1e',
+            'text-white',
+          )}
+        >
+          해당하는 스테이지가 없습니다.
+        </div>
+      )}
       {totalStages > 0 && (
-        <div className={cn('relative', 'flex w-full')}>
+        <div
+          className={cn(
+            'relative',
+            'h-full',
+            'max-h-[18.25rem]',
+            'flex w-full',
+          )}
+        >
           {stageStartIndex > 0 && (
             <button
               className={cn(
