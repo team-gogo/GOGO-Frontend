@@ -1,6 +1,6 @@
 'use client';
 
-import { MatchDetailModal } from '@/entities/main';
+import { BettingModal } from '@/entities/main';
 import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
 import {
@@ -54,7 +54,7 @@ const MyBetPage = () => {
         <MatchContainer matchInfo={userBetInfo} isMyBetInfo={true} />
       </div>
       {isMatchModalOpen && (
-        <MatchDetailModal onClose={() => setIsMatchModalOpen(false)} />
+        <BettingModal onClose={() => setIsMatchModalOpen(false)} />
       )}
       {isBatchModalOpen && (
         <BatchModal onClose={() => setIsBatchModalOpen(false)} />

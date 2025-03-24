@@ -1,0 +1,61 @@
+import { AxiosError } from 'axios';
+import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
+import instance from '@/shared/api/instance';
+
+export async function GET(req: NextRequest) {
+  return handleRequest(req);
+}
+
+export async function POST(req: NextRequest) {
+  return handleRequest(req);
+}
+
+export async function DELETE(req: NextRequest) {
+  return handleRequest(req);
+}
+
+export async function PATCH(req: NextRequest) {
+  return handleRequest(req);
+}
+
+export async function PUT(req: NextRequest) {
+  return handleRequest(req);
+}
+
+async function handleRequest(req: NextRequest) {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get('accessToken')?.value;
+  const url = `${process.env.NEXT_PUBLIC_BASE_URL}${req.nextUrl.pathname.replace('/api/server', '')}`;
+
+  const method = req.method;
+
+  const params = Object.fromEntries(req.nextUrl.searchParams.entries());
+
+  let data;
+  if (!['GET', 'DELETE', 'HEAD'].includes(method)) {
+    data = await req.json();
+  }
+
+  try {
+    const response = await instance.request({
+      url,
+      method,
+      params,
+      data,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return NextResponse.json(response.data, { status: response.status });
+  } catch (error) {
+    const axiosError = error as AxiosError<{ message: string }>;
+    const status = axiosError.response?.status || 500;
+    const message =
+      axiosError.response?.data?.message ||
+      '요청을 처리하는 중 오류가 발생했습니다.';
+
+    return NextResponse.json({ error: message, status }, { status });
+  }
+}

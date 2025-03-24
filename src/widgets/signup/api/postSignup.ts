@@ -3,7 +3,7 @@ import { FormattedSignupData } from '@/shared/types/signup';
 
 export const postSignup = async (data: FormattedSignupData) => {
   try {
-    await axios.post('/api/user/auth/signup', data);
+    await axios.post('/api/server/user/auth/signup', data);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

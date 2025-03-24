@@ -9,9 +9,10 @@ interface MatchTeamProps {
   team: Team;
   percentage: number;
   bgColor: string;
+  onClick: () => void;
 }
 
-const MatchTeam = ({ team, percentage, bgColor }: MatchTeamProps) => {
+const MatchTeam = ({ team, percentage, bgColor, onClick }: MatchTeamProps) => {
   return (
     <div
       className={cn(
@@ -28,7 +29,9 @@ const MatchTeam = ({ team, percentage, bgColor }: MatchTeamProps) => {
         </p>
         <h1 className={cn('text-h1e', 'text-white')}>{team.teamName}팀</h1>
       </div>
-      <div
+      <button
+        onClick={onClick}
+        type="button"
         className={cn(
           'flex',
           'h-full',
@@ -47,7 +50,7 @@ const MatchTeam = ({ team, percentage, bgColor }: MatchTeamProps) => {
         }}
       >
         <p className={cn('text-body1e', 'text-white')}>{percentage}%</p>
-      </div>
+      </button>
     </div>
   );
 };
