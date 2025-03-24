@@ -20,9 +20,9 @@ const CommunityDetailPage = () => {
     return <div>Loading...</div>;
   }
 
-  // if (isError || !data) {
-  //   return <div>Error: Unable to load community details.</div>;
-  // }
+  if (isError || !data) {
+    return <div>Error: Unable to load community details.</div>;
+  }
 
   if (comments.length === 0 && data.comment) {
     setComments(data.comment);
