@@ -20,7 +20,6 @@ import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { SportType } from '@/shared/model/sportTypes';
-import { useTeamStore } from '@/shared/stores/useTeamStore';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 
@@ -58,7 +57,6 @@ const PlaceTeamContainer = () => {
   const draggedPlayerRef = useRef<string | null>(null);
   const mousePositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [draggingPlayerId, setDraggingPlayerId] = useState<string | null>(null);
-  const { teamName: storeTeamName, members: storeMembers } = useTeamStore();
 
   const searchParams = useSearchParams();
   const sportParam = searchParams.get('sport');
@@ -85,13 +83,16 @@ const PlaceTeamContainer = () => {
   }, []);
 
   useEffect(() => {
-    if (storeTeamName) {
-      setTeamName(storeTeamName);
+    const storedTeamName = sessionStorage.getItem('teamName');
+    const storedMembers = sessionStorage.getItem('members');
+
+    if (storedTeamName) {
+      setTeamName(storedTeamName);
     }
-    if (storeMembers) {
-      setMembersList(storeMembers);
+    if (storedMembers) {
+      setMembersList(JSON.parse(storedMembers));
     }
-  }, [storeTeamName, storeMembers]);
+  }, []);
 
   const handleAddPlayer = useCallback(() => {
     if (selectedPlayer && selectedPlayer !== '인원 선택') {
