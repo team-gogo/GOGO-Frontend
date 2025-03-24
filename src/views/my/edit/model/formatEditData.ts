@@ -6,7 +6,6 @@ export const formatEditData = (
   isFiltered: boolean,
 ) => {
   return {
-    deviceToken: null,
     name: data.name,
     sex: selectedSex,
     grade: Number(data.grade),

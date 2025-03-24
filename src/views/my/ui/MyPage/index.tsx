@@ -1,11 +1,13 @@
+'use client';
+
 import { cn } from '@/shared/utils/cn';
 import { MyInfoContainer, MyStageContainer } from '@/widgets/my';
-import getUserInfo from '../Mock/getUserInfo';
+import { useGetMyInfo } from '../../model/useGetMyInfo';
 import getUserStageInfo from '../Mock/getUserStageInfo';
 
 const MyPage = () => {
   const userStageInfo = getUserStageInfo();
-  const userInfo = getUserInfo();
+  const { data: myInfo, isPending: infoPending } = useGetMyInfo();
 
   return (
     <div
@@ -30,7 +32,7 @@ const MyPage = () => {
           'gap-[3.75rem]',
         )}
       >
-        <MyInfoContainer userInfo={userInfo} />
+        <MyInfoContainer myInfo={myInfo} isPending={infoPending} />
         <MyStageContainer userStageInfo={userStageInfo} />
       </div>
     </div>
