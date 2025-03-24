@@ -20,6 +20,7 @@ import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { SportType } from '@/shared/model/sportTypes';
+import { useTeamStore } from '@/shared/stores/useTeamStore';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 
@@ -57,11 +58,10 @@ const PlaceTeamContainer = () => {
   const draggedPlayerRef = useRef<string | null>(null);
   const mousePositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [draggingPlayerId, setDraggingPlayerId] = useState<string | null>(null);
+  const { teamName: storeTeamName, members: storeMembers } = useTeamStore();
 
   const searchParams = useSearchParams();
   const sportParam = searchParams.get('sport');
-  const teamNameParam = searchParams.get('teamName');
-  const membersParam = searchParams.get('members');
   const matchIdParam = searchParams.get('matchId');
 
   const getSportType = (): SportType => {
@@ -85,18 +85,13 @@ const PlaceTeamContainer = () => {
   }, []);
 
   useEffect(() => {
-    if (teamNameParam) {
-      setTeamName(teamNameParam);
+    if (storeTeamName) {
+      setTeamName(storeTeamName);
     }
-    if (membersParam) {
-      try {
-        const parsedMembers = JSON.parse(decodeURIComponent(membersParam));
-        setMembersList(parsedMembers);
-      } catch (error) {
-        console.error(error);
-      }
+    if (storeMembers) {
+      setMembersList(storeMembers);
     }
-  }, [teamNameParam, membersParam]);
+  }, [storeTeamName, storeMembers]);
 
   const handleAddPlayer = useCallback(() => {
     if (selectedPlayer && selectedPlayer !== '인원 선택') {

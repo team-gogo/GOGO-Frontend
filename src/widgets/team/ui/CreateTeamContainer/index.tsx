@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import SearchIcon from '@/shared/assets/icons/SearchIcon';
 import ExclamationIcon from '@/shared/assets/svg/ExclamationIcon';
+import { useTeamStore } from '@/shared/stores/useTeamStore';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
@@ -15,6 +16,8 @@ const CreateTeamContainer = () => {
   const [members, setMembers] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { setTeamName: setStoreTeamName, setMembers: setStoreMembers } =
+    useTeamStore();
 
   const handleSubmit = () => {
     if (
@@ -34,10 +37,10 @@ const CreateTeamContainer = () => {
     }
 
     const stageId = searchParams.get('stageId');
+    setStoreTeamName(teamName);
+    setStoreMembers(membersList);
 
-    router.push(
-      `/team/place?stageId=${stageId}&teamName=${encodeURIComponent(teamName)}&members=${encodeURIComponent(JSON.stringify(membersList))}`,
-    );
+    router.push(`/team/place?stageId=${stageId}`);
   };
 
   return (
