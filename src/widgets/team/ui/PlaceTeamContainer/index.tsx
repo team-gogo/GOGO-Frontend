@@ -20,6 +20,7 @@ import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { SportType } from '@/shared/model/sportTypes';
+import { Student } from '@/shared/types/stage/create';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 
@@ -50,7 +51,7 @@ const PlaceTeamContainer = () => {
   const [selectedPlayer, setSelectedPlayer] = useState<string>('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [teamName, setTeamName] = useState('');
-  const [membersList, setMembersList] = useState<string[]>([]);
+  const [membersList, setMembersList] = useState<Student[]>([]);
   const isMounted = useRef(false);
   const router = useRouter();
   const [isDragging, setIsDragging] = useState(false);
@@ -225,13 +226,15 @@ const PlaceTeamContainer = () => {
 
   const handleSubmit = useCallback(async () => {
     try {
-      const participants = placedPlayers.map((player) => ({
-        studentId: Number(
-          membersList[players.findIndex((p) => p.id === player.id)],
-        ),
-        positionX: player.x.toString(),
-        positionY: player.y.toString(),
-      }));
+      const participants = placedPlayers.map((player) => {
+        const memberIndex = players.findIndex((p) => p.id === player.id);
+        const member = membersList[memberIndex];
+        return {
+          studentId: member.studentId,
+          positionX: player.x.toString(),
+          positionY: player.y.toString(),
+        };
+      });
 
       await postTeam({
         teamName,
@@ -304,7 +307,10 @@ const PlaceTeamContainer = () => {
                   <PlayerDropdown
                     selectedPlayer={selectedPlayer}
                     isOpen={isDropdownOpen}
-                    membersList={membersList}
+                    membersList={membersList.map(
+                      (member) =>
+                        `${member.grade}${member.classNumber}${String(member.studentNumber).padStart(2, '0')} ${member.name}`,
+                    )}
                     onToggle={toggleDropdown}
                     onSelect={selectPlayer}
                     selectedPlayers={players.map((player) => player.name)}
