@@ -19,7 +19,7 @@ import PlayerItem from '@/entities/team/ui/PlayerItem';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
-import { SportType } from '@/shared/model/sportTypes';
+import { GameType, SportType } from '@/shared/model/sportTypes';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 
@@ -239,6 +239,7 @@ const PlaceTeamContainer = () => {
       await postTeam({
         teamName,
         participants,
+        gameId: sportType as GameType,
       });
       // router.push('/');
     } catch (error) {
