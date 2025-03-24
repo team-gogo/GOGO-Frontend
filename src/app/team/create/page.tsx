@@ -1,7 +1,5 @@
 import CreateTeamPage from '@/views/team/ui/CreateTeamPage';
 
-const page = () => {
+export default function Page() {
   return <CreateTeamPage />;
-};
-
-export default page;
+}

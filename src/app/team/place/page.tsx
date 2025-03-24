@@ -1,7 +1,5 @@
 import PlaceTeamPage from '@/views/team/ui/PlaceTeamPage/index';
 
-const page = () => {
+export default function Page() {
   return <PlaceTeamPage />;
-};
-
-export default page;
+}
