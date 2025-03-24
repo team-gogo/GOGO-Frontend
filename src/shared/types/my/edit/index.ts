@@ -1,4 +1,4 @@
-type Sex = 'MALE' | 'FEMALE';
+type Sex = 'MALE' | 'FEMALE' | null;
 
 export interface GetStudentInfo {
   studentId: number;

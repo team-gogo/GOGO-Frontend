@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useForm, FieldErrors } from 'react-hook-form';
 import { PatchStudentInfo } from '@/shared/types/my/edit';
 import { formatEditData } from './formatEditData';
+import { usePatchMyInfo } from './usePatchMyInfo';
 
 interface UseEditFormProps {
   defaultValues?: Partial<PatchStudentInfo>;
 }
 
 export const useEditForm = ({ defaultValues }: UseEditFormProps = {}) => {
+  const { mutate: patchInfo } = usePatchMyInfo();
   const { register, handleSubmit, setValue, watch } = useForm<PatchStudentInfo>(
     {
       defaultValues,
@@ -27,6 +29,7 @@ export const useEditForm = ({ defaultValues }: UseEditFormProps = {}) => {
 
   const onSubmit = (data: PatchStudentInfo) => {
     const formattedData = formatEditData(data, selectedSex, filtered);
+    patchInfo(formattedData);
     console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
   };
 
