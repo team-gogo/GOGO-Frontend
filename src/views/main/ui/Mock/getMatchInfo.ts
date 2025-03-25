@@ -6,13 +6,13 @@ const getMatchInfo = (): MatchResponse => {
     matches: [
       {
         matchId: 1001,
-        aTeam: {
+        ateam: {
           teamId: 1,
           teamName: '팀 A',
           bettingPoint: 50,
           winCount: 10,
         },
-        bTeam: {
+        bteam: {
           teamId: 2,
           teamName: '팀 B',
           bettingPoint: 30,
@@ -35,13 +35,13 @@ const getMatchInfo = (): MatchResponse => {
       },
       {
         matchId: 1002,
-        aTeam: {
+        ateam: {
           teamId: 3,
           teamName: '팀 C',
           bettingPoint: 60,
           winCount: 12,
         },
-        bTeam: {
+        bteam: {
           teamId: 4,
           teamName: '팀 D',
           bettingPoint: 40,
@@ -64,13 +64,13 @@ const getMatchInfo = (): MatchResponse => {
       },
       {
         matchId: 1003,
-        aTeam: {
+        ateam: {
           teamId: 5,
           teamName: '팀 E',
           bettingPoint: 100,
           winCount: 15,
         },
-        bTeam: {
+        bteam: {
           teamId: 6,
           teamName: '팀 F',
           bettingPoint: 90,
@@ -100,13 +100,13 @@ const getMatchInfo = (): MatchResponse => {
       },
       {
         matchId: 1004,
-        aTeam: {
+        ateam: {
           teamId: 7,
           teamName: '팀 G',
           bettingPoint: 120,
           winCount: 14,
         },
-        bTeam: {
+        bteam: {
           teamId: 8,
           teamName: '팀 H',
           bettingPoint: 80,
@@ -136,13 +136,13 @@ const getMatchInfo = (): MatchResponse => {
       },
       {
         matchId: 1005,
-        aTeam: {
+        ateam: {
           teamId: 9,
           teamName: '팀 I',
           bettingPoint: 1200,
           winCount: 14,
         },
-        bTeam: {
+        bteam: {
           teamId: 10,
           teamName: '팀 J',
           bettingPoint: 800,
