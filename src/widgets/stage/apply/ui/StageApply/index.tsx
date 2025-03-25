@@ -11,9 +11,10 @@ import { cn } from '@/shared/utils/cn';
 
 interface StageApplyProps {
   game: MatchGameType;
+  stageId: number;
 }
 
-const StageApply = ({ game }: StageApplyProps) => {
+const StageApply = ({ game, stageId }: StageApplyProps) => {
   const { gameName, teamCount, category, isParticipating, gameId } = game;
   const router = useRouter();
   const [isMaintainer, setIsMaintainer] = useState(false);
@@ -21,7 +22,7 @@ const StageApply = ({ game }: StageApplyProps) => {
   useEffect(() => {
     const checkMaintainer = async () => {
       try {
-        const response = await getStageMaintainer(String(gameId));
+        const response = await getStageMaintainer(String(stageId));
         setIsMaintainer(response.isMaintainer);
       } catch (error) {
         console.error(error);
@@ -29,7 +30,7 @@ const StageApply = ({ game }: StageApplyProps) => {
     };
 
     checkMaintainer();
-  }, [gameId]);
+  }, [stageId]);
 
   const handleApply = () => {
     if (isMaintainer) {
