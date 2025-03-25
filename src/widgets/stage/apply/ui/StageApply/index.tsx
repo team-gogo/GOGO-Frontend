@@ -90,7 +90,6 @@ const StageApply = ({ game }: StageApplyProps) => {
             <Button
               disabled={isParticipating && !isMaintainer}
               onClick={handleApply}
-              bg={isMaintainer ? 'bg-red-600' : undefined}
             >
               {isMaintainer ? '종료하기' : '신청하기'}
             </Button>
