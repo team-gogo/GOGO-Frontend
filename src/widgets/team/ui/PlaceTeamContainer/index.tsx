@@ -195,7 +195,7 @@ const PlaceTeamContainer = () => {
         if (svg) {
           const svgRect = svg.getBoundingClientRect();
           const baseWidth = 600;
-          const minScale = 0.6;
+          const minScale = isLargeScreen ? 0.6 : 0.5;
           const scale = Math.max(minScale, svgRect.width / baseWidth);
           setPlayerScale(scale);
         }
@@ -217,7 +217,7 @@ const PlaceTeamContainer = () => {
         resizeObserver.disconnect();
       };
     }
-  }, []);
+  }, [isLargeScreen]);
 
   const handleAddPlayer = useCallback(() => {
     if (selectedPlayer && selectedPlayer !== '인원 선택') {
@@ -508,7 +508,9 @@ const PlaceTeamContainer = () => {
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <div className="pointer-events-none fixed inset-0 z-[9999]" />
-      <div className="relative flex h-screen flex-col bg-black p-30">
+      <div
+        className={`relative flex flex-col bg-black p-30 ${!isLargeScreen ? 'min-h-screen' : 'h-screen'}`}
+      >
         <header className="mb-30">
           <BackPageButton type="back" label="팀 배치하기" />
         </header>
@@ -574,7 +576,7 @@ const PlaceTeamContainer = () => {
               </div>
 
               <div
-                className={`relative ${isLargeScreen ? 'h-[500px] w-[55%]' : 'h-auto min-h-[450px] w-full'}`}
+                className={`relative ${isLargeScreen ? 'h-[500px] w-[55%]' : 'mb-10 h-auto min-h-[450px] w-full'}`}
               >
                 <StrictModeDroppable droppableId="court" type="PLAYER">
                   {(provided) => (
@@ -583,7 +585,9 @@ const PlaceTeamContainer = () => {
                       {...provided.droppableProps}
                       className="relative h-full overflow-visible rounded-lg"
                     >
-                      <div className="relative h-full">
+                      <div
+                        className={`relative h-full ${!isLargeScreen ? 'pb-10' : ''}`}
+                      >
                         <SportMap
                           type={sportType}
                           isMapDragging={draggingPlayerId !== null}
@@ -606,6 +610,7 @@ const PlaceTeamContainer = () => {
                             width: `${svgBounds.width}px`,
                             height: `${svgBounds.height}px`,
                             pointerEvents: 'all',
+                            position: 'relative',
                           }}
                         >
                           {placedPlayers.map((player, index) => (
