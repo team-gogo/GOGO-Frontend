@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import { usePostPassCode } from '@/entities/stage/ui/model/usePostPassCode';
 import { useMyStageIdStore, usePasswordModalStore } from '@/shared/stores';
 import useStageNameStore from '@/shared/stores/useStageNameStore';
 import { MyStageType } from '@/shared/types/my';
@@ -17,6 +18,8 @@ interface StageProps {
 
 const Stage = ({ stage, isMyStage = false }: StageProps) => {
   const { stageId, stageName, type, status, isMaintainer } = stage;
+
+  const { mutate: PostPassCode } = usePostPassCode(stageId);
 
   const { push } = useRouter();
   const pathname = usePathname();
@@ -36,8 +39,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
 
   const handleClick = () => {
     if (isParticipating) {
-      push(`/stage/${stageId}`);
-      setStageName(stageName);
+      push(`/stage/stageId=${stage.stageId}`);
     } else if (Participate) {
       setStageId(stageId);
       if (isStagePage) {
@@ -49,6 +51,8 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
       setIsPasswordModalOpen(true);
       setClickedStageId(stageId);
     } else {
+      PostPassCode(undefined);
+      setStageName(stageName);
       push(`/stage/stageId=${stage.stageId}`);
     }
   };
