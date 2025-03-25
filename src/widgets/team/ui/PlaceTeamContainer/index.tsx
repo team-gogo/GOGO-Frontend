@@ -65,19 +65,26 @@ const PlaceTeamContainer = () => {
   const categoryParam = searchParams.get('category');
   const gameIdParam = searchParams.get('gameId');
 
-  const getSportType = (): SportType => {
+  const getSportType = (): SportType | null => {
     if (
       categoryParam === 'BASKET_BALL' ||
       categoryParam === 'BADMINTON' ||
       categoryParam === 'BASE_BALL' ||
-      categoryParam === 'SOCCER'
+      categoryParam === 'SOCCER' ||
+      categoryParam === 'VOLLEY_BALL'
     ) {
       return categoryParam;
     }
-    return 'VOLLEY_BALL';
+    return null;
   };
 
-  const sportType: SportType = getSportType();
+  const sportType = getSportType();
+
+  useEffect(() => {
+    if (!sportType) {
+      router.push('/team/create');
+    }
+  }, [sportType, router]);
 
   useEffect(() => {
     isMounted.current = true;
@@ -416,6 +423,10 @@ const PlaceTeamContainer = () => {
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  if (!sportType) {
+    return null;
+  }
 
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>

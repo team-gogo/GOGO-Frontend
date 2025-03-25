@@ -4,8 +4,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { postTeam } from '@/entities/team/api/postTeam';
 import ExclamationIcon from '@/shared/assets/svg/ExclamationIcon';
 import { StageData } from '@/shared/types/stage/create';
+import { Student } from '@/shared/types/stage/create';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
@@ -13,6 +15,14 @@ import InviteStudentInput, {
   InviteStudentInputRef,
 } from '@/shared/ui/InviteStudentInput';
 import { cn } from '@/shared/utils/cn';
+
+const SUPPORTED_SPORTS = [
+  'BASKET_BALL',
+  'BADMINTON',
+  'BASE_BALL',
+  'SOCCER',
+  'VOLLEY_BALL',
+];
 
 const CreateTeamContainer = () => {
   const [teamName, setTeamName] = useState('');
@@ -25,7 +35,34 @@ const CreateTeamContainer = () => {
     handleSubmit: handleFormSubmit,
   } = useForm<StageData>();
 
-  const onSubmit = (_data: StageData) => {
+  const handleTeamCreation = async (selectedStudents: Student[]) => {
+    const gameId = searchParams.get('matchId');
+
+    if (!gameId) {
+      toast.error('게임 정보가 없습니다.');
+      return;
+    }
+
+    try {
+      const participants = selectedStudents.map((student) => ({
+        studentId: student.studentId,
+        positionX: '0',
+        positionY: '0',
+      }));
+
+      await postTeam({
+        teamName,
+        participants,
+        gameId: String(gameId),
+      });
+      router.push('/stage');
+    } catch (error) {
+      console.error(error);
+      toast.error('팀 생성에 실패했습니다.');
+    }
+  };
+
+  const onSubmit = async (_data: StageData) => {
     if (
       !teamName.trim() ||
       teamName.trim().length > 10 ||
@@ -43,14 +80,19 @@ const CreateTeamContainer = () => {
       return;
     }
 
-    const gameId = searchParams.get('matchId');
     const category = searchParams.get('category');
-    sessionStorage.setItem('teamName', teamName);
-    sessionStorage.setItem('members', JSON.stringify(selectedStudents));
-    sessionStorage.setItem('gameId', gameId || '');
-    sessionStorage.setItem('category', category || '');
 
-    router.push(`/team/place?gameId=${gameId}&category=${category}`);
+    if (category && SUPPORTED_SPORTS.includes(category)) {
+      sessionStorage.setItem('teamName', teamName);
+      sessionStorage.setItem('members', JSON.stringify(selectedStudents));
+      sessionStorage.setItem('gameId', searchParams.get('matchId') || '');
+      sessionStorage.setItem('category', category);
+      router.push(
+        `/team/place?gameId=${searchParams.get('matchId')}&category=${category}`,
+      );
+    } else {
+      await handleTeamCreation(selectedStudents);
+    }
   };
 
   return (
