@@ -7,16 +7,20 @@ import Stage from '@/shared/ui/stage';
 import { cn } from '@/shared/utils/cn';
 
 interface MyStageContainerProps {
-  userStageInfo: MyStageResponse;
+  myStageInfo?: MyStageResponse;
+  isPending: boolean;
 }
 
-const MyStageContainer = ({ userStageInfo }: MyStageContainerProps) => {
+const MyStageContainer = ({
+  myStageInfo,
+  isPending,
+}: MyStageContainerProps) => {
   const { push } = useRouter();
   return (
     <div className={cn('w-full', 'h-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
       <h2 className={cn('text-body1e', 'text-white')}>내가 참여한 스테이지</h2>
 
-      {userStageInfo.stages.length === 0 ? (
+      {isPending && (
         <div
           className={cn(
             'flex',
@@ -24,6 +28,28 @@ const MyStageContainer = ({ userStageInfo }: MyStageContainerProps) => {
             'h-full',
             'items-center',
             'justify-center',
+            'pt-[10rem]',
+          )}
+        >
+          <div
+            className={cn('flex', 'flex-col', 'items-center', 'gap-[1.5ren]')}
+          >
+            <h2 className={cn('text-h4e', 'text-white')}>
+              정보를 불러오는 중 입니다.
+            </h2>
+          </div>
+        </div>
+      )}
+
+      {myStageInfo?.stages.length === 0 && !isPending ? (
+        <div
+          className={cn(
+            'flex',
+            'w-full',
+            'h-full',
+            'items-center',
+            'justify-center',
+            'pt-[10rem]',
           )}
         >
           <div
@@ -53,7 +79,7 @@ const MyStageContainer = ({ userStageInfo }: MyStageContainerProps) => {
             'tablet:grid-cols-1',
           )}
         >
-          {userStageInfo.stages.map((stage) => (
+          {myStageInfo?.stages.map((stage) => (
             <Stage key={stage.stageId} stage={stage} isMyStage={true} />
           ))}
         </div>
