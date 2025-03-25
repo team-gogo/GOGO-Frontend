@@ -8,13 +8,11 @@ import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { CommentContainer } from '@/widgets/community/detail';
 import { useGetCommunityDetailQuery } from '../../model/useGetCommunityDetailQuery';
-import { useGetUserProfileQuery } from '../../model/useGetUserProfileQuery';
 
 const CommunityDetailPage = () => {
   const { boardId } = useParams();
   const safeBoardId = Array.isArray(boardId) ? boardId[0] : boardId || '';
   const { data, isLoading, isError } = useGetCommunityDetailQuery(safeBoardId);
-  const { data: userData } = useGetUserProfileQuery();
   const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
@@ -59,7 +57,7 @@ const CommunityDetailPage = () => {
           isLiked={data.isLiked}
           boardId={data.boardId}
         />
-        <CommentContainer comments={data.comment} />
+        <CommentContainer comments={comments} />
       </div>
       <CommentInput boardId={data.boardId} onAddComment={handleAddComment} />
     </div>

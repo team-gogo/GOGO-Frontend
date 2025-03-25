@@ -14,7 +14,10 @@ const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
     return count >= 100 ? '99+' : count.toString();
   };
 
-  const { boardId, gameType, title, author, commentCount, likeCount } = item;
+  const { boardId, gameCategory, title, author, commentCount, likeCount } =
+    item;
+
+  console.log(gameCategory);
 
   return (
     <Link
@@ -35,7 +38,7 @@ const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
     >
       <div className={cn('flex', 'items-center', 'justify-center')}>
         <SportTypelabel
-          type={gameType}
+          type={gameCategory}
           isMainUsed={isMainUsed}
           isHaveBorder={true}
         />

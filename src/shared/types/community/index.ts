@@ -18,7 +18,7 @@ interface Author {
 
 interface BoardItem {
   boardId: number;
-  gameType: GameType;
+  gameCategory: GameType;
   title: string;
   likeCount: number;
   commentCount: number;
@@ -40,7 +40,7 @@ export interface BoardData {
 
 export interface CommunityItemProps {
   boardId: number;
-  gameType: GameType;
+  gameCategory: GameType;
   title: string;
   author: Author;
   likeCount: number;

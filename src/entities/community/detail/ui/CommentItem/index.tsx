@@ -23,7 +23,6 @@ const CommentItem = ({
 }: CommentItemProps) => {
   const [liked, setLiked] = useState(isLiked);
   const [likeCountState, setLikeCountState] = useState(likeCount);
-
   const { mutate: commentLike } = usePostCommentLike(commentId);
 
   const handleLike = () => {
@@ -57,7 +56,6 @@ const CommentItem = ({
           {authorName}
         </p>
       </div>
-
       <p
         className={cn(
           'text-body3s',
