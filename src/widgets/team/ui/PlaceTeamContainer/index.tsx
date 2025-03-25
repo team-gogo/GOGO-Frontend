@@ -429,7 +429,7 @@ const PlaceTeamContainer = () => {
       <div
         ref={provided.innerRef}
         {...provided.droppableProps}
-        className={`flex min-h-[120px] flex-row flex-wrap gap-4 bg-transparent text-white ${!isLargeScreen ? 'justify-center' : ''}`}
+        className="flex min-h-[90px] flex-row flex-nowrap gap-3 bg-transparent text-white"
       >
         {players.map((player, index) => (
           <Draggable key={player.id} draggableId={player.id} index={index}>
@@ -445,7 +445,7 @@ const PlaceTeamContainer = () => {
                 <PlayerItem
                   name={player.name}
                   isDragging={snapshot.isDragging}
-                  className="mx-8 my-10"
+                  className="mx-2 my-3"
                 />
               </div>
             )}
@@ -525,7 +525,7 @@ const PlaceTeamContainer = () => {
               className={`relative flex ${isLargeScreen ? 'flex-row justify-between' : 'flex-col items-center gap-8'}`}
             >
               <div
-                className={`relative ${isLargeScreen ? 'w-[60%] pr-4' : 'mb-6 flex w-full justify-center'}`}
+                className={`relative ${isLargeScreen ? 'w-[60%] pr-4' : 'mb-6 w-full'}`}
               >
                 <div className="mb-3 flex items-center">
                   <PlayerDropdown
@@ -559,22 +559,24 @@ const PlaceTeamContainer = () => {
                   </div>
                 </div>
 
-                <StrictModeDroppable
-                  droppableId="playersList"
-                  direction="horizontal"
-                  type="PLAYER"
-                >
-                  {(provided) => (
-                    <div
-                      className={`relative ${!isLargeScreen ? 'flex justify-center' : ''}`}
+                <div className="w-full overflow-x-auto pb-4">
+                  <div className="inline-flex min-w-full">
+                    <StrictModeDroppable
+                      droppableId="playersList"
+                      direction="horizontal"
+                      type="PLAYER"
                     >
-                      <PlayerList
-                        players={unplacedPlayers}
-                        provided={provided}
-                      />
-                    </div>
-                  )}
-                </StrictModeDroppable>
+                      {(provided) => (
+                        <div className="relative">
+                          <PlayerList
+                            players={unplacedPlayers}
+                            provided={provided}
+                          />
+                        </div>
+                      )}
+                    </StrictModeDroppable>
+                  </div>
+                </div>
               </div>
 
               <div
