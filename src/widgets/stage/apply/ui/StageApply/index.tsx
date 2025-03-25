@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { MatchGameType } from '@/shared/types/stage/apply';
 import Button from '@/shared/ui/button';
 import MatchTypeLabel from '@/shared/ui/matchTypeLabel';
@@ -9,7 +10,12 @@ interface StageApplyProps {
 }
 
 const StageApply = ({ game }: StageApplyProps) => {
-  const { gameName, teamCount, category, isParticipating } = game;
+  const { gameName, teamCount, category, isParticipating, gameId } = game;
+  const router = useRouter();
+
+  const handleApply = () => {
+    router.push(`/team/create?matchId=${gameId}&category=${category}`);
+  };
 
   return (
     <div
@@ -59,7 +65,9 @@ const StageApply = ({ game }: StageApplyProps) => {
             {gameName}
           </h1>
           <div className={cn('flex', 'w-full', 'justify-center')}>
-            <Button disabled={isParticipating}>신청하기</Button>
+            <Button disabled={isParticipating} onClick={handleApply}>
+              신청하기
+            </Button>
           </div>
         </div>
       </div>
