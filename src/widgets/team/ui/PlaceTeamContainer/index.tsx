@@ -62,16 +62,17 @@ const PlaceTeamContainer = () => {
   const [isLargeScreen, setIsLargeScreen] = useState(true);
 
   const searchParams = useSearchParams();
-  const sportParam = searchParams.get('sport');
+  const categoryParam = searchParams.get('category');
   const gameIdParam = searchParams.get('gameId');
 
   const getSportType = (): SportType => {
     if (
-      sportParam === 'BASKET_BALL' ||
-      sportParam === 'BADMINTON' ||
-      sportParam === 'BASE_BALL'
+      categoryParam === 'BASKET_BALL' ||
+      categoryParam === 'BADMINTON' ||
+      categoryParam === 'BASE_BALL' ||
+      categoryParam === 'SOCCER'
     ) {
-      return sportParam;
+      return categoryParam;
     }
     return 'VOLLEY_BALL';
   };

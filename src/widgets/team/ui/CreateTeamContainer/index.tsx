@@ -44,11 +44,13 @@ const CreateTeamContainer = () => {
     }
 
     const gameId = searchParams.get('matchId');
+    const category = searchParams.get('category');
     sessionStorage.setItem('teamName', teamName);
     sessionStorage.setItem('members', JSON.stringify(selectedStudents));
     sessionStorage.setItem('gameId', gameId || '');
+    sessionStorage.setItem('category', category || '');
 
-    router.push(`/team/place?gameId=${gameId}`);
+    router.push(`/team/place?gameId=${gameId}&category=${category}`);
   };
 
   return (
