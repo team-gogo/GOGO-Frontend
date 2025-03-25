@@ -429,7 +429,7 @@ const PlaceTeamContainer = () => {
       <div
         ref={provided.innerRef}
         {...provided.droppableProps}
-        className="flex min-h-[120px] flex-row flex-wrap gap-4 bg-transparent text-white"
+        className={`flex min-h-[120px] flex-row flex-wrap gap-4 bg-transparent text-white ${!isLargeScreen ? 'justify-center' : ''}`}
       >
         {players.map((player, index) => (
           <Draggable key={player.id} draggableId={player.id} index={index}>
@@ -522,10 +522,10 @@ const PlaceTeamContainer = () => {
               <span className="text-body1s text-white">인원을 배치 하세요</span>
             </div>
             <div
-              className={`relative flex ${isLargeScreen ? 'flex-row justify-between' : 'flex-col gap-8'}`}
+              className={`relative flex ${isLargeScreen ? 'flex-row justify-between' : 'flex-col items-center gap-8'}`}
             >
               <div
-                className={`relative ${isLargeScreen ? 'w-[60%] pr-4' : 'mb-6 w-full'}`}
+                className={`relative ${isLargeScreen ? 'w-[60%] pr-4' : 'mb-6 flex w-full justify-center'}`}
               >
                 <div className="mb-3 flex items-center">
                   <PlayerDropdown
@@ -565,7 +565,9 @@ const PlaceTeamContainer = () => {
                   type="PLAYER"
                 >
                   {(provided) => (
-                    <div className="relative">
+                    <div
+                      className={`relative ${!isLargeScreen ? 'flex justify-center' : ''}`}
+                    >
                       <PlayerList
                         players={unplacedPlayers}
                         provided={provided}
@@ -576,17 +578,17 @@ const PlaceTeamContainer = () => {
               </div>
 
               <div
-                className={`relative ${isLargeScreen ? 'h-[500px] w-[55%]' : 'mb-10 h-auto min-h-[450px] w-full'}`}
+                className={`relative ${isLargeScreen ? 'h-[500px] w-[55%]' : 'mb-10 flex h-auto min-h-[450px] w-full justify-center'}`}
               >
                 <StrictModeDroppable droppableId="court" type="PLAYER">
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="relative h-full overflow-visible rounded-lg"
+                      className={`relative h-full overflow-visible rounded-lg ${!isLargeScreen ? 'mx-auto' : ''}`}
                     >
                       <div
-                        className={`relative h-full ${!isLargeScreen ? 'pb-10' : ''}`}
+                        className={`relative h-full ${!isLargeScreen ? 'flex items-center justify-center pb-10' : ''}`}
                       >
                         <SportMap
                           type={sportType}
@@ -710,7 +712,9 @@ const PlaceTeamContainer = () => {
             </div>
           </div>
         </div>
-        <div className={`mb-30 mt-30 ${!isLargeScreen ? 'pb-16' : ''}`}>
+        <div
+          className={`mb-30 mt-30 ${!isLargeScreen ? 'flex justify-center pb-16' : ''}`}
+        >
           <Button
             bg="bg-main-600"
             textColor="text-white"
