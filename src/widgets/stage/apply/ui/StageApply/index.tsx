@@ -38,7 +38,7 @@ const StageApply = ({ game }: StageApplyProps) => {
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
           <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
-            <SportTypeLabel type={category[0]} />
+            <SportTypeLabel type={category} />
             <MatchTypeLabel
               type={'TEAM'}
               customText={String(teamCount)}

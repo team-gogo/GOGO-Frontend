@@ -13,8 +13,8 @@ export interface MatchGameType {
   gameId: number;
   gameName: string;
   teamCount: number;
-  category: MatchCategory[];
-  system: SystemCategory[];
+  category: MatchCategory;
+  system: SystemCategory;
   isParticipating: boolean;
 }
 

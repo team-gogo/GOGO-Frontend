@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useMyStageIdStore, usePasswordModalStore } from '@/shared/stores';
+import useStageNameStore from '@/shared/stores/useStageNameStore';
 import { MyStageType } from '@/shared/types/my';
 import { StagesType } from '@/shared/types/stage';
 import { cn } from '@/shared/utils/cn';
@@ -20,7 +21,8 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
   const { push } = useRouter();
   const pathname = usePathname();
 
-  const { setIsPasswordModalOpen } = usePasswordModalStore();
+  const { setStageName } = useStageNameStore();
+  const { setIsPasswordModalOpen, setClickedStageId } = usePasswordModalStore();
   const { setStageId } = useMyStageIdStore();
 
   const isParticipating =
@@ -28,12 +30,15 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
 
   const isPassCode = 'isPassCode' in stage ? stage.isPassCode : undefined;
 
-  const Participate = isParticipating || isMyStage || isMaintainer;
+  const Participate = isParticipating || isMyStage;
 
   const isStagePage = pathname === '/stage';
 
   const handleClick = () => {
-    if (Participate) {
+    if (isParticipating) {
+      push(`/stage/${stageId}`);
+      setStageName(stageName);
+    } else if (Participate) {
       setStageId(stageId);
       if (isStagePage) {
         push(`/${stageId}`);
@@ -42,6 +47,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
       }
     } else if (isPassCode) {
       setIsPasswordModalOpen(true);
+      setClickedStageId(stageId);
     } else {
       push(`/stage/stageId=${stage.stageId}`);
     }
