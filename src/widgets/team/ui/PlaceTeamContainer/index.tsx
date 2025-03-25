@@ -574,14 +574,14 @@ const PlaceTeamContainer = () => {
               </div>
 
               <div
-                className={`relative ${isLargeScreen ? 'h-[500px] w-[55%]' : 'h-[400px] w-full'}`}
+                className={`relative ${isLargeScreen ? 'h-[500px] w-[55%]' : 'h-auto min-h-[450px] w-full'}`}
               >
                 <StrictModeDroppable droppableId="court" type="PLAYER">
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="relative h-full overflow-hidden rounded-lg"
+                      className="relative h-full overflow-visible rounded-lg"
                     >
                       <div className="relative h-full">
                         <SportMap
@@ -705,7 +705,7 @@ const PlaceTeamContainer = () => {
             </div>
           </div>
         </div>
-        <div className="mb-30 mt-30">
+        <div className={`mb-30 mt-30 ${!isLargeScreen ? 'pb-16' : ''}`}>
           <Button
             bg="bg-main-600"
             textColor="text-white"
