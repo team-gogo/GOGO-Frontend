@@ -10,6 +10,7 @@ import {
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { toast } from 'react-toastify';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
 import PlayerDropdown from '@/entities/team/ui/PlayerDropdown';
@@ -376,8 +377,10 @@ const PlaceTeamContainer = () => {
         gameId: String(gameIdParam),
       });
       router.push('/stage');
+      toast.success('팀 생성이 완료되었습니다.');
     } catch (error) {
       console.error(error);
+      toast.error('팀 생성에 실패했습니다.');
     }
   }, [placedPlayers, membersList, players, teamName, router, gameIdParam]);
 
