@@ -22,14 +22,20 @@ import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
 import { CommunityItemContainer } from '@/widgets/community';
-import { MiniGameSection, SectionWrapper } from '@/widgets/main';
+import {
+  MatchListSection,
+  MiniGameSection,
+  SectionWrapper,
+} from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
 import { getBoardMock, getMatchInfo, getRankingMock } from '../..';
+import getStageInMatch from '../Mock/getStageInMatch';
 
 const MainPage = () => {
   const matchInfo = getMatchInfo();
   const rankingMock = getRankingMock();
   const boardMock = getBoardMock();
+  const stageInMatch = getStageInMatch();
   const slicedBoardMock = boardMock.board.slice(0, 4);
 
   const { stageId } = useParams();
@@ -121,19 +127,37 @@ const MainPage = () => {
               </div>
             </SectionWrapper>
           </div>
-          <SectionWrapper
-            text={'커뮤니티'}
-            icon={<CommunityIcon />}
-            path="/community"
+
+          <div
+            className={cn(
+              'w-full',
+              'flex',
+              'gap-[1.75rem]',
+              'tablet:flex-wrap',
+            )}
           >
-            <CommunityItemContainer
-              isMainUsed={isMainUsed}
-              boardData={{
-                info: boardMock.info,
-                board: slicedBoardMock,
-              }}
-            />
-          </SectionWrapper>
+            <SectionWrapper
+              text={'커뮤니티'}
+              icon={<CommunityIcon />}
+              path="/community"
+            >
+              <CommunityItemContainer
+                isMainUsed={isMainUsed}
+                boardData={{
+                  info: boardMock.info,
+                  board: slicedBoardMock,
+                }}
+              />
+            </SectionWrapper>
+
+            <SectionWrapper
+              text={'경기'}
+              icon={<RankingIcon />}
+              path="/match/team"
+            >
+              <MatchListSection stageInMatch={stageInMatch} />
+            </SectionWrapper>
+          </div>
         </div>
       </div>
       {isMatchModalOpen && (

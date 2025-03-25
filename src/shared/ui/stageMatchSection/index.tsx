@@ -43,7 +43,14 @@ const StageMatchSection = ({
   } = useStageNavigation(totalMatches, visibleCount);
 
   return (
-    <div className={cn('flex', 'w-full', 'h-full', 'flex-col')}>
+    <div
+      className={cn(
+        'flex',
+        'h-full',
+        'flex-col',
+        totalStages >= 3 || totalMatches >= 3 ? 'w-[95%]' : 'w-full',
+      )}
+    >
       {title && (
         <h2
           className={cn('h-full', 'text-body1e', 'text-white', 'pb-[2.5rem]')}
