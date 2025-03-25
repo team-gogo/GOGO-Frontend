@@ -63,7 +63,7 @@ const PlaceTeamContainer = () => {
 
   const searchParams = useSearchParams();
   const sportParam = searchParams.get('sport');
-  const matchIdParam = searchParams.get('matchId');
+  const gameIdParam = searchParams.get('gameId');
 
   const getSportType = (): SportType => {
     if (
@@ -365,13 +365,13 @@ const PlaceTeamContainer = () => {
       await postTeam({
         teamName,
         participants,
-        matchId: String(matchIdParam),
+        gameId: String(gameIdParam),
       });
-      // router.push('/');
+      router.push('/stage');
     } catch (error) {
       console.error(error);
     }
-  }, [placedPlayers, membersList, players, teamName, router, matchIdParam]);
+  }, [placedPlayers, membersList, players, teamName, router, gameIdParam]);
 
   const handleGlobalMouseMove = useCallback(
     (e: MouseEvent, playerId: string) => {

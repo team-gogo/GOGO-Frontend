@@ -43,11 +43,12 @@ const CreateTeamContainer = () => {
       return;
     }
 
-    const stageId = searchParams.get('stageId');
+    const gameId = searchParams.get('matchId');
     sessionStorage.setItem('teamName', teamName);
     sessionStorage.setItem('members', JSON.stringify(selectedStudents));
+    sessionStorage.setItem('gameId', gameId || '');
 
-    router.push(`/team/place?stageId=${stageId}`);
+    router.push(`/team/place?gameId=${gameId}`);
   };
 
   return (
