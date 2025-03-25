@@ -1,4 +1,8 @@
+'use client';
+
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getStageMaintainer } from '@/entities/stage/api/getStageMaintainer';
 import { MatchGameType } from '@/shared/types/stage/apply';
 import Button from '@/shared/ui/button';
 import MatchTypeLabel from '@/shared/ui/matchTypeLabel';
@@ -12,9 +16,27 @@ interface StageApplyProps {
 const StageApply = ({ game }: StageApplyProps) => {
   const { gameName, teamCount, category, isParticipating, gameId } = game;
   const router = useRouter();
+  const [isMaintainer, setIsMaintainer] = useState(false);
+
+  useEffect(() => {
+    const checkMaintainer = async () => {
+      try {
+        const response = await getStageMaintainer(String(gameId));
+        setIsMaintainer(response.isMaintainer);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    checkMaintainer();
+  }, [gameId]);
 
   const handleApply = () => {
-    router.push(`/team/create?matchId=${gameId}&category=${category}`);
+    if (isMaintainer) {
+      router.push(`/team/confirm?matchId=${gameId}`);
+    } else {
+      router.push(`/team/create?matchId=${gameId}&category=${category}`);
+    }
   };
 
   return (
@@ -65,8 +87,12 @@ const StageApply = ({ game }: StageApplyProps) => {
             {gameName}
           </h1>
           <div className={cn('flex', 'w-full', 'justify-center')}>
-            <Button disabled={isParticipating} onClick={handleApply}>
-              신청하기
+            <Button
+              disabled={isParticipating && !isMaintainer}
+              onClick={handleApply}
+              bg={isMaintainer ? 'bg-red-600' : undefined}
+            >
+              {isMaintainer ? '종료하기' : '신청하기'}
             </Button>
           </div>
         </div>
