@@ -27,7 +27,9 @@ const PlayerItem = ({
       )}
     >
       <PlayerIcon className="mb-1" />
-      <span className="text-body3s text-white">{name}</span>
+      <span className="max-w-[80px] overflow-hidden text-ellipsis whitespace-nowrap text-body3s text-white">
+        {name}
+      </span>
     </div>
   );
 };
