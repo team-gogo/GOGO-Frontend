@@ -10,9 +10,9 @@ import { useGetMatchApplyList } from '../../model/useGetMatchApplyList';
 
 const MatchApplyPage = () => {
   const pathname = usePathname();
-  const matchId = pathname.split('/').pop();
+  const stageId = pathname.match(/stageId=(\d+)/)?.[1];
   const { data: matchApplyList, isPending } = useGetMatchApplyList(
-    Number(matchId),
+    Number(stageId),
   );
   const { selectedSport, toggleSportSelection } = useSelectSport();
   const { stageName } = useStageNameStore();
