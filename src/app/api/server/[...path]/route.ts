@@ -29,7 +29,6 @@ async function handleRequest(req: NextRequest) {
 
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}${req.nextUrl.pathname.replace('/api/server', '')}`;
 
-  console.log('🍒' + url + ' ' + req.method);
   const method = req.method;
 
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
@@ -64,7 +63,6 @@ async function handleRequest(req: NextRequest) {
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
-    console.log('에러발래ㅐㅐㅐㅐ' + error);
     const axiosError = error as AxiosError<{ message: string }>;
     const status = axiosError.response?.status || 500;
     const message =

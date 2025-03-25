@@ -5,7 +5,7 @@ import {
 } from '@/entities/community';
 import { SortType, SportType } from '@/shared/model/sportTypes';
 import { cn } from '@/shared/utils/cn';
-import { useGetCommunityQuery } from '@/views/community/model/useGetCommunityQuery';
+import { useGetCommunityQuery } from '../../model/useGetCommunityQuery';
 
 interface CommunityItemProps {
   isMainUsed?: boolean;

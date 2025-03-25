@@ -30,7 +30,6 @@ const CommunityCreateContainer = () => {
     useForm<CommunityCreateFormData>();
 
   const onSubmit: SubmitHandler<CommunityCreateFormData> = (data) => {
-    console.log(data);
     createCommunity(data);
   };
 
