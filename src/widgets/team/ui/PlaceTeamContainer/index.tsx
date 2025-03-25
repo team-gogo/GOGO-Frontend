@@ -82,6 +82,7 @@ const PlaceTeamContainer = () => {
     height: number;
   }>({ width: 0, height: 0 });
   const [playerScale, setPlayerScale] = useState(1);
+  const [isLargeScreen, setIsLargeScreen] = useState(true);
 
   const searchParams = useSearchParams();
   const sportParam = searchParams.get('sport');
@@ -495,6 +496,15 @@ const PlaceTeamContainer = () => {
     [handlePlayerDrag, svgBounds],
   );
 
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsLargeScreen(window.innerWidth >= 1280);
+    };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <div className="pointer-events-none fixed inset-0 z-[9999]" />
@@ -509,8 +519,12 @@ const PlaceTeamContainer = () => {
               <PlayerIcon className="mr-1" />
               <span className="text-body1s text-white">인원을 배치 하세요</span>
             </div>
-            <div className="relative flex justify-between">
-              <div className="relative w-[60%] pr-4">
+            <div
+              className={`relative flex ${isLargeScreen ? 'flex-row justify-between' : 'flex-col gap-8'}`}
+            >
+              <div
+                className={`relative ${isLargeScreen ? 'w-[60%] pr-4' : 'mb-6 w-full'}`}
+              >
                 <div className="mb-3 flex items-center">
                   <PlayerDropdown
                     selectedPlayer={selectedPlayer}
@@ -559,7 +573,9 @@ const PlaceTeamContainer = () => {
                 </StrictModeDroppable>
               </div>
 
-              <div className="relative h-[500px] w-[55%]">
+              <div
+                className={`relative ${isLargeScreen ? 'h-[500px] w-[55%]' : 'h-[400px] w-full'}`}
+              >
                 <StrictModeDroppable droppableId="court" type="PLAYER">
                   {(provided) => (
                     <div
