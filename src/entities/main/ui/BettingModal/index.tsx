@@ -11,6 +11,7 @@ import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
 import { formatBettingData } from '../../model/formatBettingData';
 import { useBettingForm } from '../../model/useBettingForm';
+import { usePostBettingMatch } from '../../model/usePostBettingMatch';
 import MatchTeam from '../MatchTeam';
 
 interface BettingModalProps {
@@ -18,6 +19,14 @@ interface BettingModalProps {
 }
 
 const BettingModal = ({ onClose }: BettingModalProps) => {
+  const { matchStatus, match } = useMatchStore();
+
+  if (!match) {
+    return null;
+  }
+
+  const { mutate: PostBettingMatch } = usePostBettingMatch(match.matchId);
+
   const {
     register,
     handleSubmit,
@@ -30,33 +39,33 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
 
   const onSubmit = (data: BettingFormData) => {
     const formattedData = formatBettingData(data, selectedTeamId);
+    const finalData = {
+      ...formattedData,
+      predictedWinTeamId: formattedData.predictedWinTeamId ?? 0,
+    };
+
+    PostBettingMatch(finalData);
     onClose();
 
     console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
   };
 
-  const { matchStatus, match } = useMatchStore();
-
-  if (!match) {
-    return null;
-  }
-
-  const { aTeam, bTeam, category, betting } = match;
+  const { ateam, bteam, category, betting } = match;
 
   const { isPlaying, isMatchFinish, time, roundText } = matchStatus;
 
   const isFinal = roundText === '결승전';
-  const totalBettingPoints = aTeam.bettingPoint + bTeam.bettingPoint;
+  const totalBettingPoints = ateam?.bettingPoint + bteam?.bettingPoint;
 
   const aTeamPercentage =
     totalBettingPoints === 0
       ? '0.0'
-      : ((aTeam.bettingPoint / totalBettingPoints) * 100).toFixed(2);
+      : ((ateam?.bettingPoint / totalBettingPoints) * 100).toFixed(2);
 
   const bTeamPercentage =
     totalBettingPoints === 0
       ? '0.0'
-      : ((bTeam.bettingPoint / totalBettingPoints) * 100).toFixed(2);
+      : ((ateam?.bettingPoint / totalBettingPoints) * 100).toFixed(2);
 
   const getBettingTeamColor = (teamId: number) => {
     if (selectedTeamId === teamId || betting.predictedWinTeamId === teamId) {
@@ -72,7 +81,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
 
   return (
     <ModalLayout
-      title={`${aTeam.teamName} VS ${bTeam.teamName}`}
+      title={`${ateam?.teamName} VS ${bteam?.teamName}`}
       onClose={onClose}
       containerClassName={cn(
         'rounded-lg',
@@ -102,7 +111,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
             color={isPlaying ? '#01C612' : isMatchFinish ? '#898989' : '#FFF'}
           />
           <SportTypeLabel
-            type={category && category.length > 0 ? category[0] : ''}
+            type={category && category.length > 0 ? category : ''}
           />
         </div>
         <div
@@ -114,10 +123,10 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
           )}
         >
           <MatchTeam
-            team={aTeam}
+            team={ateam}
             percentage={Number(aTeamPercentage)}
-            bgColor={getBettingTeamColor(aTeam.teamId)}
-            onClick={() => handleTeamClick(aTeam.teamId)}
+            bgColor={getBettingTeamColor(ateam?.teamId)}
+            onClick={() => handleTeamClick(ateam?.teamId)}
           />
           <div
             className={cn(
@@ -144,10 +153,10 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
             <h2 className={cn('text-h1e', 'text-gray-500')}>VS</h2>
           </div>
           <MatchTeam
-            team={bTeam}
+            team={bteam}
             percentage={Number(bTeamPercentage)}
-            bgColor={getBettingTeamColor(bTeam.teamId)}
-            onClick={() => handleTeamClick(bTeam.teamId)}
+            bgColor={getBettingTeamColor(bteam?.teamId)}
+            onClick={() => handleTeamClick(bteam?.teamId)}
           />
         </div>
         <div

@@ -16,6 +16,7 @@ import {
   useBatchModalStore,
   useCheckAgainModalStore,
   useMyStageIdStore,
+  useSelectDateStore,
 } from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
@@ -28,11 +29,11 @@ import {
   SectionWrapper,
 } from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
-import { getBoardMock, getMatchInfo, getRankingMock } from '../..';
+import { getBoardMock, getRankingMock } from '../..';
+import { useGetSearchMatch } from '../../model/useGetSearchMatch';
 import getStageInMatch from '../Mock/getStageInMatch';
 
 const MainPage = () => {
-  const matchInfo = getMatchInfo();
   const rankingMock = getRankingMock();
   const boardMock = getBoardMock();
   const stageInMatch = getStageInMatch();
@@ -41,6 +42,19 @@ const MainPage = () => {
   const { stageId } = useParams();
 
   const { setStageId } = useMyStageIdStore();
+  const { selectDate } = useSelectDateStore();
+
+  const today = new Date();
+  const formattedToday = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+  const isToday = selectDate === '' || selectDate === formattedToday;
+
+  const [year, month, day] = selectDate
+    ? selectDate.split('-').map(Number)
+    : [today.getFullYear(), today.getMonth() + 1, today.getDate()];
+
+  const { data: searchMatchData, isPending: searchMatchPending } =
+    useGetSearchMatch(Number(stageId), year, month, day);
 
   useEffect(() => {
     setStageId(Number(stageId));
@@ -91,11 +105,14 @@ const MainPage = () => {
           )}
         >
           <SectionWrapper
-            text={'미니게임'}
+            text={isToday ? '오늘 최신 매치' : `${selectDate.slice(5)} 매치`}
             icon={<MatchClockIcon />}
             path="/match"
           >
-            <StageMatchSection matches={matchInfo} />
+            <StageMatchSection
+              matches={searchMatchData}
+              isPending={searchMatchPending}
+            />
           </SectionWrapper>
           <div
             className={cn(

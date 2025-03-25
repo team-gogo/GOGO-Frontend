@@ -62,7 +62,11 @@ const StagePage = () => {
           'flex min-h-screen w-full max-w-[82.5rem] flex-col gap-[4rem]',
         )}
       >
-        <div className={cn('flex h-full flex-col gap-[2.5rem]')}>
+        <div
+          className={cn(
+            'flex h-full flex-col items-center justify-center gap-[2.5rem]',
+          )}
+        >
           <StageHeader />
 
           <StageMatchSection stages={participateStages} isPending={isPending} />
