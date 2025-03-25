@@ -264,12 +264,10 @@ const PlaceTeamContainer = () => {
   const onDragStart = useCallback((start: DragStart) => {
     setIsDragging(true);
     draggedPlayerRef.current = start.draggableId;
-    console.log('Drag started:', start.draggableId);
   }, []);
 
   const onDragEnd = useCallback(
     (result: DropResult) => {
-      console.log('Drag ended:', result);
       setIsDragging(false);
       draggedPlayerRef.current = null;
 
