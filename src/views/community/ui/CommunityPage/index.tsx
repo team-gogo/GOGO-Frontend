@@ -1,13 +1,11 @@
 'use client';
 
 import { useParams, useSearchParams } from 'next/navigation';
-import { NavigationBar } from '@/entities/community';
 import useSelectSort from '@/shared/model/useSelectSort';
 import useSelectSport from '@/shared/model/useSelectSport';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { CommunityItemContainer, CommunityToolbar } from '@/widgets/community';
-import { useGetCommunityQuery } from '../../model/useGetCommunityQuery';
 
 const CommunityPage = () => {
   const searchParams = useSearchParams();
@@ -17,32 +15,6 @@ const CommunityPage = () => {
 
   const { selectedSort, toggleSortSelection } = useSelectSort();
   const { selectedSport, toggleSportSelection } = useSelectSport();
-
-  const { data } = useGetCommunityQuery(
-    safeStageId,
-    selectedSport,
-    selectedSort,
-    currentPage,
-  );
-
-  const itemsPerPage = 7;
-  const totalPairs = data?.info?.totalPage || 0;
-
-  const currentBoardData = data
-    ? {
-        info: data.info,
-        board: data.board.slice(
-          (currentPage - 1) * itemsPerPage,
-          currentPage * itemsPerPage,
-        ),
-      }
-    : {
-        info: {
-          totalPage: 0,
-          totalElement: 0,
-        },
-        board: [],
-      };
 
   return (
     <div
@@ -58,7 +30,6 @@ const CommunityPage = () => {
           'items-center',
           'max-w-[1320px]',
           'gap-[2.5rem]',
-          'pt-[2rem]',
         )}
       >
         <div
@@ -72,9 +43,13 @@ const CommunityPage = () => {
             toggleSortSelection={toggleSortSelection}
             stageId={safeStageId}
           />
-          <CommunityItemContainer boardData={currentBoardData} />
+          <CommunityItemContainer
+            stageId={safeStageId}
+            selectedSport={selectedSport}
+            selectedSort={selectedSort}
+            currentPage={currentPage}
+          />
         </div>
-        <NavigationBar stageId={safeStageId} totalPairs={totalPairs} />
       </div>
     </div>
   );
