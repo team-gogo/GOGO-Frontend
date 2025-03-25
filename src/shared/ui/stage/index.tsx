@@ -28,7 +28,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
 
   const isPassCode = 'isPassCode' in stage ? stage.isPassCode : undefined;
 
-  const Participate = isParticipating || isMyStage || isMaintainer;
+  const Participate = isParticipating || isMyStage;
 
   const isStagePage = pathname === '/stage';
 
