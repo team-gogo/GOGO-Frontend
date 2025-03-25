@@ -11,7 +11,13 @@ export const useGetCommunityQuery = (
   currentPage: number,
 ) => {
   return useQuery<BoardData, Error>({
-    queryKey: ['communityList', stageId],
+    queryKey: [
+      'communityList',
+      stageId,
+      selectedSport,
+      selectedSort,
+      currentPage,
+    ],
     queryFn: () =>
       getCommunityList(stageId, selectedSport, selectedSort, currentPage),
   });
