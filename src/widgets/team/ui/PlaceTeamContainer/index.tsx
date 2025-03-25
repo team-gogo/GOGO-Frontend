@@ -13,7 +13,6 @@ import {
 } from 'react-beautiful-dnd';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
-import { Player } from '@/entities/team/ui/Map/types';
 import PlayerDropdown from '@/entities/team/ui/PlayerDropdown';
 import PlayerItem from '@/entities/team/ui/PlayerItem';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
@@ -23,6 +22,15 @@ import { SportType } from '@/shared/model/sportTypes';
 import { Student } from '@/shared/types/stage/create';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
+
+interface Player {
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+  relativeX?: number;
+  relativeY?: number;
+}
 
 const StrictModeDroppable = ({
   children,
@@ -73,6 +81,7 @@ const PlaceTeamContainer = () => {
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
+  const [playerScale, setPlayerScale] = useState(1);
 
   const searchParams = useSearchParams();
   const sportParam = searchParams.get('sport');
@@ -147,23 +156,67 @@ const PlaceTeamContainer = () => {
   }, [sportType, svgBounds.width, svgBounds.height]);
 
   useEffect(() => {
-    if (previousSvgBounds.width && previousSvgBounds.height) {
-      const widthRatio = svgBounds.width / previousSvgBounds.width;
-      const heightRatio = svgBounds.height / previousSvgBounds.height;
-
+    if (svgBounds.width && svgBounds.height) {
       setPlayers((prevPlayers) =>
         prevPlayers.map((player) => {
           if (player.x === 0 && player.y === 0) return player;
 
+          const relX = player.relativeX ?? player.x / previousSvgBounds.width;
+          const relY = player.relativeY ?? player.y / previousSvgBounds.height;
+
+          const newX = relX * svgBounds.width;
+          const newY = relY * svgBounds.height;
+
           return {
             ...player,
-            x: player.x * widthRatio,
-            y: player.y * heightRatio,
+            x: newX,
+            y: newY,
+            relativeX: relX,
+            relativeY: relY,
           };
         }),
       );
     }
-  }, [svgBounds.width, svgBounds.height]);
+  }, [
+    svgBounds.width,
+    svgBounds.height,
+    previousSvgBounds.width,
+    previousSvgBounds.height,
+  ]);
+
+  useEffect(() => {
+    const updatePlayerScale = () => {
+      const courtElement = document.querySelector(
+        '[data-rbd-droppable-id="court"]',
+      );
+      if (courtElement) {
+        const svg = courtElement.querySelector('svg');
+        if (svg) {
+          const svgRect = svg.getBoundingClientRect();
+          const baseWidth = 600;
+          const minScale = 0.6;
+          const scale = Math.max(minScale, svgRect.width / baseWidth);
+          setPlayerScale(scale);
+        }
+      }
+    };
+
+    updatePlayerScale();
+
+    const courtElement = document.querySelector(
+      '[data-rbd-droppable-id="court"]',
+    );
+    if (courtElement) {
+      const resizeObserver = new ResizeObserver(() => {
+        updatePlayerScale();
+      });
+      resizeObserver.observe(courtElement);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+  }, []);
 
   const handleAddPlayer = useCallback(() => {
     if (selectedPlayer && selectedPlayer !== '인원 선택') {
@@ -206,7 +259,13 @@ const PlaceTeamContainer = () => {
       setPlayers((prev) =>
         prev.map((player) =>
           player.id === playerId
-            ? { ...player, x: boundedX, y: boundedY }
+            ? {
+                ...player,
+                x: boundedX,
+                y: boundedY,
+                relativeX: boundedX / svgBounds.width,
+                relativeY: boundedY / svgBounds.height,
+              }
             : player,
         ),
       );
@@ -280,7 +339,13 @@ const PlaceTeamContainer = () => {
         setPlayers((prev) =>
           prev.map((player) =>
             player.id === draggableId
-              ? { ...player, x: boundedX, y: boundedY }
+              ? {
+                  ...player,
+                  x: boundedX,
+                  y: boundedY,
+                  relativeX: boundedX / svgBounds.width,
+                  relativeY: boundedY / svgBounds.height,
+                }
               : player,
           ),
         );
@@ -540,7 +605,7 @@ const PlaceTeamContainer = () => {
                                   {...provided.dragHandleProps}
                                   style={{
                                     position: 'absolute',
-                                    transform: `translate3d(${player.x}px, ${player.y}px, 0)`,
+                                    transform: `translate3d(${player.x}px, ${player.y}px, 0) scale(${playerScale})`,
                                     transition: snapshot.isDragging
                                       ? 'none'
                                       : 'transform 0.2s',
@@ -551,6 +616,7 @@ const PlaceTeamContainer = () => {
                                         : 1,
                                     pointerEvents: 'auto',
                                     willChange: 'transform',
+                                    transformOrigin: '0 0',
                                   }}
                                   onMouseDown={(e) => {
                                     if (
@@ -601,10 +667,11 @@ const PlaceTeamContainer = () => {
                                       userSelect: 'none',
                                       touchAction: 'none',
                                       pointerEvents: 'auto',
-
                                       display: 'flex',
                                       alignItems: 'center',
                                       justifyContent: 'center',
+                                      transform: `scale(${playerScale})`,
+                                      transformOrigin: 'center center',
                                     }}
                                     className="transition-transform"
                                   />
