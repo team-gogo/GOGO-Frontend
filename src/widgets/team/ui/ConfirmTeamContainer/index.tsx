@@ -45,7 +45,7 @@ const ConfirmTeamContainer = () => {
           'mt-30',
         )}
       >
-        <h1 className={cn('text-h3e', 'text-white', 'mb-32', 'mt-32')}>
+        <h1 className={cn('text-h3e', 'text-white', 'mb-28', 'mt-28')}>
           현재 등록된 팀들
         </h1>
         <div className={cn('flex', 'items-center', 'gap-8', 'ml-auto')}>
