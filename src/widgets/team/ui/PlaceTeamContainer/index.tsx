@@ -636,10 +636,7 @@ const PlaceTeamContainer = () => {
                                     transformOrigin: '0 0',
                                   }}
                                   onMouseDown={(e) => {
-                                    if (
-                                      e.button === 0 &&
-                                      !snapshot.isDragging
-                                    ) {
+                                    if (e.button === 0) {
                                       e.stopPropagation();
                                       e.preventDefault();
                                       setDraggingPlayerId(player.id);
