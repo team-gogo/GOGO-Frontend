@@ -69,6 +69,10 @@ const PlaceTeamContainer = () => {
     left: 0,
     top: 0,
   });
+  const [previousSvgBounds, setPreviousSvgBounds] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
 
   const searchParams = useSearchParams();
   const sportParam = searchParams.get('sport');
@@ -117,6 +121,11 @@ const PlaceTeamContainer = () => {
           const svgRect = svg.getBoundingClientRect();
           const parentRect = courtElement.getBoundingClientRect();
 
+          setPreviousSvgBounds({
+            width: svgBounds.width,
+            height: svgBounds.height,
+          });
+
           setSvgBounds({
             width: svgRect.width,
             height: svgRect.height,
@@ -128,16 +137,33 @@ const PlaceTeamContainer = () => {
     };
 
     updateSvgBounds();
-
     window.addEventListener('resize', updateSvgBounds);
-
     const timeoutId = setTimeout(updateSvgBounds, 100);
 
     return () => {
       window.removeEventListener('resize', updateSvgBounds);
       clearTimeout(timeoutId);
     };
-  }, [sportType]);
+  }, [sportType, svgBounds.width, svgBounds.height]);
+
+  useEffect(() => {
+    if (previousSvgBounds.width && previousSvgBounds.height) {
+      const widthRatio = svgBounds.width / previousSvgBounds.width;
+      const heightRatio = svgBounds.height / previousSvgBounds.height;
+
+      setPlayers((prevPlayers) =>
+        prevPlayers.map((player) => {
+          if (player.x === 0 && player.y === 0) return player;
+
+          return {
+            ...player,
+            x: player.x * widthRatio,
+            y: player.y * heightRatio,
+          };
+        }),
+      );
+    }
+  }, [svgBounds.width, svgBounds.height]);
 
   const handleAddPlayer = useCallback(() => {
     if (selectedPlayer && selectedPlayer !== '인원 선택') {
@@ -165,14 +191,17 @@ const PlaceTeamContainer = () => {
 
       const playerRect = playerElement.getBoundingClientRect();
 
+      const relativeX = (x - svgBounds.left) / svgBounds.width;
+      const relativeY = (y - svgBounds.top) / svgBounds.height;
+
+      const absoluteX = relativeX * svgBounds.width;
+      const absoluteY = relativeY * svgBounds.height;
+
       const maxX = svgBounds.width - playerRect.width;
       const maxY = svgBounds.height - playerRect.height;
 
-      const adjustedX = x - svgBounds.left;
-      const adjustedY = y - svgBounds.top;
-
-      const boundedX = Math.max(0, Math.min(adjustedX, maxX));
-      const boundedY = Math.max(0, Math.min(adjustedY, maxY));
+      const boundedX = Math.max(0, Math.min(absoluteX, maxX));
+      const boundedY = Math.max(0, Math.min(absoluteY, maxY));
 
       setPlayers((prev) =>
         prev.map((player) =>
@@ -212,31 +241,6 @@ const PlaceTeamContainer = () => {
 
       if (
         source.droppableId === 'playersList' &&
-        destination.droppableId === 'playersList'
-      ) {
-        setPlayers((prev) => {
-          const newPlayers = Array.from(prev);
-          const [removed] = newPlayers.splice(source.index, 1);
-          newPlayers.splice(destination.index, 0, removed);
-          return newPlayers;
-        });
-        return;
-      }
-
-      if (
-        source.droppableId === 'court' &&
-        destination.droppableId === 'playersList'
-      ) {
-        setPlayers((prev) =>
-          prev.map((player) =>
-            player.id === draggableId ? { ...player, x: 0, y: 0 } : player,
-          ),
-        );
-        return;
-      }
-
-      if (
-        source.droppableId === 'playersList' &&
         destination.droppableId === 'court'
       ) {
         const courtElement = document.querySelector(
@@ -252,22 +256,23 @@ const PlaceTeamContainer = () => {
         const playerRect = playerElement.getBoundingClientRect();
         const { x: mouseX, y: mouseY } = mousePositionRef.current;
 
-        // Calculate position relative to the SVG bounds
-        const relativeX = mouseX - courtRect.left;
-        const relativeY = mouseY - courtRect.top;
+        const relativeX = (mouseX - courtRect.left) / svgBounds.width;
+        const relativeY = (mouseY - courtRect.top) / svgBounds.height;
 
-        // Ensure the player stays within the SVG bounds
+        const absoluteX = relativeX * svgBounds.width;
+        const absoluteY = relativeY * svgBounds.height;
+
         const boundedX = Math.max(
           svgBounds.left,
           Math.min(
-            relativeX - playerRect.width / 2,
+            absoluteX - playerRect.width / 2,
             svgBounds.left + svgBounds.width - playerRect.width,
           ),
         );
         const boundedY = Math.max(
           svgBounds.top,
           Math.min(
-            relativeY - playerRect.height / 2,
+            absoluteY - playerRect.height / 2,
             svgBounds.top + svgBounds.height - playerRect.height,
           ),
         );
@@ -279,6 +284,27 @@ const PlaceTeamContainer = () => {
               : player,
           ),
         );
+      } else {
+        if (
+          source.droppableId === 'playersList' &&
+          destination.droppableId === 'playersList'
+        ) {
+          setPlayers((prev) => {
+            const newPlayers = Array.from(prev);
+            const [removed] = newPlayers.splice(source.index, 1);
+            newPlayers.splice(destination.index, 0, removed);
+            return newPlayers;
+          });
+        } else if (
+          source.droppableId === 'court' &&
+          destination.droppableId === 'playersList'
+        ) {
+          setPlayers((prev) =>
+            prev.map((player) =>
+              player.id === draggableId ? { ...player, x: 0, y: 0 } : player,
+            ),
+          );
+        }
       }
     },
     [svgBounds],
