@@ -1,7 +1,17 @@
-const TeamCountIcon = ({ color = '#01C612' }: { color?: string }) => (
+const TeamCountIcon = ({
+  color = '#01C612',
+  isResponsive = true,
+}: {
+  color?: string;
+  isResponsive?: boolean;
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className="h-[1.25rem] w-[1.25rem] laptop:h-[0.75rem] laptop:w-[0.75rem]"
+    className={
+      isResponsive
+        ? 'h-[1.25rem] w-[1.25rem] laptop:h-[0.75rem] laptop:w-[0.75rem]'
+        : 'h-[1.25rem] w-[1.25rem]'
+    }
     viewBox="0 0 20 21"
     fill="none"
   >
