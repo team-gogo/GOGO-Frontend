@@ -14,10 +14,10 @@ interface CommentFormData {
 
 interface CommentInputProps {
   boardId: number;
-  onCommentAdded: (newComment: Comment) => void;
+  onAddComment: (newComment: Comment) => void;
 }
 
-const CommentInput = ({ boardId, onCommentAdded }: CommentInputProps) => {
+const CommentInput = ({ boardId, onAddComment }: CommentInputProps) => {
   const { register, handleSubmit, reset } = useForm<CommentFormData>({
     defaultValues: {
       boardId,
@@ -29,9 +29,10 @@ const CommentInput = ({ boardId, onCommentAdded }: CommentInputProps) => {
 
   const onSubmit: SubmitHandler<CommentFormData> = async (data) => {
     if (isPending) return;
+
     boardComment(data, {
       onSuccess: (newComment) => {
-        onCommentAdded(newComment);
+        onAddComment(newComment);
         reset();
       },
     });

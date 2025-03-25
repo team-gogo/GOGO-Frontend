@@ -16,7 +16,6 @@ const CommentContainer = ({ comments }: CommentContainerProps) => {
           'flex-1',
           'flex',
           'items-center',
-          'justify-center',
           'flex-col',
         )}
       >

@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CommentInput, CommunityContent } from '@/entities/community/detail';
 import { Comment } from '@/shared/types/community/detail';
 import BackPageButton from '@/shared/ui/backPageButton';
@@ -16,6 +16,16 @@ const CommunityDetailPage = () => {
   const { data, isLoading, isError } = useGetCommunityDetailQuery(safeBoardId);
   const [comments, setComments] = useState<Comment[]>([]);
 
+  useEffect(() => {
+    if (data?.comment) {
+      setComments(data.comment);
+    }
+  }, [data]);
+
+  const handleAddComment = (newComment: Comment) => {
+    setComments((prevComments) => [...prevComments, newComment]);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -23,14 +33,6 @@ const CommunityDetailPage = () => {
   if (isError || !data) {
     return <div>Error: Unable to load community details.</div>;
   }
-
-  if (comments.length === 0 && data.comment) {
-    setComments(data.comment);
-  }
-
-  const handleNewComment = (newComment: Comment) => {
-    setComments((prevComments) => [...prevComments, newComment]);
-  };
 
   return (
     <div
@@ -49,16 +51,16 @@ const CommunityDetailPage = () => {
           content={data.content}
           authorName={data.author.name}
           likeCount={data.likeCount}
-          commentCount={comments.length}
           createdAt={data.createdAt}
           stageCategory={data.stage.category}
           stageName={data.stage.name}
+          commentCount={comments.length}
           isLiked={data.isLiked}
           boardId={data.boardId}
         />
-        <CommentContainer comments={comments} />
+        <CommentContainer comments={data.comment} />
       </div>
-      <CommentInput boardId={data.boardId} onCommentAdded={handleNewComment} />
+      <CommentInput boardId={data.boardId} onAddComment={handleAddComment} />
     </div>
   );
 };
