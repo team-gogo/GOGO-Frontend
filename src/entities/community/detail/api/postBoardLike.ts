@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export const postBoardLike = async (boardId: number) => {
+  console.log(boardId);
   try {
     const response = await axios.post(
       `/api/server/stage/community/board/like/${boardId}`,

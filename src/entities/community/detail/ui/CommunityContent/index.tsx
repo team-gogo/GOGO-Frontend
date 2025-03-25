@@ -37,16 +37,12 @@ const CommunityContent = ({
   const [liked, setLiked] = useState(isLiked);
   const [likeCountState, setLikeCountState] = useState(likeCount);
 
-  const {
-    mutate: boardLike,
-    isPending,
-    isSuccess,
-  } = usePostBoardLikeMutation(boardId, setLiked, setLikeCountState);
+  const { mutate: boardLike } = usePostBoardLikeMutation(boardId);
 
   const handleLike = () => {
-    if (!isPending || !isSuccess) {
-      boardLike();
-    }
+    setLiked(!liked);
+    setLikeCountState((prev) => (liked ? prev - 1 : prev + 1));
+    boardLike();
   };
 
   return (

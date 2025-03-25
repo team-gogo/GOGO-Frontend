@@ -27,10 +27,9 @@ const CommentItem = ({
   const { mutate: commentLike } = usePostCommentLike(commentId);
 
   const handleLike = () => {
-    commentLike();
     setLiked(!liked);
     setLikeCountState(liked ? likeCountState - 1 : likeCountState + 1);
-    console.log(`Comment ID: ${commentId}, Liked: ${!liked}`);
+    commentLike();
   };
 
   return (

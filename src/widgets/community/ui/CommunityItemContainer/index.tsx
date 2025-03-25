@@ -37,14 +37,14 @@ const CommunityItemContainer = ({
     return <div>Error: {error.message}</div>;
   }
 
-  const totalPage = data?.info.totalPage || 1;
+  const totalPage = data?.info?.totalPage ?? 1;
 
   return (
     <div className={cn('flex', 'flex-col', 'items-center', 'gap-[2.5rem]')}>
       <div className={cn('w-full', 'space-y-12')}>
         {!isMainUsed && <CommunityHeader />}
         <div className={cn('space-y-16')}>
-          {data?.board.map((item) => (
+          {data?.board?.map((item) => (
             <CommunityItem
               key={item.boardId}
               item={item}

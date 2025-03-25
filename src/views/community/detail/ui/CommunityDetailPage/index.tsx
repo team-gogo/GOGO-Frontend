@@ -8,12 +8,13 @@ import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { CommentContainer } from '@/widgets/community/detail';
 import { useGetCommunityDetailQuery } from '../../model/useGetCommunityDetailQuery';
+import { useGetUserProfileQuery } from '../../model/useGetUserProfileQuery';
 
 const CommunityDetailPage = () => {
   const { boardId } = useParams();
   const safeBoardId = Array.isArray(boardId) ? boardId[0] : boardId || '';
-
   const { data, isLoading, isError } = useGetCommunityDetailQuery(safeBoardId);
+  const { data: userData } = useGetUserProfileQuery();
   const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {

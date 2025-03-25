@@ -29,15 +29,24 @@ async function handleRequest(req: NextRequest) {
 
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}${req.nextUrl.pathname.replace('/api/server', '')}`;
 
+  console.log('🍒' + url + ' ' + req.method);
   const method = req.method;
 
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
 
   let data;
   if (!['GET', 'DELETE', 'HEAD'].includes(method)) {
-    data = await req.json();
+    try {
+      const textBody = await req.text();
+      data = textBody ? JSON.parse(textBody) : undefined;
+    } catch (error) {
+      console.error('JSON 파싱 오류:', error);
+      return NextResponse.json(
+        { error: '잘못된 JSON 형식입니다.', status: 400 },
+        { status: 400 },
+      );
+    }
   }
-
   try {
     const response = await instance.request({
       url,
@@ -55,6 +64,7 @@ async function handleRequest(req: NextRequest) {
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
+    console.log('에러발래ㅐㅐㅐㅐ' + error);
     const axiosError = error as AxiosError<{ message: string }>;
     const status = axiosError.response?.status || 500;
     const message =
