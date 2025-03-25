@@ -2,6 +2,7 @@ import { useRef, useCallback } from 'react';
 import BadmintonSvg from '@/shared/assets/svg/Map/Badminton';
 import BaseballSvg from '@/shared/assets/svg/Map/Baseball';
 import BasketballSvg from '@/shared/assets/svg/Map/Basketball';
+import SoccerSvg from '@/shared/assets/svg/Map/Soccer';
 import VolleyballSvg from '@/shared/assets/svg/Map/Volleyball';
 import { SportType } from '@/shared/model/sportTypes';
 
@@ -104,8 +105,27 @@ const VolleyballMap = (props: {
   </MapComponent>
 );
 
+const SoccerMap = (props: {
+  onPositionChange?: (x: number, y: number) => void;
+  isMapDragging?: boolean;
+}) => (
+  <MapComponent
+    onPositionChange={props.onPositionChange}
+    isMapDragging={props.isMapDragging}
+  >
+    <SoccerSvg />
+  </MapComponent>
+);
+
 const SportMap = ({ type, onPositionChange, isMapDragging }: SportMapProps) => {
   switch (type) {
+    case 'VOLLEY_BALL':
+      return (
+        <VolleyballMap
+          onPositionChange={onPositionChange}
+          isMapDragging={isMapDragging}
+        />
+      );
     case 'BASKET_BALL':
       return (
         <BasketballMap
@@ -123,6 +143,13 @@ const SportMap = ({ type, onPositionChange, isMapDragging }: SportMapProps) => {
     case 'BASE_BALL':
       return (
         <BaseballMap
+          onPositionChange={onPositionChange}
+          isMapDragging={isMapDragging}
+        />
+      );
+    case 'SOCCER':
+      return (
+        <SoccerMap
           onPositionChange={onPositionChange}
           isMapDragging={isMapDragging}
         />
