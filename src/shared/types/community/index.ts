@@ -46,3 +46,22 @@ export interface CommunityItemProps {
   likeCount: number;
   commentCount: number;
 }
+
+enum System {
+  TOURNAMENT = 'TOURNAMENT',
+  FULL_LEAGUE = 'FULL_LEAGUE',
+  SINGLE = 'SINGLE',
+}
+
+interface Game {
+  gameId: number;
+  gameName: string;
+  teamCount: number;
+  category: GameType;
+  system: System;
+}
+
+export interface ResponseStageGame {
+  count: number;
+  games: Game[];
+}

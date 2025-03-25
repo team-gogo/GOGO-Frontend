@@ -50,6 +50,7 @@ const CommunityCreateContainer = () => {
           setValue={setValue}
           selectedSport={selectedSport}
           toggleSportSelection={toggleSportSelection}
+          stageId={safeStageId}
         />
         <div className={cn('space-y-[397px]')}>
           <div className={cn('space-y-[32px]')}>

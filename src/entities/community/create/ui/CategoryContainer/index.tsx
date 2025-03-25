@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { useGetStageGameQuery } from '@/entities/community/detail/model/useGetStageGameQuery';
 import { SportType } from '@/shared/model/sportTypes';
 import { CommunityCreateFormData } from '@/shared/types/community/create';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
@@ -9,6 +11,7 @@ interface CategoryContainerProps {
   setValue: UseFormSetValue<CommunityCreateFormData>;
   selectedSport: SportType | null;
   toggleSportSelection: (sport: SportType) => void;
+  stageId: string;
 }
 
 const CategoryContainer = ({
@@ -16,16 +19,16 @@ const CategoryContainer = ({
   setValue,
   selectedSport,
   toggleSportSelection,
+  stageId,
 }: CategoryContainerProps) => {
-  const categoryTypes: SportType[] = [
-    'VOLLEY_BALL',
-    'SOCCER',
-    'LOL',
-    'BASE_BALL',
-    'BASKET_BALL',
-    'BADMINTON',
-    'ETC',
-  ];
+  const { data, isLoading } = useGetStageGameQuery(stageId);
+
+  const categoryTypes: SportType[] = useMemo(() => {
+    if (!data?.games) return [];
+    return Array.from(
+      new Set(data.games.map((game) => game.category)),
+    ) as SportType[];
+  }, [data]);
 
   register('gameCategory', { required: '경기 종류를 선택해주세요.' });
 
@@ -33,6 +36,10 @@ const CategoryContainer = ({
     toggleSportSelection(sport);
     setValue('gameCategory', sport, { shouldValidate: true });
   };
+
+  if (isLoading) {
+    return <div>로딩중</div>;
+  }
 
   return (
     <div className={cn('flex', 'flex-wrap', 'items-center', 'gap-16')}>
