@@ -110,9 +110,29 @@ const PlaceTeamContainer = () => {
 
   const handlePlayerDrag = useCallback(
     (playerId: string, x: number, y: number) => {
+      const courtElement = document.querySelector(
+        '[data-rbd-droppable-id="court"]',
+      );
+      const playerElement = document.querySelector(
+        `[data-rbd-draggable-id="${playerId}"]`,
+      );
+
+      if (!courtElement || !playerElement) return;
+
+      const courtRect = courtElement.getBoundingClientRect();
+      const playerRect = playerElement.getBoundingClientRect();
+
+      const maxX = courtRect.width - playerRect.width;
+      const maxY = courtRect.height - playerRect.height;
+
+      const boundedX = Math.max(0, Math.min(x, maxX));
+      const boundedY = Math.max(0, Math.min(y, maxY));
+
       setPlayers((prev) =>
         prev.map((player) =>
-          player.id === playerId ? { ...player, x, y } : player,
+          player.id === playerId
+            ? { ...player, x: boundedX, y: boundedY }
+            : player,
         ),
       );
     },
@@ -176,19 +196,26 @@ const PlaceTeamContainer = () => {
         const courtElement = document.querySelector(
           '[data-rbd-droppable-id="court"]',
         );
+        const playerElement = document.querySelector(
+          `[data-rbd-draggable-id="${draggableId}"]`,
+        );
 
-        if (!courtElement) return;
+        if (!courtElement || !playerElement) return;
 
         const courtRect = courtElement.getBoundingClientRect();
+        const playerRect = playerElement.getBoundingClientRect();
         const { x: mouseX, y: mouseY } = mousePositionRef.current;
+
+        const maxX = courtRect.width - playerRect.width;
+        const maxY = courtRect.height - playerRect.height;
 
         const relativeX = Math.max(
           0,
-          Math.min(mouseX - courtRect.left, courtRect.width - 100),
+          Math.min(mouseX - courtRect.left - playerRect.width / 2, maxX),
         );
         const relativeY = Math.max(
           0,
-          Math.min(mouseY - courtRect.top, courtRect.height - 100),
+          Math.min(mouseY - courtRect.top - playerRect.height / 2, maxY),
         );
 
         setPlayers((prev) =>
@@ -286,6 +313,42 @@ const PlaceTeamContainer = () => {
 
     return MemoizedPlayerList;
   }, []);
+
+  const handleGlobalMouseMove = useCallback(
+    (e: MouseEvent, playerId: string) => {
+      if (!draggedPlayerRef.current) return;
+
+      const courtElement = document.querySelector(
+        '[data-rbd-droppable-id="court"]',
+      );
+      const playerElement = document.querySelector(
+        `[data-rbd-draggable-id="${playerId}"]`,
+      );
+
+      if (!courtElement || !playerElement) return;
+
+      const courtRect = courtElement.getBoundingClientRect();
+      const playerRect = playerElement.getBoundingClientRect();
+
+      const x = Math.max(
+        0,
+        Math.min(
+          e.clientX - courtRect.left - playerRect.width / 2,
+          courtRect.width - playerRect.width,
+        ),
+      );
+      const y = Math.max(
+        0,
+        Math.min(
+          e.clientY - courtRect.top - playerRect.height / 2,
+          courtRect.height - playerRect.height,
+        ),
+      );
+
+      handlePlayerDrag(draggedPlayerRef.current, x, y);
+    },
+    [handlePlayerDrag],
+  );
 
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
@@ -388,12 +451,10 @@ const PlaceTeamContainer = () => {
                                   {...provided.dragHandleProps}
                                   style={{
                                     position: 'absolute',
-                                    left: `${player.x}px`,
-                                    top: `${player.y}px`,
-                                    transform: snapshot.isDragging
-                                      ? provided.draggableProps.style?.transform
-                                      : 'none',
-                                    ...provided.draggableProps.style,
+                                    transform: `translate3d(${player.x}px, ${player.y}px, 0)`,
+                                    transition: snapshot.isDragging
+                                      ? 'none'
+                                      : 'transform 0.2s',
                                     zIndex:
                                       snapshot.isDragging ||
                                       draggingPlayerId === player.id
@@ -402,6 +463,7 @@ const PlaceTeamContainer = () => {
                                     pointerEvents: snapshot.isDragging
                                       ? 'none'
                                       : 'auto',
+                                    willChange: 'transform',
                                   }}
                                   onMouseDown={(e) => {
                                     if (
@@ -413,62 +475,29 @@ const PlaceTeamContainer = () => {
                                       setDraggingPlayerId(player.id);
                                       draggedPlayerRef.current = player.id;
 
-                                      const handleGlobalMouseMove = (
-                                        e: MouseEvent,
-                                      ) => {
-                                        if (!draggedPlayerRef.current) return;
+                                      const handleMouseMove = (e: MouseEvent) =>
+                                        handleGlobalMouseMove(e, player.id);
 
-                                        const courtElement =
-                                          document.querySelector(
-                                            '[data-rbd-droppable-id="court"]',
-                                          );
-
-                                        if (!courtElement) return;
-
-                                        const courtRect =
-                                          courtElement.getBoundingClientRect();
-                                        const x = Math.max(
-                                          0,
-                                          Math.min(
-                                            e.clientX - courtRect.left,
-                                            courtRect.width - 50,
-                                          ),
-                                        );
-                                        const y = Math.max(
-                                          0,
-                                          Math.min(
-                                            e.clientY - courtRect.top,
-                                            courtRect.height - 50,
-                                          ),
-                                        );
-
-                                        handlePlayerDrag(
-                                          draggedPlayerRef.current,
-                                          x,
-                                          y,
-                                        );
-                                      };
-
-                                      const handleGlobalMouseUp = () => {
+                                      const handleMouseUp = () => {
                                         setDraggingPlayerId(null);
                                         draggedPlayerRef.current = null;
                                         window.removeEventListener(
                                           'mousemove',
-                                          handleGlobalMouseMove,
+                                          handleMouseMove,
                                         );
                                         window.removeEventListener(
                                           'mouseup',
-                                          handleGlobalMouseUp,
+                                          handleMouseUp,
                                         );
                                       };
 
                                       window.addEventListener(
                                         'mousemove',
-                                        handleGlobalMouseMove,
+                                        handleMouseMove,
                                       );
                                       window.addEventListener(
                                         'mouseup',
-                                        handleGlobalMouseUp,
+                                        handleMouseUp,
                                       );
                                     }
                                   }}
