@@ -1,12 +1,12 @@
 export type MatchData = {
   matchId: number;
-  aTeam: {
+  ateam: {
     teamId: number;
     teamName: string;
     bettingPoint: number;
     winCount: number;
   };
-  bTeam: {
+  bteam: {
     teamId: number;
     teamName: string;
     bettingPoint: number;
@@ -15,23 +15,21 @@ export type MatchData = {
   startDate: string;
   endDate: string;
   isEnd: boolean;
-  round?: (
+  round?:
     | 'ROUND_OF_32'
     | 'ROUND_OF_16'
     | 'QUARTER_FINALS'
     | 'SEMI_FINALS'
-    | 'FINALS'
-  )[];
-  category?: (
+    | 'FINALS';
+  category:
     | 'SOCCER'
     | 'BASKET_BALL'
     | 'BASE_BALL'
     | 'VOLLEY_BALL'
     | 'BADMINTON'
     | 'LOL'
-    | 'ETC'
-  )[];
-  system?: ('TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE')[];
+    | 'ETC';
+  system?: 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';
   turn?: number;
   isNotice: boolean;
   betting: {

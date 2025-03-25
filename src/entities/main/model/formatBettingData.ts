@@ -5,8 +5,7 @@ export const formatBettingData = (
   selectedTeamId: number | null,
 ) => {
   return {
-    deviceToken: null,
     predictedWinTeamId: selectedTeamId,
-    bettingPoint: data.bettingPoint,
+    bettingPoint: Number(data.bettingPoint),
   };
 };
