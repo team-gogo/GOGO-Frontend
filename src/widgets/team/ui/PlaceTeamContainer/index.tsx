@@ -293,6 +293,7 @@ const PlaceTeamContainer = () => {
   const onDragEnd = useCallback(
     (result: DropResult) => {
       setIsDragging(false);
+      draggedPlayerRef.current = null;
       const { source, destination, draggableId } = result;
 
       if (!destination) {
@@ -361,15 +362,6 @@ const PlaceTeamContainer = () => {
             newPlayers.splice(destination.index, 0, removed);
             return newPlayers;
           });
-        } else if (
-          source.droppableId === 'court' &&
-          destination.droppableId === 'playersList'
-        ) {
-          setPlayers((prev) =>
-            prev.map((player) =>
-              player.id === draggableId ? { ...player, x: 0, y: 0 } : player,
-            ),
-          );
         }
       }
     },
