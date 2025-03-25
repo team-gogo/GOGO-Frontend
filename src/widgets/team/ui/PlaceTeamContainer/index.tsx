@@ -293,23 +293,35 @@ const PlaceTeamContainer = () => {
         }
 
         const courtRect = courtElement.getBoundingClientRect();
+        const playerElement = document.getElementById(
+          `player-list-${draggableId}`,
+        );
+        if (!playerElement) return;
 
-        console.log('Court rect:', courtRect);
-        console.log('SVG bounds:', svgBounds);
-        console.log('Mouse position:', mousePositionRef.current);
+        const playerRect = playerElement.getBoundingClientRect();
+        const dropX =
+          mousePositionRef.current.x - courtRect.left - playerRect.width / 2;
+        const dropY =
+          mousePositionRef.current.y - courtRect.top - playerRect.height / 2;
 
-        const initialX = svgBounds.width / 2 - 30;
-        const initialY = svgBounds.height / 2 - 20;
+        const boundedX = Math.max(
+          0,
+          Math.min(dropX, svgBounds.width - playerRect.width),
+        );
+        const boundedY = Math.max(
+          0,
+          Math.min(dropY, svgBounds.height - playerRect.height),
+        );
 
         setPlayers((prev) =>
           prev.map((player) =>
             player.id === draggableId
               ? {
                   ...player,
-                  x: initialX,
-                  y: initialY,
-                  relativeX: initialX / svgBounds.width,
-                  relativeY: initialY / svgBounds.height,
+                  x: boundedX,
+                  y: boundedY,
+                  relativeX: boundedX / svgBounds.width,
+                  relativeY: boundedY / svgBounds.height,
                 }
               : player,
           ),
