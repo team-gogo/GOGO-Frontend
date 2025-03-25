@@ -1,16 +1,15 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   DragDropContext,
   Droppable,
   Draggable,
   DragStart,
-  DroppableProvided,
   DropResult,
-} from 'react-beautiful-dnd';
+} from '@hello-pangea/dnd';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
 import PlayerDropdown from '@/entities/team/ui/PlayerDropdown';
@@ -31,28 +30,6 @@ interface Player {
   relativeX?: number;
   relativeY?: number;
 }
-
-const StrictModeDroppable = ({
-  children,
-  ...props
-}: React.ComponentProps<typeof Droppable>) => {
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    const animation = requestAnimationFrame(() => {
-      setEnabled(true);
-    });
-
-    return () => {
-      cancelAnimationFrame(animation);
-      setEnabled(false);
-    };
-  }, []);
-
-  if (!enabled) return null;
-
-  return <Droppable {...props}>{children}</Droppable>;
-};
 
 const PlaceTeamContainer = () => {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -122,9 +99,7 @@ const PlaceTeamContainer = () => {
 
   useEffect(() => {
     const updateSvgBounds = () => {
-      const courtElement = document.querySelector(
-        '[data-rbd-droppable-id="court"]',
-      );
+      const courtElement = document.getElementById('court-droppable');
       if (courtElement) {
         const svg = courtElement.querySelector('svg');
         if (svg) {
@@ -187,9 +162,7 @@ const PlaceTeamContainer = () => {
 
   useEffect(() => {
     const updatePlayerScale = () => {
-      const courtElement = document.querySelector(
-        '[data-rbd-droppable-id="court"]',
-      );
+      const courtElement = document.getElementById('court-droppable');
       if (courtElement) {
         const svg = courtElement.querySelector('svg');
         if (svg) {
@@ -204,9 +177,7 @@ const PlaceTeamContainer = () => {
 
     updatePlayerScale();
 
-    const courtElement = document.querySelector(
-      '[data-rbd-droppable-id="court"]',
-    );
+    const courtElement = document.getElementById('court-droppable');
     if (courtElement) {
       const resizeObserver = new ResizeObserver(() => {
         updatePlayerScale();
@@ -234,12 +205,8 @@ const PlaceTeamContainer = () => {
 
   const handlePlayerDrag = useCallback(
     (playerId: string, x: number, y: number) => {
-      const playerElement = document.querySelector(
-        `[data-rbd-draggable-id="${playerId}"]`,
-      );
-      const courtElement = document.querySelector(
-        '[data-rbd-droppable-id="court"]',
-      );
+      const playerElement = document.getElementById(`player-${playerId}`);
+      const courtElement = document.getElementById('court-droppable');
 
       if (!playerElement || !courtElement) return;
 
@@ -288,15 +255,30 @@ const PlaceTeamContainer = () => {
   const onDragStart = useCallback((start: DragStart) => {
     setIsDragging(true);
     draggedPlayerRef.current = start.draggableId;
+    console.log('Drag started:', start.draggableId);
   }, []);
 
   const onDragEnd = useCallback(
     (result: DropResult) => {
+      console.log('Drag ended:', result);
       setIsDragging(false);
       draggedPlayerRef.current = null;
+
+      if (!result.destination) {
+        return;
+      }
+
       const { source, destination, draggableId } = result;
 
-      if (!destination) {
+      if (source.droppableId === destination.droppableId) {
+        if (source.droppableId === 'playersList') {
+          setPlayers((prev) => {
+            const newPlayers = [...prev];
+            const [removed] = newPlayers.splice(source.index, 1);
+            newPlayers.splice(destination.index, 0, removed);
+            return newPlayers;
+          });
+        }
         return;
       }
 
@@ -304,65 +286,34 @@ const PlaceTeamContainer = () => {
         source.droppableId === 'playersList' &&
         destination.droppableId === 'court'
       ) {
-        const courtElement = document.querySelector(
-          '[data-rbd-droppable-id="court"]',
-        );
-        const playerElement = document.querySelector(
-          `[data-rbd-draggable-id="${draggableId}"]`,
-        );
-
-        if (!courtElement || !playerElement) return;
+        const courtElement = document.getElementById('court-droppable');
+        if (!courtElement) {
+          console.error('Court element not found');
+          return;
+        }
 
         const courtRect = courtElement.getBoundingClientRect();
-        const playerRect = playerElement.getBoundingClientRect();
-        const { x: mouseX, y: mouseY } = mousePositionRef.current;
 
-        const relativeX = (mouseX - courtRect.left) / svgBounds.width;
-        const relativeY = (mouseY - courtRect.top) / svgBounds.height;
+        console.log('Court rect:', courtRect);
+        console.log('SVG bounds:', svgBounds);
+        console.log('Mouse position:', mousePositionRef.current);
 
-        const absoluteX = relativeX * svgBounds.width;
-        const absoluteY = relativeY * svgBounds.height;
-
-        const boundedX = Math.max(
-          svgBounds.left,
-          Math.min(
-            absoluteX - playerRect.width / 2,
-            svgBounds.left + svgBounds.width - playerRect.width,
-          ),
-        );
-        const boundedY = Math.max(
-          svgBounds.top,
-          Math.min(
-            absoluteY - playerRect.height / 2,
-            svgBounds.top + svgBounds.height - playerRect.height,
-          ),
-        );
+        const initialX = svgBounds.width / 2 - 30;
+        const initialY = svgBounds.height / 2 - 20;
 
         setPlayers((prev) =>
           prev.map((player) =>
             player.id === draggableId
               ? {
                   ...player,
-                  x: boundedX,
-                  y: boundedY,
-                  relativeX: boundedX / svgBounds.width,
-                  relativeY: boundedY / svgBounds.height,
+                  x: initialX,
+                  y: initialY,
+                  relativeX: initialX / svgBounds.width,
+                  relativeY: initialY / svgBounds.height,
                 }
               : player,
           ),
         );
-      } else {
-        if (
-          source.droppableId === 'playersList' &&
-          destination.droppableId === 'playersList'
-        ) {
-          setPlayers((prev) => {
-            const newPlayers = Array.from(prev);
-            const [removed] = newPlayers.splice(source.index, 1);
-            newPlayers.splice(destination.index, 0, removed);
-            return newPlayers;
-          });
-        }
       }
     },
     [svgBounds],
@@ -410,60 +361,16 @@ const PlaceTeamContainer = () => {
     }
   }, [placedPlayers, membersList, players, teamName, router, matchIdParam]);
 
-  const PlayerList = useMemo(() => {
-    const MemoizedPlayerList = ({
-      players,
-      provided,
-    }: {
-      players: Player[];
-      provided: DroppableProvided;
-    }) => (
-      <div
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-        className="flex min-h-[90px] flex-row flex-nowrap gap-3 bg-transparent text-white"
-      >
-        {players.map((player, index) => (
-          <Draggable key={player.id} draggableId={player.id} index={index}>
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                style={{
-                  ...provided.draggableProps.style,
-                }}
-              >
-                <PlayerItem
-                  name={player.name}
-                  isDragging={snapshot.isDragging}
-                  className="mx-2 my-3"
-                />
-              </div>
-            )}
-          </Draggable>
-        ))}
-        {provided.placeholder}
-      </div>
-    );
-
-    return MemoizedPlayerList;
-  }, []);
-
   const handleGlobalMouseMove = useCallback(
     (e: MouseEvent, playerId: string) => {
       if (!draggedPlayerRef.current) return;
 
-      const playerElement = document.querySelector(
-        `[data-rbd-draggable-id="${playerId}"]`,
-      );
+      const playerElement = document.getElementById(`player-${playerId}`);
 
       if (!playerElement) return;
 
       const playerRect = playerElement.getBoundingClientRect();
-      const courtElement = document.querySelector(
-        '[data-rbd-droppable-id="court"]',
-      );
+      const courtElement = document.getElementById('court-droppable');
       if (!courtElement) return;
 
       const parentRect = courtElement.getBoundingClientRect();
@@ -553,20 +460,50 @@ const PlaceTeamContainer = () => {
 
                 <div className="w-full overflow-x-auto pb-4">
                   <div className="inline-flex min-w-full">
-                    <StrictModeDroppable
+                    <Droppable
                       droppableId="playersList"
                       direction="horizontal"
                       type="PLAYER"
+                      isDropDisabled={false}
                     >
                       {(provided) => (
                         <div className="relative">
-                          <PlayerList
-                            players={unplacedPlayers}
-                            provided={provided}
-                          />
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            id="players-list-droppable"
+                            className="flex min-h-[90px] flex-row flex-nowrap gap-3 bg-transparent text-white"
+                          >
+                            {unplacedPlayers.map((player, index) => (
+                              <Draggable
+                                key={player.id}
+                                draggableId={player.id}
+                                index={index}
+                              >
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    id={`player-list-${player.id}`}
+                                    style={{
+                                      ...provided.draggableProps.style,
+                                    }}
+                                  >
+                                    <PlayerItem
+                                      name={player.name}
+                                      isDragging={snapshot.isDragging}
+                                      className="mx-2 my-3"
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </div>
                         </div>
                       )}
-                    </StrictModeDroppable>
+                    </Droppable>
                   </div>
                 </div>
               </div>
@@ -574,12 +511,17 @@ const PlaceTeamContainer = () => {
               <div
                 className={`relative ${isLargeScreen ? 'h-[500px] w-[55%]' : 'mb-10 flex h-auto min-h-[450px] w-full justify-center'}`}
               >
-                <StrictModeDroppable droppableId="court" type="PLAYER">
+                <Droppable
+                  droppableId="court"
+                  type="PLAYER"
+                  isDropDisabled={false}
+                >
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                       className={`relative h-full overflow-visible rounded-lg ${!isLargeScreen ? 'mx-auto' : ''}`}
+                      id="court-droppable"
                     >
                       <div
                         className={`relative h-full ${!isLargeScreen ? 'flex items-center justify-center pb-10' : ''}`}
@@ -620,19 +562,23 @@ const PlaceTeamContainer = () => {
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
+                                  id={`player-${player.id}`}
                                   style={{
+                                    ...provided.draggableProps.style,
                                     position: 'absolute',
-                                    transform: `translate3d(${player.x}px, ${player.y}px, 0) scale(${playerScale})`,
+                                    left: `${player.x}px`,
+                                    top: `${player.y}px`,
+                                    transform: `scale(${playerScale})`,
                                     transition: snapshot.isDragging
                                       ? 'none'
-                                      : 'transform 0.2s',
+                                      : 'transform 0.2s, left 0.2s, top 0.2s',
                                     zIndex:
                                       snapshot.isDragging ||
                                       draggingPlayerId === player.id
                                         ? 99999
                                         : 1,
                                     pointerEvents: 'auto',
-                                    willChange: 'transform',
+                                    willChange: 'transform, left, top',
                                     transformOrigin: '0 0',
                                   }}
                                   onMouseDown={(e) => {
@@ -684,8 +630,6 @@ const PlaceTeamContainer = () => {
                                       display: 'flex',
                                       alignItems: 'center',
                                       justifyContent: 'center',
-                                      transform: `scale(${playerScale})`,
-                                      transformOrigin: 'center center',
                                     }}
                                     className="transition-transform"
                                   />
@@ -698,7 +642,7 @@ const PlaceTeamContainer = () => {
                       {provided.placeholder}
                     </div>
                   )}
-                </StrictModeDroppable>
+                </Droppable>
               </div>
             </div>
           </div>
