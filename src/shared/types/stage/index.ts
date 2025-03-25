@@ -15,3 +15,7 @@ export interface StagesType {
 export interface StageResponse {
   stages: StagesType[];
 }
+
+export interface PassCodeType {
+  passCode: string;
+}
