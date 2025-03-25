@@ -58,6 +58,17 @@ const PlaceTeamContainer = () => {
   const draggedPlayerRef = useRef<string | null>(null);
   const mousePositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [draggingPlayerId, setDraggingPlayerId] = useState<string | null>(null);
+  const [svgBounds, setSvgBounds] = useState<{
+    width: number;
+    height: number;
+    left: number;
+    top: number;
+  }>({
+    width: 0,
+    height: 0,
+    left: 0,
+    top: 0,
+  });
 
   const searchParams = useSearchParams();
   const sportParam = searchParams.get('sport');
@@ -95,6 +106,39 @@ const PlaceTeamContainer = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const updateSvgBounds = () => {
+      const courtElement = document.querySelector(
+        '[data-rbd-droppable-id="court"]',
+      );
+      if (courtElement) {
+        const svg = courtElement.querySelector('svg');
+        if (svg) {
+          const svgRect = svg.getBoundingClientRect();
+          const parentRect = courtElement.getBoundingClientRect();
+
+          setSvgBounds({
+            width: svgRect.width,
+            height: svgRect.height,
+            left: svgRect.left - parentRect.left,
+            top: svgRect.top - parentRect.top,
+          });
+        }
+      }
+    };
+
+    updateSvgBounds();
+
+    window.addEventListener('resize', updateSvgBounds);
+
+    const timeoutId = setTimeout(updateSvgBounds, 100);
+
+    return () => {
+      window.removeEventListener('resize', updateSvgBounds);
+      clearTimeout(timeoutId);
+    };
+  }, [sportType]);
+
   const handleAddPlayer = useCallback(() => {
     if (selectedPlayer && selectedPlayer !== '인원 선택') {
       const newPlayer: Player = {
@@ -110,23 +154,25 @@ const PlaceTeamContainer = () => {
 
   const handlePlayerDrag = useCallback(
     (playerId: string, x: number, y: number) => {
-      const courtElement = document.querySelector(
-        '[data-rbd-droppable-id="court"]',
-      );
       const playerElement = document.querySelector(
         `[data-rbd-draggable-id="${playerId}"]`,
       );
+      const courtElement = document.querySelector(
+        '[data-rbd-droppable-id="court"]',
+      );
 
-      if (!courtElement || !playerElement) return;
+      if (!playerElement || !courtElement) return;
 
-      const courtRect = courtElement.getBoundingClientRect();
       const playerRect = playerElement.getBoundingClientRect();
 
-      const maxX = courtRect.width - playerRect.width;
-      const maxY = courtRect.height - playerRect.height;
+      const maxX = svgBounds.width - playerRect.width;
+      const maxY = svgBounds.height - playerRect.height;
 
-      const boundedX = Math.max(0, Math.min(x, maxX));
-      const boundedY = Math.max(0, Math.min(y, maxY));
+      const adjustedX = x - svgBounds.left;
+      const adjustedY = y - svgBounds.top;
+
+      const boundedX = Math.max(0, Math.min(adjustedX, maxX));
+      const boundedY = Math.max(0, Math.min(adjustedY, maxY));
 
       setPlayers((prev) =>
         prev.map((player) =>
@@ -136,7 +182,7 @@ const PlaceTeamContainer = () => {
         ),
       );
     },
-    [],
+    [svgBounds],
   );
 
   useEffect(() => {
@@ -206,30 +252,36 @@ const PlaceTeamContainer = () => {
         const playerRect = playerElement.getBoundingClientRect();
         const { x: mouseX, y: mouseY } = mousePositionRef.current;
 
-        const maxX = courtRect.width - playerRect.width;
-        const maxY = courtRect.height - playerRect.height;
+        // Calculate position relative to the SVG bounds
+        const relativeX = mouseX - courtRect.left;
+        const relativeY = mouseY - courtRect.top;
 
-        const relativeX = Math.max(
-          0,
-          Math.min(mouseX - courtRect.left - playerRect.width / 2, maxX),
+        // Ensure the player stays within the SVG bounds
+        const boundedX = Math.max(
+          svgBounds.left,
+          Math.min(
+            relativeX - playerRect.width / 2,
+            svgBounds.left + svgBounds.width - playerRect.width,
+          ),
         );
-        const relativeY = Math.max(
-          0,
-          Math.min(mouseY - courtRect.top - playerRect.height / 2, maxY),
+        const boundedY = Math.max(
+          svgBounds.top,
+          Math.min(
+            relativeY - playerRect.height / 2,
+            svgBounds.top + svgBounds.height - playerRect.height,
+          ),
         );
 
         setPlayers((prev) =>
           prev.map((player) =>
             player.id === draggableId
-              ? { ...player, x: relativeX, y: relativeY }
+              ? { ...player, x: boundedX, y: boundedY }
               : player,
           ),
         );
-
-        handlePlayerDrag(draggableId, relativeX, relativeY);
       }
     },
-    [handlePlayerDrag],
+    [svgBounds],
   );
 
   const toggleDropdown = useCallback(() => {
@@ -318,36 +370,38 @@ const PlaceTeamContainer = () => {
     (e: MouseEvent, playerId: string) => {
       if (!draggedPlayerRef.current) return;
 
-      const courtElement = document.querySelector(
-        '[data-rbd-droppable-id="court"]',
-      );
       const playerElement = document.querySelector(
         `[data-rbd-draggable-id="${playerId}"]`,
       );
 
-      if (!courtElement || !playerElement) return;
+      if (!playerElement) return;
 
-      const courtRect = courtElement.getBoundingClientRect();
       const playerRect = playerElement.getBoundingClientRect();
+      const courtElement = document.querySelector(
+        '[data-rbd-droppable-id="court"]',
+      );
+      if (!courtElement) return;
+
+      const parentRect = courtElement.getBoundingClientRect();
 
       const x = Math.max(
-        0,
+        svgBounds.left,
         Math.min(
-          e.clientX - courtRect.left - playerRect.width / 2,
-          courtRect.width - playerRect.width,
+          e.clientX - parentRect.left - playerRect.width / 2,
+          svgBounds.left + svgBounds.width - playerRect.width,
         ),
       );
       const y = Math.max(
-        0,
+        svgBounds.top,
         Math.min(
-          e.clientY - courtRect.top - playerRect.height / 2,
-          courtRect.height - playerRect.height,
+          e.clientY - parentRect.top - playerRect.height / 2,
+          svgBounds.top + svgBounds.height - playerRect.height,
         ),
       );
 
       handlePlayerDrag(draggedPlayerRef.current, x, y);
     },
-    [handlePlayerDrag],
+    [handlePlayerDrag, svgBounds],
   );
 
   return (
@@ -437,7 +491,16 @@ const PlaceTeamContainer = () => {
                             }
                           }}
                         />
-                        <div className="absolute inset-0">
+                        <div
+                          className="absolute"
+                          style={{
+                            left: `${svgBounds.left}px`,
+                            top: `${svgBounds.top}px`,
+                            width: `${svgBounds.width}px`,
+                            height: `${svgBounds.height}px`,
+                            pointerEvents: 'all',
+                          }}
+                        >
                           {placedPlayers.map((player, index) => (
                             <Draggable
                               key={player.id}
@@ -460,9 +523,7 @@ const PlaceTeamContainer = () => {
                                       draggingPlayerId === player.id
                                         ? 99999
                                         : 1,
-                                    pointerEvents: snapshot.isDragging
-                                      ? 'none'
-                                      : 'auto',
+                                    pointerEvents: 'auto',
                                     willChange: 'transform',
                                   }}
                                   onMouseDown={(e) => {
@@ -514,6 +575,10 @@ const PlaceTeamContainer = () => {
                                       userSelect: 'none',
                                       touchAction: 'none',
                                       pointerEvents: 'auto',
+
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
                                     }}
                                     className="transition-transform"
                                   />
