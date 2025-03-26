@@ -220,6 +220,8 @@ const PlaceTeamContainer = () => {
       if (!playerElement || !courtElement) return;
 
       const playerRect = playerElement.getBoundingClientRect();
+      const scaledWidth = playerRect.width / playerScale;
+      const scaledHeight = playerRect.height / playerScale;
 
       const relativeX = (x - svgBounds.left) / svgBounds.width;
       const relativeY = (y - svgBounds.top) / svgBounds.height;
@@ -227,8 +229,8 @@ const PlaceTeamContainer = () => {
       const absoluteX = relativeX * svgBounds.width;
       const absoluteY = relativeY * svgBounds.height;
 
-      const maxX = svgBounds.width - playerRect.width;
-      const maxY = svgBounds.height - playerRect.height;
+      const maxX = svgBounds.width - scaledWidth;
+      const maxY = svgBounds.height - scaledHeight;
 
       const boundedX = Math.max(0, Math.min(absoluteX, maxX));
       const boundedY = Math.max(0, Math.min(absoluteY, maxY));
@@ -247,7 +249,7 @@ const PlaceTeamContainer = () => {
         ),
       );
     },
-    [svgBounds],
+    [svgBounds, playerScale],
   );
 
   useEffect(() => {
@@ -387,7 +389,6 @@ const PlaceTeamContainer = () => {
       if (!draggedPlayerRef.current) return;
 
       const playerElement = document.getElementById(`player-${playerId}`);
-
       if (!playerElement) return;
 
       const playerRect = playerElement.getBoundingClientRect();
@@ -395,25 +396,27 @@ const PlaceTeamContainer = () => {
       if (!courtElement) return;
 
       const parentRect = courtElement.getBoundingClientRect();
+      const scaledWidth = playerRect.width / playerScale;
+      const scaledHeight = playerRect.height / playerScale;
 
       const x = Math.max(
         svgBounds.left,
         Math.min(
-          e.clientX - parentRect.left - playerRect.width / 2,
-          svgBounds.left + svgBounds.width - playerRect.width,
+          e.clientX - parentRect.left - scaledWidth / 2,
+          svgBounds.left + svgBounds.width - scaledWidth,
         ),
       );
       const y = Math.max(
         svgBounds.top,
         Math.min(
-          e.clientY - parentRect.top - playerRect.height / 2,
-          svgBounds.top + svgBounds.height - playerRect.height,
+          e.clientY - parentRect.top - scaledHeight / 2,
+          svgBounds.top + svgBounds.height - scaledHeight,
         ),
       );
 
       handlePlayerDrag(draggedPlayerRef.current, x, y);
     },
-    [handlePlayerDrag, svgBounds],
+    [handlePlayerDrag, svgBounds, playerScale],
   );
 
   useEffect(() => {
@@ -594,6 +597,7 @@ const PlaceTeamContainer = () => {
                                     left: `${player.x}px`,
                                     top: `${player.y}px`,
                                     transform: `scale(${playerScale})`,
+                                    transformOrigin: 'center center',
                                     transition: snapshot.isDragging
                                       ? 'none'
                                       : 'transform 0.2s, left 0.2s, top 0.2s',
@@ -603,8 +607,6 @@ const PlaceTeamContainer = () => {
                                         ? 99999
                                         : 1,
                                     pointerEvents: 'auto',
-                                    willChange: 'transform, left, top',
-                                    transformOrigin: '0 0',
                                   }}
                                   onMouseDown={(e) => {
                                     if (e.button === 0) {
@@ -655,6 +657,8 @@ const PlaceTeamContainer = () => {
                                       display: 'flex',
                                       alignItems: 'center',
                                       justifyContent: 'center',
+                                      width: '90px',
+                                      height: '90px',
                                     }}
                                     className="transition-transform"
                                   />
