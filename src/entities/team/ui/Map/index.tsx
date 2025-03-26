@@ -10,16 +10,19 @@ interface SportMapProps {
   type: SportType;
   onPositionChange?: (x: number, y: number) => void;
   isMapDragging?: boolean;
+  isMirrored?: boolean;
 }
 
 const MapComponent = ({
   children,
   onPositionChange,
   isMapDragging,
+  isMirrored = false,
 }: {
   children: React.ReactNode;
   onPositionChange?: (x: number, y: number) => void;
   isMapDragging?: boolean;
+  isMirrored?: boolean;
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -50,6 +53,7 @@ const MapComponent = ({
         touchAction: 'none',
         userSelect: 'none',
         pointerEvents: isMapDragging ? 'none' : 'auto',
+        transform: isMirrored ? 'scaleX(-1)' : 'none',
       }}
     >
       {children}
@@ -60,10 +64,12 @@ const MapComponent = ({
 const BadmintonMap = (props: {
   onPositionChange?: (x: number, y: number) => void;
   isMapDragging?: boolean;
+  isMirrored?: boolean;
 }) => (
   <MapComponent
     onPositionChange={props.onPositionChange}
     isMapDragging={props.isMapDragging}
+    isMirrored={props.isMirrored}
   >
     <BadmintonSvg />
   </MapComponent>
@@ -72,10 +78,12 @@ const BadmintonMap = (props: {
 const BaseballMap = (props: {
   onPositionChange?: (x: number, y: number) => void;
   isMapDragging?: boolean;
+  isMirrored?: boolean;
 }) => (
   <MapComponent
     onPositionChange={props.onPositionChange}
     isMapDragging={props.isMapDragging}
+    isMirrored={props.isMirrored}
   >
     <BaseballSvg />
   </MapComponent>
@@ -84,10 +92,12 @@ const BaseballMap = (props: {
 const BasketballMap = (props: {
   onPositionChange?: (x: number, y: number) => void;
   isMapDragging?: boolean;
+  isMirrored?: boolean;
 }) => (
   <MapComponent
     onPositionChange={props.onPositionChange}
     isMapDragging={props.isMapDragging}
+    isMirrored={props.isMirrored}
   >
     <BasketballSvg />
   </MapComponent>
@@ -96,10 +106,12 @@ const BasketballMap = (props: {
 const VolleyballMap = (props: {
   onPositionChange?: (x: number, y: number) => void;
   isMapDragging?: boolean;
+  isMirrored?: boolean;
 }) => (
   <MapComponent
     onPositionChange={props.onPositionChange}
     isMapDragging={props.isMapDragging}
+    isMirrored={props.isMirrored}
   >
     <VolleyballSvg />
   </MapComponent>
@@ -108,22 +120,30 @@ const VolleyballMap = (props: {
 const SoccerMap = (props: {
   onPositionChange?: (x: number, y: number) => void;
   isMapDragging?: boolean;
+  isMirrored?: boolean;
 }) => (
   <MapComponent
     onPositionChange={props.onPositionChange}
     isMapDragging={props.isMapDragging}
+    isMirrored={props.isMirrored}
   >
     <SoccerSvg />
   </MapComponent>
 );
 
-const SportMap = ({ type, onPositionChange, isMapDragging }: SportMapProps) => {
+const SportMap = ({
+  type,
+  onPositionChange,
+  isMapDragging,
+  isMirrored,
+}: SportMapProps) => {
   switch (type) {
     case 'VOLLEY_BALL':
       return (
         <VolleyballMap
           onPositionChange={onPositionChange}
           isMapDragging={isMapDragging}
+          isMirrored={isMirrored}
         />
       );
     case 'BASKET_BALL':
@@ -131,6 +151,7 @@ const SportMap = ({ type, onPositionChange, isMapDragging }: SportMapProps) => {
         <BasketballMap
           onPositionChange={onPositionChange}
           isMapDragging={isMapDragging}
+          isMirrored={isMirrored}
         />
       );
     case 'BADMINTON':
@@ -138,6 +159,7 @@ const SportMap = ({ type, onPositionChange, isMapDragging }: SportMapProps) => {
         <BadmintonMap
           onPositionChange={onPositionChange}
           isMapDragging={isMapDragging}
+          isMirrored={isMirrored}
         />
       );
     case 'BASE_BALL':
@@ -145,6 +167,7 @@ const SportMap = ({ type, onPositionChange, isMapDragging }: SportMapProps) => {
         <BaseballMap
           onPositionChange={onPositionChange}
           isMapDragging={isMapDragging}
+          isMirrored={isMirrored}
         />
       );
     case 'SOCCER':
@@ -152,6 +175,7 @@ const SportMap = ({ type, onPositionChange, isMapDragging }: SportMapProps) => {
         <SoccerMap
           onPositionChange={onPositionChange}
           isMapDragging={isMapDragging}
+          isMirrored={isMirrored}
         />
       );
     default:
@@ -159,6 +183,7 @@ const SportMap = ({ type, onPositionChange, isMapDragging }: SportMapProps) => {
         <VolleyballMap
           onPositionChange={onPositionChange}
           isMapDragging={isMapDragging}
+          isMirrored={isMirrored}
         />
       );
   }

@@ -362,20 +362,34 @@ const PlaceTeamContainer = () => {
                       id="court-droppable"
                     >
                       <div className="relative h-full">
-                        <SportMap
-                          type={sportType}
-                          isMapDragging={draggingPlayerId !== null}
-                          onPositionChange={(x, y) => {
-                            if (draggingPlayerId && draggedPlayerRef.current) {
-                              if (x === -1 && y === -1) {
-                                setDraggingPlayerId(null);
-                                draggedPlayerRef.current = null;
-                                return;
-                              }
-                              handlePlayerDrag(draggedPlayerRef.current, x, y);
-                            }
+                        <div
+                          style={{
+                            transform: 'rotate(90deg)',
+                            transformOrigin: 'center center',
                           }}
-                        />
+                        >
+                          <SportMap
+                            type={sportType}
+                            isMapDragging={draggingPlayerId !== null}
+                            onPositionChange={(x, y) => {
+                              if (
+                                draggingPlayerId &&
+                                draggedPlayerRef.current
+                              ) {
+                                if (x === -1 && y === -1) {
+                                  setDraggingPlayerId(null);
+                                  draggedPlayerRef.current = null;
+                                  return;
+                                }
+                                handlePlayerDrag(
+                                  draggedPlayerRef.current,
+                                  x,
+                                  y,
+                                );
+                              }
+                            }}
+                          />
+                        </div>
                         <div
                           className="absolute"
                           style={{
