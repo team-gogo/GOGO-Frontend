@@ -178,8 +178,10 @@ const PlaceTeamContainer = () => {
         if (svg) {
           const svgRect = svg.getBoundingClientRect();
           const baseWidth = 600;
-          const minScale = isLargeScreen ? 0.6 : 0.5;
-          const scale = Math.max(minScale, svgRect.width / baseWidth);
+          const minScale = isLargeScreen ? 0.8 : 0.8;
+          const maxScale = isLargeScreen ? 0.9 : 1.2;
+          const calculatedScale = svgRect.width / baseWidth;
+          const scale = Math.min(maxScale, Math.max(minScale, calculatedScale));
           setPlayerScale(scale);
         }
       }
