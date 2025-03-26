@@ -23,7 +23,7 @@ const CreateBracketPage = () => {
 
         <Bracket />
         <TeamArray />
-        <button className={cn('m-30')}>
+        <button className={cn('p-30', 'mt-32')}>
           <Button>확인</Button>
         </button>
       </div>
