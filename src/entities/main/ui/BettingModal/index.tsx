@@ -25,17 +25,23 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
     return null;
   }
 
-  const { mutate: PostBettingMatch } = usePostBettingMatch(match.matchId);
-
   const {
     register,
     handleSubmit,
     isDisabled,
     onError,
+    watch,
     setValue,
     selectedTeamId,
     setSelectedTeamId,
   } = useBettingForm();
+
+  const bettingPoint = watch('bettingPoint');
+
+  const { mutate: PostBettingMatch } = usePostBettingMatch(
+    match.matchId,
+    bettingPoint,
+  );
 
   const onSubmit = (data: BettingFormData) => {
     const formattedData = formatBettingData(data, selectedTeamId);

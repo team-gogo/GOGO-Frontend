@@ -10,6 +10,7 @@ import {
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
 import {
+  useBettingMatchArrStore,
   useMatchBatchArrStore,
   useMatchModalStore,
   useMatchStore,
@@ -45,6 +46,7 @@ const Match = ({ match }: MatchProps) => {
   const { setMatchStatus, setMatch } = useMatchStore();
   const { stageId } = useMyStageIdStore();
   const { matchBatchArr } = useMatchBatchArrStore();
+  const { bettingMatchArr } = useBettingMatchArrStore();
 
   const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
 
@@ -55,7 +57,10 @@ const Match = ({ match }: MatchProps) => {
   const isStageAdmin = adminIdxArr.includes(stageId);
 
   const matchItem = matchBatchArr.find((item) => item.matchId === matchId);
-  const isBatchEnd = matchItem ? matchItem.isEnd : false; // matchId가 일치하는 항목의 isEnd 값을 반환, 없으면 false
+  const isBatchEnd = matchItem ? matchItem.isEnd : false;
+  const bettingMatch = bettingMatchArr.find((item) => item.matchId === matchId);
+  const alreadyBetting = bettingMatch !== undefined;
+  const bettingPoint = bettingMatch?.bettingPoint ?? 0;
 
   // if (matchItem) {
   //   console.log(`Match ID: ${matchItem.matchId}, isEnd: ${isBatchEnd}`);
@@ -343,18 +348,24 @@ const Match = ({ match }: MatchProps) => {
           ) : (
             <Button
               disabled={
-                isMatchFinish || betting.isBetting || isBatchEnd || isPlayer
+                isMatchFinish ||
+                betting.isBetting ||
+                isBatchEnd ||
+                isPlayer ||
+                alreadyBetting
               }
               onClick={() => {
                 updateStatus();
                 setIsMatchModalOpen(true);
               }}
             >
-              {!betting.isBetting
-                ? '베팅'
-                : betting.bettingPoint !== undefined
-                  ? `${formatPoint(betting.bettingPoint)} 베팅`
-                  : '베팅'}
+              {alreadyBetting
+                ? `${formatPoint(bettingPoint)} 베팅`
+                : !betting.isBetting
+                  ? '베팅'
+                  : betting.bettingPoint !== undefined
+                    ? `${formatPoint(betting.bettingPoint)} 베팅`
+                    : '베팅'}
             </Button>
           )}
         </div>
