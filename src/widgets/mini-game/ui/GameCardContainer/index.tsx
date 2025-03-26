@@ -18,6 +18,7 @@ interface GameCardContainerProps {
   activeGameList: ActiveGameList;
   getTicketCount?: MyTicketType;
   getShopTicket?: ShopTicketStatusDto;
+  myPoint?: number;
 }
 
 const GameCardContainer = ({
@@ -25,6 +26,7 @@ const GameCardContainer = ({
   activeGameList,
   getTicketCount,
   getShopTicket,
+  myPoint,
 }: GameCardContainerProps) => {
   const activeList = [
     activeGameList.isYavarweeActive,
@@ -56,6 +58,7 @@ const GameCardContainer = ({
             isActive={activeList[index]}
             ticketCount={ticketCounts[index]}
             shopTicket={shopTickets[index]}
+            myPoint={myPoint}
           />
         );
       })}

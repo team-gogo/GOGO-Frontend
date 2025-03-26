@@ -108,7 +108,7 @@ const MainPage = () => {
             <SectionWrapper
               text={'미니게임'}
               icon={<MiniGameIcon />}
-              path="/mini-game"
+              path={`/mini-game/${stageId}`}
             >
               <MiniGameSection />
             </SectionWrapper>

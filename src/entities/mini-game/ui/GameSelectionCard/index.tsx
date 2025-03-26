@@ -1,5 +1,3 @@
-'use client';
-
 import { useRouter } from 'next/navigation';
 import { ReactNode, useState } from 'react';
 import { CircleQuestionIcon } from '@/shared/assets/icons';
@@ -16,6 +14,7 @@ interface GameSelectionCardProps {
   isActive: boolean;
   ticketCount?: number;
   shopTicket?: GameTicket;
+  myPoint?: number;
 }
 
 const GameSelectionCard = ({
@@ -25,12 +24,12 @@ const GameSelectionCard = ({
   isActive,
   ticketCount,
   shopTicket,
+  myPoint,
 }: GameSelectionCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedGame, setSelectedGame] = useState<GameType | null>('YAVARWEE');
 
-  const ticketPrice = String(shopTicket?.ticketPrice);
-  const ticketAmount = String(shopTicket?.ticketQuantity);
+  const ticketPrice = shopTicket?.ticketPrice;
 
   const toggleGameSelection = (sort: GameType) => {
     setSelectedGame((prev) => (prev === sort ? null : sort));
@@ -56,6 +55,40 @@ const GameSelectionCard = ({
 
     push(gamePath);
   };
+
+  let buttonDisabled = false;
+  let buttonText = '';
+
+  if (type === 'game') {
+    if (!isActive) {
+      buttonDisabled = true;
+      buttonText = '게임 불가';
+    } else if (ticketCount === undefined || ticketCount <= 0) {
+      buttonDisabled = true;
+      buttonText = '게임 티켓을 구매하세요';
+    } else {
+      buttonDisabled = false;
+      buttonText = '게임하기';
+    }
+  } else if (type === 'store') {
+    if (!isActive || shopTicket === null) {
+      buttonDisabled = true;
+      buttonText = '구매 불가';
+    } else if (myPoint === undefined || myPoint < (ticketPrice ?? Infinity)) {
+      buttonDisabled = true;
+      if (myPoint === undefined) {
+        buttonText = '포인트 정보 없음';
+      } else {
+        buttonText = '포인트 부족';
+      }
+    } else if (shopTicket?.ticketQuantity === 0) {
+      buttonDisabled = true;
+      buttonText = '재고 부족';
+    } else {
+      buttonDisabled = false;
+      buttonText = `${ticketPrice}P`;
+    }
+  }
 
   return (
     <div className={cn('space-y-16', 'flex-1')}>
@@ -98,24 +131,13 @@ const GameSelectionCard = ({
         </div>
       </div>
       <div className={cn('gap-[0.5rem]', 'flex', 'flex-col')}>
-        <Button
-          disabled={!isActive || ticketCount === 0}
-          onClick={handleAction}
-        >
-          {ticketCount === 0
-            ? '게임 티켓을 구매하세요'
-            : isActive
-              ? type === 'game'
-                ? '게임하기'
-                : `${ticketPrice}P`
-              : type === 'game'
-                ? '게임불가'
-                : '구매불가'}
+        <Button disabled={buttonDisabled} onClick={handleAction}>
+          {buttonText}
         </Button>
-        {shopTicket && (
+        {type === 'store' && (
           <div className={cn('flex', 'items-center', 'justify-center')}>
             <p className={cn('text-body3s', 'text-gray-500')}>
-              구매가능한 티켓 양 : {ticketAmount}
+              구매가능한 티켓 양 : {shopTicket?.ticketQuantity || 0}
             </p>
           </div>
         )}
@@ -130,4 +152,5 @@ const GameSelectionCard = ({
     </div>
   );
 };
+
 export default GameSelectionCard;

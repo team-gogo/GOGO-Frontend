@@ -12,7 +12,7 @@ export const miniGames = [
     icon: (isActive: boolean) => (
       <CoinIcon size={60} color={isActive ? '#fff' : '#898989'} />
     ),
-    name: '코인 플립',
+    name: '코인 토스',
     type: 'game',
   },
   {
