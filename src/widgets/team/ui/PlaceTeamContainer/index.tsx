@@ -539,10 +539,11 @@ const PlaceTeamContainer = () => {
                                   >
                                     {isDeleteMode && (
                                       <button
-                                        className="absolute -left-2 -top-2 z-10 cursor-pointer"
+                                        className="absolute -left-1 -top-1 z-10 cursor-pointer"
                                         onClick={() =>
                                           handleDeletePlayer(player.id)
                                         }
+                                        style={{ transform: 'scale(0.8)' }}
                                       >
                                         <DeleteIcon />
                                       </button>
