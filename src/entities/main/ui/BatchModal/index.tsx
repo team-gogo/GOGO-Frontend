@@ -1,35 +1,45 @@
 'use client';
 
+import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { WarningIcon } from '@/shared/assets/svg';
 import { useMatchBatchArrStore, useMatchTeamStore } from '@/shared/stores';
+import { BatchMatchType } from '@/shared/types/main';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import ModalLayout from '@/shared/ui/modalLayout';
 import { cn } from '@/shared/utils/cn';
+import { formatBatchData } from '../../model/formatBatchData';
+import { usePostBatchMatch } from '../../model/usePostBatchMatch';
 
 interface BatchModalProps {
   onClose: () => void;
 }
 
-interface BatchMatchType {
-  winTeanId: number;
-  aTeamScore: number;
-  bTeamScore: number;
-}
-
 const BatchModal = ({ onClose }: BatchModalProps) => {
   const { aTeam, bTeam, matchId } = useMatchTeamStore();
+  const { mutate: PostBatch } = usePostBatchMatch(matchId);
   const { matchBatchArr, setMatchBatchArr } = useMatchBatchArrStore();
 
-  const { register, handleSubmit, reset, watch } = useForm<BatchMatchType>();
+  const { register, handleSubmit, reset, watch, setValue } =
+    useForm<BatchMatchType>();
 
   const { aTeamScore, bTeamScore } = watch();
+
+  useEffect(() => {
+    if (aTeamScore && bTeamScore) {
+      setValue(
+        'winTeamId',
+        Number(aTeamScore > bTeamScore ? aTeam?.teamId : bTeam?.teamId),
+      );
+    }
+  }, [aTeamScore, bTeamScore, aTeam?.teamId, bTeam?.teamId, setValue]);
 
   const isDisabled = !aTeamScore || !bTeamScore;
 
   const onSubmit: SubmitHandler<BatchMatchType> = async (data) => {
-    console.log(data);
+    const formattedData = formatBatchData(data);
+    PostBatch(formattedData);
 
     const updatedMatchBatchArr = matchBatchArr.map((item) =>
       item.matchId === matchId ? { ...item, isEnd: true } : item,
@@ -90,6 +100,7 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
               {...register('aTeamScore', { required: true })}
               placeholder="스코어 입력"
               bgColor="bg-gray-600"
+              type="number"
               isPlcCenter={true}
             />
           </div>
@@ -108,6 +119,7 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
               {...register('bTeamScore', { required: true })}
               placeholder="스코어 입력"
               bgColor="bg-gray-600"
+              type="number"
               isPlcCenter={true}
             />
           </div>
