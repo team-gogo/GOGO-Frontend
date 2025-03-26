@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import React from 'react';
 import { GameInfo, StoreInfo } from '@/entities/mini-game';
 import { StoreIcon } from '@/shared/assets/icons';
@@ -10,13 +11,28 @@ import { GameCardContainer, InfoContainer } from '@/widgets/mini-game';
 import { getShopTicketStatus } from '../..';
 import { miniGames } from '../../model/gameData';
 import { storeItems } from '../../model/storeData';
-import getActiveGameList from '../Mock/getActiveGameList';
-import getMyTicket from '../Mock/getMyTicket';
+import { useGetActiveGameQuery } from '../../model/useGetActiveGameQuery';
+import { useGetTicketCountQuery } from '../../model/useGetTicketCountQuery';
 
 const MiniGamePage = () => {
-  const activeGameList = getActiveGameList();
-  const getTicketCount = getMyTicket();
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
+
   const getShopTicket = getShopTicketStatus();
+
+  const { data: activeGameList, isLoading: activeGameLoading } =
+    useGetActiveGameQuery(stageId);
+  const { data: getTicketCount, isLoading: ticketCountLoading } =
+    useGetTicketCountQuery(stageId);
+
+  if (
+    activeGameLoading ||
+    !activeGameList ||
+    ticketCountLoading ||
+    !getTicketCount
+  ) {
+    return <div>로딩 중...</div>;
+  }
 
   return (
     <div
