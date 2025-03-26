@@ -491,12 +491,15 @@ const PlaceTeamContainer = () => {
                       </div>
                     </button>
                     <button
-                      className={`relative ml-20 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent ${isDeleteMode ? 'text-red-500' : 'text-white'}`}
+                      className={`relative ml-20 flex h-[30px] min-w-[80px] cursor-pointer items-center gap-1 rounded-full bg-transparent px-2 ${
+                        isDeleteMode ? 'text-[#FF4646]' : 'text-[#6B6B6B]'
+                      }`}
                       onClick={() => setIsDeleteMode(!isDeleteMode)}
                     >
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <MinusButtonIcon />
+                      <div>
+                        <MinusButtonIcon isActive={isDeleteMode} />
                       </div>
+                      <span className="ml-4 text-lg font-bold">빼기</span>
                     </button>
                   </div>
                 </div>
