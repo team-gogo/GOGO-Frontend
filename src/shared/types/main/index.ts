@@ -25,3 +25,9 @@ export interface StageInMatchResponse {
   count: number;
   games: Game[];
 }
+
+export interface BatchMatchType {
+  winTeamId: number;
+  aTeamScore: number;
+  bTeamScore: number;
+}
