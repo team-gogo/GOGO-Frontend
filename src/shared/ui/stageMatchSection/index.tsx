@@ -28,7 +28,7 @@ const StageMatchSection = ({
     usePasswordModalStore();
 
   const totalStages = stages?.length ?? 0;
-  const totalMatches = matches?.matches.length ?? 0;
+  const totalMatches = matches?.matches?.length ?? 0;
 
   const {
     startIndex: stageStartIndex,
@@ -43,14 +43,7 @@ const StageMatchSection = ({
   } = useStageNavigation(totalMatches, visibleCount);
 
   return (
-    <div
-      className={cn(
-        'flex',
-        'h-full',
-        'flex-col',
-        totalStages >= 3 || totalMatches >= 3 ? 'w-[95%]' : 'w-full',
-      )}
-    >
+    <div className={cn('flex', 'h-full', 'flex-col', 'w-[95%]')}>
       {title && (
         <h2
           className={cn('h-full', 'text-body1e', 'text-white', 'pb-[2.5rem]')}
@@ -72,7 +65,7 @@ const StageMatchSection = ({
           정보를 불러오는중...
         </div>
       )}
-      {totalStages === 0 && !isPending && (
+      {stages && totalStages === 0 && !isPending && (
         <div
           className={cn(
             'flex',
@@ -84,6 +77,20 @@ const StageMatchSection = ({
           )}
         >
           해당하는 스테이지가 없습니다.
+        </div>
+      )}
+      {matches && totalMatches === 0 && !isPending && (
+        <div
+          className={cn(
+            'flex',
+            'min-h-[18.25rem]',
+            'justify-center',
+            'items-center',
+            'text-body1e',
+            'text-white',
+          )}
+        >
+          해당하는 매치가 없습니다.
         </div>
       )}
       {totalStages > 0 && (

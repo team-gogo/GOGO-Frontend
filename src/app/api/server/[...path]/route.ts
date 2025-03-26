@@ -34,7 +34,16 @@ async function handleRequest(req: NextRequest) {
 
   let data;
   if (!['GET', 'DELETE', 'HEAD'].includes(method)) {
-    data = await req.json();
+    try {
+      const textBody = await req.text();
+      data = textBody ? JSON.parse(textBody) : undefined;
+    } catch (error) {
+      console.error('JSON 파싱 오류:', error);
+      return NextResponse.json(
+        { error: '잘못된 JSON 형식입니다.', status: 400 },
+        { status: 400 },
+      );
+    }
   }
 
   try {

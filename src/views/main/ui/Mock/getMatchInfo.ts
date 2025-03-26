@@ -6,13 +6,13 @@ const getMatchInfo = (): MatchResponse => {
     matches: [
       {
         matchId: 1001,
-        aTeam: {
+        ateam: {
           teamId: 1,
           teamName: '팀 A',
           bettingPoint: 50,
           winCount: 10,
         },
-        bTeam: {
+        bteam: {
           teamId: 2,
           teamName: '팀 B',
           bettingPoint: 30,
@@ -21,11 +21,12 @@ const getMatchInfo = (): MatchResponse => {
         startDate: '2025-03-10T12:00:00',
         endDate: '2025-03-10T14:00:00',
         isEnd: false,
-        round: ['ROUND_OF_32'],
-        category: ['SOCCER'],
-        system: ['TOURNAMENT'],
+        round: 'ROUND_OF_32',
+        category: 'SOCCER',
+        system: 'TOURNAMENT',
         turn: 1,
         isNotice: false,
+        isPlayer: false,
         betting: {
           isBetting: true,
           bettingPoint: 1000,
@@ -35,13 +36,13 @@ const getMatchInfo = (): MatchResponse => {
       },
       {
         matchId: 1002,
-        aTeam: {
+        ateam: {
           teamId: 3,
           teamName: '팀 C',
           bettingPoint: 60,
           winCount: 12,
         },
-        bTeam: {
+        bteam: {
           teamId: 4,
           teamName: '팀 D',
           bettingPoint: 40,
@@ -50,11 +51,12 @@ const getMatchInfo = (): MatchResponse => {
         startDate: '2025-03-11T15:00:00',
         endDate: '2025-03-22T17:00:00',
         isEnd: false,
-        round: ['ROUND_OF_16'],
-        category: ['BASKET_BALL'],
-        system: ['FULL_LEAGUE'],
+        round: 'ROUND_OF_16',
+        category: 'BASKET_BALL',
+        system: 'FULL_LEAGUE',
         turn: 2,
         isNotice: true,
+        isPlayer: false,
         betting: {
           isBetting: false,
           bettingPoint: undefined,
@@ -64,13 +66,13 @@ const getMatchInfo = (): MatchResponse => {
       },
       {
         matchId: 1003,
-        aTeam: {
+        ateam: {
           teamId: 5,
           teamName: '팀 E',
           bettingPoint: 100,
           winCount: 15,
         },
-        bTeam: {
+        bteam: {
           teamId: 6,
           teamName: '팀 F',
           bettingPoint: 90,
@@ -79,11 +81,12 @@ const getMatchInfo = (): MatchResponse => {
         startDate: '2025-03-30T12:00:00',
         endDate: '2025-03-31T14:00:00',
         isEnd: true,
-        round: ['QUARTER_FINALS'],
-        category: ['SOCCER'],
-        system: ['TOURNAMENT'],
+        round: 'QUARTER_FINALS',
+        category: 'SOCCER',
+        system: 'TOURNAMENT',
         turn: 3,
         isNotice: false,
+        isPlayer: false,
         betting: {
           isBetting: true,
           bettingPoint: 10,
@@ -100,13 +103,13 @@ const getMatchInfo = (): MatchResponse => {
       },
       {
         matchId: 1004,
-        aTeam: {
+        ateam: {
           teamId: 7,
           teamName: '팀 G',
           bettingPoint: 120,
           winCount: 14,
         },
-        bTeam: {
+        bteam: {
           teamId: 8,
           teamName: '팀 H',
           bettingPoint: 80,
@@ -115,11 +118,12 @@ const getMatchInfo = (): MatchResponse => {
         startDate: '2025-03-17T10:00:00',
         endDate: '2025-03-18T12:00:00',
         isEnd: true,
-        round: ['SEMI_FINALS'],
-        category: ['SOCCER'],
-        system: ['FULL_LEAGUE'],
+        round: 'SEMI_FINALS',
+        category: 'SOCCER',
+        system: 'FULL_LEAGUE',
         turn: 4,
         isNotice: false,
+        isPlayer: false,
         betting: {
           isBetting: false,
           bettingPoint: undefined,
@@ -136,13 +140,13 @@ const getMatchInfo = (): MatchResponse => {
       },
       {
         matchId: 1005,
-        aTeam: {
+        ateam: {
           teamId: 9,
           teamName: '팀 I',
           bettingPoint: 1200,
           winCount: 14,
         },
-        bTeam: {
+        bteam: {
           teamId: 10,
           teamName: '팀 J',
           bettingPoint: 800,
@@ -151,11 +155,12 @@ const getMatchInfo = (): MatchResponse => {
         startDate: '2025-03-20T10:00:00',
         endDate: '2025-03-20T12:00:00',
         isEnd: true,
-        round: ['FINALS'],
-        category: ['SOCCER'],
-        system: ['FULL_LEAGUE'],
+        round: 'FINALS',
+        category: 'SOCCER',
+        system: 'FULL_LEAGUE',
         turn: 4,
         isNotice: true,
+        isPlayer: false,
         betting: {
           isBetting: true,
           bettingPoint: 800,

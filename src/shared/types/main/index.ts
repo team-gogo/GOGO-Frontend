@@ -29,3 +29,9 @@ export interface StageInMatchResponse {
 export interface MyPointType {
   point: number;
 }
+
+export interface BatchMatchType {
+  winTeamId: number;
+  aTeamScore: number;
+  bTeamScore: number;
+}
