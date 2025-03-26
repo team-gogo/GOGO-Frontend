@@ -16,6 +16,7 @@ import {
   useBatchModalStore,
   useCheckAgainModalStore,
   useMyStageIdStore,
+  usePointStore,
 } from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
@@ -29,6 +30,7 @@ import {
 } from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
 import { getBoardMock, getMatchInfo, getRankingMock } from '../..';
+import { useGetUserStagePoint } from '../../model/useGetUserStagePoint';
 import getStageInMatch from '../Mock/getStageInMatch';
 
 const MainPage = () => {
@@ -39,6 +41,20 @@ const MainPage = () => {
   const slicedBoardMock = boardMock.board.slice(0, 4);
 
   const { stageId } = useParams();
+
+  const { data: userPointData } = useGetUserStagePoint(Number(stageId));
+
+  const { point, setPoint } = usePointStore();
+
+  useEffect(() => {
+    if (userPointData?.point) {
+      setPoint(userPointData.point);
+    }
+  }, [userPointData]);
+
+  useEffect(() => {
+    console.log(point);
+  }, [point]);
 
   const { setStageId } = useMyStageIdStore();
 

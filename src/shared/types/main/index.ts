@@ -25,3 +25,7 @@ export interface StageInMatchResponse {
   count: number;
   games: Game[];
 }
+
+export interface MyPointType {
+  point: number;
+}
