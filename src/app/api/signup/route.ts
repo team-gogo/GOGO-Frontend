@@ -4,23 +4,25 @@ import { NextResponse } from 'next/server';
 import instance from '@/shared/api/instance';
 
 export async function POST(request: Request) {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get('accessToken')?.value;
   const body = await request.json();
 
   try {
-    const response = await instance.post('/user/auth/signup', body);
+    const response = await instance.post('/user/auth/signup', body, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-    const { accessToken, refreshToken } = response.data;
-
-    console.log(response.data);
-
-    cookies().set('accessToken', accessToken, {
+    cookies().set('accessToken', response.data.accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
       maxAge: Number.MAX_SAFE_INTEGER,
     });
 
-    cookies().set('refreshToken', refreshToken, {
+    cookies().set('refreshToken', response.data.refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
