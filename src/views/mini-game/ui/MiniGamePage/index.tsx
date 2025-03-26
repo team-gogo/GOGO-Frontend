@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 import { GameInfo, StoreInfo } from '@/entities/mini-game';
 import { StoreIcon } from '@/shared/assets/icons';
@@ -8,16 +8,19 @@ import { MiniGameIcon } from '@/shared/assets/svg';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { GameCardContainer, InfoContainer } from '@/widgets/mini-game';
-import { miniGames } from '../../model/gameData';
-import { storeItems } from '../../model/storeData';
+import { createMiniGameItems } from '../../model/gameData';
+import { createStoreItems } from '../../model/storeData';
 import { useGetActiveGameQuery } from '../../model/useGetActiveGameQuery';
 import { useGetMyPointQuery } from '../../model/useGetMyPointQuery';
 import { useGetMyTicketQuery } from '../../model/useGetMyTicketQuery';
 import { useGetShopTicketStatusQuery } from '../../model/useGetShopTicketStatusQuery';
+import { usePostBuyTicketMutation } from '../../model/usePostBuyTicketMutation';
 
 const MiniGamePage = () => {
+  const router = useRouter();
   const params = useParams<{ stageId: string }>();
   const { stageId } = params;
+
   const { data: activeGameList, isLoading: activeGameIsLoading } =
     useGetActiveGameQuery(stageId);
   const { data: ticketCount, isLoading: ticketCountIsLoading } =
@@ -26,6 +29,11 @@ const MiniGamePage = () => {
     useGetShopTicketStatusQuery(stageId);
   const { data: myPoint, isLoading: myPointIsLoading } =
     useGetMyPointQuery(stageId);
+
+  const { mutate: buyTicket } = usePostBuyTicketMutation(stageId);
+
+  const storeItems = createStoreItems(buyTicket);
+  const miniGames = createMiniGameItems(router, stageId);
 
   if (
     activeGameIsLoading ||

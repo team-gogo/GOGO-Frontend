@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React from 'react';
 import { GameSelectionCard } from '@/entities/mini-game';
 import {
   ActiveGameList,
@@ -8,9 +8,10 @@ import {
 import { cn } from '@/shared/utils/cn';
 
 interface GameItem {
-  icon: (isActive: boolean) => ReactNode;
+  icon: (isActive: boolean) => React.ReactNode;
   name: string;
   type: string;
+  action?: () => void;
 }
 
 interface GameCardContainerProps {
@@ -59,6 +60,7 @@ const GameCardContainer = ({
             ticketCount={ticketCounts[index]}
             shopTicket={shopTickets[index]}
             myPoint={myPoint}
+            action={item.action}
           />
         );
       })}

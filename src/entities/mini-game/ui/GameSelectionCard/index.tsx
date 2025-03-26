@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import { ReactNode, useState } from 'react';
 import { CircleQuestionIcon } from '@/shared/assets/icons';
 import { GameType } from '@/shared/model/sportTypes';
@@ -15,6 +14,7 @@ interface GameSelectionCardProps {
   ticketCount?: number;
   shopTicket?: GameTicket;
   myPoint?: number;
+  action?: () => void;
 }
 
 const GameSelectionCard = ({
@@ -25,6 +25,7 @@ const GameSelectionCard = ({
   ticketCount,
   shopTicket,
   myPoint,
+  action,
 }: GameSelectionCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedGame, setSelectedGame] = useState<GameType | null>('YAVARWEE');
@@ -33,27 +34,6 @@ const GameSelectionCard = ({
 
   const toggleGameSelection = (sort: GameType) => {
     setSelectedGame((prev) => (prev === sort ? null : sort));
-  };
-
-  const { push } = useRouter();
-
-  const handleAction = () => {
-    let gamePath = '';
-    switch (name) {
-      case '야바위':
-        gamePath = '/mini-game/yavarwee';
-        break;
-      case '코인 토스':
-        gamePath = '/mini-game/coin-toss';
-        break;
-      case '플링코':
-        gamePath = '/mini-game/plinko';
-        break;
-      default:
-        return;
-    }
-
-    push(gamePath);
   };
 
   let buttonDisabled = false;
@@ -131,7 +111,7 @@ const GameSelectionCard = ({
         </div>
       </div>
       <div className={cn('gap-[0.5rem]', 'flex', 'flex-col')}>
-        <Button disabled={buttonDisabled} onClick={handleAction}>
+        <Button disabled={buttonDisabled} onClick={action}>
           {buttonText}
         </Button>
         {type === 'store' && (
