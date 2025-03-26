@@ -2,7 +2,7 @@ import { useRef, useCallback } from 'react';
 import BadmintonSvg from '@/shared/assets/svg/Map/Badminton';
 import BaseballSvg from '@/shared/assets/svg/Map/Baseball';
 import BasketballSvg from '@/shared/assets/svg/Map/Basketball';
-import SoccerSvg from '@/shared/assets/svg/Map/SoccerFull';
+import SoccerSvg from '@/shared/assets/svg/Map/Soccer';
 import VolleyballSvg from '@/shared/assets/svg/Map/Volleyball';
 import { SportType } from '@/shared/model/sportTypes';
 
