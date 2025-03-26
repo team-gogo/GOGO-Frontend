@@ -15,6 +15,7 @@ import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
 import PlayerDropdown from '@/entities/team/ui/PlayerDropdown';
 import PlayerItem from '@/entities/team/ui/PlayerItem';
+import DeleteIcon from '@/shared/assets/svg/DeleteIcon';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
@@ -61,6 +62,7 @@ const PlaceTeamContainer = () => {
   }>({ width: 0, height: 0 });
   const [playerScale, setPlayerScale] = useState(1);
   const [isLargeScreen, setIsLargeScreen] = useState(true);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
 
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
@@ -428,6 +430,16 @@ const PlaceTeamContainer = () => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
+  const handleDeletePlayer = useCallback((playerId: string) => {
+    setPlayers((prev) => {
+      const playerToDelete = prev.find((p) => p.id === playerId);
+      if (!playerToDelete) return prev;
+      const filteredPlayers = prev.filter((p) => p.id !== playerId);
+
+      return filteredPlayers;
+    });
+  }, []);
+
   if (!sportType) {
     return null;
   }
@@ -478,7 +490,10 @@ const PlaceTeamContainer = () => {
                         <PlusButtonIcon />
                       </div>
                     </button>
-                    <button className="relative ml-20 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent">
+                    <button
+                      className={`relative ml-20 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent ${isDeleteMode ? 'text-red-500' : 'text-white'}`}
+                      onClick={() => setIsDeleteMode(!isDeleteMode)}
+                    >
                       <div className="absolute inset-0 flex items-center justify-center">
                         <MinusButtonIcon />
                       </div>
@@ -516,8 +531,19 @@ const PlaceTeamContainer = () => {
                                     id={`player-list-${player.id}`}
                                     style={{
                                       ...provided.draggableProps.style,
+                                      position: 'relative',
                                     }}
                                   >
+                                    {isDeleteMode && (
+                                      <button
+                                        className="absolute -left-2 -top-2 z-10 cursor-pointer"
+                                        onClick={() =>
+                                          handleDeletePlayer(player.id)
+                                        }
+                                      >
+                                        <DeleteIcon />
+                                      </button>
+                                    )}
                                     <PlayerItem
                                       name={player.name}
                                       isDragging={snapshot.isDragging}
