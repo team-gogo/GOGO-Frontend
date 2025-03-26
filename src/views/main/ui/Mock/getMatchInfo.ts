@@ -26,6 +26,7 @@ const getMatchInfo = (): MatchResponse => {
         system: 'TOURNAMENT',
         turn: 1,
         isNotice: false,
+        isPlayer: false,
         betting: {
           isBetting: true,
           bettingPoint: 1000,
@@ -55,6 +56,7 @@ const getMatchInfo = (): MatchResponse => {
         system: 'FULL_LEAGUE',
         turn: 2,
         isNotice: true,
+        isPlayer: false,
         betting: {
           isBetting: false,
           bettingPoint: undefined,
@@ -84,6 +86,7 @@ const getMatchInfo = (): MatchResponse => {
         system: 'TOURNAMENT',
         turn: 3,
         isNotice: false,
+        isPlayer: false,
         betting: {
           isBetting: true,
           bettingPoint: 10,
@@ -120,6 +123,7 @@ const getMatchInfo = (): MatchResponse => {
         system: 'FULL_LEAGUE',
         turn: 4,
         isNotice: false,
+        isPlayer: false,
         betting: {
           isBetting: false,
           bettingPoint: undefined,
@@ -156,6 +160,7 @@ const getMatchInfo = (): MatchResponse => {
         system: 'FULL_LEAGUE',
         turn: 4,
         isNotice: true,
+        isPlayer: false,
         betting: {
           isBetting: true,
           bettingPoint: 800,

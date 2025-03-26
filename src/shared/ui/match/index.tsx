@@ -14,7 +14,6 @@ import {
   useMatchModalStore,
   useMatchStore,
   useMyStageIdStore,
-  useSelectDateStore,
 } from '@/shared/stores';
 import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
@@ -46,7 +45,6 @@ const Match = ({ match }: MatchProps) => {
   const { setMatchStatus, setMatch } = useMatchStore();
   const { stageId } = useMyStageIdStore();
   const { matchBatchArr } = useMatchBatchArrStore();
-  const { selectDate } = useSelectDateStore();
 
   const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
 
