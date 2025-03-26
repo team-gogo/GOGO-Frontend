@@ -1,0 +1,22 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { postBoardLike } from '../api/postBoardLike';
+
+export const usePostBoardLikeMutation = (boardId: string, stageId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => postBoardLike(boardId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['communityDetail', boardId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['communityList', stageId],
+        exact: false,
+      });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+};

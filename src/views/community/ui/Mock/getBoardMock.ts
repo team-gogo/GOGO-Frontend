@@ -9,7 +9,7 @@ const getBoardMock = (): BoardData => {
     board: [
       {
         boardId: 1,
-        gameType: 'SOCCER',
+        gameCategory: 'SOCCER',
         title: '속도 게임 최고 기록!',
         likeCount: 150,
         commentCount: 100,
@@ -25,7 +25,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 2,
-        gameType: 'BASE_BALL',
+        gameCategory: 'BASE_BALL',
         title: '정확도 게임 팁 공유',
         likeCount: 8,
         commentCount: 98,
@@ -41,7 +41,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 3,
-        gameType: 'VOLLEY_BALL',
+        gameCategory: 'VOLLEY_BALL',
         title: '기억력 챌린지 도전기',
         likeCount: 20,
         commentCount: 100,
@@ -57,7 +57,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 4,
-        gameType: 'BASKET_BALL',
+        gameCategory: 'BASKET_BALL',
         title: '슛 정확도 연습법!',
         likeCount: 12,
         commentCount: 100,
@@ -73,7 +73,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 5,
-        gameType: 'BASKET_BALL',
+        gameCategory: 'BASKET_BALL',
         title: '서브 속도 기록 달성!',
         likeCount: 18,
         commentCount: 100,
@@ -89,7 +89,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 6,
-        gameType: 'SOCCER',
+        gameCategory: 'SOCCER',
         title: '백핸드 스킬 연습법',
         likeCount: 10,
         commentCount: 100,
@@ -105,7 +105,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 7,
-        gameType: 'SOCCER',
+        gameCategory: 'SOCCER',
         title: '드리블 마스터하기',
         likeCount: 22,
         commentCount: 100,
@@ -121,7 +121,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 8,
-        gameType: 'SOCCER',
+        gameCategory: 'SOCCER',
         title: '스매시 연습 팁',
         likeCount: 9,
         commentCount: 100,
@@ -137,7 +137,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 9,
-        gameType: 'SOCCER',
+        gameCategory: 'SOCCER',
         title: '퍼팅 거리 조절 방법',
         likeCount: 14,
         commentCount: 100,
@@ -153,7 +153,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 10,
-        gameType: 'BADMINTON',
+        gameCategory: 'BADMINTON',
         title: '스핀 서브 완벽 가이드',
         likeCount: 17,
         commentCount: 100,
@@ -169,7 +169,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 11,
-        gameType: 'etc',
+        gameCategory: 'etc',
         title: '발로란트',
         likeCount: 17,
         commentCount: 100,

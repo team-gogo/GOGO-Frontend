@@ -3,10 +3,11 @@ import { Comment } from '@/shared/types/community/detail';
 import { cn } from '@/shared/utils/cn';
 
 interface CommentContainerProps {
+  boardId: string;
   comments: Comment[];
 }
 
-const CommentContainer = ({ comments }: CommentContainerProps) => {
+const CommentContainer = ({ boardId, comments }: CommentContainerProps) => {
   return (
     <div className={cn('space-y-24', 'min-h-[16.25rem]', 'flex', 'flex-col')}>
       <p className={cn('text-body1e', 'text-white')}>댓글</p>
@@ -16,7 +17,6 @@ const CommentContainer = ({ comments }: CommentContainerProps) => {
           'flex-1',
           'flex',
           'items-center',
-          'justify-center',
           'flex-col',
         )}
       >
@@ -29,10 +29,11 @@ const CommentContainer = ({ comments }: CommentContainerProps) => {
             <CommentItem
               key={comment.commentId}
               authorName={comment.author.name}
-              comment={comment.comment}
+              content={comment.content}
               likeCount={comment.likeCount}
               commentId={comment.commentId}
               isLiked={comment.isLiked}
+              boardId={boardId}
             />
           ))
         )}

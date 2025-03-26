@@ -7,18 +7,20 @@ import { cn } from '@/shared/utils/cn';
 interface CommunityItemsProps {
   item: CommunityItemProps;
   isMainUsed?: boolean;
+  stageId: string;
 }
 
-const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
+const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
   const formatCount = (count: number) => {
     return count >= 100 ? '99+' : count.toString();
   };
 
-  const { boardId, gameType, title, author, commentCount, likeCount } = item;
+  const { boardId, gameCategory, title, author, commentCount, likeCount } =
+    item;
 
   return (
     <Link
-      href={`/community/detail/${boardId}`}
+      href={`/community/${stageId}/detail/${boardId}`}
       className={cn(
         'text-gray-600',
         'bg-gray-700',
@@ -35,7 +37,7 @@ const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
     >
       <div className={cn('flex', 'items-center', 'justify-center')}>
         <SportTypelabel
-          type={gameType}
+          type={gameCategory}
           isMainUsed={isMainUsed}
           isHaveBorder={true}
         />
@@ -74,9 +76,7 @@ const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
       >
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <CommentIcon />
-          <p className={cn('text-body3s', 'text-gray-300')}>
-            {formatCount(commentCount)}
-          </p>
+          <p className={cn('text-body3s', 'text-gray-300')}>{commentCount}</p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <HeartIcon />
