@@ -627,7 +627,6 @@ const PlaceTeamContainer = () => {
                                     left: `${player.x}px`,
                                     top: `${player.y}px`,
                                     transform: `scale(${playerScale})`,
-                                    transformOrigin: 'center center',
                                     transition: snapshot.isDragging
                                       ? 'none'
                                       : 'transform 0.2s, left 0.2s, top 0.2s',
@@ -637,6 +636,8 @@ const PlaceTeamContainer = () => {
                                         ? 99999
                                         : 1,
                                     pointerEvents: 'auto',
+                                    willChange: 'transform, left, top',
+                                    transformOrigin: '0 0',
                                   }}
                                   onMouseDown={(e) => {
                                     if (e.button === 0) {
