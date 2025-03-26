@@ -111,11 +111,16 @@ const TeamArray = ({ className }: TeamArrayProps) => {
                 >
                   {teams.map((team, index) => (
                     <Draggable key={team} draggableId={team} index={index}>
-                      {(provided) => (
+                      {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
+                          style={{
+                            ...provided.draggableProps.style,
+                            zIndex: snapshot.isDragging ? 9999 : 'auto',
+                          }}
+                          className={cn(snapshot.isDragging && 'opacity-100')}
                         >
                           <TeamItem
                             teamName={team}
