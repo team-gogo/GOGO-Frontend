@@ -4,29 +4,33 @@ import { useState } from 'react';
 import { HeartIcon } from '@/shared/assets/icons';
 import { PersonIcon, SelectHeartIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
+import { usePostCommentLike } from '../../model/usePostCommentLike';
 
 interface CommentItemProps {
   authorName: string;
-  comment: string;
+  content: string;
   likeCount: number;
   commentId: number;
   isLiked: boolean;
+  boardId: string;
 }
 
 const CommentItem = ({
   authorName,
-  comment,
+  content,
   likeCount,
   commentId,
   isLiked,
+  boardId,
 }: CommentItemProps) => {
   const [liked, setLiked] = useState(isLiked);
   const [likeCountState, setLikeCountState] = useState(likeCount);
+  const { mutate: commentLike } = usePostCommentLike(commentId, boardId);
 
   const handleLike = () => {
     setLiked(!liked);
     setLikeCountState(liked ? likeCountState - 1 : likeCountState + 1);
-    console.log(`Comment ID: ${commentId}, Liked: ${!liked}`);
+    commentLike();
   };
 
   return (
@@ -54,7 +58,6 @@ const CommentItem = ({
           {authorName}
         </p>
       </div>
-
       <p
         className={cn(
           'text-body3s',
@@ -64,7 +67,7 @@ const CommentItem = ({
           'mobile:text-caption1s',
         )}
       >
-        {comment}
+        {content}
       </p>
       <div
         className={cn('flex', 'items-center', 'gap-8', 'cursor-pointer')}

@@ -30,18 +30,19 @@ import {
   SectionWrapper,
 } from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
-import { getBoardMock, getRankingMock } from '../..';
+
+import { getRankingMock } from '../..';
 import { useGetSearchMatch } from '../../model/useGetSearchMatch';
 import { useGetUserStagePoint } from '../../model/useGetUserStagePoint';
+
 import getStageInMatch from '../Mock/getStageInMatch';
 
 const MainPage = () => {
   const rankingMock = getRankingMock();
-  const boardMock = getBoardMock();
   const stageInMatch = getStageInMatch();
-  const slicedBoardMock = boardMock.board.slice(0, 4);
 
-  const { stageId } = useParams();
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
 
   const { data: userPointData } = useGetUserStagePoint(Number(stageId));
 
@@ -175,14 +176,12 @@ const MainPage = () => {
             <SectionWrapper
               text={'커뮤니티'}
               icon={<CommunityIcon />}
-              path="/community"
+              path={`/community/${stageId}`}
             >
               <CommunityItemContainer
+                stageId={stageId}
                 isMainUsed={isMainUsed}
-                boardData={{
-                  info: boardMock.info,
-                  board: slicedBoardMock,
-                }}
+                currentPage={1}
               />
             </SectionWrapper>
 

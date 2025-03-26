@@ -26,6 +26,7 @@ export async function PUT(req: NextRequest) {
 async function handleRequest(req: NextRequest) {
   const cookieStore = cookies();
   const accessToken = cookieStore.get('accessToken')?.value;
+
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}${req.nextUrl.pathname.replace('/api/server', '')}`;
 
   const method = req.method;
@@ -45,7 +46,6 @@ async function handleRequest(req: NextRequest) {
       );
     }
   }
-
   try {
     const response = await instance.request({
       url,
@@ -56,6 +56,10 @@ async function handleRequest(req: NextRequest) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    if (response.status === 204) {
+      return new NextResponse(null, { status: 204 });
+    }
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {

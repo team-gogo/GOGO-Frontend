@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm, SubmitHandler, FieldErrors } from 'react-hook-form';
 import { CategoryContainer, PageTitleBar } from '@/entities/community/create';
@@ -9,9 +10,17 @@ import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import TextArea from '@/shared/ui/textArea';
 import { cn } from '@/shared/utils/cn';
+import { useCreateCommunityMutation } from '../../model/useCreateCommunityMutation';
 
 const CommunityCreateContainer = () => {
   const [selectedSport, setSelectedSport] = useState<SportType | null>(null);
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
+  const {
+    mutate: createCommunity,
+    isPending,
+    isSuccess,
+  } = useCreateCommunityMutation(stageId);
 
   const toggleSportSelection = (sport: SportType) => {
     setSelectedSport((prev) => (prev === sport ? null : sport));
@@ -21,7 +30,7 @@ const CommunityCreateContainer = () => {
     useForm<CommunityCreateFormData>();
 
   const onSubmit: SubmitHandler<CommunityCreateFormData> = (data) => {
-    console.log(data);
+    createCommunity(data);
   };
 
   const onError = (errors: FieldErrors<CommunityCreateFormData>) => {
@@ -40,6 +49,7 @@ const CommunityCreateContainer = () => {
           setValue={setValue}
           selectedSport={selectedSport}
           toggleSportSelection={toggleSportSelection}
+          stageId={stageId}
         />
         <div className={cn('space-y-[397px]')}>
           <div className={cn('space-y-[32px]')}>
@@ -55,7 +65,9 @@ const CommunityCreateContainer = () => {
               {...register('content', { required: '내용을 입력해주세요.' })}
             />
           </div>
-          <Button type="submit">완료</Button>
+          <Button disabled={isPending || isSuccess} type="submit">
+            완료
+          </Button>
         </div>
       </div>
     </form>
