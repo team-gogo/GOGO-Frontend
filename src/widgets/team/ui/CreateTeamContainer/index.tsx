@@ -16,7 +16,13 @@ import InviteStudentInput, {
 } from '@/shared/ui/InviteStudentInput';
 import { cn } from '@/shared/utils/cn';
 
-const SUPPORTED_SPORTS = ['BASKET_BALL', 'BADMINTON', 'SOCCER', 'VOLLEY_BALL'];
+const SUPPORTED_SPORTS = [
+  'BASKET_BALL',
+  'BADMINTON',
+  'SOCCER',
+  'VOLLEY_BALL',
+  'BASEBALL',
+];
 
 const CreateTeamContainer = () => {
   const [teamName, setTeamName] = useState('');
