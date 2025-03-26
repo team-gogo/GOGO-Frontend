@@ -16,7 +16,7 @@ interface ModalProps {
   categoryTypes: SportType[];
 }
 
-const Modal = ({
+const CategoryTypeModal = ({
   onClose,
   selectedSport,
   selectedSort,
@@ -80,4 +80,4 @@ const Modal = ({
   );
 };
 
-export default Modal;
+export default CategoryTypeModal;

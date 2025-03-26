@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { FilterButton, Modal, WriteButton } from '@/entities/community';
+import { FilterButton, WriteButton } from '@/entities/community';
 import { CommunityIcon } from '@/shared/assets/svg';
 import { SportType, SortType } from '@/shared/model/sportTypes';
+import CategoryTypeModal from '@/shared/ui/CategoryTypeModal';
 import { cn } from '@/shared/utils/cn';
 
 interface CommunityToolbarProps {
@@ -49,7 +50,7 @@ const CommunityToolbar = ({
         <FilterButton onClick={toggleModal} />
       </div>
       {isModalOpen && (
-        <Modal
+        <CategoryTypeModal
           onClose={toggleModal}
           selectedSport={selectedSport}
           selectedSort={selectedSort}

@@ -36,7 +36,14 @@ const CommunityPage = () => {
         )}
       >
         <div
-          className={cn('w-full', 'h-full', 'flex', 'flex-col', 'gap-[2rem]')}
+          className={cn(
+            'w-full',
+            'h-full',
+            'pt-[2.25rem]',
+            'flex',
+            'flex-col',
+            'gap-[2rem]',
+          )}
         >
           <BackPageButton type="push" path={`/${stageId}`} />
           <CommunityToolbar
