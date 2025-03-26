@@ -13,11 +13,11 @@ import { toast } from 'react-toastify';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
 import PlayerItem from '@/entities/team/ui/PlayerItem';
+import FingerIcon from '@/shared/assets/svg/FingerIcon';
 import { SportType } from '@/shared/model/sportTypes';
 import { Student } from '@/shared/types/stage/create';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
-import FingerIcon from '@/shared/assets/svg/FingerIcon';
 
 interface Player {
   id: string;
