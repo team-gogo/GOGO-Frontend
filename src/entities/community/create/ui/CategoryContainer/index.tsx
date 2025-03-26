@@ -1,6 +1,5 @@
-import { useMemo } from 'react';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
-import { useGetStageGameQuery } from '@/entities/community/detail/model/useGetStageGameQuery';
+import { useCategoryTypes } from '@/entities/community/model/useCategoryTypes';
 import { SportType } from '@/shared/model/sportTypes';
 import { CommunityCreateFormData } from '@/shared/types/community/create';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
@@ -21,15 +20,7 @@ const CategoryContainer = ({
   toggleSportSelection,
   stageId,
 }: CategoryContainerProps) => {
-  const { data, isLoading } = useGetStageGameQuery(stageId);
-
-  const categoryTypes: SportType[] = useMemo(() => {
-    if (!data?.games) return [];
-    return Array.from(
-      new Set(data.games.map((game) => game.category)),
-    ) as SportType[];
-  }, [data]);
-
+  const { categoryTypes, isLoading } = useCategoryTypes(stageId);
   register('gameCategory', { required: '경기 종류를 선택해주세요.' });
 
   const handleSportSelection = (sport: SportType) => {

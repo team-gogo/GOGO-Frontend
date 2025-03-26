@@ -44,7 +44,7 @@ const CommunityDetailPage = () => {
         'space-y-[4.5rem]',
       )}
     >
-      <BackPageButton type="push" path="/community" />
+      <BackPageButton type="push" path={`/community/${stageId}`} />
       <div className={cn('flex-1', 'space-y-[4.5rem]')}>
         <CommunityContent
           title={data.title}

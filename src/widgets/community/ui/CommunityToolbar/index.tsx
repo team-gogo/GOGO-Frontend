@@ -12,6 +12,7 @@ interface CommunityToolbarProps {
   toggleSportSelection: (sport: SportType) => void;
   toggleSortSelection: (sort: SortType) => void;
   stageId: string;
+  categoryTypes: SportType[];
 }
 
 const CommunityToolbar = ({
@@ -20,6 +21,7 @@ const CommunityToolbar = ({
   toggleSportSelection,
   toggleSortSelection,
   stageId,
+  categoryTypes,
 }: CommunityToolbarProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -53,6 +55,7 @@ const CommunityToolbar = ({
           selectedSort={selectedSort}
           toggleSportSelection={toggleSportSelection}
           toggleSortSelection={toggleSortSelection}
+          categoryTypes={categoryTypes}
         />
       )}
     </div>
