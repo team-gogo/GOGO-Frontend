@@ -13,12 +13,13 @@ const Header = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const { data: userData } = useGetMyInfo();
 
-  const { userName, setUserName } = useUserNameStore();
+  const { setUserName } = useUserNameStore();
 
   useEffect(() => {
-    setUserName(String(userData?.name));
-    console.log(userName);
-  }, []);
+    if (userData?.name) {
+      setUserName(userData.name);
+    }
+  }, [userData]);
 
   return (
     <header
