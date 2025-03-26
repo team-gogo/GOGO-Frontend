@@ -19,7 +19,8 @@ interface CommunityContentProps {
   stageCategory: string;
   stageName: string;
   isLiked: boolean;
-  boardId: number;
+  boardId: string;
+  stageId: string;
 }
 
 const CommunityContent = ({
@@ -33,11 +34,12 @@ const CommunityContent = ({
   stageName,
   isLiked,
   boardId,
+  stageId,
 }: CommunityContentProps) => {
   const [liked, setLiked] = useState(isLiked);
   const [likeCountState, setLikeCountState] = useState(likeCount);
 
-  const { mutate: boardLike } = usePostBoardLikeMutation(boardId);
+  const { mutate: boardLike } = usePostBoardLikeMutation(boardId, stageId);
 
   const handleLike = () => {
     setLiked(!liked);

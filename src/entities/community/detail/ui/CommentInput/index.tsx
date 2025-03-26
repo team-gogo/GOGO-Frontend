@@ -9,23 +9,30 @@ import { usePostBoardCommentMutation } from '../../model/usePostBoardCommentMuta
 
 interface CommentFormData {
   content: string;
-  boardId: number;
+  boardId: string;
 }
 
 interface CommentInputProps {
-  boardId: number;
+  boardId: string;
+  stageId: string;
   onAddComment: (newComment: Comment) => void;
 }
 
-const CommentInput = ({ boardId, onAddComment }: CommentInputProps) => {
+const CommentInput = ({
+  boardId,
+  stageId,
+  onAddComment,
+}: CommentInputProps) => {
   const { register, handleSubmit, reset } = useForm<CommentFormData>({
     defaultValues: {
       boardId,
     },
   });
 
-  const { mutate: boardComment, isPending } =
-    usePostBoardCommentMutation(boardId);
+  const { mutate: boardComment, isPending } = usePostBoardCommentMutation(
+    boardId,
+    stageId,
+  );
 
   const onSubmit: SubmitHandler<CommentFormData> = async (data) => {
     if (isPending) return;

@@ -7,9 +7,10 @@ import { cn } from '@/shared/utils/cn';
 interface CommunityItemsProps {
   item: CommunityItemProps;
   isMainUsed?: boolean;
+  stageId: string;
 }
 
-const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
+const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
   const formatCount = (count: number) => {
     return count >= 100 ? '99+' : count.toString();
   };
@@ -19,7 +20,7 @@ const CommunityItem = ({ item, isMainUsed }: CommunityItemsProps) => {
 
   return (
     <Link
-      href={`/community/detail/${boardId}`}
+      href={`/community/${stageId}/detail/${boardId}`}
       className={cn(
         'text-gray-600',
         'bg-gray-700',

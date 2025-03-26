@@ -59,6 +59,7 @@ const CommunityItemContainer = ({
               key={item.boardId}
               item={item}
               isMainUsed={isMainUsed}
+              stageId={stageId}
             />
           ))}
         </div>

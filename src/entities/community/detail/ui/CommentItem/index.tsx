@@ -12,6 +12,7 @@ interface CommentItemProps {
   likeCount: number;
   commentId: number;
   isLiked: boolean;
+  boardId: string;
 }
 
 const CommentItem = ({
@@ -20,10 +21,11 @@ const CommentItem = ({
   likeCount,
   commentId,
   isLiked,
+  boardId,
 }: CommentItemProps) => {
   const [liked, setLiked] = useState(isLiked);
   const [likeCountState, setLikeCountState] = useState(likeCount);
-  const { mutate: commentLike } = usePostCommentLike(commentId);
+  const { mutate: commentLike } = usePostCommentLike(commentId, boardId);
 
   const handleLike = () => {
     setLiked(!liked);

@@ -10,9 +10,10 @@ import { CommentContainer } from '@/widgets/community/detail';
 import { useGetCommunityDetailQuery } from '../../model/useGetCommunityDetailQuery';
 
 const CommunityDetailPage = () => {
-  const { boardId } = useParams();
-  const safeBoardId = Array.isArray(boardId) ? boardId[0] : boardId || '';
-  const { data, isLoading, isError } = useGetCommunityDetailQuery(safeBoardId);
+  const params = useParams<{ boardId: string; stageId: string }>();
+  const { boardId } = params;
+  const { stageId } = params;
+  const { data, isLoading, isError } = useGetCommunityDetailQuery(boardId);
   const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
@@ -55,11 +56,16 @@ const CommunityDetailPage = () => {
           stageName={data.stage.name}
           commentCount={comments.length}
           isLiked={data.isLiked}
-          boardId={data.boardId}
+          boardId={boardId}
+          stageId={stageId}
         />
-        <CommentContainer comments={comments} />
+        <CommentContainer boardId={boardId} comments={comments} />
       </div>
-      <CommentInput boardId={data.boardId} onAddComment={handleAddComment} />
+      <CommentInput
+        boardId={boardId}
+        stageId={stageId}
+        onAddComment={handleAddComment}
+      />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const postBoardComment = async (boardId: number, content: string) => {
+export const postBoardComment = async (boardId: string, content: string) => {
   try {
     const response = await axios.post(
       `/api/server/stage/community/comment/${boardId}`,
