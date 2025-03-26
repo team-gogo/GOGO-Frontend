@@ -21,22 +21,25 @@ const MatchTeam = ({ team, percentage, bgColor, onClick }: MatchTeamProps) => {
         'flex-col',
         'justify-end',
         'gap-[1.5rem]',
+        'w-full',
+        'items-center',
       )}
     >
       <div className={cn('flex', 'flex-col', 'items-center', 'gap-[0.5rem]')}>
         <p className={cn('text-body2s', 'text-gray-300')}>
-          {team.bettingPoint}P
+          {team?.bettingPoint}P
         </p>
-        <h1 className={cn('text-h1e', 'text-white')}>{team.teamName}팀</h1>
+        <h1 className={cn('text-h1e', 'text-white')}>{team?.teamName}</h1>
       </div>
       <button
         onClick={onClick}
         type="button"
         className={cn(
           'flex',
-          'h-full',
+          'min-h-[2.5rem]',
           'max-h-[15rem]',
           'max-w-[7.5rem]',
+          'w-full',
           'flex-col',
           'justify-center',
           'items-center',

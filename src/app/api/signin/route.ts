@@ -33,7 +33,6 @@ export async function GET(request: Request) {
     );
 
     const googleAccessToken = tokenResponse.data.access_token;
-    console.log(googleAccessToken);
     const backendResponse = await instance.post('/user/auth/login', {
       oauthToken: googleAccessToken,
     });

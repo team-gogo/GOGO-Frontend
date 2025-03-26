@@ -8,6 +8,7 @@ import {
 import Button from '@/shared/ui/button';
 import ModalLayout from '@/shared/ui/modalLayout';
 import { cn } from '@/shared/utils/cn';
+import { usePostCancleBatch } from '../../model/usePostCancleBatch';
 
 interface BatchCancelModalProps {
   onClose: () => void;
@@ -15,6 +16,7 @@ interface BatchCancelModalProps {
 
 const BatchCancelModal = ({ onClose }: BatchCancelModalProps) => {
   const { matchId } = useMatchTeamStore();
+  const { mutate: PostCanclebatch } = usePostCancleBatch(matchId);
   const { tempPointExpiredDate } = useExpiredDateStore();
   const { matchBatchArr, setMatchBatchArr } = useMatchBatchArrStore();
 
@@ -115,6 +117,7 @@ const BatchCancelModal = ({ onClose }: BatchCancelModalProps) => {
           >
             <Button
               onClick={() => {
+                PostCanclebatch();
                 setMatchBatchArr(updatedMatchBatchArr);
                 onClose();
               }}
