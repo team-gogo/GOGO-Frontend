@@ -5,19 +5,14 @@ import {
   Droppable,
   Draggable,
   DragStart,
-  DropResult,
 } from '@hello-pangea/dnd';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
-import PlayerDropdown from '@/entities/team/ui/PlayerDropdown';
 import PlayerItem from '@/entities/team/ui/PlayerItem';
-import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
-import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
-import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { SportType } from '@/shared/model/sportTypes';
 import { Student } from '@/shared/types/stage/create';
 import BackPageButton from '@/shared/ui/backPageButton';
@@ -34,8 +29,6 @@ interface Player {
 
 const PlaceTeamContainer = () => {
   const [players, setPlayers] = useState<Player[]>([]);
-  const [selectedPlayer, setSelectedPlayer] = useState<string>('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [teamName, setTeamName] = useState('');
   const [membersList, setMembersList] = useState<Student[]>([]);
   const isMounted = useRef(false);
@@ -61,7 +54,6 @@ const PlaceTeamContainer = () => {
   }>({ width: 0, height: 0 });
   const [playerScale, setPlayerScale] = useState(1);
   const [isLargeScreen, setIsLargeScreen] = useState(true);
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
 
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
@@ -103,7 +95,16 @@ const PlaceTeamContainer = () => {
       setTeamName(storedTeamName);
     }
     if (storedMembers) {
-      setMembersList(JSON.parse(storedMembers));
+      const members = JSON.parse(storedMembers);
+      setMembersList(members);
+      // createTeam에서 추가된 인원들을 바로 players 상태에 추가
+      const initialPlayers = members.map((member: Student, index: number) => ({
+        id: `player-${index}`,
+        name: `${member.grade}${member.classNumber}${String(member.studentNumber).padStart(2, '0')} ${member.name}`,
+        x: 0,
+        y: 0,
+      }));
+      setPlayers(initialPlayers);
     }
   }, []);
 
@@ -200,19 +201,6 @@ const PlaceTeamContainer = () => {
     }
   }, [isLargeScreen]);
 
-  const handleAddPlayer = useCallback(() => {
-    if (selectedPlayer && selectedPlayer !== '인원 선택') {
-      const newPlayer: Player = {
-        id: `player-${Date.now()}`,
-        name: selectedPlayer,
-        x: 0,
-        y: 0,
-      };
-      setPlayers((prev) => [...prev, newPlayer]);
-      setSelectedPlayer('인원 선택');
-    }
-  }, [selectedPlayer]);
-
   const handlePlayerDrag = useCallback(
     (playerId: string, x: number, y: number) => {
       const playerElement = document.getElementById(`player-${playerId}`);
@@ -269,100 +257,14 @@ const PlaceTeamContainer = () => {
     draggedPlayerRef.current = start.draggableId;
   }, []);
 
-  const onDragEnd = useCallback(
-    (result: DropResult) => {
-      setIsDragging(false);
-      draggedPlayerRef.current = null;
-
-      if (!result.destination) {
-        return;
-      }
-
-      const { source, destination, draggableId } = result;
-
-      if (source.droppableId === destination.droppableId) {
-        if (source.droppableId === 'playersList') {
-          setPlayers((prev) => {
-            const newPlayers = [...prev];
-            const [removed] = newPlayers.splice(source.index, 1);
-            newPlayers.splice(destination.index, 0, removed);
-            return newPlayers;
-          });
-        }
-        return;
-      }
-
-      if (
-        source.droppableId === 'playersList' &&
-        destination.droppableId === 'court'
-      ) {
-        const courtElement = document.getElementById('court-droppable');
-        if (!courtElement) {
-          console.error('Court element not found');
-          return;
-        }
-
-        const courtRect = courtElement.getBoundingClientRect();
-        const playerElement = document.getElementById(
-          `player-list-${draggableId}`,
-        );
-        if (!playerElement) return;
-
-        const playerRect = playerElement.getBoundingClientRect();
-        const dropX =
-          mousePositionRef.current.x - courtRect.left - playerRect.width / 2;
-        const dropY =
-          mousePositionRef.current.y - courtRect.top - playerRect.height / 2;
-
-        const boundedX = Math.max(
-          0,
-          Math.min(dropX, svgBounds.width - playerRect.width),
-        );
-        const boundedY = Math.max(
-          0,
-          Math.min(dropY, svgBounds.height - playerRect.height),
-        );
-
-        setPlayers((prev) =>
-          prev.map((player) =>
-            player.id === draggableId
-              ? {
-                  ...player,
-                  x: boundedX,
-                  y: boundedY,
-                  relativeX: boundedX / svgBounds.width,
-                  relativeY: boundedY / svgBounds.height,
-                }
-              : player,
-          ),
-        );
-      }
-    },
-    [svgBounds],
-  );
-
-  const toggleDropdown = useCallback(() => {
-    setIsDropdownOpen((prev) => !prev);
+  const onDragEnd = useCallback(() => {
+    setIsDragging(false);
+    draggedPlayerRef.current = null;
   }, []);
-
-  const selectPlayer = useCallback((player: string) => {
-    setSelectedPlayer(player);
-    setIsDropdownOpen(false);
-  }, []);
-
-  const placedPlayers = useMemo(
-    () => players.filter((player) => player.x !== 0 || player.y !== 0),
-    [players],
-  );
-
-  const unplacedPlayers = useMemo(
-    () => players.filter((player) => player.x === 0 && player.y === 0),
-    [players],
-  );
 
   const handleSubmit = useCallback(async () => {
     try {
-      const participants = placedPlayers.map((player) => {
+      const participants = players.map((player) => {
         const memberIndex = players.findIndex((p) => p.id === player.id);
         const member = membersList[memberIndex];
         return {
@@ -383,7 +285,7 @@ const PlaceTeamContainer = () => {
       console.error(error);
       toast.error('팀 생성에 실패했습니다.');
     }
-  }, [placedPlayers, membersList, players, teamName, router, gameIdParam]);
+  }, [players, membersList, teamName, router, gameIdParam]);
 
   const handleGlobalMouseMove = useCallback(
     (e: MouseEvent, playerId: string) => {
@@ -429,10 +331,6 @@ const PlaceTeamContainer = () => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  const handleDeletePlayer = useCallback((playerId: string) => {
-    setPlayers((prev) => prev.filter((p) => p.id !== playerId));
-  }, []);
-
   if (!sportType) {
     return null;
   }
@@ -449,111 +347,8 @@ const PlaceTeamContainer = () => {
         <div className="mt-28 flex flex-1 flex-col">
           <h1 className="mb-28 text-h3e text-white">경기 이름</h1>
           <div className="px-4">
-            <div className="mb-28 mt-28 flex items-center gap-1">
-              <PlayerIcon className="mr-1" />
-              <span className="text-body1s text-white">인원을 배치 하세요</span>
-            </div>
-            <div
-              className={`relative flex ${isLargeScreen ? 'flex-row justify-between' : 'flex-col items-center gap-8'}`}
-            >
-              <div
-                className={`relative ${isLargeScreen ? 'w-[60%] pr-4' : 'mb-6 w-full'}`}
-              >
-                <div className="mb-3 flex items-center">
-                  <PlayerDropdown
-                    selectedPlayer={selectedPlayer}
-                    isOpen={isDropdownOpen}
-                    membersList={membersList.map(
-                      (member) =>
-                        `${member.grade}${member.classNumber}${String(member.studentNumber).padStart(2, '0')} ${member.name}`,
-                    )}
-                    onToggle={toggleDropdown}
-                    onSelect={selectPlayer}
-                    selectedPlayers={players.map((player) => player.name)}
-                  />
-                  <div className="flex w-52 justify-between px-10">
-                    <button
-                      onClick={handleAddPlayer}
-                      className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-transparent text-white"
-                      disabled={
-                        !selectedPlayer || selectedPlayer === '인원 선택'
-                      }
-                    >
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <PlusButtonIcon />
-                      </div>
-                    </button>
-                    <button
-                      className={`relative ml-20 flex h-[30px] min-w-[80px] cursor-pointer items-center gap-1 rounded-full bg-transparent px-2 ${
-                        isDeleteMode ? 'text-[#FF4646]' : 'text-[#6B6B6B]'
-                      }`}
-                      onClick={() => setIsDeleteMode(!isDeleteMode)}
-                    >
-                      <div>
-                        <MinusButtonIcon isActive={isDeleteMode} />
-                      </div>
-                      <span className="ml-4 text-lg font-bold">빼기</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="w-full overflow-x-auto pb-4">
-                  <div className="inline-flex min-w-full">
-                    <Droppable
-                      droppableId="playersList"
-                      direction="horizontal"
-                      type="PLAYER"
-                      isDropDisabled={false}
-                    >
-                      {(provided) => (
-                        <div className="relative">
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            id="players-list-droppable"
-                            className="flex min-h-[90px] flex-row flex-nowrap gap-3 bg-transparent text-white"
-                          >
-                            {unplacedPlayers.map((player, index) => (
-                              <Draggable
-                                key={player.id}
-                                draggableId={player.id}
-                                index={index}
-                              >
-                                {(provided, snapshot) => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    id={`player-list-${player.id}`}
-                                    style={{
-                                      ...provided.draggableProps.style,
-                                    }}
-                                  >
-                                    <PlayerItem
-                                      name={player.name}
-                                      isDragging={snapshot.isDragging}
-                                      className="mx-2 my-3"
-                                      isDeleteMode={isDeleteMode}
-                                      onDelete={() =>
-                                        handleDeletePlayer(player.id)
-                                      }
-                                    />
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                        </div>
-                      )}
-                    </Droppable>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                className={`relative ${isLargeScreen ? 'h-[500px] w-[55%]' : 'mb-10 flex h-auto min-h-[450px] w-full justify-center'}`}
-              >
+            <div className="relative flex justify-center">
+              <div className="relative h-[500px] w-full">
                 <Droppable
                   droppableId="court"
                   type="PLAYER"
@@ -563,12 +358,10 @@ const PlaceTeamContainer = () => {
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className={`relative h-full overflow-visible rounded-lg ${!isLargeScreen ? 'mx-auto' : ''}`}
+                      className="relative h-full overflow-visible rounded-lg"
                       id="court-droppable"
                     >
-                      <div
-                        className={`relative h-full ${!isLargeScreen ? 'flex items-center justify-center pb-10' : ''}`}
-                      >
+                      <div className="relative h-full">
                         <SportMap
                           type={sportType}
                           isMapDragging={draggingPlayerId !== null}
@@ -594,7 +387,7 @@ const PlaceTeamContainer = () => {
                             position: 'relative',
                           }}
                         >
-                          {placedPlayers.map((player, index) => (
+                          {players.map((player, index) => (
                             <Draggable
                               key={player.id}
                               draggableId={player.id}
@@ -676,10 +469,6 @@ const PlaceTeamContainer = () => {
                                       height: '90px',
                                     }}
                                     className="transition-transform"
-                                    isDeleteMode={isDeleteMode}
-                                    onDelete={() =>
-                                      handleDeletePlayer(player.id)
-                                    }
                                   />
                                 </div>
                               )}
@@ -696,7 +485,7 @@ const PlaceTeamContainer = () => {
           </div>
         </div>
         <div
-          className={`mb-30 mt-30 ${!isLargeScreen ? 'flex justify-center pb-16' : ''}`}
+          className={`mb-28 mt-28 ${!isLargeScreen ? 'flex justify-center pb-16' : ''}`}
         >
           <Button
             bg="bg-main-600"
