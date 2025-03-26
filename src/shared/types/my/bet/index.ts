@@ -32,6 +32,7 @@ export type MatchData = {
   system?: 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';
   turn?: number;
   isNotice: boolean;
+  isPlayer: boolean;
   betting: {
     isBetting: boolean;
     bettingPoint?: number;

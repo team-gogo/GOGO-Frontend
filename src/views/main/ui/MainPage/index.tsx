@@ -42,7 +42,12 @@ const MainPage = () => {
   const { stageId } = useParams();
 
   const { setStageId } = useMyStageIdStore();
-  const { selectDate } = useSelectDateStore();
+  const { selectDate, setSelectDate } = useSelectDateStore();
+
+  useEffect(() => {
+    setStageId(Number(stageId));
+    setSelectDate('');
+  }, [stageId]);
 
   const today = new Date();
   const formattedToday = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;

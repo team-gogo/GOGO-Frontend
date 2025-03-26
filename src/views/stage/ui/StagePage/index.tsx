@@ -36,8 +36,10 @@ const StagePage = () => {
       .map((stage) => stage.stageId) || [];
 
   useEffect(() => {
-    addStageAdmin(maintainingStageIds);
-  }, []);
+    if (maintainingStageIds.length > 0) {
+      addStageAdmin(maintainingStageIds);
+    }
+  }, [maintainingStageIds, addStageAdmin]);
 
   stageListInfo?.stages.forEach((stage) => {
     if (stage.isParticipating) {

@@ -14,6 +14,7 @@ import {
   useMatchModalStore,
   useMatchStore,
   useMyStageIdStore,
+  useSelectDateStore,
 } from '@/shared/stores';
 import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
@@ -36,6 +37,7 @@ const Match = ({ match }: MatchProps) => {
     round,
     category,
     isNotice,
+    isPlayer,
     betting,
     result,
   } = match;
@@ -44,6 +46,7 @@ const Match = ({ match }: MatchProps) => {
   const { setMatchStatus, setMatch } = useMatchStore();
   const { stageId } = useMyStageIdStore();
   const { matchBatchArr } = useMatchBatchArrStore();
+  const { selectDate } = useSelectDateStore();
 
   const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
 
@@ -341,7 +344,9 @@ const Match = ({ match }: MatchProps) => {
             </button>
           ) : (
             <Button
-              disabled={isMatchFinish || betting.isBetting || isBatchEnd}
+              disabled={
+                isMatchFinish || betting.isBetting || isBatchEnd || isPlayer
+              }
               onClick={() => {
                 updateStatus();
                 setIsMatchModalOpen(true);
