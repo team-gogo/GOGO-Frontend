@@ -22,7 +22,7 @@ interface Stage {
 
 export interface Comment {
   commentId: number;
-  comment: string;
+  content: string;
   createdAt: string;
   likeCount: number;
   isLiked: boolean;

@@ -10,6 +10,7 @@ import {
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
 import {
+  useBettingMatchArrStore,
   useMatchBatchArrStore,
   useMatchModalStore,
   useMatchStore,
@@ -29,13 +30,14 @@ interface MatchProps {
 const Match = ({ match }: MatchProps) => {
   const {
     matchId,
-    aTeam,
-    bTeam,
+    ateam,
+    bteam,
     startDate,
     endDate,
     round,
     category,
     isNotice,
+    isPlayer,
     betting,
     result,
   } = match;
@@ -44,6 +46,7 @@ const Match = ({ match }: MatchProps) => {
   const { setMatchStatus, setMatch } = useMatchStore();
   const { stageId } = useMyStageIdStore();
   const { matchBatchArr } = useMatchBatchArrStore();
+  const { bettingMatchArr } = useBettingMatchArrStore();
 
   const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
 
@@ -54,7 +57,10 @@ const Match = ({ match }: MatchProps) => {
   const isStageAdmin = adminIdxArr.includes(stageId);
 
   const matchItem = matchBatchArr.find((item) => item.matchId === matchId);
-  const isBatchEnd = matchItem ? matchItem.isEnd : false; // matchId가 일치하는 항목의 isEnd 값을 반환, 없으면 false
+  const isBatchEnd = matchItem ? matchItem.isEnd : false;
+  const bettingMatch = bettingMatchArr.find((item) => item.matchId === matchId);
+  const alreadyBetting = bettingMatch !== undefined;
+  const bettingPoint = bettingMatch?.bettingPoint ?? 0;
 
   // if (matchItem) {
   //   console.log(`Match ID: ${matchItem.matchId}, isEnd: ${isBatchEnd}`);
@@ -87,10 +93,10 @@ const Match = ({ match }: MatchProps) => {
   const time = `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`;
 
   const winnerTeam =
-    result?.victoryTeamId === aTeam.teamId
-      ? aTeam.teamName
-      : result?.victoryTeamId === bTeam.teamId
-        ? bTeam.teamName
+    result?.victoryTeamId === ateam?.teamId
+      ? ateam?.teamName
+      : result?.victoryTeamId === ateam?.teamId
+        ? ateam?.teamName
         : '없음';
 
   const isPredictSuccess = result?.isPredictionSuccess;
@@ -103,8 +109,9 @@ const Match = ({ match }: MatchProps) => {
     FINALS: '결승전',
   };
 
-  const roundText =
-    round && round.length > 0 ? round.map((r) => roundLabel[r]).join(', ') : '';
+  const roundText = Array.isArray(round)
+    ? round.map((r: keyof typeof roundLabel) => roundLabel[r]).join(', ')
+    : roundLabel[round as keyof typeof roundLabel] || '';
 
   const isFinal = roundText === '결승전';
 
@@ -146,7 +153,7 @@ const Match = ({ match }: MatchProps) => {
       )}
     >
       {adminAndMatchEnd && (
-        <BatchController aTeam={aTeam} bTeam={bTeam} matchId={matchId} />
+        <BatchController aTeam={ateam} bTeam={bteam} matchId={matchId} />
       )}
       {isTimerStart && (
         <BatchCancelController
@@ -185,7 +192,7 @@ const Match = ({ match }: MatchProps) => {
                 }
               />
               <SportTypeLabel
-                type={category && category.length > 0 ? category[0] : ''}
+                type={category && category.length > 0 ? category : ''}
               />
             </div>
           </div>
@@ -220,7 +227,7 @@ const Match = ({ match }: MatchProps) => {
             >
               <PointCircleIcon />
               <p className={cn('text-body3s', 'text-gray-300')}>
-                {formatPoint(aTeam.bettingPoint + bTeam.bettingPoint)}
+                {formatPoint(ateam?.bettingPoint + bteam?.bettingPoint)}
               </p>
             </div>
             {isMatchFinish && isBatchEnd ? (
@@ -252,12 +259,12 @@ const Match = ({ match }: MatchProps) => {
                       !isPlaying && 'hidden',
                     )}
                   >
-                    {formatPoint(aTeam.bettingPoint)}
+                    {formatPoint(ateam?.bettingPoint)}
                   </p>
                   <h2
-                    className={cn('text-h2e', getTeamClassName(aTeam.teamId))}
+                    className={cn('text-h2e', getTeamClassName(ateam?.teamId))}
                   >
-                    {aTeam.teamName}팀
+                    {ateam?.teamName}
                   </h2>
                 </div>
                 <h3 className={cn('text-body1s', 'text-gray-500')}>vs</h3>
@@ -277,12 +284,12 @@ const Match = ({ match }: MatchProps) => {
                       !isPlaying && 'hidden',
                     )}
                   >
-                    {formatPoint(bTeam.bettingPoint)}
+                    {formatPoint(bteam?.bettingPoint)}
                   </p>
                   <h2
-                    className={cn('text-h2e', getTeamClassName(bTeam.teamId))}
+                    className={cn('text-h2e', getTeamClassName(bteam?.teamId))}
                   >
-                    {bTeam.teamName}팀
+                    {bteam?.teamName}
                   </h2>
                 </div>
               </div>
@@ -340,17 +347,25 @@ const Match = ({ match }: MatchProps) => {
             </button>
           ) : (
             <Button
-              disabled={isMatchFinish || betting.isBetting || isBatchEnd}
+              disabled={
+                isMatchFinish ||
+                betting.isBetting ||
+                isBatchEnd ||
+                isPlayer ||
+                alreadyBetting
+              }
               onClick={() => {
                 updateStatus();
                 setIsMatchModalOpen(true);
               }}
             >
-              {!betting.isBetting
-                ? '베팅'
-                : betting.bettingPoint !== undefined
-                  ? `${formatPoint(betting.bettingPoint)} 베팅`
-                  : '베팅'}
+              {alreadyBetting
+                ? `${formatPoint(bettingPoint)} 베팅`
+                : !betting.isBetting
+                  ? '베팅'
+                  : betting.bettingPoint !== undefined
+                    ? `${formatPoint(betting.bettingPoint)} 베팅`
+                    : '베팅'}
             </Button>
           )}
         </div>

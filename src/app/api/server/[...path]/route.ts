@@ -26,6 +26,7 @@ export async function PUT(req: NextRequest) {
 async function handleRequest(req: NextRequest) {
   const cookieStore = cookies();
   const accessToken = cookieStore.get('accessToken')?.value;
+
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}${req.nextUrl.pathname.replace('/api/server', '')}`;
 
   const method = req.method;
@@ -34,9 +35,17 @@ async function handleRequest(req: NextRequest) {
 
   let data;
   if (!['GET', 'DELETE', 'HEAD'].includes(method)) {
-    data = await req.json();
+    try {
+      const textBody = await req.text();
+      data = textBody ? JSON.parse(textBody) : undefined;
+    } catch (error) {
+      console.error('JSON 파싱 오류:', error);
+      return NextResponse.json(
+        { error: '잘못된 JSON 형식입니다.', status: 400 },
+        { status: 400 },
+      );
+    }
   }
-
   try {
     const response = await instance.request({
       url,
@@ -47,6 +56,10 @@ async function handleRequest(req: NextRequest) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    if (response.status === 204) {
+      return new NextResponse(null, { status: 204 });
+    }
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
