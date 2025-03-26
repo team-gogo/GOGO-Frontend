@@ -15,7 +15,6 @@ import { postTeam } from '@/entities/team/api/postTeam';
 import SportMap from '@/entities/team/ui/Map';
 import PlayerDropdown from '@/entities/team/ui/PlayerDropdown';
 import PlayerItem from '@/entities/team/ui/PlayerItem';
-import DeleteIcon from '@/shared/assets/svg/DeleteIcon';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
@@ -431,13 +430,7 @@ const PlaceTeamContainer = () => {
   }, []);
 
   const handleDeletePlayer = useCallback((playerId: string) => {
-    setPlayers((prev) => {
-      const playerToDelete = prev.find((p) => p.id === playerId);
-      if (!playerToDelete) return prev;
-      const filteredPlayers = prev.filter((p) => p.id !== playerId);
-
-      return filteredPlayers;
-    });
+    setPlayers((prev) => prev.filter((p) => p.id !== playerId));
   }, []);
 
   if (!sportType) {
@@ -534,24 +527,16 @@ const PlaceTeamContainer = () => {
                                     id={`player-list-${player.id}`}
                                     style={{
                                       ...provided.draggableProps.style,
-                                      position: 'relative',
                                     }}
                                   >
-                                    {isDeleteMode && (
-                                      <button
-                                        className="absolute -left-1 -top-1 z-10 cursor-pointer"
-                                        onClick={() =>
-                                          handleDeletePlayer(player.id)
-                                        }
-                                        style={{ transform: 'scale(0.8)' }}
-                                      >
-                                        <DeleteIcon />
-                                      </button>
-                                    )}
                                     <PlayerItem
                                       name={player.name}
                                       isDragging={snapshot.isDragging}
                                       className="mx-2 my-3"
+                                      isDeleteMode={isDeleteMode}
+                                      onDelete={() =>
+                                        handleDeletePlayer(player.id)
+                                      }
                                     />
                                   </div>
                                 )}
@@ -627,6 +612,7 @@ const PlaceTeamContainer = () => {
                                     left: `${player.x}px`,
                                     top: `${player.y}px`,
                                     transform: `scale(${playerScale})`,
+                                    transformOrigin: 'center center',
                                     transition: snapshot.isDragging
                                       ? 'none'
                                       : 'transform 0.2s, left 0.2s, top 0.2s',
@@ -636,8 +622,6 @@ const PlaceTeamContainer = () => {
                                         ? 99999
                                         : 1,
                                     pointerEvents: 'auto',
-                                    willChange: 'transform, left, top',
-                                    transformOrigin: '0 0',
                                   }}
                                   onMouseDown={(e) => {
                                     if (e.button === 0) {
@@ -692,6 +676,10 @@ const PlaceTeamContainer = () => {
                                       height: '90px',
                                     }}
                                     className="transition-transform"
+                                    isDeleteMode={isDeleteMode}
+                                    onDelete={() =>
+                                      handleDeletePlayer(player.id)
+                                    }
                                   />
                                 </div>
                               )}
