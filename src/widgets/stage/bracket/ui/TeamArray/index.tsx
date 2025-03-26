@@ -1,5 +1,11 @@
 'use client';
 
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from '@hello-pangea/dnd';
 import { useCallback, useState } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import { cn } from '@/shared/utils/cn';
@@ -14,7 +20,9 @@ const ITEM_GAP = 8;
 const CONTAINER_PADDING = 16;
 
 const TeamArray = ({ className }: TeamArrayProps) => {
-  const teams = Array.from({ length: 10 }, (_, i) => `TBD ${i + 1}`);
+  const [teams, setTeams] = useState(
+    Array.from({ length: 10 }, (_, i) => `TBD ${i + 1}`),
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const arrowButtonStyle = {
@@ -34,6 +42,16 @@ const TeamArray = ({ className }: TeamArrayProps) => {
     if (!canScrollPrev) return;
     setCurrentIndex((prev) => prev - 1);
   }, [canScrollPrev]);
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const newTeams = Array.from(teams);
+    const [reorderedItem] = newTeams.splice(result.source.index, 1);
+    newTeams.splice(result.destination.index, 0, reorderedItem);
+
+    setTeams(newTeams);
+  };
 
   const visibleContainerWidth =
     ITEM_WIDTH * VISIBLE_ITEMS + ITEM_GAP * (VISIBLE_ITEMS - 1);
@@ -77,23 +95,41 @@ const TeamArray = ({ className }: TeamArrayProps) => {
             width: `${visibleContainerWidth + CONTAINER_PADDING * 2}px`,
           }}
         >
-          <div
-            style={{
-              width: innerContainerWidth,
-              transform: `translateX(${translateX}px)`,
-              transition: 'transform 0.3s ease-in-out',
-              padding: `0 ${CONTAINER_PADDING}px`,
-            }}
-            className={cn('flex', 'gap-8')}
-          >
-            {teams.map((team, index) => (
-              <TeamItem
-                key={index}
-                teamName={team}
-                className={cn('flex-shrink-0', 'w-[160px]')}
-              />
-            ))}
-          </div>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="teams" direction="horizontal">
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  style={{
+                    width: innerContainerWidth,
+                    transform: `translateX(${translateX}px)`,
+                    transition: 'transform 0.3s ease-in-out',
+                    padding: `0 ${CONTAINER_PADDING}px`,
+                  }}
+                  className={cn('flex', 'gap-8')}
+                >
+                  {teams.map((team, index) => (
+                    <Draggable key={team} draggableId={team} index={index}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <TeamItem
+                            teamName={team}
+                            className={cn('flex-shrink-0', 'w-[160px]')}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
 
         <button
