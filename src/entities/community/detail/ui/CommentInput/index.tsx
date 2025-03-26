@@ -2,32 +2,47 @@
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { SendIcon } from '@/shared/assets/svg';
+import { Comment } from '@/shared/types/community/detail';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
+import { usePostBoardCommentMutation } from '../../model/usePostBoardCommentMutation';
 
 interface CommentFormData {
-  comment: string;
+  content: string;
   boardId: number;
 }
 
-const CommentInput = ({ boardId }: { boardId: number }) => {
+interface CommentInputProps {
+  boardId: number;
+  onAddComment: (newComment: Comment) => void;
+}
+
+const CommentInput = ({ boardId, onAddComment }: CommentInputProps) => {
   const { register, handleSubmit, reset } = useForm<CommentFormData>({
     defaultValues: {
       boardId,
     },
   });
 
-  const onSubmit: SubmitHandler<CommentFormData> = async (data) => {
-    console.log(data);
+  const { mutate: boardComment, isPending } =
+    usePostBoardCommentMutation(boardId);
 
-    reset();
+  const onSubmit: SubmitHandler<CommentFormData> = async (data) => {
+    if (isPending) return;
+
+    boardComment(data, {
+      onSuccess: (newComment) => {
+        onAddComment(newComment);
+        reset();
+      },
+    });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn('relative')}>
       <input type="hidden" {...register('boardId')} />
       <Input
-        {...register('comment', { required: true })}
+        {...register('content', { required: true })}
         placeholder="댓글을 입력해주세요"
       />
       <button

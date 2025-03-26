@@ -7,6 +7,7 @@ import { PersonIcon, SelectHeartIcon } from '@/shared/assets/svg';
 import { formatIsoDate } from '@/shared/model/formatIsoDate';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
+import { usePostBoardLikeMutation } from '../../model/usePostBoardLikeMutation';
 
 interface CommunityContentProps {
   title: string;
@@ -36,10 +37,12 @@ const CommunityContent = ({
   const [liked, setLiked] = useState(isLiked);
   const [likeCountState, setLikeCountState] = useState(likeCount);
 
+  const { mutate: boardLike } = usePostBoardLikeMutation(boardId);
+
   const handleLike = () => {
     setLiked(!liked);
-    setLikeCountState(liked ? likeCountState - 1 : likeCountState + 1);
-    console.log(boardId);
+    setLikeCountState((prev) => (liked ? prev - 1 : prev + 1));
+    boardLike();
   };
 
   return (
@@ -54,7 +57,7 @@ const CommunityContent = ({
     >
       <div className={cn('space-y-24')}>
         <div className={cn('flex', 'items-center', 'gap-24')}>
-          <SportTypeLabel type={stageCategory} />
+          <SportTypeLabel isHaveBorder={true} type={stageCategory} />
           <p
             className={cn('text-body1e', 'text-gray-300', 'mobile:text-body2e')}
           >

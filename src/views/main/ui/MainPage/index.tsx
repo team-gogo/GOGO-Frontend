@@ -28,17 +28,16 @@ import {
   SectionWrapper,
 } from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
-import { getBoardMock, getMatchInfo, getRankingMock } from '../..';
+import { getMatchInfo, getRankingMock } from '../..';
 import getStageInMatch from '../Mock/getStageInMatch';
 
 const MainPage = () => {
   const matchInfo = getMatchInfo();
   const rankingMock = getRankingMock();
-  const boardMock = getBoardMock();
   const stageInMatch = getStageInMatch();
-  const slicedBoardMock = boardMock.board.slice(0, 4);
 
-  const { stageId } = useParams();
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
 
   const { setStageId } = useMyStageIdStore();
 
@@ -139,14 +138,12 @@ const MainPage = () => {
             <SectionWrapper
               text={'커뮤니티'}
               icon={<CommunityIcon />}
-              path="/community"
+              path={`/community/${stageId}`}
             >
               <CommunityItemContainer
+                stageId={stageId}
                 isMainUsed={isMainUsed}
-                boardData={{
-                  info: boardMock.info,
-                  board: slicedBoardMock,
-                }}
+                currentPage={1}
               />
             </SectionWrapper>
 

@@ -71,6 +71,7 @@ const Modal = ({
               asButton
               isSelected={selectedSort === sort}
               onClick={() => toggleSortSelection(sort)}
+              isHaveBorder={true}
             />
           ))}
         </div>

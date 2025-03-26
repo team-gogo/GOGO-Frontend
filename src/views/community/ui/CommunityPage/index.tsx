@@ -1,35 +1,20 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { NavigationBar } from '@/entities/community';
-import { SortType } from '@/shared/model/sportTypes';
+import { useParams, useSearchParams } from 'next/navigation';
+import useSelectSort from '@/shared/model/useSelectSort';
 import useSelectSport from '@/shared/model/useSelectSport';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { CommunityItemContainer, CommunityToolbar } from '@/widgets/community';
-import getBoardMock from '../Mock/getBoardMock';
 
 const CommunityPage = () => {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
 
-  const boardMock = getBoardMock();
-  const [selectedSort, setSelectedSort] = useState<SortType | null>(null);
+  const { selectedSort, toggleSortSelection } = useSelectSort();
   const { selectedSport, toggleSportSelection } = useSelectSport();
-
-  const toggleSortSelection = (sort: SortType) => {
-    setSelectedSort((prev) => (prev === sort ? null : sort));
-  };
-
-  const itemsPerPage = 7;
-  const totalPairs = boardMock.info.totalPage;
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentBoardData = {
-    info: boardMock.info,
-    board: boardMock.board.slice(startIndex, startIndex + itemsPerPage),
-  };
 
   return (
     <div
@@ -45,7 +30,6 @@ const CommunityPage = () => {
           'items-center',
           'max-w-[1320px]',
           'gap-[2.5rem]',
-          'pt-[2rem]',
         )}
       >
         <div
@@ -57,10 +41,15 @@ const CommunityPage = () => {
             selectedSort={selectedSort}
             toggleSportSelection={toggleSportSelection}
             toggleSortSelection={toggleSortSelection}
+            stageId={stageId}
           />
-          <CommunityItemContainer boardData={currentBoardData} />
+          <CommunityItemContainer
+            stageId={stageId}
+            selectedSport={selectedSport}
+            selectedSort={selectedSort}
+            currentPage={currentPage}
+          />
         </div>
-        <NavigationBar totalPairs={totalPairs} />
       </div>
     </div>
   );
