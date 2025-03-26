@@ -14,25 +14,21 @@ import {
 import { cn } from '@/shared/utils/cn';
 import { useGetUserStagePoint } from '@/views/main/model/useGetUserStagePoint';
 import { useGetMyBettingMatch } from '@/views/my/model/useGetMyBettingMatch';
+import { useGetMyTempPoint } from '@/views/my/model/useGetMyTempPoint';
 import {
   MatchContainer,
   PointContainer,
   TotalPointContainer,
 } from '@/widgets/my/bet';
-import getMatchResponse from '../Mock/getMatchResponse';
-import getTempPoint from '../Mock/getTempPoint';
 
 const MyBetPage = () => {
-  const userBetInfo = getMatchResponse();
-  const tempPoint = getTempPoint();
-
   const searchParams = useSearchParams();
 
   const stageId = searchParams.get('stageId');
 
   const { data: userPointData } = useGetUserStagePoint(Number(stageId));
-
   const { data: myMatchData } = useGetMyBettingMatch(Number(stageId));
+  const { data: myTempPoint } = useGetMyTempPoint(Number(stageId));
 
   const { point, setPoint } = usePointStore();
 
@@ -70,7 +66,7 @@ const MyBetPage = () => {
       >
         <div className={cn('w-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
           <TotalPointContainer point={point} />
-          <PointContainer tempPoint={tempPoint} />
+          <PointContainer tempPoint={myTempPoint} />
         </div>
         <MatchContainer matchInfo={myMatchData} isMyBetInfo={true} />
       </div>
