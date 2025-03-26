@@ -17,6 +17,7 @@ import { SportType } from '@/shared/model/sportTypes';
 import { Student } from '@/shared/types/stage/create';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
+import FingerIcon from '@/shared/assets/svg/FingerIcon';
 
 interface Player {
   id: string;
@@ -345,7 +346,13 @@ const PlaceTeamContainer = () => {
           <BackPageButton type="back" label="팀 배치하기" />
         </header>
         <div className="mt-28 flex flex-1 flex-col">
-          <h1 className="mb-28 text-h3e text-white">경기 이름</h1>
+          <div className="flex flex-row items-center justify-between">
+            <h1 className="mb-28 text-h3e text-white">경기 이름</h1>
+            <div className="flex flex-row items-center justify-center gap-10">
+              <FingerIcon />
+              <h2 className="text-h3 text-white">인원을 배치 하세요</h2>
+            </div>
+          </div>
           <div className="px-4">
             <div className="relative flex justify-center">
               <div className="relative h-[500px] w-full">
