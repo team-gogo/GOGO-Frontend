@@ -1,5 +1,5 @@
-import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import DeleteIcon from '@/shared/assets/svg/DeleteIcon';
+import PlayerIcon from '@/shared/assets/svg/PlayerIcon';
 import { cn } from '@/shared/utils/cn';
 
 interface PlayerItemProps {
