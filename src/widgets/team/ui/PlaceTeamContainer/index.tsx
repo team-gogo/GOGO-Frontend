@@ -97,7 +97,6 @@ const PlaceTeamContainer = () => {
     if (storedMembers) {
       const members = JSON.parse(storedMembers);
       setMembersList(members);
-      // createTeam에서 추가된 인원들을 바로 players 상태에 추가
       const initialPlayers = members.map((member: Student, index: number) => ({
         id: `player-${index}`,
         name: `${member.grade}${member.classNumber}${String(member.studentNumber).padStart(2, '0')} ${member.name}`,
@@ -114,8 +113,8 @@ const PlaceTeamContainer = () => {
       if (courtElement) {
         const svg = courtElement.querySelector('svg');
         if (svg) {
+          const courtRect = courtElement.getBoundingClientRect();
           const svgRect = svg.getBoundingClientRect();
-          const parentRect = courtElement.getBoundingClientRect();
 
           setPreviousSvgBounds({
             width: svgBounds.width,
@@ -125,8 +124,8 @@ const PlaceTeamContainer = () => {
           setSvgBounds({
             width: svgRect.width,
             height: svgRect.height,
-            left: svgRect.left - parentRect.left,
-            top: svgRect.top - parentRect.top,
+            left: svgRect.left - courtRect.left,
+            top: svgRect.top - courtRect.top,
           });
         }
       }
@@ -205,24 +204,23 @@ const PlaceTeamContainer = () => {
     (playerId: string, x: number, y: number) => {
       const playerElement = document.getElementById(`player-${playerId}`);
       const courtElement = document.getElementById('court-droppable');
+      const svg = courtElement?.querySelector('svg');
 
-      if (!playerElement || !courtElement) return;
+      if (!playerElement || !courtElement || !svg) return;
 
+      const svgRect = svg.getBoundingClientRect();
       const playerRect = playerElement.getBoundingClientRect();
       const scaledWidth = playerRect.width / playerScale;
       const scaledHeight = playerRect.height / playerScale;
 
-      const relativeX = (x - svgBounds.left) / svgBounds.width;
-      const relativeY = (y - svgBounds.top) / svgBounds.height;
+      const svgX = x - svgBounds.left;
+      const svgY = y - svgBounds.top;
 
-      const absoluteX = relativeX * svgBounds.width;
-      const absoluteY = relativeY * svgBounds.height;
+      const maxX = svgRect.width / 2 - scaledWidth;
+      const maxY = svgRect.height - scaledHeight;
 
-      const maxX = svgBounds.width - scaledWidth;
-      const maxY = svgBounds.height - scaledHeight;
-
-      const boundedX = Math.max(0, Math.min(absoluteX, maxX));
-      const boundedY = Math.max(0, Math.min(absoluteY, maxY));
+      const boundedX = Math.max(0, Math.min(svgX, maxX));
+      const boundedY = Math.max(0, Math.min(svgY, maxY));
 
       setPlayers((prev) =>
         prev.map((player) =>
@@ -231,14 +229,14 @@ const PlaceTeamContainer = () => {
                 ...player,
                 x: boundedX,
                 y: boundedY,
-                relativeX: boundedX / svgBounds.width,
-                relativeY: boundedY / svgBounds.height,
+                relativeX: boundedX / svgRect.width,
+                relativeY: boundedY / svgRect.height,
               }
             : player,
         ),
       );
     },
-    [svgBounds, playerScale],
+    [playerScale, svgBounds],
   );
 
   useEffect(() => {
@@ -292,34 +290,34 @@ const PlaceTeamContainer = () => {
       if (!draggedPlayerRef.current) return;
 
       const playerElement = document.getElementById(`player-${playerId}`);
-      if (!playerElement) return;
-
-      const playerRect = playerElement.getBoundingClientRect();
       const courtElement = document.getElementById('court-droppable');
-      if (!courtElement) return;
+      const svg = courtElement?.querySelector('svg');
 
-      const parentRect = courtElement.getBoundingClientRect();
+      if (!playerElement || !courtElement || !svg) return;
+
+      const svgRect = svg.getBoundingClientRect();
+      const playerRect = playerElement.getBoundingClientRect();
       const scaledWidth = playerRect.width / playerScale;
       const scaledHeight = playerRect.height / playerScale;
 
-      const x = Math.max(
-        svgBounds.left,
-        Math.min(
-          e.clientX - parentRect.left - scaledWidth / 2,
-          svgBounds.left + svgBounds.width - scaledWidth,
-        ),
-      );
-      const y = Math.max(
-        svgBounds.top,
-        Math.min(
-          e.clientY - parentRect.top - scaledHeight / 2,
-          svgBounds.top + svgBounds.height - scaledHeight,
-        ),
+      const svgX = e.clientX - svgRect.left;
+      const svgY = e.clientY - svgRect.top;
+
+      const maxX = svgRect.width / 2 - scaledWidth;
+
+      const boundedX = Math.max(0, Math.min(svgX - scaledWidth / 2, maxX));
+      const boundedY = Math.max(
+        0,
+        Math.min(svgY - scaledHeight / 2, svgRect.height - scaledHeight),
       );
 
-      handlePlayerDrag(draggedPlayerRef.current, x, y);
+      handlePlayerDrag(
+        draggedPlayerRef.current,
+        boundedX + svgBounds.left,
+        boundedY + svgBounds.top,
+      );
     },
-    [handlePlayerDrag, svgBounds, playerScale],
+    [handlePlayerDrag, playerScale, svgBounds],
   );
 
   useEffect(() => {
@@ -362,43 +360,28 @@ const PlaceTeamContainer = () => {
                       id="court-droppable"
                     >
                       <div className="relative h-full">
-                        <div
-                          style={{
-                            transform: 'rotate(90deg)',
-                            transformOrigin: 'center center',
-                          }}
-                        >
-                          <SportMap
-                            type={sportType}
-                            isMapDragging={draggingPlayerId !== null}
-                            onPositionChange={(x, y) => {
-                              if (
-                                draggingPlayerId &&
-                                draggedPlayerRef.current
-                              ) {
-                                if (x === -1 && y === -1) {
-                                  setDraggingPlayerId(null);
-                                  draggedPlayerRef.current = null;
-                                  return;
-                                }
-                                handlePlayerDrag(
-                                  draggedPlayerRef.current,
-                                  x,
-                                  y,
-                                );
+                        <SportMap
+                          type={sportType}
+                          isMapDragging={draggingPlayerId !== null}
+                          onPositionChange={(x, y) => {
+                            if (draggingPlayerId && draggedPlayerRef.current) {
+                              if (x === -1 && y === -1) {
+                                setDraggingPlayerId(null);
+                                draggedPlayerRef.current = null;
+                                return;
                               }
-                            }}
-                          />
-                        </div>
+                              handlePlayerDrag(
+                                draggedPlayerRef.current,
+                                x + svgBounds.left,
+                                y + svgBounds.top,
+                              );
+                            }
+                          }}
+                        />
                         <div
-                          className="absolute"
+                          className="absolute inset-0"
                           style={{
-                            left: `${svgBounds.left}px`,
-                            top: `${svgBounds.top}px`,
-                            width: `${svgBounds.width}px`,
-                            height: `${svgBounds.height}px`,
                             pointerEvents: 'all',
-                            position: 'relative',
                           }}
                         >
                           {players.map((player, index) => (
