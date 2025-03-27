@@ -113,8 +113,6 @@ const PlaceTeamContainer = () => {
           const courtRect = courtElement.getBoundingClientRect();
           const svgRect = svg.getBoundingClientRect();
           const viewBox = svg.viewBox.baseVal;
-          const prevWidth = svgBounds.width;
-          const prevHeight = svgBounds.height;
 
           const newBounds = {
             width: svgRect.width,
