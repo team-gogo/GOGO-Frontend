@@ -1,6 +1,6 @@
 import { TicketIcon } from '@/shared/assets/icons';
 
-type TicketType = 'TAVARWEE' | 'COINTOSS' | 'PLINKO';
+type TicketType = 'YAVARWEE' | 'COINTOSS' | 'PLINKO';
 
 export const createStoreItems = (
   buyTicket: (ticketType: TicketType) => void,
@@ -11,7 +11,7 @@ export const createStoreItems = (
     ),
     name: '야바위',
     type: 'store',
-    action: () => buyTicket('TAVARWEE'),
+    action: () => buyTicket('YAVARWEE'),
   },
   {
     icon: (isActive: boolean) => (

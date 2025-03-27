@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const postBuyTicket = async (
-  ticketType: 'COINTOSS' | 'TAVARWEE' | 'PLINKO',
+  ticketType: 'COINTOSS' | 'YAVARWEE' | 'PLINKO',
   shopId: string,
 ) => {
   try {
