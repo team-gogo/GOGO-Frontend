@@ -15,6 +15,7 @@ interface GameSelectionCardProps {
   shopTicket?: GameTicket;
   myPoint?: number;
   action?: () => void;
+  isPending?: boolean;
 }
 
 const GameSelectionCard = ({
@@ -26,6 +27,7 @@ const GameSelectionCard = ({
   shopTicket,
   myPoint,
   action,
+  isPending,
 }: GameSelectionCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedGame, setSelectedGame] = useState<GameType | null>('YAVARWEE');
@@ -64,6 +66,9 @@ const GameSelectionCard = ({
     } else if (shopTicket?.ticketQuantity === 0) {
       buttonDisabled = true;
       buttonText = '재고 부족';
+    } else if (isPending) {
+      buttonDisabled = true;
+      buttonText = '구매중...';
     } else {
       buttonDisabled = false;
       buttonText = `${ticketPrice}P`;
@@ -92,11 +97,11 @@ const GameSelectionCard = ({
             'gap-16',
           )}
         >
-          {icon(isActive)}
+          {icon(!buttonDisabled)}
           <p
             className={cn(
               'text-h4s',
-              isActive ? 'text-white' : 'text-gray-400',
+              !buttonDisabled ? 'text-white' : 'text-gray-400',
             )}
           >
             {name}

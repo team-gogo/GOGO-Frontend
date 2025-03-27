@@ -12,6 +12,7 @@ interface GameItem {
   name: string;
   type: string;
   action?: () => void;
+  isPending?: boolean;
 }
 
 interface GameCardContainerProps {
@@ -61,6 +62,7 @@ const GameCardContainer = ({
             shopTicket={shopTickets[index]}
             myPoint={myPoint}
             action={item.action}
+            isPending={item.isPending}
           />
         );
       })}

@@ -8,7 +8,7 @@ const StoreInfo = ({ myPoint }: { myPoint: number }) => {
       <p className={cn('text-body2s', 'text-white')}>보유 포인트</p>
       <div className={cn('flex', 'items-center', 'gap-8')}>
         <p className={cn('text-white', 'text-body2s')}>{myPoint}</p>
-        <PointIcon />
+        <PointIcon fill="#fff" />
       </div>
     </div>
   );

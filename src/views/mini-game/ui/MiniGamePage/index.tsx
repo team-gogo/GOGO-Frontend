@@ -30,12 +30,12 @@ const MiniGamePage = () => {
   const { data: myPoint, isLoading: myPointIsLoading } =
     useGetMyPointQuery(stageId);
 
-  const { mutate: buyTicket } = usePostBuyTicketMutation(
+  const { mutate: buyTicket, isPending } = usePostBuyTicketMutation(
     shopTicketStatus?.shopId ? shopTicketStatus.shopId.toString() : '',
     stageId,
   );
 
-  const storeItems = createStoreItems(buyTicket);
+  const storeItems = createStoreItems(buyTicket, isPending);
   const miniGames = createMiniGameItems(router, stageId);
 
   if (

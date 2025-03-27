@@ -4,6 +4,7 @@ type TicketType = 'YAVARWEE' | 'COINTOSS' | 'PLINKO';
 
 export const createStoreItems = (
   buyTicket: (ticketType: TicketType) => void,
+  isPending: boolean,
 ) => [
   {
     icon: (isActive: boolean) => (
@@ -12,6 +13,7 @@ export const createStoreItems = (
     name: '야바위',
     type: 'store',
     action: () => buyTicket('YAVARWEE'),
+    isPending,
   },
   {
     icon: (isActive: boolean) => (
@@ -20,6 +22,7 @@ export const createStoreItems = (
     name: '코인토스',
     type: 'store',
     action: () => buyTicket('COINTOSS'),
+    isPending,
   },
   {
     icon: (isActive: boolean) => (
@@ -28,5 +31,6 @@ export const createStoreItems = (
     name: '플린코',
     type: 'store',
     action: () => buyTicket('PLINKO'),
+    isPending,
   },
 ];
