@@ -179,8 +179,8 @@ const PlaceTeamContainer = () => {
         if (svg) {
           const svgRect = svg.getBoundingClientRect();
           const baseWidth = 600;
-          const minScale = isLargeScreen ? 0.8 : 0.5;
-          const maxScale = isLargeScreen ? 0.9 : 0.7;
+          const minScale = isLargeScreen ? 0.8 : 0.4;
+          const maxScale = isLargeScreen ? 0.9 : 0.6;
           const calculatedScale = svgRect.width / baseWidth;
           const scale = Math.min(maxScale, Math.max(minScale, calculatedScale));
           setPlayerScale(scale);
@@ -355,7 +355,13 @@ const PlaceTeamContainer = () => {
           </div>
           <div className="px-4">
             <div className="relative flex justify-center">
-              <div className="relative h-[500px] w-full">
+              <div
+                className={`relative w-full ${isLargeScreen ? 'h-[500px]' : 'h-[400px]'}`}
+                style={{
+                  maxWidth: isLargeScreen ? 'none' : '100%',
+                  margin: '0 auto',
+                }}
+              >
                 <Droppable
                   droppableId="court"
                   type="PLAYER"
