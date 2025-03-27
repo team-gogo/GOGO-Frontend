@@ -35,3 +35,7 @@ export interface BatchMatchType {
   aTeamScore: number;
   bTeamScore: number;
 }
+
+export interface MatchNoticeType {
+  isNotice: boolean;
+}

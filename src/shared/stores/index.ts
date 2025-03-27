@@ -12,3 +12,4 @@ export { default as useUserNameStore } from './useUserNameStore';
 export { default as usePointStore } from './usePointStore';
 export { default as useSelectDateStore } from './useSelectDateStore';
 export { default as useBettingMatchArrStore } from './useBettingMatchArrStore';
+export { default as useAlarmClickStore } from './useAlarmClickStore';
