@@ -68,10 +68,18 @@ async function handleRequest(req: NextRequest, isRetry = false) {
 
     if (status === 401 && !isRetry && refreshToken) {
       const newTokens = await refreshAccessToken(refreshToken);
-      if (newTokens) {
+      if ('accessToken' in newTokens) {
         accessToken = newTokens.accessToken;
         return handleRequest(req, true);
       }
+    } else if (!refreshToken) {
+      return NextResponse.json(
+        {
+          error: 'refreshToken이 존재하지 않습니다',
+          status: 401,
+        },
+        { status: 401 },
+      );
     }
 
     return NextResponse.json(
@@ -110,6 +118,15 @@ async function refreshAccessToken(refreshToken: string) {
 
     return { accessToken, refreshToken: newRefreshToken };
   } catch (error) {
-    return null;
+    const cookieStore = cookies();
+    cookieStore.delete('accessToken');
+    cookieStore.delete('refreshToken');
+    return NextResponse.json(
+      {
+        error: '토큰 재발급 실패',
+        status: 401,
+      },
+      { status: 401 },
+    );
   }
 }

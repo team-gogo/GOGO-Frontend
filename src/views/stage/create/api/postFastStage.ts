@@ -7,6 +7,9 @@ export const postFastStage = async (data: StageData) => {
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status === 401) {
+        window.location.href = '/signin';
+      }
       throw new Error(
         error.response.data.error || '빠른 경기 생성을 실패 했습니다.',
       );
