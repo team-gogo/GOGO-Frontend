@@ -7,7 +7,11 @@ export const createMiniGameItems = (
 ) => [
   {
     icon: (isActive: boolean) => (
-      <ShellGameIcon size={60} color={isActive ? '#fff' : '#898989'} />
+      <ShellGameIcon
+        size={60}
+        color={isActive ? '#fff' : '#898989'}
+        className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
+      />
     ),
     name: '야바위',
     type: 'game',
@@ -15,7 +19,11 @@ export const createMiniGameItems = (
   },
   {
     icon: (isActive: boolean) => (
-      <CoinIcon size={60} color={isActive ? '#fff' : '#898989'} />
+      <CoinIcon
+        size={60}
+        color={isActive ? '#fff' : '#898989'}
+        className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
+      />
     ),
     name: '코인 토스',
     type: 'game',
@@ -23,7 +31,11 @@ export const createMiniGameItems = (
   },
   {
     icon: (isActive: boolean) => (
-      <PlinkoIcon size={60} color={isActive ? '#fff' : '#898989'} />
+      <PlinkoIcon
+        size={60}
+        color={isActive ? '#fff' : '#898989'}
+        className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
+      />
     ),
     name: '플링코',
     type: 'game',

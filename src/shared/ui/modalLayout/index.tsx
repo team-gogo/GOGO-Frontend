@@ -36,9 +36,13 @@ const ModalLayout = ({
           <div
             className={cn('mb-4', 'flex', 'items-center', 'justify-between')}
           >
-            <p className={cn('text-white', 'text-body1s')}>{title}</p>
+            <p
+              className={cn('text-white', 'text-body1s', 'mobile:text-body2s')}
+            >
+              {title}
+            </p>
             <button onClick={onClose}>
-              <XIcon />
+              <XIcon className="mobile:h-24 mobile:w-24" />
             </button>
           </div>
         )}

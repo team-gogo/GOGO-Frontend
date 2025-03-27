@@ -76,7 +76,12 @@ const MiniGamePage = () => {
         <div className={cn('flex', 'gap-[5rem]', 'flex-col')}>
           <div>
             <InfoContainer
-              icon={<MiniGameIcon color="#fff" />}
+              icon={
+                <MiniGameIcon
+                  color="#fff"
+                  className="mobile:h-24 mobile:w-24"
+                />
+              }
               title="미니게임"
               rightContent={<GameInfo getTicketCount={ticketCount} />}
             />
@@ -88,7 +93,7 @@ const MiniGamePage = () => {
           </div>
           <div>
             <InfoContainer
-              icon={<StoreIcon />}
+              icon={<StoreIcon className="mobile:h-24 mobile:w-24" />}
               title="상점"
               rightContent={<StoreInfo myPoint={myPoint.point} />}
             />

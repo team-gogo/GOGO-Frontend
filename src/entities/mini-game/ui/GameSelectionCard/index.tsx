@@ -101,6 +101,7 @@ const GameSelectionCard = ({
           <p
             className={cn(
               'text-h4s',
+              'mobile: text-body2s',
               !buttonDisabled ? 'text-white' : 'text-gray-400',
             )}
           >
@@ -108,7 +109,13 @@ const GameSelectionCard = ({
           </p>
           <button
             type="button"
-            className={cn('absolute', 'top-24', 'right-12')}
+            className={cn(
+              'absolute',
+              'top-24',
+              'right-12',
+              'mobile:top-12',
+              'mobile:right-6',
+            )}
             onClick={() => setIsModalOpen(true)}
           >
             <CircleQuestionIcon />
@@ -121,7 +128,13 @@ const GameSelectionCard = ({
         </Button>
         {type === 'store' && (
           <div className={cn('flex', 'items-center', 'justify-center')}>
-            <p className={cn('text-body3s', 'text-gray-500')}>
+            <p
+              className={cn(
+                'text-body3s',
+                'text-gray-500',
+                'mobile:text-caption3s',
+              )}
+            >
               구매가능한 티켓 양 : {shopTicket?.ticketQuantity || 0}
             </p>
           </div>

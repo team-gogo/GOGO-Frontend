@@ -50,6 +50,8 @@ const MiniGameDescriptionModal = ({
         'max-w-[40.9375rem]',
         'w-full',
         'space-y-24',
+        'mobile:px-[20px]',
+        'mobile:py-[18px]',
       )}
     >
       <div className={cn('flex', 'flex-wrap', 'gap-y-12', 'gap-x-16')}>
@@ -75,7 +77,7 @@ const MiniGameDescriptionModal = ({
           'min-h-[7.5rem]',
         )}
       >
-        <p className={cn('text-body1s', 'text-white')}>
+        <p className={cn('text-body1s', 'text-white', 'mobile:text-caption1s')}>
           {selectedGame ? gameDescription[selectedGame] : '게임을 선택하세요.'}
         </p>
       </div>
