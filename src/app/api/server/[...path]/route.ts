@@ -23,14 +23,14 @@ export async function PUT(req: NextRequest) {
   return handleRequest(req);
 }
 
-async function handleRequest(req: NextRequest) {
+async function handleRequest(req: NextRequest, isRetry = false) {
   const cookieStore = cookies();
-  const accessToken = cookieStore.get('accessToken')?.value;
+  let accessToken = cookieStore.get('accessToken')?.value;
+  const refreshToken = cookieStore.get('refreshToken')?.value;
 
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}${req.nextUrl.pathname.replace('/api/server', '')}`;
 
   const method = req.method;
-
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
 
   let data;
@@ -39,13 +39,13 @@ async function handleRequest(req: NextRequest) {
       const textBody = await req.text();
       data = textBody ? JSON.parse(textBody) : undefined;
     } catch (error) {
-      console.error('JSON 파싱 오류:', error);
       return NextResponse.json(
         { error: '잘못된 JSON 형식입니다.', status: 400 },
         { status: 400 },
       );
     }
   }
+
   try {
     const response = await instance.request({
       url,
@@ -65,10 +65,51 @@ async function handleRequest(req: NextRequest) {
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;
     const status = axiosError.response?.status || 500;
-    const message =
-      axiosError.response?.data?.message ||
-      '요청을 처리하는 중 오류가 발생했습니다.';
 
-    return NextResponse.json({ error: message, status }, { status });
+    if (status === 401 && !isRetry && refreshToken) {
+      const newTokens = await refreshAccessToken(refreshToken);
+      if (newTokens) {
+        accessToken = newTokens.accessToken;
+        return handleRequest(req, true);
+      }
+    }
+
+    return NextResponse.json(
+      {
+        error:
+          axiosError.response?.data?.message ||
+          '요청을 처리하는 중 오류가 발생했습니다.',
+        status,
+      },
+      { status },
+    );
+  }
+}
+
+async function refreshAccessToken(refreshToken: string) {
+  try {
+    const response = await instance.post('/user/auth/refresh', null, {
+      headers: { 'Refresh-Token': refreshToken },
+    });
+
+    const { accessToken, refreshToken: newRefreshToken } = response.data;
+
+    cookies().set('accessToken', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: Number.MAX_SAFE_INTEGER,
+    });
+
+    cookies().set('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: Number.MAX_SAFE_INTEGER,
+    });
+
+    return { accessToken, refreshToken: newRefreshToken };
+  } catch (error) {
+    return null;
   }
 }
