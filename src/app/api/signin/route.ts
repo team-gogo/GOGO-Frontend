@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import instance from '@/shared/api/instance';
+import serverInstance from '@/shared/api/serverInstance';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     );
 
     const googleAccessToken = tokenResponse.data.access_token;
-    const backendResponse = await instance.post('/user/auth/login', {
+    const backendResponse = await serverInstance.post('/user/auth/login', {
       oauthToken: googleAccessToken,
     });
     if (backendResponse.status !== 200) {

@@ -1,4 +1,4 @@
-import instance from './instance';
+import instance from './serverInstance';
 
 export const del = async <T>(...args: Parameters<typeof instance.delete>) =>
   await instance.delete<T, T>(...args);

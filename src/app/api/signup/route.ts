@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import instance from '@/shared/api/instance';
+import serverInstance from '@/shared/api/serverInstance';
 
 export async function POST(request: Request) {
   const cookieStore = cookies();
@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   try {
-    const response = await instance.post('/user/auth/signup', body, {
+    const response = await serverInstance.post('/user/auth/signup', body, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

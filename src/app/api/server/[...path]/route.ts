@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import instance from '@/shared/api/instance';
+import serverInstance from '@/shared/api/serverInstance';
 
 export async function GET(req: NextRequest) {
   return handleRequest(req);
@@ -47,7 +47,7 @@ async function handleRequest(req: NextRequest, isRetry = false) {
   }
 
   try {
-    const response = await instance.request({
+    const response = await serverInstance.request({
       url,
       method,
       params,
@@ -70,7 +70,7 @@ async function handleRequest(req: NextRequest, isRetry = false) {
       try {
         const newTokens = await refreshAccessToken(refreshToken);
 
-        const retryResponse = await instance.request({
+        const retryResponse = await serverInstance.request({
           url,
           method,
           params,
@@ -97,6 +97,8 @@ async function handleRequest(req: NextRequest, isRetry = false) {
         );
       }
     } else if (!refreshToken) {
+      cookieStore.delete('accessToken');
+      cookieStore.delete('refreshToken');
       return NextResponse.json(
         {
           error: 'refreshToken이 존재하지 않습니다',
@@ -120,7 +122,7 @@ async function handleRequest(req: NextRequest, isRetry = false) {
 
 async function refreshAccessToken(refreshToken: string) {
   try {
-    const response = await instance.post('/user/auth/refresh', null, {
+    const response = await serverInstance.post('/user/auth/refresh', null, {
       headers: { 'Refresh-Token': refreshToken },
     });
 
