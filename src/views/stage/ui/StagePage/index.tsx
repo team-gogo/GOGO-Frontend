@@ -36,8 +36,10 @@ const StagePage = () => {
       .map((stage) => stage.stageId) || [];
 
   useEffect(() => {
-    addStageAdmin(maintainingStageIds);
-  }, []);
+    if (maintainingStageIds.length > 0) {
+      addStageAdmin(maintainingStageIds);
+    }
+  }, [maintainingStageIds, addStageAdmin]);
 
   stageListInfo?.stages.forEach((stage) => {
     if (stage.isParticipating) {
@@ -62,7 +64,11 @@ const StagePage = () => {
           'flex min-h-screen w-full max-w-[82.5rem] flex-col gap-[4rem]',
         )}
       >
-        <div className={cn('flex h-full flex-col gap-[2.5rem]')}>
+        <div
+          className={cn(
+            'flex h-full flex-col items-center justify-center gap-[2.5rem]',
+          )}
+        >
           <StageHeader />
 
           <StageMatchSection stages={participateStages} isPending={isPending} />

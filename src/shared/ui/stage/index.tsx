@@ -38,7 +38,9 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
   const isStagePage = pathname === '/stage';
 
   const handleClick = () => {
-    if (isParticipating) {
+    if (status === 'CONFIRMED') {
+      push(`/${stageId}`);
+    } else if (isParticipating) {
       push(`/stage/stageId=${stage.stageId}`);
     } else if (Participate) {
       setStageId(stageId);

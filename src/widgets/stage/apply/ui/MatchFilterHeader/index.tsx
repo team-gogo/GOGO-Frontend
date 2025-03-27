@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { FilterButton, Modal } from '@/entities/community';
+import { FilterButton } from '@/entities/community';
 import { SportType } from '@/shared/model/sportTypes';
+import CategoryTypeModal from '@/shared/ui/CategoryTypeModal';
 import { cn } from '@/shared/utils/cn';
 
 interface MatchFilterHeaderProps {
@@ -18,6 +19,16 @@ const MatchFilterHeader = ({
 }: MatchFilterHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const categoryTypes: SportType[] = [
+    'VOLLEY_BALL',
+    'SOCCER',
+    'LOL',
+    'BASE_BALL',
+    'BASKET_BALL',
+    'BADMINTON',
+    'ETC',
+  ];
+
   return (
     <>
       <div className={cn('flex', 'w-full', 'justify-between', 'items-center')}>
@@ -27,10 +38,11 @@ const MatchFilterHeader = ({
         <FilterButton onClick={() => setIsModalOpen(true)} />
       </div>
       {isModalOpen && (
-        <Modal
+        <CategoryTypeModal
           onClose={() => setIsModalOpen(false)}
           selectedSport={selectedSport}
           toggleSportSelection={toggleSportSelection}
+          categoryTypes={categoryTypes}
         />
       )}
     </>

@@ -2,10 +2,10 @@ import Link from 'next/link';
 import { CirclePlusIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
-const WriteButton = () => {
+const WriteButton = ({ stageId }: { stageId: string }) => {
   return (
     <Link
-      href="/community/create"
+      href={`/community/create/${stageId}`}
       className={cn(
         'flex',
         'gap-8',
