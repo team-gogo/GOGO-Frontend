@@ -49,10 +49,6 @@ const PlaceTeamContainer = () => {
     left: 0,
     top: 0,
   });
-  const [previousSvgBounds, setPreviousSvgBounds] = useState<{
-    width: number;
-    height: number;
-  }>({ width: 0, height: 0 });
   const [playerScale, setPlayerScale] = useState(1);
   const [isLargeScreen, setIsLargeScreen] = useState(true);
 
@@ -116,18 +112,52 @@ const PlaceTeamContainer = () => {
         if (svg) {
           const courtRect = courtElement.getBoundingClientRect();
           const svgRect = svg.getBoundingClientRect();
+          const prevWidth = svgBounds.width;
+          const prevHeight = svgBounds.height;
 
-          setPreviousSvgBounds({
-            width: svgBounds.width,
-            height: svgBounds.height,
-          });
-
-          setSvgBounds({
-            width: svgRect.width,
+          const newBounds = {
+            width: Math.max(svgRect.width, 780),
             height: svgRect.height,
             left: svgRect.left - courtRect.left,
             top: svgRect.top - courtRect.top,
-          });
+          };
+
+          setSvgBounds(newBounds);
+
+          setPlayers((prevPlayers) =>
+            prevPlayers.map((player) => {
+              if (player.x === 0 && player.y === 0) return player;
+
+              const mapWidth = courtRect.width;
+              const mapHeight = courtRect.height;
+
+              const relativeX = prevWidth ? player.x / (prevWidth / 2) : 0;
+              const relativeY = prevHeight ? player.y / prevHeight : 0;
+
+              const newX = relativeX * (mapWidth / 2);
+              const newY = relativeY * mapHeight;
+
+              const playerWidth = isLargeScreen ? 90 : 60;
+              const playerHeight = isLargeScreen ? 90 : 60;
+              const scale = isLargeScreen ? 0.9 : 0.6;
+              const scaledWidth = playerWidth * scale;
+              const scaledHeight = playerHeight * scale;
+
+              const maxX = mapWidth / 2 - scaledWidth;
+              const maxY = mapHeight - scaledHeight;
+
+              const boundedX = Math.max(0, Math.min(newX, maxX));
+              const boundedY = Math.max(0, Math.min(newY, maxY));
+
+              return {
+                ...player,
+                x: boundedX,
+                y: boundedY,
+                relativeX: boundedX / (mapWidth / 2),
+                relativeY: boundedY / mapHeight,
+              };
+            }),
+          );
         }
       }
     };
@@ -140,36 +170,7 @@ const PlaceTeamContainer = () => {
       window.removeEventListener('resize', updateSvgBounds);
       clearTimeout(timeoutId);
     };
-  }, [sportType, svgBounds.width, svgBounds.height]);
-
-  useEffect(() => {
-    if (svgBounds.width && svgBounds.height) {
-      setPlayers((prevPlayers) =>
-        prevPlayers.map((player) => {
-          if (player.x === 0 && player.y === 0) return player;
-
-          const relX = player.relativeX ?? player.x / previousSvgBounds.width;
-          const relY = player.relativeY ?? player.y / previousSvgBounds.height;
-
-          const newX = relX * svgBounds.width;
-          const newY = relY * svgBounds.height;
-
-          return {
-            ...player,
-            x: newX,
-            y: newY,
-            relativeX: relX,
-            relativeY: relY,
-          };
-        }),
-      );
-    }
-  }, [
-    svgBounds.width,
-    svgBounds.height,
-    previousSvgBounds.width,
-    previousSvgBounds.height,
-  ]);
+  }, [sportType, isLargeScreen, svgBounds.width, svgBounds.height]);
 
   useEffect(() => {
     const updatePlayerScale = () => {
@@ -179,9 +180,13 @@ const PlaceTeamContainer = () => {
         if (svg) {
           const svgRect = svg.getBoundingClientRect();
           const baseWidth = 600;
-          const minScale = isLargeScreen ? 0.8 : 0.4;
+          const minWidth = 780;
+
+          const effectiveWidth = Math.max(svgRect.width, minWidth);
+
+          const minScale = isLargeScreen ? 0.8 : 0.6;
           const maxScale = isLargeScreen ? 0.9 : 0.6;
-          const calculatedScale = svgRect.width / baseWidth;
+          const calculatedScale = effectiveWidth / baseWidth;
           const scale = Math.min(maxScale, Math.max(minScale, calculatedScale));
           setPlayerScale(scale);
         }
@@ -194,6 +199,17 @@ const PlaceTeamContainer = () => {
     if (courtElement) {
       const resizeObserver = new ResizeObserver(() => {
         updatePlayerScale();
+        const svg = courtElement.querySelector('svg');
+        if (svg) {
+          const courtRect = courtElement.getBoundingClientRect();
+          const svgRect = svg.getBoundingClientRect();
+          setSvgBounds({
+            width: Math.max(svgRect.width, 300),
+            height: svgRect.height,
+            left: svgRect.left - courtRect.left,
+            top: svgRect.top - courtRect.top,
+          });
+        }
       });
       resizeObserver.observe(courtElement);
 
@@ -210,20 +226,26 @@ const PlaceTeamContainer = () => {
       const svg = courtElement?.querySelector('svg');
 
       if (!playerElement || !courtElement || !svg) return;
+      const courtRect = courtElement.getBoundingClientRect();
+      const playerWidth = isLargeScreen ? 90 : 60;
+      const playerHeight = isLargeScreen ? 90 : 60;
+      const scaledWidth = playerWidth * playerScale;
+      const scaledHeight = playerHeight * playerScale;
 
-      const svgRect = svg.getBoundingClientRect();
-      const playerRect = playerElement.getBoundingClientRect();
-      const scaledWidth = playerRect.width / playerScale;
-      const scaledHeight = playerRect.height / playerScale;
+      const mapWidth = courtRect.width;
+      const mapHeight = courtRect.height;
 
       const svgX = x - svgBounds.left;
       const svgY = y - svgBounds.top;
 
-      const maxX = svgRect.width / 2 - scaledWidth;
-      const maxY = svgRect.height - scaledHeight;
+      const maxX = mapWidth / 2 - scaledWidth;
+      const maxY = mapHeight - scaledHeight;
 
       const boundedX = Math.max(0, Math.min(svgX, maxX));
       const boundedY = Math.max(0, Math.min(svgY, maxY));
+
+      const relativeX = boundedX / (mapWidth / 2);
+      const relativeY = boundedY / mapHeight;
 
       setPlayers((prev) =>
         prev.map((player) =>
@@ -232,14 +254,14 @@ const PlaceTeamContainer = () => {
                 ...player,
                 x: boundedX,
                 y: boundedY,
-                relativeX: boundedX / svgRect.width,
-                relativeY: boundedY / svgRect.height,
+                relativeX,
+                relativeY,
               }
             : player,
         ),
       );
     },
-    [playerScale, svgBounds],
+    [playerScale, svgBounds, isLargeScreen],
   );
 
   useEffect(() => {
@@ -299,33 +321,54 @@ const PlaceTeamContainer = () => {
       if (!playerElement || !courtElement || !svg) return;
 
       const svgRect = svg.getBoundingClientRect();
-      const playerRect = playerElement.getBoundingClientRect();
-      const scaledWidth = playerRect.width / playerScale;
-      const scaledHeight = playerRect.height / playerScale;
+      const courtRect = courtElement.getBoundingClientRect();
+      const playerWidth = isLargeScreen ? 90 : 60;
+      const playerHeight = isLargeScreen ? 90 : 60;
+      const scaledWidth = playerWidth * playerScale;
+      const scaledHeight = playerHeight * playerScale;
+
+      const mapWidth = courtRect.width;
+      const mapHeight = courtRect.height;
 
       const svgX = e.clientX - svgRect.left;
       const svgY = e.clientY - svgRect.top;
 
-      const maxX = svgRect.width / 2 - scaledWidth;
+      const maxX = mapWidth / 2 - scaledWidth;
 
       const boundedX = Math.max(0, Math.min(svgX - scaledWidth / 2, maxX));
       const boundedY = Math.max(
         0,
-        Math.min(svgY - scaledHeight / 2, svgRect.height - scaledHeight),
+        Math.min(svgY - scaledHeight / 2, mapHeight - scaledHeight),
       );
 
-      handlePlayerDrag(
-        draggedPlayerRef.current,
-        boundedX + svgBounds.left,
-        boundedY + svgBounds.top,
+      const relativeX = boundedX / (mapWidth / 2);
+      const relativeY = boundedY / mapHeight;
+
+      setPlayers((prev) =>
+        prev.map((player) =>
+          player.id === playerId
+            ? {
+                ...player,
+                x: boundedX,
+                y: boundedY,
+                relativeX,
+                relativeY,
+              }
+            : player,
+        ),
       );
     },
-    [handlePlayerDrag, playerScale, svgBounds],
+    [playerScale, svgBounds, isLargeScreen],
   );
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsLargeScreen(window.innerWidth >= 1280);
+      const width = window.innerWidth;
+      if (width >= 1280) {
+        setIsLargeScreen(true);
+      } else if (width < 780) {
+        setIsLargeScreen(false);
+      }
     };
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
@@ -359,6 +402,7 @@ const PlaceTeamContainer = () => {
                 className={`relative w-full ${isLargeScreen ? 'h-[500px]' : 'h-[400px]'}`}
                 style={{
                   maxWidth: isLargeScreen ? 'none' : '100%',
+                  minWidth: '780px',
                   margin: '0 auto',
                 }}
               >
