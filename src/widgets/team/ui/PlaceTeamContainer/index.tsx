@@ -179,8 +179,8 @@ const PlaceTeamContainer = () => {
         if (svg) {
           const svgRect = svg.getBoundingClientRect();
           const baseWidth = 600;
-          const minScale = isLargeScreen ? 0.8 : 0.8;
-          const maxScale = isLargeScreen ? 0.9 : 1.2;
+          const minScale = isLargeScreen ? 0.8 : 0.5;
+          const maxScale = isLargeScreen ? 0.9 : 0.7;
           const calculatedScale = svgRect.width / baseWidth;
           const scale = Math.min(maxScale, Math.max(minScale, calculatedScale));
           setPlayerScale(scale);
@@ -471,8 +471,8 @@ const PlaceTeamContainer = () => {
                                       display: 'flex',
                                       alignItems: 'center',
                                       justifyContent: 'center',
-                                      width: '90px',
-                                      height: '90px',
+                                      width: isLargeScreen ? '90px' : '60px',
+                                      height: isLargeScreen ? '90px' : '60px',
                                     }}
                                     className="transition-transform"
                                   />
