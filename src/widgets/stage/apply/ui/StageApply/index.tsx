@@ -36,7 +36,9 @@ const StageApply = ({ game, stageId }: StageApplyProps) => {
     if (isMaintainer) {
       router.push(`/team/confirm?matchId=${gameId}`);
     } else {
-      router.push(`/team/create?matchId=${gameId}&category=${category}`);
+      router.push(
+        `/team/create?matchId=${gameId}&category=${category}&stageId=${stageId}`,
+      );
     }
   };
 

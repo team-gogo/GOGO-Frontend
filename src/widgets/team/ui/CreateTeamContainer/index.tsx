@@ -1,9 +1,10 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { getStageGame } from '@/entities/community/api/getStageGame';
 import { postTeam } from '@/entities/team/api/postTeam';
 import ExclamationIcon from '@/shared/assets/svg/ExclamationIcon';
 import { StageData } from '@/shared/types/stage/create';
@@ -20,8 +21,24 @@ const SUPPORTED_SPORTS = ['BASKET_BALL', 'BADMINTON', 'SOCCER', 'VOLLEY_BALL'];
 
 const CreateTeamContainer = () => {
   const [teamName, setTeamName] = useState('');
+  const [teamCapacity, setTeamCapacity] = useState({ min: 0, max: 0 });
   const router = useRouter();
   const searchParams = useSearchParams();
+  const stageId = searchParams.get('stageId');
+
+  useEffect(() => {
+    const fetchGameInfo = async () => {
+      if (stageId) {
+        const response = await getStageGame(stageId);
+        if (response.games && response.games.length > 0) {
+          const { teamMinCapacity, teamMaxCapacity } = response.games[0];
+          setTeamCapacity({ min: teamMinCapacity, max: teamMaxCapacity });
+        }
+      }
+    };
+    fetchGameInfo();
+  }, [stageId]);
+
   const inviteStudentRef = useRef<InviteStudentInputRef>(null);
   const {
     register,
@@ -81,6 +98,7 @@ const CreateTeamContainer = () => {
       sessionStorage.setItem('members', JSON.stringify(selectedStudents));
       sessionStorage.setItem('gameId', searchParams.get('matchId') || '');
       sessionStorage.setItem('category', category);
+      sessionStorage.setItem('stageId', searchParams.get('stageId') || '');
       router.push(
         `/team/place?gameId=${searchParams.get('matchId')}&category=${category}`,
       );
@@ -124,8 +142,8 @@ const CreateTeamContainer = () => {
               )}
             >
               <ExclamationIcon />
-              <span>최소 인원 : 0명</span>
-              <span>최대 인원 : 4명</span>
+              <span>최소 인원 : {teamCapacity.min}명</span>
+              <span>최대 인원 : {teamCapacity.max}명</span>
             </h4>
           </div>
           <div className={cn('mt-24')}>

@@ -73,7 +73,8 @@ const PlaceTeamContainer = () => {
 
   useEffect(() => {
     if (!sportType) {
-      router.push('/team/create');
+      const stageId = sessionStorage.getItem('stageId');
+      router.push(`/team/create?stageId=${stageId}`);
     }
   }, [sportType, router]);
 
