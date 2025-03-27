@@ -112,11 +112,12 @@ const PlaceTeamContainer = () => {
         if (svg) {
           const courtRect = courtElement.getBoundingClientRect();
           const svgRect = svg.getBoundingClientRect();
+          const viewBox = svg.viewBox.baseVal;
           const prevWidth = svgBounds.width;
           const prevHeight = svgBounds.height;
 
           const newBounds = {
-            width: Math.max(svgRect.width, 780),
+            width: svgRect.width,
             height: svgRect.height,
             left: svgRect.left - courtRect.left,
             top: svgRect.top - courtRect.top,
@@ -128,33 +129,41 @@ const PlaceTeamContainer = () => {
             prevPlayers.map((player) => {
               if (player.x === 0 && player.y === 0) return player;
 
-              const mapWidth = courtRect.width;
-              const mapHeight = courtRect.height;
+              // SVG 뷰포트 스케일 계산
+              const scaleX = viewBox.width / svgRect.width;
+              const scaleY = viewBox.height / svgRect.height;
 
-              const relativeX = prevWidth ? player.x / (prevWidth / 2) : 0;
-              const relativeY = prevHeight ? player.y / prevHeight : 0;
-
-              const newX = relativeX * (mapWidth / 2);
-              const newY = relativeY * mapHeight;
+              // 이전 상대 위치를 유지하면서 새로운 위치 계산
+              const svgX = player.relativeX
+                ? player.relativeX * (viewBox.width / 2)
+                : player.x * scaleX;
+              const svgY = player.relativeY
+                ? player.relativeY * viewBox.height
+                : player.y * scaleY;
 
               const playerWidth = isLargeScreen ? 90 : 60;
               const playerHeight = isLargeScreen ? 90 : 60;
               const scale = isLargeScreen ? 0.9 : 0.6;
-              const scaledWidth = playerWidth * scale;
-              const scaledHeight = playerHeight * scale;
+              const scaledWidth = playerWidth * scale * scaleX;
+              const scaledHeight = playerHeight * scale * scaleY;
 
-              const maxX = mapWidth / 2 - scaledWidth;
-              const maxY = mapHeight - scaledHeight;
+              // SVG 좌표계에서 경계 체크
+              const maxX = viewBox.width / 2 - scaledWidth;
+              const maxY = viewBox.height - scaledHeight;
 
-              const boundedX = Math.max(0, Math.min(newX, maxX));
-              const boundedY = Math.max(0, Math.min(newY, maxY));
+              const boundedX = Math.max(0, Math.min(svgX, maxX));
+              const boundedY = Math.max(0, Math.min(svgY, maxY));
+
+              // 화면 좌표로 변환
+              const screenX = boundedX / scaleX;
+              const screenY = boundedY / scaleY;
 
               return {
                 ...player,
-                x: boundedX,
-                y: boundedY,
-                relativeX: boundedX / (mapWidth / 2),
-                relativeY: boundedY / mapHeight,
+                x: screenX,
+                y: screenY,
+                relativeX: boundedX / (viewBox.width / 2),
+                relativeY: boundedY / viewBox.height,
               };
             }),
           );
@@ -226,34 +235,44 @@ const PlaceTeamContainer = () => {
       const svg = courtElement?.querySelector('svg');
 
       if (!playerElement || !courtElement || !svg) return;
-      const courtRect = courtElement.getBoundingClientRect();
+
+      const svgRect = svg.getBoundingClientRect();
+      const viewBox = svg.viewBox.baseVal;
       const playerWidth = isLargeScreen ? 90 : 60;
       const playerHeight = isLargeScreen ? 90 : 60;
       const scaledWidth = playerWidth * playerScale;
       const scaledHeight = playerHeight * playerScale;
 
-      const mapWidth = courtRect.width;
-      const mapHeight = courtRect.height;
+      // 실제 SVG 좌표로 변환
+      const scaleX = viewBox.width / svgRect.width;
+      const scaleY = viewBox.height / svgRect.height;
 
-      const svgX = x - svgBounds.left;
-      const svgY = y - svgBounds.top;
+      const svgX = (x - svgRect.left) * scaleX;
+      const svgY = (y - svgRect.top) * scaleY;
 
-      const maxX = mapWidth / 2 - scaledWidth;
-      const maxY = mapHeight - scaledHeight;
+      // SVG 뷰포트 내에서의 최대 좌표
+      const maxX = viewBox.width / 2 - scaledWidth * scaleX;
+      const maxY = viewBox.height - scaledHeight * scaleY;
 
+      // SVG 좌표계 내에서 경계 체크
       const boundedX = Math.max(0, Math.min(svgX, maxX));
       const boundedY = Math.max(0, Math.min(svgY, maxY));
 
-      const relativeX = boundedX / (mapWidth / 2);
-      const relativeY = boundedY / mapHeight;
+      // 다시 화면 좌표로 변환
+      const screenX = boundedX / scaleX;
+      const screenY = boundedY / scaleY;
+
+      // 상대 위치는 SVG 뷰포트 기준으로 계산
+      const relativeX = boundedX / (viewBox.width / 2);
+      const relativeY = boundedY / viewBox.height;
 
       setPlayers((prev) =>
         prev.map((player) =>
           player.id === playerId
             ? {
                 ...player,
-                x: boundedX,
-                y: boundedY,
+                x: screenX,
+                y: screenY,
                 relativeX,
                 relativeY,
               }
@@ -261,7 +280,7 @@ const PlaceTeamContainer = () => {
         ),
       );
     },
-    [playerScale, svgBounds, isLargeScreen],
+    [playerScale, isLargeScreen],
   );
 
   useEffect(() => {
@@ -321,36 +340,48 @@ const PlaceTeamContainer = () => {
       if (!playerElement || !courtElement || !svg) return;
 
       const svgRect = svg.getBoundingClientRect();
-      const courtRect = courtElement.getBoundingClientRect();
+      const viewBox = svg.viewBox.baseVal;
       const playerWidth = isLargeScreen ? 90 : 60;
       const playerHeight = isLargeScreen ? 90 : 60;
       const scaledWidth = playerWidth * playerScale;
       const scaledHeight = playerHeight * playerScale;
 
-      const mapWidth = courtRect.width;
-      const mapHeight = courtRect.height;
+      // 실제 SVG 좌표로 변환
+      const scaleX = viewBox.width / svgRect.width;
+      const scaleY = viewBox.height / svgRect.height;
 
-      const svgX = e.clientX - svgRect.left;
-      const svgY = e.clientY - svgRect.top;
+      const svgX = (e.clientX - svgRect.left) * scaleX;
+      const svgY = (e.clientY - svgRect.top) * scaleY;
 
-      const maxX = mapWidth / 2 - scaledWidth;
+      // SVG 뷰포트 내에서의 최대 좌표
+      const maxX = viewBox.width / 2 - scaledWidth * scaleX;
+      const maxY = viewBox.height - scaledHeight * scaleY;
 
-      const boundedX = Math.max(0, Math.min(svgX - scaledWidth / 2, maxX));
+      // SVG 좌표계 내에서 경계 체크
+      const boundedX = Math.max(
+        0,
+        Math.min(svgX - (scaledWidth * scaleX) / 2, maxX),
+      );
       const boundedY = Math.max(
         0,
-        Math.min(svgY - scaledHeight / 2, mapHeight - scaledHeight),
+        Math.min(svgY - (scaledHeight * scaleY) / 2, maxY),
       );
 
-      const relativeX = boundedX / (mapWidth / 2);
-      const relativeY = boundedY / mapHeight;
+      // 다시 화면 좌표로 변환
+      const screenX = boundedX / scaleX;
+      const screenY = boundedY / scaleY;
+
+      // 상대 위치는 SVG 뷰포트 기준으로 계산
+      const relativeX = boundedX / (viewBox.width / 2);
+      const relativeY = boundedY / viewBox.height;
 
       setPlayers((prev) =>
         prev.map((player) =>
           player.id === playerId
             ? {
                 ...player,
-                x: boundedX,
-                y: boundedY,
+                x: screenX,
+                y: screenY,
                 relativeX,
                 relativeY,
               }
@@ -358,7 +389,7 @@ const PlaceTeamContainer = () => {
         ),
       );
     },
-    [playerScale, svgBounds, isLargeScreen],
+    [playerScale, isLargeScreen],
   );
 
   useEffect(() => {
