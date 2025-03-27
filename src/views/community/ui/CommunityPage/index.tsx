@@ -1,35 +1,23 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { NavigationBar } from '@/entities/community';
-import { SortType } from '@/shared/model/sportTypes';
+import { useParams, useSearchParams } from 'next/navigation';
+import { useCategoryTypes } from '@/entities/community/model/useCategoryTypes';
+import useSelectSort from '@/shared/model/useSelectSort';
 import useSelectSport from '@/shared/model/useSelectSport';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { CommunityItemContainer, CommunityToolbar } from '@/widgets/community';
-import getBoardMock from '../Mock/getBoardMock';
 
 const CommunityPage = () => {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
 
-  const boardMock = getBoardMock();
-  const [selectedSort, setSelectedSort] = useState<SortType | null>(null);
+  const { selectedSort, toggleSortSelection } = useSelectSort();
   const { selectedSport, toggleSportSelection } = useSelectSport();
 
-  const toggleSortSelection = (sort: SortType) => {
-    setSelectedSort((prev) => (prev === sort ? null : sort));
-  };
-
-  const itemsPerPage = 7;
-  const totalPairs = boardMock.info.totalPage;
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentBoardData = {
-    info: boardMock.info,
-    board: boardMock.board.slice(startIndex, startIndex + itemsPerPage),
-  };
+  const { categoryTypes } = useCategoryTypes(stageId);
 
   return (
     <div
@@ -45,22 +33,34 @@ const CommunityPage = () => {
           'items-center',
           'max-w-[1320px]',
           'gap-[2.5rem]',
-          'pt-[2rem]',
         )}
       >
         <div
-          className={cn('w-full', 'h-full', 'flex', 'flex-col', 'gap-[2rem]')}
+          className={cn(
+            'w-full',
+            'h-full',
+            'pt-[2.25rem]',
+            'flex',
+            'flex-col',
+            'gap-[2rem]',
+          )}
         >
-          <BackPageButton />
+          <BackPageButton type="push" path={`/${stageId}`} />
           <CommunityToolbar
             selectedSport={selectedSport}
             selectedSort={selectedSort}
             toggleSportSelection={toggleSportSelection}
             toggleSortSelection={toggleSortSelection}
+            stageId={stageId}
+            categoryTypes={categoryTypes}
           />
-          <CommunityItemContainer boardData={currentBoardData} />
+          <CommunityItemContainer
+            stageId={stageId}
+            selectedSport={selectedSport}
+            selectedSort={selectedSort}
+            currentPage={currentPage}
+          />
         </div>
-        <NavigationBar totalPairs={totalPairs} />
       </div>
     </div>
   );

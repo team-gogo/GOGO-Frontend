@@ -4,10 +4,28 @@ import { RankItem } from '@/shared/types/ranking';
 import { cn } from '@/shared/utils/cn';
 
 interface TopRankListItemProps {
-  rank: RankItem;
+  rank: RankItem | null;
 }
 
 const TopRankListItem = ({ rank }: TopRankListItemProps) => {
+  if (!rank) {
+    return (
+      <div className={cn('flex', 'flex-col', 'items-center', 'space-y-4')}>
+        <div className={cn('flex', 'items-center', 'justify-center', 'gap-4')}>
+          <p className={cn('text-caption1s', 'text-main-400')}>0</p>
+          <PointIcon size={16} fill="#748CFE" />
+        </div>
+        <p className={cn('text-white', 'text-body2e')}>공석</p>
+        <Medal
+          primaryColor="#4D4D4D"
+          secondaryColor="#4D4D4D"
+          rank={0}
+          className="h-[100px] w-[100px] mobile:h-[80px] mobile:w-[80px]"
+        />
+      </div>
+    );
+  }
+
   const getMedalColors = (rank: number) => {
     switch (rank) {
       case 1:
@@ -17,7 +35,7 @@ const TopRankListItem = ({ rank }: TopRankListItemProps) => {
       case 3:
         return { primary: '#692814', secondary: '#B35933' };
       default:
-        return { primary: '#A07102', secondary: '#FAE28D' };
+        return { primary: '#4D4D4D', secondary: '#4D4D4D' }; // Changed default color
     }
   };
 

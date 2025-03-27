@@ -1,0 +1,15 @@
+import axios from 'axios';
+
+export const postCancleBatch = async (matchId: number) => {
+  try {
+    await axios.post(`/api/server/betting/batch/cancel/${matchId}`);
+    return true;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(
+        error.response.data.error || '정산 롤백에 실패 했습니다.',
+      );
+    }
+    throw error;
+  }
+};

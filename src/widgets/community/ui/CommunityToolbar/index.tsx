@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { FilterButton, Modal, WriteButton } from '@/entities/community';
+import { FilterButton, WriteButton } from '@/entities/community';
 import { CommunityIcon } from '@/shared/assets/svg';
 import { SportType, SortType } from '@/shared/model/sportTypes';
+import CategoryTypeModal from '@/shared/ui/CategoryTypeModal';
 import { cn } from '@/shared/utils/cn';
 
 interface CommunityToolbarProps {
@@ -11,6 +12,8 @@ interface CommunityToolbarProps {
   selectedSort: SortType | null;
   toggleSportSelection: (sport: SportType) => void;
   toggleSortSelection: (sort: SortType) => void;
+  stageId: string;
+  categoryTypes: SportType[];
 }
 
 const CommunityToolbar = ({
@@ -18,6 +21,8 @@ const CommunityToolbar = ({
   selectedSort,
   toggleSportSelection,
   toggleSortSelection,
+  stageId,
+  categoryTypes,
 }: CommunityToolbarProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -41,16 +46,17 @@ const CommunityToolbar = ({
         </p>
       </div>
       <div className={cn('flex', 'items-center', 'gap-12')}>
-        <WriteButton />
+        <WriteButton stageId={stageId} />
         <FilterButton onClick={toggleModal} />
       </div>
       {isModalOpen && (
-        <Modal
+        <CategoryTypeModal
           onClose={toggleModal}
           selectedSport={selectedSport}
           selectedSort={selectedSort}
           toggleSportSelection={toggleSportSelection}
           toggleSortSelection={toggleSortSelection}
+          categoryTypes={categoryTypes}
         />
       )}
     </div>

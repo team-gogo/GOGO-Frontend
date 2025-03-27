@@ -13,24 +13,17 @@ interface ModalProps {
   selectedSort?: SortType | null;
   toggleSportSelection: (sport: SportType) => void;
   toggleSortSelection?: (sort: SortType) => void;
+  categoryTypes: SportType[];
 }
 
-const Modal = ({
+const CategoryTypeModal = ({
   onClose,
   selectedSport,
   selectedSort,
   toggleSportSelection,
   toggleSortSelection,
+  categoryTypes,
 }: ModalProps) => {
-  const categoryTypes: SportType[] = [
-    'VOLLEY_BALL',
-    'SOCCER',
-    'LOL',
-    'BASE_BALL',
-    'BASKET_BALL',
-    'BADMINTON',
-    'ETC',
-  ];
   const sortTypes: SortType[] = ['LATEST', 'LAST'];
 
   return (
@@ -71,6 +64,7 @@ const Modal = ({
               asButton
               isSelected={selectedSort === sort}
               onClick={() => toggleSortSelection(sort)}
+              isHaveBorder={true}
             />
           ))}
         </div>
@@ -86,4 +80,4 @@ const Modal = ({
   );
 };
 
-export default Modal;
+export default CategoryTypeModal;
