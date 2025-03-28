@@ -25,7 +25,7 @@ export const createStoreItems = (
         className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
       />
     ),
-    name: '코인토스',
+    name: '코인 토스',
     type: 'store',
     action: () => buyTicket('COINTOSS'),
     isPending,
