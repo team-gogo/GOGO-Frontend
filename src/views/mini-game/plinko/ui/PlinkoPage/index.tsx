@@ -80,6 +80,12 @@ const PlinkoPage = () => {
     setPlinkoMock(mockDataArray[randomIndex]);
   };
 
+  const storedTicketCount = sessionStorage.getItem('ticketCount');
+  const ticketCount = storedTicketCount ? JSON.parse(storedTicketCount) : null;
+
+  const storeMyPoint = sessionStorage.getItem('myPoint');
+  const myPoint = storeMyPoint ? JSON.parse(storeMyPoint) : null;
+
   return (
     <div
       className={cn(
@@ -100,15 +106,15 @@ const PlinkoPage = () => {
           'gap-[3rem]',
         )}
       >
-        <BackPageButton type="push" path="/mini-game" label="플린코" />
+        <BackPageButton label="플린코" />
         <div className={cn('w-full', 'flex', 'justify-between')}>
           <form
             onSubmit={handleSubmit(onSubmit, onError)}
             className={cn('flex', 'gap-[2.5rem]', 'flex-col')}
           >
             <PlinkoInputBox
-              money={2000}
-              ticket={2}
+              money={myPoint.point}
+              ticket={ticketCount.plinko}
               isDisabled={isDisabled}
               register={register}
               setValue={setValue}
