@@ -1,6 +1,5 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { getTempTeam } from '@/entities/team/api/getTempTeam';
@@ -10,24 +9,28 @@ import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 
-const ConfirmTeamContainer = () => {
-  const searchParams = useSearchParams();
+interface ConfirmTeamContainerProps {
+  params: {
+    matchId: string;
+  };
+}
+
+const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   const [selectedTeamIds, setSelectedTeamIds] = useState<number[]>([]);
   const [teams, setTeams] = useState<
     Array<{ teamId: number; teamName: string; participantCount: number }>
   >([]);
+  const { matchId } = params;
 
   useEffect(() => {
     const fetchTeams = async () => {
-      const gameId = searchParams.get('matchId');
-
-      if (!gameId) {
+      if (!matchId) {
         toast.error('게임 정보가 없습니다.');
         return;
       }
 
       try {
-        const response = await getTempTeam(gameId);
+        const response = await getTempTeam(matchId);
         setTeams(response.team);
       } catch (error) {
         console.error(error);
@@ -35,7 +38,7 @@ const ConfirmTeamContainer = () => {
       }
     };
     fetchTeams();
-  }, [searchParams]);
+  }, [matchId]);
 
   const handleViewDetails = useCallback((_teamId: number) => {
     // TODO: 팀 자세히보기 클릭했을 때
