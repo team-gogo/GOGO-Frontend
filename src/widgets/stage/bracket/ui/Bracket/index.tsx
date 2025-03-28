@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import { cn } from '@/shared/utils/cn';
 
 interface GroupDistribution {
@@ -30,7 +31,6 @@ const Bracket = () => {
       ];
     }
 
-    // 8강의 경우 왼쪽/오른쪽 배분
     const leftTotal = Math.ceil(teamCount / 2);
     const rightTotal = Math.floor(teamCount / 2);
 
@@ -56,20 +56,6 @@ const Bracket = () => {
     createBracket(totalTeams);
   }, [totalTeams]);
 
-  const renderTeamSlot = () => (
-    <div
-      className={cn(
-        'w-[160px]',
-        'h-[60px]',
-        'bg-gray-600',
-        'rounded',
-        'flex',
-        'items-center',
-        'justify-center',
-      )}
-    />
-  );
-
   const renderFirstRoundGroup = (teamCount: number) => (
     <div
       className={cn(
@@ -82,7 +68,9 @@ const Bracket = () => {
     >
       {Array(teamCount)
         .fill(null)
-        .map((_, _idx) => renderTeamSlot())}
+        .map((_, _idx) => (
+          <TeamItem key={_idx} className="w-[160px]" />
+        ))}
     </div>
   );
 
@@ -124,7 +112,9 @@ const Bracket = () => {
       >
         {Array(position)
           .fill(null)
-          .map((_, _idx) => renderTeamSlot())}
+          .map((_, _idx) => (
+            <TeamItem key={_idx} className="w-[160px]" />
+          ))}
       </div>
     );
   };
@@ -138,46 +128,39 @@ const Bracket = () => {
           {renderBracketColumn(
             1,
             firstRoundDistribution[0].top + firstRoundDistribution[0].bottom,
-          )}{' '}
-          {/* 준결승1 */}
-          {renderBracketColumn(2, 1)} {/* 결승1 */}
-          {renderBracketColumn(2, 1)} {/* 결승2 */}
+          )}
+          {renderBracketColumn(2, 1)}
+          {renderBracketColumn(2, 1)}
           {renderBracketColumn(
             1,
             firstRoundDistribution[1].top + firstRoundDistribution[1].bottom,
-          )}{' '}
-          {/* 준결승2 */}
+          )}
         </div>
       );
     }
 
-    // 8강 새로운 레이아웃
     return (
       <div
         className={cn('flex', 'justify-between', 'w-full', 'h-full', 'gap-4')}
       >
-        {renderBracketColumn(1, 0, true, firstRoundDistribution[0])}{' '}
-        {/* 8강 왼쪽 */}
+        {renderBracketColumn(1, 0, true, firstRoundDistribution[0])}
         {renderBracketColumn(
           2,
           Math.ceil(
             (firstRoundDistribution[0].top + firstRoundDistribution[0].bottom) /
               2,
           ),
-        )}{' '}
-        {/* 4강 왼쪽 */}
-        {renderBracketColumn(3, 1)} {/* 결승1 */}
-        {renderBracketColumn(3, 1)} {/* 결승2 */}
+        )}
+        {renderBracketColumn(3, 1)}
+        {renderBracketColumn(3, 1)}
         {renderBracketColumn(
           2,
           Math.ceil(
             (firstRoundDistribution[1].top + firstRoundDistribution[1].bottom) /
               2,
           ),
-        )}{' '}
-        {/* 4강 오른쪽 */}
-        {renderBracketColumn(1, 0, true, firstRoundDistribution[1])}{' '}
-        {/* 8강 오른쪽 */}
+        )}
+        {renderBracketColumn(1, 0, true, firstRoundDistribution[1])}
       </div>
     );
   };
