@@ -1,4 +1,5 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { MatchResponse } from '@/shared/types/my/bet';
 
 export const getSearchMatch = async (
@@ -8,8 +9,8 @@ export const getSearchMatch = async (
   d: number,
 ): Promise<MatchResponse> => {
   try {
-    const response = await axios.get<MatchResponse>(
-      `/api/server/stage/match/search/${stageId}`,
+    const response = await clientInstance.get<MatchResponse>(
+      `stage/match/search/${stageId}`,
       {
         params: { y, m, d },
       },

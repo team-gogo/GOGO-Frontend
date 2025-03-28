@@ -1,4 +1,5 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { BettingFormData } from '@/shared/types/main';
 
 export const postBettingMatch = async (
@@ -6,7 +7,7 @@ export const postBettingMatch = async (
   data: BettingFormData,
 ) => {
   try {
-    await axios.post(`/api/server/betting/${matchId}`, data);
+    await clientInstance.post(`/betting/${matchId}`, data);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
