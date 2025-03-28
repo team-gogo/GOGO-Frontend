@@ -72,7 +72,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
         gameId: matchId,
       });
 
-      router.push('/stage');
+      router.push(`/team/place/${matchId}/${category}`);
     } catch (error) {
       console.error(error);
       toast.error('팀 생성에 실패했습니다.');

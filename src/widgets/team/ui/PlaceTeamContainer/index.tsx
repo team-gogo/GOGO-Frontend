@@ -78,7 +78,7 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
   useEffect(() => {
     if (!sportType) {
       const stageId = sessionStorage.getItem('stageId');
-      router.push(`/team/create?stageId=${stageId}`);
+      router.push(`/team/create/${stageId}`);
     }
   }, [sportType, router]);
 
@@ -107,15 +107,12 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
         const svgRect = svg.getBoundingClientRect();
         const viewBox = svg.viewBox.baseVal;
 
-        const centerX = viewBox.width / 4 / (viewBox.width / svgRect.width);
-        const centerY = viewBox.height / 2 / (viewBox.height / svgRect.height);
-
         const initialPlayers = members.map(
           (member: Student, index: number) => ({
             id: `player-${index}`,
             name: `${member.grade}${member.classNumber}${String(member.studentNumber).padStart(2, '0')} ${member.name}`,
-            x: centerX,
-            y: centerY,
+            x: viewBox.width / 4 / (viewBox.width / svgRect.width),
+            y: viewBox.height / 2 / (viewBox.height / svgRect.height),
             relativeX: 0.25,
             relativeY: 0.5,
           }),

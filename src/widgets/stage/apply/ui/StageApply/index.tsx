@@ -34,10 +34,10 @@ const StageApply = ({ game, stageId }: StageApplyProps) => {
 
   const handleApply = () => {
     if (isMaintainer) {
-      router.push(`/team/confirm?matchId=${gameId}`);
+      router.push(`/team/confirm/${gameId}`);
     } else {
       router.push(
-        `/team/create?matchId=${gameId}&category=${category}&stageId=${stageId}`,
+        `/team/create/${stageId}?matchId=${gameId}&category=${category}`,
       );
     }
   };
