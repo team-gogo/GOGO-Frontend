@@ -6,7 +6,6 @@ import {
   Draggable,
   DragStart,
 } from '@hello-pangea/dnd';
-import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
@@ -19,6 +18,13 @@ import { Student } from '@/shared/types/stage/create';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 
+interface PlaceTeamContainerProps {
+  params: {
+    gameId: string;
+    category: string;
+  };
+}
+
 interface Player {
   id: string;
   name: string;
@@ -28,7 +34,7 @@ interface Player {
   relativeY?: number;
 }
 
-const PlaceTeamContainer = () => {
+const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [teamName, setTeamName] = useState('');
   const [membersList, setMembersList] = useState<Student[]>([]);
@@ -52,19 +58,17 @@ const PlaceTeamContainer = () => {
   const [playerScale, setPlayerScale] = useState(1);
   const [isLargeScreen, setIsLargeScreen] = useState(true);
 
-  const searchParams = useSearchParams();
-  const categoryParam = searchParams.get('category');
-  const gameIdParam = searchParams.get('gameId');
+  const { gameId, category } = params;
 
   const getSportType = (): SportType | null => {
     if (
-      categoryParam === 'BASKET_BALL' ||
-      categoryParam === 'BADMINTON' ||
-      categoryParam === 'BASE_BALL' ||
-      categoryParam === 'SOCCER' ||
-      categoryParam === 'VOLLEY_BALL'
+      category === 'BASKET_BALL' ||
+      category === 'BADMINTON' ||
+      category === 'BASE_BALL' ||
+      category === 'SOCCER' ||
+      category === 'VOLLEY_BALL'
     ) {
-      return categoryParam;
+      return category;
     }
     return null;
   };
@@ -427,7 +431,7 @@ const PlaceTeamContainer = () => {
       await postTeam({
         teamName,
         participants,
-        gameId: String(gameIdParam),
+        gameId,
       });
       router.push('/stage');
       toast.success('팀 생성이 완료되었습니다.');
@@ -435,7 +439,7 @@ const PlaceTeamContainer = () => {
       console.error(error);
       toast.error('팀 생성에 실패했습니다.');
     }
-  }, [players, membersList, teamName, router, gameIdParam]);
+  }, [players, membersList, teamName, router, gameId]);
 
   const handleGlobalMouseMove = useCallback(
     (e: MouseEvent, playerId: string) => {

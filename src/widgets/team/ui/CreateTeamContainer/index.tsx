@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -17,14 +17,21 @@ import InviteStudentInput, {
 } from '@/shared/ui/InviteStudentInput';
 import { cn } from '@/shared/utils/cn';
 
+interface CreateTeamContainerProps {
+  params: {
+    stageId: string;
+    matchId?: string;
+    category?: string;
+  };
+}
+
 const SUPPORTED_SPORTS = ['BASKET_BALL', 'BADMINTON', 'SOCCER', 'VOLLEY_BALL'];
 
-const CreateTeamContainer = () => {
+const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
   const [teamName, setTeamName] = useState('');
   const [teamCapacity, setTeamCapacity] = useState({ min: 0, max: 0 });
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const stageId = searchParams.get('stageId');
+  const { stageId, matchId, category } = params;
 
   useEffect(() => {
     const fetchGameInfo = async () => {
@@ -47,9 +54,7 @@ const CreateTeamContainer = () => {
   } = useForm<StageData>();
 
   const handleTeamCreation = async (selectedStudents: Student[]) => {
-    const gameId = searchParams.get('matchId');
-
-    if (!gameId) {
+    if (!matchId) {
       toast.error('게임 정보가 없습니다.');
       return;
     }
@@ -64,8 +69,9 @@ const CreateTeamContainer = () => {
       await postTeam({
         teamName,
         participants,
-        gameId: String(gameId),
+        gameId: matchId,
       });
+
       router.push('/stage');
     } catch (error) {
       console.error(error);
@@ -91,17 +97,13 @@ const CreateTeamContainer = () => {
       return;
     }
 
-    const category = searchParams.get('category');
-
     if (category && SUPPORTED_SPORTS.includes(category)) {
       sessionStorage.setItem('teamName', teamName);
       sessionStorage.setItem('members', JSON.stringify(selectedStudents));
-      sessionStorage.setItem('gameId', searchParams.get('matchId') || '');
+      sessionStorage.setItem('gameId', matchId || '');
       sessionStorage.setItem('category', category);
-      sessionStorage.setItem('stageId', searchParams.get('stageId') || '');
-      router.push(
-        `/team/place?gameId=${searchParams.get('matchId')}&category=${category}`,
-      );
+      sessionStorage.setItem('stageId', stageId || '');
+      router.push(`/team/place/${matchId}/${category}`);
     } else {
       await handleTeamCreation(selectedStudents);
     }

@@ -1,10 +1,9 @@
-import { Suspense } from 'react';
-import CreateTeamPage from '@/views/team/ui/CreateTeamPage';
+import CreateTeamContainer from '@/widgets/team/ui/CreateTeamContainer';
 
-export default function Page() {
-  return (
-    <Suspense>
-      <CreateTeamPage />
-    </Suspense>
-  );
+export default function CreateTeamPage({
+  params,
+}: {
+  params: { stageId: string };
+}) {
+  return <CreateTeamContainer params={params} />;
 }
