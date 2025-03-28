@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { getTempTeam } from '@/entities/team/api/getTempTeam';
@@ -21,6 +22,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
     Array<{ teamId: number; teamName: string; participantCount: number }>
   >([]);
   const { matchId } = params;
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -45,8 +47,12 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   }, []);
 
   const handleConfirmTeam = useCallback(() => {
-    // TODO: 팀 확정하기 클릭했을 때
-  }, []);
+    const selectedTeams = teams.filter((team) =>
+      selectedTeamIds.includes(team.teamId),
+    );
+    localStorage.setItem('confirmedTeams', JSON.stringify(selectedTeams));
+    router.push('/stage/bracket');
+  }, [teams, selectedTeamIds, router]);
 
   const handleToggleSelect = useCallback((teamId: number) => {
     setSelectedTeamIds((prev) => {

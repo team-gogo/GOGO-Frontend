@@ -6,7 +6,7 @@ import {
   Draggable,
   DropResult,
 } from '@hello-pangea/dnd';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import { cn } from '@/shared/utils/cn';
 
@@ -20,10 +20,21 @@ const ITEM_GAP = 8;
 const CONTAINER_PADDING = 16;
 
 const TeamArray = ({ className }: TeamArrayProps) => {
-  const [teams, setTeams] = useState(
-    Array.from({ length: 10 }, (_, i) => `TBD ${i + 1}`),
-  );
+  const [teams, setTeams] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const confirmedTeams = localStorage.getItem('confirmedTeams');
+    if (confirmedTeams) {
+      const parsedTeams = JSON.parse(confirmedTeams);
+      const teamNames = parsedTeams.map(
+        (team: { teamName: string }) => team.teamName,
+      );
+      setTeams(teamNames);
+    } else {
+      setTeams(Array.from({ length: 10 }, (_, i) => `TBD ${i + 1}`));
+    }
+  }, []);
 
   const arrowButtonStyle = {
     color: '#ffffff',
