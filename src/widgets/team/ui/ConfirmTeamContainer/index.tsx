@@ -50,7 +50,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
     const selectedTeams = teams.filter((team) =>
       selectedTeamIds.includes(team.teamId),
     );
-    localStorage.setItem('confirmedTeams', JSON.stringify(selectedTeams));
+    sessionStorage.setItem('confirmedTeams', JSON.stringify(selectedTeams));
     router.push('/stage/bracket');
   }, [teams, selectedTeamIds, router]);
 

@@ -24,7 +24,7 @@ const TeamArray = ({ className }: TeamArrayProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const confirmedTeams = localStorage.getItem('confirmedTeams');
+    const confirmedTeams = sessionStorage.getItem('confirmedTeams');
     if (confirmedTeams) {
       const parsedTeams = JSON.parse(confirmedTeams);
       const teamNames = parsedTeams.map(
