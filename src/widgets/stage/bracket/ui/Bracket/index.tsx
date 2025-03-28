@@ -103,7 +103,29 @@ const Bracket = () => {
     createBracket(totalTeams);
   }, [totalTeams]);
 
-  const renderFirstRoundGroup = (teamCount: number) => (
+  const getNodesAtRound = (
+    root: BracketNode | null,
+    targetRound: number,
+  ): BracketNode[] => {
+    if (!root) return [];
+
+    const result: BracketNode[] = [];
+    const queue = [root];
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      if (current.round === targetRound) {
+        result.push(current);
+      } else if (current.round < targetRound) {
+        if (current.left) queue.push(current.left);
+        if (current.right) queue.push(current.right);
+      }
+    }
+
+    return result.sort((a, b) => a.position - b.position);
+  };
+
+  const renderFirstRoundGroup = (teamCount: number, nodes: BracketNode[]) => (
     <div
       className={cn(
         'flex-1',
@@ -116,7 +138,11 @@ const Bracket = () => {
       {Array(teamCount)
         .fill(null)
         .map((_, _idx) => (
-          <TeamItem key={_idx} className="w-[160px]" />
+          <TeamItem
+            key={_idx}
+            className="w-[160px]"
+            teamName={nodes[_idx]?.teamName || 'TBD'}
+          />
         ))}
     </div>
   );
@@ -127,7 +153,15 @@ const Bracket = () => {
     isFirstRound: boolean = false,
     distribution?: GroupDistribution,
   ) => {
+    const nodesInRound = getNodesAtRound(bracketTree, round);
+
     if (isFirstRound && distribution) {
+      const topNodes = nodesInRound.slice(0, distribution.top);
+      const bottomNodes = nodesInRound.slice(
+        distribution.top,
+        distribution.top + distribution.bottom,
+      );
+
       return (
         <div
           className={cn(
@@ -139,8 +173,8 @@ const Bracket = () => {
             'gap-4',
           )}
         >
-          {renderFirstRoundGroup(distribution.top)}
-          {renderFirstRoundGroup(distribution.bottom)}
+          {renderFirstRoundGroup(distribution.top, topNodes)}
+          {renderFirstRoundGroup(distribution.bottom, bottomNodes)}
         </div>
       );
     }
@@ -160,7 +194,11 @@ const Bracket = () => {
         {Array(position)
           .fill(null)
           .map((_, _idx) => (
-            <TeamItem key={_idx} className="w-[160px]" />
+            <TeamItem
+              key={_idx}
+              className="w-[160px]"
+              teamName={nodesInRound[_idx]?.teamName || 'TBD'}
+            />
           ))}
       </div>
     );
