@@ -9,15 +9,61 @@ interface GroupDistribution {
   bottom: number;
 }
 
+interface BracketNode {
+  round: number;
+  position: number;
+  teamName: string;
+  left: BracketNode | null;
+  right: BracketNode | null;
+}
+
 const Bracket = () => {
   const [totalTeams, setTotalTeams] = useState(4);
   const [finalStage, setFinalStage] = useState(4);
+  const [bracketTree, setBracketTree] = useState<BracketNode | null>(null);
   const [firstRoundDistribution, setFirstRoundDistribution] = useState<
     [GroupDistribution, GroupDistribution]
   >([
     { top: 1, bottom: 1 },
     { top: 1, bottom: 1 },
   ]);
+
+  const createBracketTree = (teamCount: number): BracketNode | null => {
+    if (teamCount < 2) return null;
+
+    const rounds = teamCount <= 4 ? 2 : 3;
+    const totalPositions = Math.pow(2, rounds);
+
+    const nodes: BracketNode[][] = Array(rounds)
+      .fill(null)
+      .map(() => []);
+
+    for (let i = 0; i < totalPositions / 2; i++) {
+      nodes[0].push({
+        round: 1,
+        position: i,
+        teamName: 'TBD',
+        left: null,
+        right: null,
+      });
+    }
+
+    for (let round = 1; round < rounds; round++) {
+      const prevRoundNodes = nodes[round - 1];
+      for (let i = 0; i < prevRoundNodes.length; i += 2) {
+        const node: BracketNode = {
+          round: round + 1,
+          position: Math.floor(i / 2),
+          teamName: 'TBD',
+          left: prevRoundNodes[i],
+          right: prevRoundNodes[i + 1] || null,
+        };
+        nodes[round].push(node);
+      }
+    }
+
+    return nodes[rounds - 1][0];
+  };
 
   const calculateTeamDistribution = (
     teamCount: number,
@@ -50,6 +96,7 @@ const Bracket = () => {
     if (teamCount < 2) return;
     setFinalStage(teamCount <= 4 ? 4 : 8);
     setFirstRoundDistribution(calculateTeamDistribution(teamCount));
+    setBracketTree(createBracketTree(teamCount));
   };
 
   useEffect(() => {
