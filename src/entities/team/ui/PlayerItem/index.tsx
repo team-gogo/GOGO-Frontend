@@ -19,6 +19,8 @@ const PlayerItem = ({
   isDeleteMode,
   onDelete,
 }: PlayerItemProps) => {
+  const displayName = name.split(' ').pop()?.replace(/[0-9]/g, '') || '';
+
   return (
     <div
       style={{
@@ -45,7 +47,7 @@ const PlayerItem = ({
       )}
       <PlayerIcon className="mb-1" />
       <span className="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-body3s text-white">
-        {name}
+        {displayName}
       </span>
     </div>
   );
