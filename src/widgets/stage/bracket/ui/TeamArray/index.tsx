@@ -1,18 +1,12 @@
 'use client';
 
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from '@hello-pangea/dnd';
+import { Droppable, Draggable } from '@hello-pangea/dnd';
 import { useCallback, useState, useEffect } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import { cn } from '@/shared/utils/cn';
 
 interface TeamArrayProps {
   className?: string;
-  onTeamDrop?: (teamName: string, round: number, position: number) => void;
 }
 
 const VISIBLE_ITEMS = 8;
@@ -20,7 +14,7 @@ const ITEM_WIDTH = 160;
 const ITEM_GAP = 8;
 const CONTAINER_PADDING = 16;
 
-const TeamArray = ({ className, onTeamDrop }: TeamArrayProps) => {
+const TeamArray = ({ className }: TeamArrayProps) => {
   const [teams, setTeams] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -54,24 +48,6 @@ const TeamArray = ({ className, onTeamDrop }: TeamArrayProps) => {
     if (!canScrollPrev) return;
     setCurrentIndex((prev) => prev - 1);
   }, [canScrollPrev]);
-
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-
-    // 드래그한 팀이 대진표의 빈칸에 드롭된 경우
-    if (result.destination.droppableId.startsWith('round_')) {
-      const teamName = teams[result.source.index];
-      const [, round, , position] = result.destination.droppableId.split('_');
-      onTeamDrop?.(teamName, parseInt(round), parseInt(position));
-      return;
-    }
-
-    // 팀 배열 내에서 순서 변경
-    const newTeams = Array.from(teams);
-    const [reorderedItem] = newTeams.splice(result.source.index, 1);
-    newTeams.splice(result.destination.index, 0, reorderedItem);
-    setTeams(newTeams);
-  };
 
   const visibleContainerWidth =
     ITEM_WIDTH * VISIBLE_ITEMS + ITEM_GAP * (VISIBLE_ITEMS - 1);
@@ -115,46 +91,58 @@ const TeamArray = ({ className, onTeamDrop }: TeamArrayProps) => {
             width: `${visibleContainerWidth + CONTAINER_PADDING * 2}px`,
           }}
         >
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="teams" direction="horizontal">
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  style={{
-                    width: innerContainerWidth,
-                    transform: `translateX(${translateX}px)`,
-                    transition: 'transform 0.3s ease-in-out',
-                    padding: `0 ${CONTAINER_PADDING}px`,
-                  }}
-                  className={cn('flex', 'gap-8')}
-                >
-                  {teams.map((team, index) => (
-                    <Draggable key={team} draggableId={team} index={index}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={{
-                            ...provided.draggableProps.style,
-                            zIndex: snapshot.isDragging ? 9999 : 'auto',
-                          }}
-                          className={cn(snapshot.isDragging && 'opacity-100')}
-                        >
-                          <TeamItem
-                            teamName={team}
-                            className={cn('flex-shrink-0', 'w-[160px]')}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <Droppable droppableId="teams" direction="horizontal">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                style={{
+                  width: innerContainerWidth,
+                  transform: `translateX(${translateX}px)`,
+                  transition: 'transform 0.3s ease-in-out',
+                  padding: `0 ${CONTAINER_PADDING}px`,
+                }}
+                className={cn('flex', 'gap-8')}
+              >
+                {teams.map((team, index) => (
+                  <Draggable key={team} draggableId={team} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={{
+                          ...provided.draggableProps.style,
+                          zIndex: snapshot.isDragging ? 9999 : 'auto',
+                          position: 'relative',
+                          opacity: 1,
+                          transform: snapshot.isDragging
+                            ? `${provided.draggableProps.style?.transform} scale(1.05)`
+                            : provided.draggableProps.style?.transform,
+                          pointerEvents: snapshot.isDragging ? 'auto' : 'none',
+                        }}
+                        className={cn(
+                          'transition-transform',
+                          'duration-200',
+                          'ease-in-out',
+                        )}
+                      >
+                        <TeamItem
+                          teamName={team}
+                          className={cn(
+                            'flex-shrink-0',
+                            'w-[160px]',
+                            'pointer-events-auto',
+                          )}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
         </div>
 
         <button

@@ -22,9 +22,9 @@ const CreateBracketPage = () => {
         </div>
 
         <Bracket />
-        <button className={cn('p-30', 'mt-32')}>
+        <div className={cn('p-30', 'mt-32')}>
           <Button>확인</Button>
-        </button>
+        </div>
       </div>
     </div>
   );

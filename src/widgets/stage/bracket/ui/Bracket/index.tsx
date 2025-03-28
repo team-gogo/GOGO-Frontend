@@ -1,6 +1,6 @@
 'use client';
 
-import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { useEffect, useState } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import { cn } from '@/shared/utils/cn';
@@ -45,7 +45,7 @@ const Bracket = () => {
       nodes[0].push({
         round: 1,
         position: i,
-        teamName: 'TBD',
+        teamName: '',
         left: null,
         right: null,
         isEmpty: true,
@@ -130,32 +130,6 @@ const Bracket = () => {
     return result.sort((a, b) => a.position - b.position);
   };
 
-  const updateTeamInTree = (
-    teamName: string,
-    round: number,
-    position: number,
-  ) => {
-    if (!bracketTree) return;
-
-    const updateNode = (node: BracketNode): BracketNode => {
-      if (node.round === round && node.position === position) {
-        return {
-          ...node,
-          teamName,
-          isEmpty: false,
-        };
-      }
-
-      return {
-        ...node,
-        left: node.left ? updateNode(node.left) : null,
-        right: node.right ? updateNode(node.right) : null,
-      };
-    };
-
-    setBracketTree(updateNode(bracketTree));
-  };
-
   const renderFirstRoundGroup = (
     teamCount: number,
     nodes: BracketNode[],
@@ -177,29 +151,45 @@ const Bracket = () => {
           const droppableId = `round_${round}_position_${node?.position ?? _idx}`;
 
           return (
-            <Droppable key={droppableId} droppableId={droppableId}>
-              {(provided, snapshot) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className={cn(
-                    'w-[160px]',
-                    snapshot.isDraggingOver && 'bg-blue-500/20',
-                    'rounded-lg',
-                  )}
-                >
-                  <TeamItem
-                    teamName={node?.teamName || 'TBD'}
-                    isEmpty={node?.isEmpty ?? true}
-                  />
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
+            <div key={droppableId} className="relative">
+              <TeamItem
+                teamName=""
+                isEmpty={true}
+                className={cn('w-[160px]', 'absolute', 'top-0', 'left-0')}
+              />
+              <Droppable key={droppableId} droppableId={droppableId}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={cn(
+                      'w-[160px]',
+                      'h-[48px]',
+                      'relative',
+                      snapshot.isDraggingOver && 'bg-blue-500/20',
+                      'rounded-lg',
+                    )}
+                  >
+                    {node && !node.isEmpty && (
+                      <TeamItem
+                        teamName={node.teamName}
+                        isEmpty={false}
+                        className="w-[160px]"
+                      />
+                    )}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </div>
           );
         })}
     </div>
   );
+
+  const isLeafNode = (round: number): boolean => {
+    return round === 1;
+  };
 
   const renderBracketColumn = (
     round: number,
@@ -250,27 +240,46 @@ const Bracket = () => {
           .map((_, _idx) => {
             const node = nodesInRound[_idx];
             const droppableId = `round_${round}_position_${node?.position ?? _idx}`;
+            const isLeaf = isLeafNode(round);
 
             return (
-              <Droppable key={droppableId} droppableId={droppableId}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={cn(
-                      'w-[160px]',
-                      snapshot.isDraggingOver && 'bg-blue-500/20',
-                      'rounded-lg',
-                    )}
-                  >
+              <div key={droppableId} className="relative">
+                {isLeaf ? (
+                  <>
                     <TeamItem
-                      teamName={node?.teamName || 'TBD'}
-                      isEmpty={node?.isEmpty ?? true}
+                      teamName=""
+                      isEmpty={true}
+                      className={cn('w-[160px]', 'absolute', 'top-0', 'left-0')}
                     />
-                    {provided.placeholder}
-                  </div>
+                    <Droppable droppableId={droppableId}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className={cn(
+                            'w-[160px]',
+                            'h-[48px]',
+                            'relative',
+                            snapshot.isDraggingOver && 'bg-blue-500/20',
+                            'rounded-lg',
+                          )}
+                        >
+                          {node && !node.isEmpty && (
+                            <TeamItem
+                              teamName={node.teamName}
+                              isEmpty={false}
+                              className="w-[160px]"
+                            />
+                          )}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </>
+                ) : (
+                  <TeamItem teamName="TBD" className="w-[160px]" />
                 )}
-              </Droppable>
+              </div>
             );
           })}
       </div>
@@ -326,8 +335,17 @@ const Bracket = () => {
   const renderControls = () => (
     <div className={cn('flex', 'gap-4', 'mb-4')}>
       <button
+        type="button"
         onClick={() => setTotalTeams((prev) => Math.max(2, prev - 1))}
-        className={cn('px-4', 'py-2', 'bg-gray-600', 'text-white', 'rounded')}
+        className={cn(
+          'px-4',
+          'py-2',
+          'bg-gray-600',
+          'text-white',
+          'rounded',
+          'hover:bg-gray-500',
+          'transition-colors',
+        )}
       >
         -
       </button>
@@ -335,8 +353,17 @@ const Bracket = () => {
         {totalTeams}
       </span>
       <button
+        type="button"
         onClick={() => setTotalTeams((prev) => Math.min(8, prev + 1))}
-        className={cn('px-4', 'py-2', 'bg-gray-600', 'text-white', 'rounded')}
+        className={cn(
+          'px-4',
+          'py-2',
+          'bg-gray-600',
+          'text-white',
+          'rounded',
+          'hover:bg-gray-500',
+          'transition-colors',
+        )}
       >
         +
       </button>
@@ -348,11 +375,42 @@ const Bracket = () => {
     round: number,
     position: number,
   ) => {
-    updateTeamInTree(teamName, round, position);
+    if (!bracketTree) return;
+
+    const updateNode = (node: BracketNode): BracketNode => {
+      if (node.round === round && node.position === position) {
+        return {
+          ...node,
+          teamName,
+          isEmpty: false,
+        };
+      }
+
+      return {
+        ...node,
+        left: node.left ? updateNode(node.left) : null,
+        right: node.right ? updateNode(node.right) : null,
+      };
+    };
+
+    setBracketTree(updateNode(bracketTree));
+  };
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    if (result.destination.droppableId.startsWith('round_')) {
+      const [, round, , position] = result.destination.droppableId.split('_');
+      const roundNum = parseInt(round);
+
+      if (isLeafNode(roundNum)) {
+        handleTeamDrop(result.draggableId, roundNum, parseInt(position));
+      }
+    }
   };
 
   return (
-    <DragDropContext onDragEnd={() => {}}>
+    <DragDropContext onDragEnd={handleDragEnd}>
       <div
         className={cn('min-h-[600px]', 'bg-black', 'p-30', 'flex', 'flex-col')}
       >
@@ -364,7 +422,7 @@ const Bracket = () => {
           {renderBracket()}
         </div>
       </div>
-      <TeamArray className="mb-30" onTeamDrop={handleTeamDrop} />
+      <TeamArray className="mb-30" />
     </DragDropContext>
   );
 };
