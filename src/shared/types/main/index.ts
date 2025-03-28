@@ -26,8 +26,16 @@ export interface StageInMatchResponse {
   games: Game[];
 }
 
+export interface MyPointType {
+  point: number;
+}
+
 export interface BatchMatchType {
   winTeamId: number;
   aTeamScore: number;
   bTeamScore: number;
+}
+
+export interface MatchNoticeType {
+  isNotice: boolean;
 }
