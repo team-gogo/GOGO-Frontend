@@ -1,8 +1,13 @@
-const StoreIcon = () => {
+interface Props {
+  className?: string;
+}
+
+const StoreIcon = ({ className }: Props) => {
   return (
     <svg
       width="36"
       height="36"
+      className={className}
       viewBox="0 0 36 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

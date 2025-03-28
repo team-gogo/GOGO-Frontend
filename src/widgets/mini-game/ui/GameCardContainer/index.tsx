@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React from 'react';
 import { GameSelectionCard } from '@/entities/mini-game';
 import {
   ActiveGameList,
@@ -8,9 +8,11 @@ import {
 import { cn } from '@/shared/utils/cn';
 
 interface GameItem {
-  icon: (isActive: boolean) => ReactNode;
+  icon: (isActive: boolean) => React.ReactNode;
   name: string;
   type: string;
+  action?: () => void;
+  isPending?: boolean;
 }
 
 interface GameCardContainerProps {
@@ -18,6 +20,7 @@ interface GameCardContainerProps {
   activeGameList: ActiveGameList;
   getTicketCount?: MyTicketType;
   getShopTicket?: ShopTicketStatusDto;
+  myPoint?: number;
 }
 
 const GameCardContainer = ({
@@ -25,6 +28,7 @@ const GameCardContainer = ({
   activeGameList,
   getTicketCount,
   getShopTicket,
+  myPoint,
 }: GameCardContainerProps) => {
   const activeList = [
     activeGameList.isYavarweeActive,
@@ -56,6 +60,9 @@ const GameCardContainer = ({
             isActive={activeList[index]}
             ticketCount={ticketCounts[index]}
             shopTicket={shopTickets[index]}
+            myPoint={myPoint}
+            action={item.action}
+            isPending={item.isPending}
           />
         );
       })}
