@@ -120,6 +120,8 @@ const TeamArray = ({ className }: TeamArrayProps) => {
                             ? `${provided.draggableProps.style?.transform} scale(1.05)`
                             : provided.draggableProps.style?.transform,
                           pointerEvents: snapshot.isDragging ? 'auto' : 'none',
+                          left: 'auto !important',
+                          top: 'auto !important',
                         }}
                         className={cn(
                           'transition-transform',
