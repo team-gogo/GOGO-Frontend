@@ -19,6 +19,8 @@ export interface Game {
   teamCount: number;
   category: Category;
   system: System;
+  teamMinCapacity: number;
+  teamMaxCapacity: number;
 }
 
 export interface StageInMatchResponse {
@@ -26,8 +28,16 @@ export interface StageInMatchResponse {
   games: Game[];
 }
 
+export interface MyPointType {
+  point: number;
+}
+
 export interface BatchMatchType {
   winTeamId: number;
   aTeamScore: number;
   bTeamScore: number;
+}
+
+export interface MatchNoticeType {
+  isNotice: boolean;
 }

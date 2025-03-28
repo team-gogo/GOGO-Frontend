@@ -16,6 +16,7 @@ import {
   useBatchModalStore,
   useCheckAgainModalStore,
   useMyStageIdStore,
+  usePointStore,
   useSelectDateStore,
 } from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
@@ -32,6 +33,7 @@ import { RankingUserContainer } from '@/widgets/ranking';
 
 import { getRankingMock } from '../..';
 import { useGetSearchMatch } from '../../model/useGetSearchMatch';
+import { useGetUserStagePoint } from '../../model/useGetUserStagePoint';
 
 import getStageInMatch from '../Mock/getStageInMatch';
 
@@ -41,6 +43,16 @@ const MainPage = () => {
 
   const params = useParams<{ stageId: string }>();
   const { stageId } = params;
+
+  const { data: userPointData } = useGetUserStagePoint(Number(stageId));
+
+  const { point, setPoint } = usePointStore();
+
+  useEffect(() => {
+    if (userPointData?.point) {
+      setPoint(userPointData.point);
+    }
+  }, [userPointData]);
 
   const { setStageId } = useMyStageIdStore();
   const { selectDate, setSelectDate } = useSelectDateStore();
@@ -97,7 +109,9 @@ const MainPage = () => {
         <div className={cn('w-full', 'flex', 'justify-between')}>
           <div className={cn('flex', 'items-center', 'gap-[1rem]', 'w-full')}>
             <h2 className={cn('text-title4s', 'text-gray-500')}>포인트</h2>
-            <h2 className={cn('text-h3e', 'text-white')}>{formatPoint(900)}</h2>
+            <h2 className={cn('text-h3e', 'text-white')}>
+              {formatPoint(point)}
+            </h2>
           </div>
           <DateContainer />
         </div>
@@ -131,7 +145,7 @@ const MainPage = () => {
             <SectionWrapper
               text={'미니게임'}
               icon={<MiniGameIcon />}
-              path="/mini-game"
+              path={`/mini-game/${stageId}`}
             >
               <MiniGameSection />
             </SectionWrapper>

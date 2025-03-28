@@ -10,6 +10,7 @@ import {
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
 import {
+  useAlarmClickStore,
   useBettingMatchArrStore,
   useMatchBatchArrStore,
   useMatchModalStore,
@@ -19,6 +20,7 @@ import {
 import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
+import { usePatchMatchNotice } from '@/views/main/model/usePatchMatchNotice';
 import Button from '../button';
 import MatchTypeLabel from '../matchTypeLabel';
 import SportTypeLabel from '../sportTypelabel';
@@ -47,8 +49,11 @@ const Match = ({ match }: MatchProps) => {
   const { stageId } = useMyStageIdStore();
   const { matchBatchArr } = useMatchBatchArrStore();
   const { bettingMatchArr } = useBettingMatchArrStore();
+  const { isAlarmClicked, setIsAlarmClicked } = useAlarmClickStore();
 
   const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
+
+  const { mutate: patchNotice } = usePatchMatchNotice(matchId);
 
   useEffect(() => {
     setAdminIdxArr(JSON.parse(localStorage.getItem('stageAdminArr') || '[]'));
@@ -65,7 +70,10 @@ const Match = ({ match }: MatchProps) => {
   // if (matchItem) {
   //   console.log(`Match ID: ${matchItem.matchId}, isEnd: ${isBatchEnd}`);
   // }
-  const [isAlarmClick, setIsAlarmClick] = useState<boolean>(isNotice);
+
+  useEffect(() => {
+    setIsAlarmClicked(isNotice);
+  }, []);
 
   const { push } = useRouter();
 
@@ -173,8 +181,13 @@ const Match = ({ match }: MatchProps) => {
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
           <div className={cn('flex', 'items-center', 'gap-[1.25rem]')}>
-            <button onClick={() => setIsAlarmClick(!isAlarmClick)}>
-              {isAlarmClick ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
+            <button
+              onClick={() => {
+                setIsAlarmClicked(!isAlarmClicked);
+                patchNotice({ isNotice: isAlarmClicked });
+              }}
+            >
+              {isAlarmClicked ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
             </button>
             <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
               <MatchTypeLabel

@@ -33,3 +33,7 @@ export interface PlinkoResponse {
   amount: number;
   multi: number;
 }
+
+export interface getMyPointResponse {
+  point: number;
+}

@@ -4,7 +4,7 @@ import Match from '@/shared/ui/match';
 import { cn } from '@/shared/utils/cn';
 
 interface MatchContainerProps {
-  matchInfo: MatchResponse;
+  matchInfo: MatchResponse | undefined;
   isMyBetInfo?: boolean;
   selectedSport?: SportType | null;
 }
@@ -15,17 +15,15 @@ const MatchContainer = ({
   selectedSport,
 }: MatchContainerProps) => {
   const filteredMatches = selectedSport
-    ? matchInfo.matches.filter((match) =>
+    ? matchInfo?.matches.filter((match) =>
         match.category?.includes(selectedSport),
       )
-    : matchInfo.matches;
+    : matchInfo?.matches;
 
   return (
     <div className={cn('w-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
       {isMyBetInfo && (
-        <h2 className={cn('text-body1e', 'text-white')}>
-          내가 참여한 스테이지
-        </h2>
+        <h2 className={cn('text-body1e', 'text-white')}>내가 참여한 매치</h2>
       )}
       <div
         className={cn(
@@ -36,7 +34,7 @@ const MatchContainer = ({
           'tablet:grid-cols-1',
         )}
       >
-        {filteredMatches.map((match) => (
+        {filteredMatches?.map((match) => (
           <Match key={match.matchId} match={match} />
         ))}
       </div>
