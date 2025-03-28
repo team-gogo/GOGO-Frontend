@@ -1,14 +1,14 @@
 import { Suspense } from 'react';
-import PlaceTeamContainer from '@/widgets/team/ui/PlaceTeamContainer';
+import PlaceTeamPage from '@/views/team/ui/PlaceTeamPage';
 
-export default function PlaceTeamPage({
+export default function Page({
   params,
 }: {
   params: { gameId: string; category: string };
 }) {
   return (
     <Suspense>
-      <PlaceTeamContainer params={params} />
+      <PlaceTeamPage params={params} />
     </Suspense>
   );
 }
