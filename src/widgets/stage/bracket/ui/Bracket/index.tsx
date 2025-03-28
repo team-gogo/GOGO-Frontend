@@ -1,12 +1,59 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import LeftBracketLine from '@/shared/assets/svg/BarcketLine/LeftBarcketLine';
 import MiddleBracketLine from '@/shared/assets/svg/BarcketLine/MiddleBarcketLine';
 import RightBracketLine from '@/shared/assets/svg/BarcketLine/RightBarcketLine';
 import { cn } from '@/shared/utils/cn';
 
 const Bracket = () => {
-  const finalStage = 4;
+  const [finalStage, setFinalStage] = useState(4);
+
+  useEffect(() => {
+    const confirmedTeams = sessionStorage.getItem('confirmedTeams');
+    if (confirmedTeams) {
+      const teams = JSON.parse(confirmedTeams);
+      const teamCount = teams.length;
+
+      if (teamCount <= 4) {
+        setFinalStage(4);
+      } else if (teamCount <= 8) {
+        setFinalStage(8);
+      } else if (teamCount <= 16) {
+        setFinalStage(16);
+      }
+    }
+  }, []);
+
+  const renderBracketLines = () => {
+    switch (finalStage) {
+      case 16:
+        return (
+          <>
+            <LeftBracketLine />
+            <MiddleBracketLine />
+            <MiddleBracketLine />
+            <RightBracketLine />
+          </>
+        );
+      case 8:
+        return (
+          <>
+            <LeftBracketLine />
+            <MiddleBracketLine />
+            <RightBracketLine />
+          </>
+        );
+      case 4:
+      default:
+        return (
+          <>
+            <LeftBracketLine />
+            <RightBracketLine />
+          </>
+        );
+    }
+  };
 
   return (
     <div className={cn('h-[50vh]', 'bg-black', 'p-30', 'flex', 'flex-col')}>
@@ -24,9 +71,7 @@ const Bracket = () => {
             'gap-20',
           )}
         >
-          <LeftBracketLine />
-          <MiddleBracketLine />
-          <RightBracketLine />
+          {renderBracketLines()}
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
 import { Bracket } from '@/widgets/stage/bracket';
 import TeamArray from '@/widgets/stage/bracket/ui/TeamArray';
+
 const CreateBracketPage = () => {
   return (
     <div className={cn('flex', 'justify-center', 'w-full')}>
