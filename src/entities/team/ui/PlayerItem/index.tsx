@@ -26,8 +26,8 @@ const PlayerItem = ({
         zIndex: isDragging ? 99999 : 'auto',
       }}
       className={cn(
-        'relative flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full border-[#2a2a2a] bg-[#2a2a2a] p-10 text-center text-white transition-all duration-200',
-        isDragging && 'scale-110 shadow-lg',
+        'relative flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full p-10 text-center text-white transition-all duration-200',
+        isDragging && 'scale-110',
         className,
       )}
     >
@@ -44,7 +44,7 @@ const PlayerItem = ({
         </button>
       )}
       <PlayerIcon className="mb-1" />
-      <span className="max-w-[80px] overflow-hidden text-ellipsis whitespace-nowrap text-body3s text-white">
+      <span className="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-body3s text-white">
         {name}
       </span>
     </div>
