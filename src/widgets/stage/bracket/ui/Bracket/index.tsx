@@ -15,6 +15,7 @@ interface BracketNode {
   teamName: string;
   left: BracketNode | null;
   right: BracketNode | null;
+  isEmpty?: boolean;
 }
 
 const Bracket = () => {
@@ -45,6 +46,7 @@ const Bracket = () => {
         teamName: 'TBD',
         left: null,
         right: null,
+        isEmpty: true,
       });
     }
 
@@ -57,6 +59,7 @@ const Bracket = () => {
           teamName: 'TBD',
           left: prevRoundNodes[i],
           right: prevRoundNodes[i + 1] || null,
+          isEmpty: true,
         };
         nodes[round].push(node);
       }
@@ -142,6 +145,7 @@ const Bracket = () => {
             key={_idx}
             className="w-[160px]"
             teamName={nodes[_idx]?.teamName || 'TBD'}
+            isEmpty={nodes[_idx]?.isEmpty ?? true}
           />
         ))}
     </div>
@@ -198,6 +202,7 @@ const Bracket = () => {
               key={_idx}
               className="w-[160px]"
               teamName={nodesInRound[_idx]?.teamName || 'TBD'}
+              isEmpty={nodesInRound[_idx]?.isEmpty ?? true}
             />
           ))}
       </div>

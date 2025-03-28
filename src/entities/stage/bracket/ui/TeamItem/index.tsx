@@ -3,9 +3,14 @@ import { cn } from '@/shared/utils/cn';
 interface TeamItemProps {
   teamName?: string;
   className?: string;
+  isEmpty?: boolean;
 }
 
-const TeamItem = ({ teamName = 'TBD', className }: TeamItemProps) => {
+const TeamItem = ({
+  teamName = 'TBD',
+  className,
+  isEmpty = false,
+}: TeamItemProps) => {
   return (
     <div
       className={cn(
@@ -18,10 +23,11 @@ const TeamItem = ({ teamName = 'TBD', className }: TeamItemProps) => {
         'justify-center',
         'text-body1',
         'text-white',
+        isEmpty && 'opacity-30',
         className,
       )}
     >
-      {teamName}
+      {isEmpty ? '' : teamName}
     </div>
   );
 };
