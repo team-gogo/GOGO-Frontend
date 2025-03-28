@@ -4,7 +4,7 @@ import { MyTicketType } from '@/shared/types/mini-game';
 import { cn } from '@/shared/utils/cn';
 
 interface GameInfoProps {
-  getTicketCount: MyTicketType;
+  getTicketCount: MyTicketType | undefined;
 }
 
 const GameInfo = ({ getTicketCount }: GameInfoProps) => {
@@ -28,19 +28,19 @@ const GameInfo = ({ getTicketCount }: GameInfoProps) => {
         <div className={cn('flex', 'items-center', 'gap-4')}>
           <ShellGameIcon />
           <p className={cn('text-body2s', 'text-white', 'mobile:text-body3s')}>
-            {getTicketCount.yavarwee}
+            {getTicketCount?.yavarwee}
           </p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-4')}>
           <CoinIcon />
           <p className={cn('text-body2s', 'text-white', 'mobile:text-body3s')}>
-            {getTicketCount.coinToss}
+            {getTicketCount?.coinToss}
           </p>
         </div>
         <div className={cn('flex', 'items-center', 'gap-4')}>
           <PlinkoIcon />
           <p className={cn('text-body2s', 'text-white', 'mobile:text-body3s')}>
-            {getTicketCount.plinko}
+            {getTicketCount?.plinko}
           </p>
         </div>
       </div>
