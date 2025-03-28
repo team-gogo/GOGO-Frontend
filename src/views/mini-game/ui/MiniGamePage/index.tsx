@@ -23,10 +23,8 @@ const MiniGamePage = () => {
 
   const { data: activeGameList, isLoading: activeGameIsLoading } =
     useGetActiveGameQuery(stageId);
-  const { data: ticketCount, isLoading: ticketCountIsLoading } =
-    useGetMyTicketQuery(stageId);
-  const { data: shopTicketStatus, isLoading: shopTicketStatusIsLoading } =
-    useGetShopTicketStatusQuery(stageId);
+  const { data: ticketCount } = useGetMyTicketQuery(stageId);
+  const { data: shopTicketStatus } = useGetShopTicketStatusQuery(stageId);
   const { data: myPoint, isLoading: myPointIsLoading } =
     useGetMyPointQuery(stageId);
 
@@ -38,16 +36,7 @@ const MiniGamePage = () => {
   const storeItems = createStoreItems(buyTicket, isPending);
   const miniGames = createMiniGameItems(router, stageId);
 
-  if (
-    activeGameIsLoading ||
-    !activeGameList ||
-    ticketCountIsLoading ||
-    !ticketCount ||
-    shopTicketStatusIsLoading ||
-    !shopTicketStatus ||
-    myPointIsLoading ||
-    !myPoint
-  ) {
+  if (activeGameIsLoading || !activeGameList || myPointIsLoading || !myPoint) {
     return <div>Loading...</div>;
   }
 
