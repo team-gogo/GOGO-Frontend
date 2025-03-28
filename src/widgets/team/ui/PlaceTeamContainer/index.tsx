@@ -76,13 +76,6 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
   const sportType = getSportType();
 
   useEffect(() => {
-    if (!sportType) {
-      const stageId = sessionStorage.getItem('stageId');
-      router.push(`/team/create/${stageId}`);
-    }
-  }, [sportType, router]);
-
-  useEffect(() => {
     isMounted.current = true;
     return () => {
       isMounted.current = false;

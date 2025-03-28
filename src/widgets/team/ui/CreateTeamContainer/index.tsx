@@ -100,9 +100,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
     if (category && SUPPORTED_SPORTS.includes(category)) {
       sessionStorage.setItem('teamName', teamName);
       sessionStorage.setItem('members', JSON.stringify(selectedStudents));
-      sessionStorage.setItem('gameId', matchId || '');
-      sessionStorage.setItem('category', category);
-      sessionStorage.setItem('stageId', stageId || '');
+
       router.push(`/team/place/${matchId}/${category}`);
     } else {
       await handleTeamCreation(selectedStudents);
