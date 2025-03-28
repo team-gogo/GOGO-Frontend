@@ -1,13 +1,15 @@
 interface Props {
   size?: number;
   color?: string;
+  className?: string;
 }
 
-const CoinIcon = ({ size = 24, color = '#fff' }: Props) => {
+const CoinIcon = ({ size = 24, color = '#fff', className }: Props) => {
   return (
     <svg
       width={size}
       height={size}
+      className={className}
       viewBox="0 0 60 60"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

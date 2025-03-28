@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 import { GameInfo, StoreInfo } from '@/entities/mini-game';
 import { StoreIcon } from '@/shared/assets/icons';
@@ -7,16 +8,37 @@ import { MiniGameIcon } from '@/shared/assets/svg';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { GameCardContainer, InfoContainer } from '@/widgets/mini-game';
-import { getShopTicketStatus } from '../..';
-import { miniGames } from '../../model/gameData';
-import { storeItems } from '../../model/storeData';
-import getActiveGameList from '../Mock/getActiveGameList';
-import getMyTicket from '../Mock/getMyTicket';
+import { createMiniGameItems } from '../../model/gameData';
+import { createStoreItems } from '../../model/storeData';
+import { useGetActiveGameQuery } from '../../model/useGetActiveGameQuery';
+import { useGetMyPointQuery } from '../../model/useGetMyPointQuery';
+import { useGetMyTicketQuery } from '../../model/useGetMyTicketQuery';
+import { useGetShopTicketStatusQuery } from '../../model/useGetShopTicketStatusQuery';
+import { usePostBuyTicketMutation } from '../../model/usePostBuyTicketMutation';
 
 const MiniGamePage = () => {
-  const activeGameList = getActiveGameList();
-  const getTicketCount = getMyTicket();
-  const getShopTicket = getShopTicketStatus();
+  const router = useRouter();
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
+
+  const { data: activeGameList, isLoading: activeGameIsLoading } =
+    useGetActiveGameQuery(stageId);
+  const { data: ticketCount } = useGetMyTicketQuery(stageId);
+  const { data: shopTicketStatus } = useGetShopTicketStatusQuery(stageId);
+  const { data: myPoint, isLoading: myPointIsLoading } =
+    useGetMyPointQuery(stageId);
+
+  const { mutate: buyTicket, isPending } = usePostBuyTicketMutation(
+    shopTicketStatus?.shopId ? shopTicketStatus.shopId.toString() : '',
+    stageId,
+  );
+
+  const storeItems = createStoreItems(buyTicket, isPending);
+  const miniGames = createMiniGameItems(router, stageId);
+
+  if (activeGameIsLoading || !activeGameList || myPointIsLoading || !myPoint) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div
@@ -43,26 +65,32 @@ const MiniGamePage = () => {
         <div className={cn('flex', 'gap-[5rem]', 'flex-col')}>
           <div>
             <InfoContainer
-              icon={<MiniGameIcon color="#fff" />}
+              icon={
+                <MiniGameIcon
+                  color="#fff"
+                  className="mobile:h-24 mobile:w-24"
+                />
+              }
               title="미니게임"
-              rightContent={<GameInfo getTicketCount={getTicketCount} />}
+              rightContent={<GameInfo getTicketCount={ticketCount} />}
             />
             <GameCardContainer
               items={miniGames}
               activeGameList={activeGameList}
-              getTicketCount={getTicketCount}
+              getTicketCount={ticketCount}
             />
           </div>
           <div>
             <InfoContainer
-              icon={<StoreIcon />}
+              icon={<StoreIcon className="mobile:h-24 mobile:w-24" />}
               title="상점"
-              rightContent={<StoreInfo />}
+              rightContent={<StoreInfo myPoint={myPoint.point} />}
             />
             <GameCardContainer
               items={storeItems}
               activeGameList={activeGameList}
-              getShopTicket={getShopTicket}
+              getShopTicket={shopTicketStatus}
+              myPoint={myPoint.point}
             />
           </div>
         </div>

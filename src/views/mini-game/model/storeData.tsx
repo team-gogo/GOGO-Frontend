@@ -1,28 +1,45 @@
 import { TicketIcon } from '@/shared/assets/icons';
 
-export const storeItems = [
+type TicketType = 'YAVARWEE' | 'COINTOSS' | 'PLINKO';
+
+export const createStoreItems = (
+  buyTicket: (ticketType: TicketType) => void,
+  isPending: boolean,
+) => [
   {
     icon: (isActive: boolean) => (
-      <TicketIcon color={isActive ? '#fff' : '#898989'} />
+      <TicketIcon
+        color={isActive ? '#fff' : '#898989'}
+        className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
+      />
     ),
     name: '야바위',
-    action: () => console.log('야바위 구매'),
     type: 'store',
+    action: () => buyTicket('YAVARWEE'),
+    isPending,
   },
   {
     icon: (isActive: boolean) => (
-      <TicketIcon color={isActive ? '#fff' : '#898989'} />
+      <TicketIcon
+        color={isActive ? '#fff' : '#898989'}
+        className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
+      />
     ),
-    name: '코인토스',
-    action: () => console.log('코인토스 구매'),
+    name: '코인 토스',
     type: 'store',
+    action: () => buyTicket('COINTOSS'),
+    isPending,
   },
   {
     icon: (isActive: boolean) => (
-      <TicketIcon color={isActive ? '#fff' : '#898989'} />
+      <TicketIcon
+        color={isActive ? '#fff' : '#898989'}
+        className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
+      />
     ),
     name: '플린코',
-    action: () => console.log('플린코 구매'),
     type: 'store',
+    action: () => buyTicket('PLINKO'),
+    isPending,
   },
 ];
