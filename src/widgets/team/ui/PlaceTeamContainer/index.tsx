@@ -154,10 +154,11 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
               const scaledWidth = playerWidth * scale * scaleX;
               const scaledHeight = playerHeight * scale * scaleY;
 
-              const maxX = viewBox.width / 2 - scaledWidth;
+              const horizontalMargin = scaledWidth * 0.01;
+              const maxX = viewBox.width / 2 - scaledWidth - horizontalMargin;
               const maxY = viewBox.height - scaledHeight;
 
-              const boundedX = Math.max(0, Math.min(svgX, maxX));
+              const boundedX = Math.max(horizontalMargin, Math.min(svgX, maxX));
               const boundedY = Math.max(0, Math.min(svgY, maxY));
 
               const screenX = boundedX / scaleX;
@@ -243,8 +244,8 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       const svgRect = svg.getBoundingClientRect();
       const viewBox = svg.viewBox.baseVal;
 
-      const baseMarginRatio = 0.05;
-      const maxMarginRatio = 0.25;
+      const baseMarginRatio = 0.01;
+      const maxMarginRatio = 0.02;
       const marginScale = isLargeScreen
         ? 0
         : Math.min((500 - svgRect.height) / 500, 1);
@@ -268,11 +269,12 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
           const scaledWidth = playerWidth * playerScale;
           const scaledHeight = playerHeight * playerScale;
 
-          const maxX = viewBox.width / 2 - scaledWidth;
+          const horizontalMargin = scaledWidth * 0.01;
+          const maxX = viewBox.width / 2 - scaledWidth - horizontalMargin + 10;
           const maxY = viewBox.height - verticalMargin - scaledHeight;
           const minY = verticalMargin;
 
-          const boundedX = Math.max(0, Math.min(svgX, maxX));
+          const boundedX = Math.max(horizontalMargin, Math.min(svgX, maxX));
           const boundedY = Math.max(minY, Math.min(svgY, maxY));
 
           const scaleX = viewBox.width / svgRect.width;
@@ -333,8 +335,8 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       const svgX = (x - svgRect.left) * scaleX;
       const svgY = (y - svgRect.top) * scaleY;
 
-      const baseMarginRatio = 0.05;
-      const maxMarginRatio = 0.25;
+      const baseMarginRatio = 0.02;
+      const maxMarginRatio = 0.05;
       const marginScale = isLargeScreen
         ? 0
         : Math.min((500 - svgRect.height) / 500, 1);
@@ -342,12 +344,13 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
         baseMarginRatio + (maxMarginRatio - baseMarginRatio) * marginScale;
       const verticalMargin = viewBox.height * verticalMarginRatio;
 
-      const maxX = viewBox.width / 2 - scaledWidth * scaleX;
+      const horizontalMargin = scaledWidth * 0.01;
+      const maxX = viewBox.width / 2 - scaledWidth - horizontalMargin + 10;
       const maxY = viewBox.height - verticalMargin - scaledHeight * scaleY;
       const minY = verticalMargin;
 
       const boundedX = Math.max(
-        0,
+        horizontalMargin,
         Math.min(svgX - (scaledWidth * scaleX) / 2, maxX),
       );
       const boundedY = Math.max(
@@ -454,8 +457,8 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       const svgX = (e.clientX - svgRect.left) * scaleX;
       const svgY = (e.clientY - svgRect.top) * scaleY;
 
-      const baseMarginRatio = 0.05;
-      const maxMarginRatio = 0.25;
+      const baseMarginRatio = 0.01;
+      const maxMarginRatio = 0.02;
       const marginScale = isLargeScreen
         ? 0
         : Math.min((500 - svgRect.height) / 500, 1);
@@ -463,12 +466,13 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
         baseMarginRatio + (maxMarginRatio - baseMarginRatio) * marginScale;
       const verticalMargin = viewBox.height * verticalMarginRatio;
 
-      const maxX = viewBox.width / 2 - scaledWidth * scaleX;
+      const horizontalMargin = scaledWidth * 0.01;
+      const maxX = viewBox.width / 2 - scaledWidth - horizontalMargin + 10;
       const maxY = viewBox.height - verticalMargin - scaledHeight * scaleY;
       const minY = verticalMargin;
 
       const boundedX = Math.max(
-        0,
+        horizontalMargin,
         Math.min(svgX - (scaledWidth * scaleX) / 2, maxX),
       );
       const boundedY = Math.max(
