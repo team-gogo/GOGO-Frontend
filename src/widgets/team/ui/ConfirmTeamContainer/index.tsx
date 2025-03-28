@@ -1,17 +1,44 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { getTempTeam } from '@/entities/team/api/getTempTeam';
 import SelectedTeamCounter from '@/entities/team/ui/SelectedTeamCounter';
 import TeamItem from '@/entities/team/ui/TeamItem';
 import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 
-import { getTeamItemMock } from '@/widgets/team/Mock/getTeamItemMock';
+interface ConfirmTeamContainerProps {
+  params: {
+    matchId: string;
+  };
+}
 
-const ConfirmTeamContainer = () => {
+const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   const [selectedTeamIds, setSelectedTeamIds] = useState<number[]>([]);
-  const teams = getTeamItemMock();
+  const [teams, setTeams] = useState<
+    Array<{ teamId: number; teamName: string; participantCount: number }>
+  >([]);
+  const { matchId } = params;
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      if (!matchId) {
+        toast.error('게임 정보가 없습니다.');
+        return;
+      }
+
+      try {
+        const response = await getTempTeam(matchId);
+        setTeams(response.team);
+      } catch (error) {
+        console.error(error);
+        toast.error('팀 목록을 불러오는데 실패했습니다.');
+      }
+    };
+    fetchTeams();
+  }, [matchId]);
 
   const handleViewDetails = useCallback((_teamId: number) => {
     // TODO: 팀 자세히보기 클릭했을 때
@@ -45,7 +72,7 @@ const ConfirmTeamContainer = () => {
           'mt-30',
         )}
       >
-        <h1 className={cn('text-h3e', 'text-white', 'mb-24', 'mt-24')}>
+        <h1 className={cn('text-h3e', 'text-white', 'mb-28', 'mt-28')}>
           현재 등록된 팀들
         </h1>
         <div className={cn('flex', 'items-center', 'gap-8', 'ml-auto')}>

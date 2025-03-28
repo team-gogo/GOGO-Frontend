@@ -59,6 +59,8 @@ interface Game {
   teamCount: number;
   category: GameType;
   system: System;
+  teamMinCapacity: number;
+  teamMaxCapacity: number;
 }
 
 export interface ResponseStageGame {

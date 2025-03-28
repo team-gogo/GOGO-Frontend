@@ -86,7 +86,11 @@ const MatchApplyPage = () => {
               )}
             >
               {filteredGames?.map((game) => (
-                <StageApply key={game.gameId} game={game} />
+                <StageApply
+                  key={game.gameId}
+                  game={game}
+                  stageId={Number(stageId)}
+                />
               ))}
             </div>
           )}
