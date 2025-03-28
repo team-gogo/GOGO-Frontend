@@ -12,6 +12,7 @@ import { cn } from '@/shared/utils/cn';
 
 interface TeamArrayProps {
   className?: string;
+  onTeamDrop?: (teamName: string, round: number, position: number) => void;
 }
 
 const VISIBLE_ITEMS = 8;
@@ -19,7 +20,7 @@ const ITEM_WIDTH = 160;
 const ITEM_GAP = 8;
 const CONTAINER_PADDING = 16;
 
-const TeamArray = ({ className }: TeamArrayProps) => {
+const TeamArray = ({ className, onTeamDrop }: TeamArrayProps) => {
   const [teams, setTeams] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -32,7 +33,7 @@ const TeamArray = ({ className }: TeamArrayProps) => {
       );
       setTeams(teamNames);
     } else {
-      setTeams(Array.from({ length: 10 }, (_, i) => `TBD ${i + 1}`));
+      setTeams(Array.from({ length: 10 }, (_, i) => `Team ${i + 1}`));
     }
   }, []);
 
@@ -57,10 +58,18 @@ const TeamArray = ({ className }: TeamArrayProps) => {
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
+    // 드래그한 팀이 대진표의 빈칸에 드롭된 경우
+    if (result.destination.droppableId.startsWith('round_')) {
+      const teamName = teams[result.source.index];
+      const [, round, , position] = result.destination.droppableId.split('_');
+      onTeamDrop?.(teamName, parseInt(round), parseInt(position));
+      return;
+    }
+
+    // 팀 배열 내에서 순서 변경
     const newTeams = Array.from(teams);
     const [reorderedItem] = newTeams.splice(result.source.index, 1);
     newTeams.splice(result.destination.index, 0, reorderedItem);
-
     setTeams(newTeams);
   };
 

@@ -1,8 +1,10 @@
 'use client';
 
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import { useEffect, useState } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import { cn } from '@/shared/utils/cn';
+import TeamArray from '@/widgets/stage/bracket/ui/TeamArray';
 
 interface GroupDistribution {
   top: number;
@@ -128,7 +130,37 @@ const Bracket = () => {
     return result.sort((a, b) => a.position - b.position);
   };
 
-  const renderFirstRoundGroup = (teamCount: number, nodes: BracketNode[]) => (
+  const updateTeamInTree = (
+    teamName: string,
+    round: number,
+    position: number,
+  ) => {
+    if (!bracketTree) return;
+
+    const updateNode = (node: BracketNode): BracketNode => {
+      if (node.round === round && node.position === position) {
+        return {
+          ...node,
+          teamName,
+          isEmpty: false,
+        };
+      }
+
+      return {
+        ...node,
+        left: node.left ? updateNode(node.left) : null,
+        right: node.right ? updateNode(node.right) : null,
+      };
+    };
+
+    setBracketTree(updateNode(bracketTree));
+  };
+
+  const renderFirstRoundGroup = (
+    teamCount: number,
+    nodes: BracketNode[],
+    round: number,
+  ) => (
     <div
       className={cn(
         'flex-1',
@@ -140,14 +172,32 @@ const Bracket = () => {
     >
       {Array(teamCount)
         .fill(null)
-        .map((_, _idx) => (
-          <TeamItem
-            key={_idx}
-            className="w-[160px]"
-            teamName={nodes[_idx]?.teamName || 'TBD'}
-            isEmpty={nodes[_idx]?.isEmpty ?? true}
-          />
-        ))}
+        .map((_, _idx) => {
+          const node = nodes[_idx];
+          const droppableId = `round_${round}_position_${node?.position ?? _idx}`;
+
+          return (
+            <Droppable key={droppableId} droppableId={droppableId}>
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={cn(
+                    'w-[160px]',
+                    snapshot.isDraggingOver && 'bg-blue-500/20',
+                    'rounded-lg',
+                  )}
+                >
+                  <TeamItem
+                    teamName={node?.teamName || 'TBD'}
+                    isEmpty={node?.isEmpty ?? true}
+                  />
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          );
+        })}
     </div>
   );
 
@@ -177,8 +227,8 @@ const Bracket = () => {
             'gap-4',
           )}
         >
-          {renderFirstRoundGroup(distribution.top, topNodes)}
-          {renderFirstRoundGroup(distribution.bottom, bottomNodes)}
+          {renderFirstRoundGroup(distribution.top, topNodes, round)}
+          {renderFirstRoundGroup(distribution.bottom, bottomNodes, round)}
         </div>
       );
     }
@@ -197,14 +247,32 @@ const Bracket = () => {
       >
         {Array(position)
           .fill(null)
-          .map((_, _idx) => (
-            <TeamItem
-              key={_idx}
-              className="w-[160px]"
-              teamName={nodesInRound[_idx]?.teamName || 'TBD'}
-              isEmpty={nodesInRound[_idx]?.isEmpty ?? true}
-            />
-          ))}
+          .map((_, _idx) => {
+            const node = nodesInRound[_idx];
+            const droppableId = `round_${round}_position_${node?.position ?? _idx}`;
+
+            return (
+              <Droppable key={droppableId} droppableId={droppableId}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={cn(
+                      'w-[160px]',
+                      snapshot.isDraggingOver && 'bg-blue-500/20',
+                      'rounded-lg',
+                    )}
+                  >
+                    <TeamItem
+                      teamName={node?.teamName || 'TBD'}
+                      isEmpty={node?.isEmpty ?? true}
+                    />
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            );
+          })}
       </div>
     );
   };
@@ -275,18 +343,29 @@ const Bracket = () => {
     </div>
   );
 
+  const handleTeamDrop = (
+    teamName: string,
+    round: number,
+    position: number,
+  ) => {
+    updateTeamInTree(teamName, round, position);
+  };
+
   return (
-    <div
-      className={cn('min-h-[600px]', 'bg-black', 'p-30', 'flex', 'flex-col')}
-    >
-      {renderControls()}
-      <header className={cn('mb-30')}>
-        <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>
-      </header>
-      <div className={cn('flex-1', 'bg-gray-700', 'rounded-lg', 'p-20')}>
-        {renderBracket()}
+    <DragDropContext onDragEnd={() => {}}>
+      <div
+        className={cn('min-h-[600px]', 'bg-black', 'p-30', 'flex', 'flex-col')}
+      >
+        {renderControls()}
+        <header className={cn('mb-30')}>
+          <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>
+        </header>
+        <div className={cn('flex-1', 'bg-gray-700', 'rounded-lg', 'p-20')}>
+          {renderBracket()}
+        </div>
       </div>
-    </div>
+      <TeamArray className="mb-30" onTeamDrop={handleTeamDrop} />
+    </DragDropContext>
   );
 };
 
