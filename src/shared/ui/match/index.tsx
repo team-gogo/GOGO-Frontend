@@ -212,7 +212,10 @@ const Match = ({ match }: MatchProps) => {
 
           <button
             className={cn('flex', 'items-center', 'gap-[0.5rem]')}
-            onClick={() => push(`/match/matchId=${matchId}`)}
+            onClick={() => {
+              updateStatus();
+              push(`/match/${matchId}`);
+            }}
           >
             <p className={cn('text-body3s', 'text-gray-500')}>자세히 보기</p>
             <RightArrowIcon />
