@@ -131,13 +131,19 @@ const Match = ({ match }: MatchProps) => {
   };
 
   const updateStatus = () => {
-    setMatchStatus({
+    const matchStatusData = {
       isPlaying,
       isMatchFinish,
       time,
       roundText,
-    });
-    setMatch(match);
+    };
+    const matchData = match;
+
+    localStorage.setItem('matchStatus', JSON.stringify(matchStatusData));
+    localStorage.setItem('match', JSON.stringify(matchData));
+
+    setMatchStatus(matchStatusData);
+    setMatch(matchData);
   };
 
   const borderStyle = [
