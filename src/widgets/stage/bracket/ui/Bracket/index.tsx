@@ -6,7 +6,8 @@ import {
   Draggable,
   DropResult,
 } from '@hello-pangea/dnd';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
@@ -50,7 +51,27 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
   );
 
   const [isDragging, setIsDragging] = useState(false);
-  const [currentDragId, setCurrentDragId] = useState<string | null>(null);
+
+  const portalRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const portalContainer = document.createElement('div');
+    portalContainer.style.position = 'fixed';
+    portalContainer.style.zIndex = '9999';
+    portalContainer.style.top = '0';
+    portalContainer.style.left = '0';
+    portalContainer.style.width = '100%';
+    portalContainer.style.height = '100%';
+    portalContainer.style.pointerEvents = 'none';
+    portalRef.current = portalContainer;
+    document.body.appendChild(portalContainer);
+
+    return () => {
+      if (portalRef.current && document.body.contains(portalRef.current)) {
+        document.body.removeChild(portalRef.current);
+      }
+    };
+  }, []);
 
   const VISIBLE_ITEMS = 8;
   const ITEM_WIDTH = 160;
@@ -393,6 +414,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                           : 'bg-transparent',
                         snapshot.isDraggingOver && hasTeam && 'bg-red-500/20',
                       )}
+                      style={{ transform: 'none' }}
                     >
                       {hasTeam && (
                         <TeamItem
@@ -532,6 +554,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                               hasTeam &&
                               'bg-red-500/20',
                           )}
+                          style={{ transform: 'none' }}
                         >
                           {hasTeam && (
                             <TeamItem
@@ -623,7 +646,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
 
   const handleDragEnd = (result: DropResult) => {
     setIsDragging(false);
-    setCurrentDragId(null);
+    document.body.classList.remove('dnd-dragging');
 
     if (!result.destination) {
       return;
@@ -651,9 +674,9 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     }
   };
 
-  const handleDragStart = (start: { draggableId: string }) => {
+  const handleDragStart = () => {
     setIsDragging(true);
-    setCurrentDragId(start.draggableId);
+    document.body.classList.add('dnd-dragging');
   };
 
   const handleRemoveTeam = (
@@ -842,6 +865,61 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     }
   };
 
+  const renderDraggable = (team: string, index: number) => {
+    return (
+      <Draggable key={team} draggableId={team} index={index}>
+        {(provided, snapshot) => {
+          const draggableContent = (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={{
+                ...provided.draggableProps.style,
+                width: `${ITEM_WIDTH}px`,
+                zIndex: snapshot.isDragging ? 999 : 1,
+                boxShadow: snapshot.isDragging
+                  ? '0 5px 15px rgba(0, 0, 0, 0.3)'
+                  : 'none',
+                opacity: 1,
+                position: snapshot.isDragging ? 'absolute' : 'static',
+                transformOrigin: 'center center',
+                pointerEvents: 'auto',
+              }}
+              className={cn(
+                'select-none',
+                'cursor-grab',
+                snapshot.isDragging && 'cursor-grabbing',
+                snapshot.isDragging && 'z-[999]',
+              )}
+            >
+              <TeamItem
+                teamName={team}
+                className={cn(
+                  'flex-shrink-0',
+                  'w-[160px]',
+                  'pointer-events-auto',
+                  'visible',
+                  'opacity-100',
+                )}
+              />
+            </div>
+          );
+
+          return (
+            <>
+              {snapshot.isDragging && portalRef.current
+                ? createPortal(draggableContent, portalRef.current)
+                : draggableContent}
+              {/* @ts-expect-error - placeholder */}
+              {provided.placeholder}
+            </>
+          );
+        }}
+      </Draggable>
+    );
+  };
+
   return (
     <DragDropContext
       onDragEnd={handleDragEnd}
@@ -857,6 +935,10 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
           'flex-col',
           isDragging && 'drag-active',
         )}
+        style={{
+          transform: 'translateZ(0)',
+          WebkitTransform: 'translateZ(0)',
+        }}
       >
         <header className={cn('mb-30', 'flex', 'justify-between')}>
           <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>
@@ -973,163 +1055,112 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
             </div>
           )}
         </div>
-      </div>
-      <div className={cn('w-full', 'flex', 'justify-center', 'mb-30')}>
-        <div className={cn('relative', 'w-[75%]', 'flex', 'justify-center')}>
-          <button
-            onClick={scrollToPrev}
-            className={cn(
-              'absolute',
-              'left-[-40px]',
-              'top-1/2',
-              '-translate-y-1/2',
-              'z-10',
-              'w-[30px]',
-              'h-[30px]',
-              'flex',
-              'items-center',
-              'justify-center',
-              'rounded-full',
-              'text-white',
-              'text-2xl',
-              !canScrollPrev && 'opacity-50',
-              !canScrollPrev && 'cursor-not-allowed',
-            )}
-            disabled={!canScrollPrev}
-          >
-            {'<'}
-          </button>
-
-          <div
-            className={cn(
-              'bg-gray-700',
-              'rounded-lg',
-              'py-16',
-              'overflow-hidden',
-              'relative',
-              isDragging && 'z-0',
-            )}
-            style={{
-              width: `${FIXED_CONTAINER_WIDTH + CONTAINER_PADDING * 2}px`,
-              minHeight: '80px',
-            }}
-          >
-            <Droppable droppableId="teams" direction="horizontal">
-              {(provided, snapshot) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className={cn(
-                    'flex',
-                    'gap-8',
-                    snapshot.isDraggingOver && 'bg-gray-600',
-                  )}
-                  style={{
-                    width:
-                      availableTeams.length === 0
-                        ? '100%'
-                        : innerContainerWidth || CONTAINER_PADDING * 2,
-                    transform:
-                      availableTeams.length === 0
-                        ? 'none'
-                        : `translateX(${translateX}px)`,
-                    transition: 'transform 0.3s ease-in-out',
-                    padding: `0 ${CONTAINER_PADDING}px`,
-                    minHeight: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent:
-                      availableTeams.length === 0 ? 'center' : 'flex-start',
-                  }}
-                >
-                  {availableTeams.length === 0 ? (
-                    <div className="w-full text-center text-gray-400">
-                      모든 팀이 배치되었습니다
-                    </div>
-                  ) : (
-                    availableTeams.map((team, index) => (
-                      <Draggable key={team} draggableId={team} index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={{
-                              ...provided.draggableProps.style,
-                              width: `${ITEM_WIDTH}px`,
-                              zIndex: snapshot.isDragging ? 999 : 1,
-                              boxShadow: snapshot.isDragging
-                                ? '0 5px 15px rgba(0, 0, 0, 0.3)'
-                                : 'none',
-                              opacity: 1,
-                              transform: snapshot.isDragging
-                                ? `${provided.draggableProps.style?.transform || ''} scale(1.05)`
-                                : provided.draggableProps.style?.transform,
-                            }}
-                            className={cn(
-                              'select-none',
-                              'cursor-grab',
-                              snapshot.isDragging && 'cursor-grabbing',
-                              snapshot.isDragging && 'z-[999]',
-                            )}
-                          >
-                            <TeamItem
-                              teamName={team}
-                              className={cn(
-                                'flex-shrink-0',
-                                'w-[160px]',
-                                'pointer-events-auto',
-                                snapshot.isDragging && 'visible opacity-100',
-                              )}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))
-                  )}
-                  {provided.placeholder}
-
-                  {isDragging && currentDragId && (
-                    <div
-                      className={cn(
-                        'absolute',
-                        'top-0',
-                        'left-0',
-                        'w-full',
-                        'h-full',
-                        'pointer-events-none',
-                        'z-[-1]',
-                      )}
-                    />
-                  )}
-                </div>
+        <div className={cn('w-full', 'flex', 'justify-center', 'mb-30')}>
+          <div className={cn('relative', 'w-[75%]', 'flex', 'justify-center')}>
+            <button
+              onClick={scrollToPrev}
+              className={cn(
+                'absolute',
+                'left-[-40px]',
+                'top-1/2',
+                '-translate-y-1/2',
+                'z-10',
+                'w-[30px]',
+                'h-[30px]',
+                'flex',
+                'items-center',
+                'justify-center',
+                'rounded-full',
+                'text-white',
+                'text-2xl',
+                !canScrollPrev && 'opacity-50',
+                !canScrollPrev && 'cursor-not-allowed',
               )}
-            </Droppable>
-          </div>
+              disabled={!canScrollPrev}
+            >
+              {'<'}
+            </button>
 
-          <button
-            onClick={scrollToNext}
-            className={cn(
-              'absolute',
-              'right-[-40px]',
-              'top-1/2',
-              '-translate-y-1/2',
-              'z-10',
-              'w-[30px]',
-              'h-[30px]',
-              'flex',
-              'items-center',
-              'justify-center',
-              'rounded-full',
-              'text-white',
-              'text-2xl',
-              !canScrollNext && 'opacity-50',
-              !canScrollNext && 'cursor-not-allowed',
-            )}
-            disabled={!canScrollNext}
-          >
-            {'>'}
-          </button>
+            <div
+              className={cn(
+                'bg-gray-700',
+                'rounded-lg',
+                'py-16',
+                'overflow-hidden',
+                'relative',
+                isDragging && 'z-0',
+              )}
+              style={{
+                width: `${FIXED_CONTAINER_WIDTH + CONTAINER_PADDING * 2}px`,
+                minHeight: '80px',
+              }}
+            >
+              <Droppable droppableId="teams" direction="horizontal">
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={cn(
+                      'flex',
+                      'gap-8',
+                      snapshot.isDraggingOver && 'bg-gray-600',
+                    )}
+                    style={{
+                      width:
+                        availableTeams.length === 0
+                          ? '100%'
+                          : innerContainerWidth || CONTAINER_PADDING * 2,
+                      padding: `0 ${CONTAINER_PADDING}px`,
+                      minHeight: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent:
+                        availableTeams.length === 0 ? 'center' : 'flex-start',
+                      transformStyle: 'preserve-3d',
+                      transform: 'none',
+                      position: 'relative',
+                      left: `${translateX}px`,
+                      transition: 'left 0.3s ease-in-out',
+                    }}
+                  >
+                    {availableTeams.length === 0 ? (
+                      <div className="w-full text-center text-gray-400">
+                        모든 팀이 배치되었습니다
+                      </div>
+                    ) : (
+                      availableTeams.map((team, index) =>
+                        renderDraggable(team, index),
+                      )
+                    )}
+                  </div>
+                )}
+              </Droppable>
+            </div>
+
+            <button
+              onClick={scrollToNext}
+              className={cn(
+                'absolute',
+                'right-[-40px]',
+                'top-1/2',
+                '-translate-y-1/2',
+                'z-10',
+                'w-[30px]',
+                'h-[30px]',
+                'flex',
+                'items-center',
+                'justify-center',
+                'rounded-full',
+                'text-white',
+                'text-2xl',
+                !canScrollNext && 'opacity-50',
+                !canScrollNext && 'cursor-not-allowed',
+              )}
+              disabled={!canScrollNext}
+            >
+              {'>'}
+            </button>
+          </div>
         </div>
       </div>
     </DragDropContext>

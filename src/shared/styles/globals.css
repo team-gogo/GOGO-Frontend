@@ -113,3 +113,36 @@ html {
 body {
   background-color: #1e1e1e;
 }
+
+.drag-active {
+  cursor: grabbing;
+}
+
+.drag-active * {
+  pointer-events: none;
+}
+
+[data-rbd-draggable-id] {
+  will-change: transform;
+}
+
+[data-rbd-droppable-id] {
+  transform: translate3d(0, 0, 0);
+}
+
+[data-rbd-drag-handle-draggable-id] {
+  touch-action: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.dnd-dragging {
+  cursor: grabbing;
+}
+
+body > div[style*='position: fixed'][style*='z-index: 9999'] {
+  pointer-events: none;
+}
+
+body > div[style*='position: fixed'][style*='z-index: 9999'] * {
+  pointer-events: auto;
+}
