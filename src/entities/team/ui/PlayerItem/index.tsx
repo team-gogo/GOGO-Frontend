@@ -4,6 +4,7 @@ import { cn } from '@/shared/utils/cn';
 
 interface PlayerItemProps {
   name: string;
+  team?: 'A' | 'B' | null;
   className?: string;
   style?: React.CSSProperties;
   isDragging?: boolean;
@@ -13,6 +14,7 @@ interface PlayerItemProps {
 
 const PlayerItem = ({
   name,
+  team,
   className,
   style,
   isDragging,
@@ -20,6 +22,8 @@ const PlayerItem = ({
   onDelete,
 }: PlayerItemProps) => {
   const displayName = name.split(' ').pop()?.replace(/[0-9]/g, '') || '';
+
+  const color = team === 'A' ? '#73B2FF' : team === 'B' ? '#FF8282' : '#FFF';
 
   return (
     <div
@@ -45,8 +49,11 @@ const PlayerItem = ({
           <DeleteIcon />
         </button>
       )}
-      <PlayerIcon className="mb-1" />
-      <span className="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-body3s text-white">
+      <PlayerIcon className="mb-1" color={color} />
+      <span
+        className="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-body3s"
+        style={{ color: color }}
+      >
         {displayName}
       </span>
     </div>

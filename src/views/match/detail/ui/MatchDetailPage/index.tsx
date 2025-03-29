@@ -20,18 +20,21 @@ interface MatchDetailPageProps {
 const MatchDetailPage = ({ params }: MatchDetailPageProps) => {
   const { matchId } = params;
 
-  const { match } = useMatchStore();
+  const { match, setMatch } = useMatchStore();
 
   const [matchFromLocalStorage, setMatchFromLocalStorage] =
     useState<MatchData>();
 
   useEffect(() => {
     const storedMatch = localStorage.getItem('match');
-
     if (storedMatch) {
-      setMatchFromLocalStorage(JSON.parse(storedMatch));
+      const parsedMatch = JSON.parse(storedMatch);
+      setMatchFromLocalStorage(parsedMatch);
+      if (!match) {
+        setMatch(parsedMatch);
+      }
     }
-  }, []);
+  }, [match, setMatch]);
 
   const matchData = match || matchFromLocalStorage;
 
@@ -39,7 +42,7 @@ const MatchDetailPage = ({ params }: MatchDetailPageProps) => {
     return null;
   }
 
-  const { ateam, bteam, category, betting } = matchData;
+  const { ateam, bteam, category, betting } = matchData || {};
 
   return (
     <div
@@ -82,7 +85,7 @@ const MatchDetailPage = ({ params }: MatchDetailPageProps) => {
               betting={betting}
             />
           </div>
-          <MatchTeamFormation ateam={ateam} bteam={bteam} />
+          <MatchTeamFormation ateam={ateam} bteam={bteam} category={category} />
         </div>
       </div>
     </div>
