@@ -37,6 +37,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     { top: 1, bottom: 1 },
     { top: 1, bottom: 1 },
   ]);
+  const [deleteMode, setDeleteMode] = useState(false);
 
   const createBracketTree = (teamCount: number): BracketNode | null => {
     if (teamCount < 2) return null;
@@ -241,6 +242,10 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                           teamName={placedTeamName}
                           isEmpty={false}
                           className="w-[160px]"
+                          deleteMode={deleteMode}
+                          onDelete={() =>
+                            handleRemoveTeam(round, node.position, side)
+                          }
                         />
                       )}
                       {provided.placeholder}
@@ -376,6 +381,10 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                               teamName={placedTeamName}
                               isEmpty={false}
                               className="w-[160px]"
+                              deleteMode={deleteMode}
+                              onDelete={() =>
+                                handleRemoveTeam(round, node.position, side)
+                              }
                             />
                           )}
                           {provided.placeholder}
@@ -600,6 +609,49 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     }
   }, [matchId]);
 
+  const handleRemoveTeam = (
+    round: number,
+    position: number,
+    side: 'left' | 'right',
+  ) => {
+    try {
+      let placedTeams: Record<string, string> = {};
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
+      if (placedTeamsData) {
+        placedTeams = JSON.parse(placedTeamsData);
+      }
+
+      const positionKey = `${round}_${position}_${side}`;
+
+      delete placedTeams[positionKey];
+
+      sessionStorage.setItem(
+        `placedTeams_${matchId}`,
+        JSON.stringify(placedTeams),
+      );
+
+      const customEvent = new CustomEvent('bracketStorage', {
+        detail: { matchId },
+      });
+      window.dispatchEvent(customEvent);
+
+      if (bracketTree) {
+        const cloneTree = (node: BracketNode): BracketNode => {
+          return {
+            ...node,
+            left: node.left ? cloneTree(node.left) : null,
+            right: node.right ? cloneTree(node.right) : null,
+          };
+        };
+
+        const updatedTree = cloneTree(bracketTree);
+        setBracketTree(updatedTree);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <DragDropContext
       onDragEnd={handleDragEnd}
@@ -660,10 +712,24 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
             </button>
             <button
               type="button"
-              className={cn('flex', 'items-center', 'gap-10')}
+              onClick={() => setDeleteMode(!deleteMode)}
+              className={cn(
+                'flex',
+                'items-center',
+                'gap-10',
+                deleteMode && 'text-red-500',
+              )}
             >
-              <MinusButtonIcon />
-              <h2 className={cn('text-gray-500', 'text-body1s')}>빼기</h2>
+              <MinusButtonIcon isActive={deleteMode} />
+              <h2
+                className={cn(
+                  'text-gray-500',
+                  'text-body1s',
+                  deleteMode && 'text-red-500',
+                )}
+              >
+                빼기
+              </h2>
             </button>
           </div>
         </header>
