@@ -28,7 +28,7 @@ const CreateBracketPage = () => {
         </div>
 
         <Bracket matchId={matchId} />
-        <div className={cn('p-30', 'mt-32')}>
+        <div className={cn('p-30', 'mt-28')}>
           <Button>확인</Button>
         </div>
       </div>
