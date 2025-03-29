@@ -22,7 +22,7 @@ const SetTimePage = () => {
           <BackPageButton type="back" label="팀들 날짜와 시간 설정하기" />
         </div>
 
-        <SetTimeContainer />
+        <SetTimeContainer stageId={1} />
 
         <div className={cn('p-30', 'mt-32')}>
           <Button>확인</Button>
