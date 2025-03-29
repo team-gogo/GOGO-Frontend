@@ -4,6 +4,8 @@ import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
+import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
+import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { cn } from '@/shared/utils/cn';
 import TeamArray from '@/widgets/stage/bracket/ui/TeamArray';
 
@@ -646,8 +648,24 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
           }}
         />
         {renderControls()}
-        <header className={cn('mb-30')}>
+        <header className={cn('mb-30', 'flex', 'justify-between')}>
           <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>
+          <div className={cn('flex', 'gap-24')}>
+            <button
+              type="button"
+              className={cn('flex', 'items-center', 'gap-10')}
+            >
+              <PlusButtonIcon color="#6B6B6B" />
+              <h2 className={cn('text-gray-500', 'text-body1s')}>랜덤 추가</h2>
+            </button>
+            <button
+              type="button"
+              className={cn('flex', 'items-center', 'gap-10')}
+            >
+              <MinusButtonIcon />
+              <h2 className={cn('text-gray-500', 'text-body1s')}>빼기</h2>
+            </button>
+          </div>
         </header>
         <div className={cn('flex-1', 'bg-gray-700', 'rounded-lg', 'p-20')}>
           {renderBracket()}
