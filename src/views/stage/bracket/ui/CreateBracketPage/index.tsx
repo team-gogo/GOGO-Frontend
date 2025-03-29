@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
@@ -7,8 +8,13 @@ import { cn } from '@/shared/utils/cn';
 import { Bracket } from '@/widgets/stage/bracket';
 
 const CreateBracketPage = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const matchId = parseInt(searchParams.get('matchId') || '0', 10);
+
+  const handleConfirmClick = () => {
+    router.push(`/stage/time?matchId=${matchId}`);
+  };
 
   return (
     <div className={cn('flex', 'justify-center', 'w-full')}>
@@ -29,7 +35,7 @@ const CreateBracketPage = () => {
 
         <Bracket matchId={matchId} />
         <div className={cn('p-30', 'mt-28')}>
-          <Button>확인</Button>
+          <Button onClick={handleConfirmClick}>확인</Button>
         </div>
       </div>
     </div>
