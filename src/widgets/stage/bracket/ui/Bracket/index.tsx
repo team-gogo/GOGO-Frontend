@@ -928,7 +928,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     >
       <div
         className={cn(
-          'min-h-[600px]',
+          'min-h-[700px]',
           'bg-black',
           'p-30',
           'flex',
@@ -1055,7 +1055,9 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
             </div>
           )}
         </div>
-        <div className={cn('w-full', 'flex', 'justify-center', 'mb-30')}>
+        <div
+          className={cn('w-full', 'flex', 'justify-center', 'mb-30', 'mt-20')}
+        >
           <div className={cn('relative', 'w-[75%]', 'flex', 'justify-center')}>
             <button
               onClick={scrollToPrev}
