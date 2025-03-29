@@ -1098,15 +1098,11 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
               }}
             >
               <Droppable droppableId="teams" direction="horizontal">
-                {(provided, snapshot) => (
+                {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={cn(
-                      'flex',
-                      'gap-8',
-                      snapshot.isDraggingOver && 'bg-gray-600',
-                    )}
+                    className={cn('flex', 'gap-8')}
                     style={{
                       width:
                         availableTeams.length === 0
