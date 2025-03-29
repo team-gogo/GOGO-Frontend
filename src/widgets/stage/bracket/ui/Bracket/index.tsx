@@ -49,6 +49,9 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     {},
   );
 
+  const [isDragging, setIsDragging] = useState(false);
+  const [currentDragId, setCurrentDragId] = useState<string | null>(null);
+
   const VISIBLE_ITEMS = 8;
   const ITEM_WIDTH = 160;
   const ITEM_GAP = 8;
@@ -712,12 +715,10 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
   };
 
   const handleDragEnd = (result: DropResult) => {
-    if (typeof document !== 'undefined') {
-      document.body.classList.remove('dragging');
-    }
+    setIsDragging(false);
+    setCurrentDragId(null);
 
     if (!result.destination) {
-      toast.error('드롭 대상이 없습니다.');
       return;
     }
 
@@ -741,6 +742,11 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
         console.error(error);
       }
     }
+  };
+
+  const handleDragStart = (start: { draggableId: string }) => {
+    setIsDragging(true);
+    setCurrentDragId(start.draggableId);
   };
 
   const handleRemoveTeam = (
@@ -930,11 +936,6 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
   };
 
   const renderTeamArray = () => {
-    const arrowButtonStyle = {
-      color: '#ffffff',
-      fontSize: '24px',
-    };
-
     return (
       <div className={cn('w-full', 'flex', 'justify-center', 'mb-30')}>
         <div className={cn('relative', 'w-[75%]', 'flex', 'justify-center')}>
@@ -952,10 +953,11 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
               'items-center',
               'justify-center',
               'rounded-full',
+              'text-white',
+              'text-2xl',
               !canScrollPrev && 'opacity-50',
               !canScrollPrev && 'cursor-not-allowed',
             )}
-            style={arrowButtonStyle}
             disabled={!canScrollPrev}
           >
             {'<'}
@@ -967,6 +969,8 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
               'rounded-lg',
               'py-16',
               'overflow-hidden',
+              'relative',
+              isDragging && 'z-0',
             )}
             style={{
               width: `${FIXED_CONTAINER_WIDTH + CONTAINER_PADDING * 2}px`,
@@ -974,10 +978,15 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
             }}
           >
             <Droppable droppableId="teams" direction="horizontal">
-              {(provided) => (
+              {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
+                  className={cn(
+                    'flex',
+                    'gap-8',
+                    snapshot.isDraggingOver && 'bg-gray-600',
+                  )}
                   style={{
                     width:
                       availableTeams.length === 0
@@ -995,7 +1004,6 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                     justifyContent:
                       availableTeams.length === 0 ? 'center' : 'flex-start',
                   }}
-                  className={cn('flex', 'gap-8')}
                 >
                   {availableTeams.length === 0 ? (
                     <div className="w-full text-center text-gray-400">
@@ -1003,12 +1011,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                     </div>
                   ) : (
                     availableTeams.map((team, index) => (
-                      <Draggable
-                        key={team}
-                        draggableId={team}
-                        index={index}
-                        isDragDisabled={false}
-                      >
+                      <Draggable key={team} draggableId={team} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
@@ -1017,18 +1020,20 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                             style={{
                               ...provided.draggableProps.style,
                               width: `${ITEM_WIDTH}px`,
-                              opacity: snapshot.isDragging ? '1' : '1',
-                              zIndex: snapshot.isDragging ? 9999 : 'auto',
+                              zIndex: snapshot.isDragging ? 999 : 1,
                               boxShadow: snapshot.isDragging
                                 ? '0 5px 15px rgba(0, 0, 0, 0.3)'
                                 : 'none',
+                              opacity: 1,
+                              transform: snapshot.isDragging
+                                ? `${provided.draggableProps.style?.transform || ''} scale(1.05)`
+                                : provided.draggableProps.style?.transform,
                             }}
                             className={cn(
-                              'transition-transform',
-                              'duration-200',
-                              'ease-in-out',
-                              'draggable-item',
-                              snapshot.isDragging && 'draggable-clone',
+                              'select-none',
+                              'cursor-grab',
+                              snapshot.isDragging && 'cursor-grabbing',
+                              snapshot.isDragging && 'z-[999]',
                             )}
                           >
                             <TeamItem
@@ -1037,6 +1042,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                                 'flex-shrink-0',
                                 'w-[160px]',
                                 'pointer-events-auto',
+                                snapshot.isDragging && 'visible opacity-100',
                               )}
                             />
                           </div>
@@ -1045,6 +1051,20 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                     ))
                   )}
                   {provided.placeholder}
+
+                  {isDragging && currentDragId && (
+                    <div
+                      className={cn(
+                        'absolute',
+                        'top-0',
+                        'left-0',
+                        'w-full',
+                        'h-full',
+                        'pointer-events-none',
+                        'z-[-1]',
+                      )}
+                    />
+                  )}
                 </div>
               )}
             </Droppable>
@@ -1064,10 +1084,11 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
               'items-center',
               'justify-center',
               'rounded-full',
+              'text-white',
+              'text-2xl',
               !canScrollNext && 'opacity-50',
               !canScrollNext && 'cursor-not-allowed',
             )}
-            style={arrowButtonStyle}
             disabled={!canScrollNext}
           >
             {'>'}
@@ -1080,61 +1101,19 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
   return (
     <DragDropContext
       onDragEnd={handleDragEnd}
-      onDragStart={() => {
-        if (typeof document !== 'undefined') {
-          document.body.classList.add('dragging');
-        }
-      }}
+      onDragStart={handleDragStart}
       enableDefaultSensors={true}
-      dragHandleUsageInstructions=""
     >
       <div
-        className={cn('min-h-[600px]', 'bg-black', 'p-30', 'flex', 'flex-col')}
+        className={cn(
+          'min-h-[600px]',
+          'bg-black',
+          'p-30',
+          'flex',
+          'flex-col',
+          isDragging && 'drag-active',
+        )}
       >
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-            [data-rbd-drag-placeholder] {
-              opacity: 0.5 !important;
-            }
-            [data-rbd-draggable-context-id] {
-              transition: transform 0.1s;
-            }
-            .draggable-clone {
-              z-index: 9999 !important;
-              cursor: grabbing !important;
-              opacity: 1 !important;
-              box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
-            }
-            .relative {
-              position: relative;
-            }
-            .team-item-empty {
-              visibility: visible !important;
-              opacity: 0.4 !important;
-            }
-            
-            [data-rbd-placeholder-context-id] {
-              opacity: 0.5 !important;
-            }
-            
-            div[data-rbd-draggable-id] {
-              transform: translate3d(0, 0, 0) !important;
-            }
-            
-            .dragging [data-rbd-drag-handle-draggable-id] {
-              cursor: grabbing !important;
-            }
-            .draggable-item {
-              transform-origin: 50% 50%;
-              transition: transform 0.2s;
-            }
-            .placed-team {
-              opacity: 0.5;
-            }
-          `,
-          }}
-        />
         {renderControls()}
         <header className={cn('mb-30', 'flex', 'justify-between')}>
           <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>
