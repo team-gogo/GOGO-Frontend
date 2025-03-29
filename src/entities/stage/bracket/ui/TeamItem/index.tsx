@@ -59,9 +59,9 @@ const TeamItem = ({
       {deleteMode && teamName && teamName !== 'TBD' && (
         <button
           onClick={onDelete}
-          className="absolute -right-3 -top-3 h-6 w-6 cursor-pointer"
+          className="absolute -top-3 left-36 h-1 w-1 cursor-pointer"
         >
-          <DeleteIcon />
+          <DeleteIcon size={28} />
         </button>
       )}
     </div>
