@@ -168,8 +168,14 @@ const TeamArray = ({ className }: TeamArrayProps) => {
                 ref={provided.innerRef}
                 {...provided.droppableProps}
                 style={{
-                  width: innerContainerWidth || CONTAINER_PADDING * 2,
-                  transform: `translateX(${translateX}px)`,
+                  width:
+                    availableTeams.length === 0
+                      ? '100%'
+                      : innerContainerWidth || CONTAINER_PADDING * 2,
+                  transform:
+                    availableTeams.length === 0
+                      ? 'none'
+                      : `translateX(${translateX}px)`,
                   transition: 'transform 0.3s ease-in-out',
                   padding: `0 ${CONTAINER_PADDING}px`,
                   minHeight: '48px',
@@ -181,7 +187,9 @@ const TeamArray = ({ className }: TeamArrayProps) => {
                 className={cn('flex', 'gap-8')}
               >
                 {availableTeams.length === 0 ? (
-                  <div className="text-gray-400">모든 팀이 배치되었습니다</div>
+                  <div className="w-full text-center text-gray-400">
+                    모든 팀이 배치되었습니다
+                  </div>
                 ) : (
                   availableTeams.map((team, index) => (
                     <Draggable
