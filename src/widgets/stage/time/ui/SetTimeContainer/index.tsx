@@ -1,5 +1,6 @@
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import MatchItem from '@/entities/stage/time/ui/MatchItem';
 import Input from '@/shared/ui/input';
 
@@ -51,6 +52,7 @@ const SetTimeContainer = () => {
 
           setFinalStage(teamCount < 5 ? 4 : 8);
         } catch (error) {
+          toast.error('데이터 처리 오류');
           console.error(error);
         }
       } else {
@@ -81,15 +83,50 @@ const SetTimeContainer = () => {
             teamsBySide[roundNum] = { left: {}, right: {} };
           }
 
-          teamsBySide[roundNum][side][positionNum] = teamName;
+          teamsBySide[roundNum][side][positionNum] = teamName || 'TBD';
         });
 
         const quarterFinals: MatchData[] = [];
         const semiFinals: MatchData[] = [];
         const finals: MatchData[] = [];
 
+        const finalRound = finalStage === 4 ? 2 : 3;
+        let finalTeamA: string | undefined;
+        let finalTeamB: string | undefined;
+
+        if (teamsBySide[finalRound]) {
+          const leftPositions = Object.keys(
+            teamsBySide[finalRound]['left'],
+          ).map(Number);
+          if (leftPositions.length > 0) {
+            finalTeamA = teamsBySide[finalRound]['left'][leftPositions[0]];
+          }
+
+          const rightPositions = Object.keys(
+            teamsBySide[finalRound]['right'],
+          ).map(Number);
+          if (rightPositions.length > 0) {
+            finalTeamB = teamsBySide[finalRound]['right'][rightPositions[0]];
+          }
+
+          if (finalTeamA || finalTeamB) {
+            finals.push({
+              index: 1,
+              teamA: finalTeamA || 'TBD',
+              teamB: finalTeamB || 'TBD',
+              round: '결승',
+            });
+          }
+        }
+
         Object.entries(teamsBySide).forEach(([roundStr, sides]) => {
           const roundNum = Number(roundStr);
+          if (
+            (finalStage === 4 && roundNum === 2) ||
+            (finalStage === 8 && roundNum === 3)
+          ) {
+            return;
+          }
 
           let roundName: string;
           if (finalStage === 4) {
@@ -106,8 +143,8 @@ const SetTimeContainer = () => {
 
             for (let i = 0; i < positions.length; i += 2) {
               if (i + 1 < positions.length) {
-                const teamA = sides[side][positions[i]] || 'TBD';
-                const teamB = sides[side][positions[i + 1]] || 'TBD';
+                const teamA = sides[side][positions[i]];
+                const teamB = sides[side][positions[i + 1]];
 
                 const match: MatchData = {
                   index: Math.floor(i / 2) + 1,
@@ -119,20 +156,16 @@ const SetTimeContainer = () => {
                 if (finalStage === 4) {
                   if (roundNum === 1) {
                     semiFinals.push(match);
-                  } else if (roundNum === 2) {
-                    finals.push(match);
                   }
                 } else {
                   if (roundNum === 1) {
                     quarterFinals.push(match);
                   } else if (roundNum === 2) {
                     semiFinals.push(match);
-                  } else if (roundNum === 3 || roundNum === 4) {
-                    finals.push(match);
                   }
                 }
               } else if (positions.length % 2 === 1) {
-                const teamA = sides[side][positions[i]] || 'TBD';
+                const teamA = sides[side][positions[i]];
 
                 const match: MatchData = {
                   index: Math.floor(i / 2) + 1,
@@ -144,16 +177,12 @@ const SetTimeContainer = () => {
                 if (finalStage === 4) {
                   if (roundNum === 1) {
                     semiFinals.push(match);
-                  } else if (roundNum === 2) {
-                    finals.push(match);
                   }
                 } else {
                   if (roundNum === 1) {
                     quarterFinals.push(match);
                   } else if (roundNum === 2) {
                     semiFinals.push(match);
-                  } else if (roundNum === 3 || roundNum === 4) {
-                    finals.push(match);
                   }
                 }
               }
@@ -178,12 +207,11 @@ const SetTimeContainer = () => {
 
         const sortedQuarterFinals = sortAndAdjustIndexes([...quarterFinals]);
         const sortedSemiFinals = sortAndAdjustIndexes([...semiFinals]);
-        const sortedFinals = sortAndAdjustIndexes([...finals]);
 
         setMatches({
           quarterFinals: sortedQuarterFinals,
           semiFinals: sortedSemiFinals,
-          finals: sortedFinals,
+          finals: finals,
         });
       } else {
         setMatches({

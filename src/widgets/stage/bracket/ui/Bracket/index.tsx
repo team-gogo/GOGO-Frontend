@@ -534,7 +534,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                         )}
                       />
                     )}
-                    <Droppable droppableId={droppableId}>
+                    <Droppable key={droppableId} droppableId={droppableId}>
                       {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
@@ -573,7 +573,30 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                     </Droppable>
                   </>
                 ) : (
-                  <TeamItem teamName="TBD" className="w-[160px]" />
+                  (() => {
+                    if (!placedTeamName) {
+                      setTimeout(() => {
+                        let currentPlacedTeams: Record<string, string> = {};
+                        const currentPlacedTeamsData = sessionStorage.getItem(
+                          `placedTeams_${matchId}`,
+                        );
+                        if (currentPlacedTeamsData) {
+                          currentPlacedTeams = JSON.parse(
+                            currentPlacedTeamsData,
+                          );
+                        }
+
+                        if (!currentPlacedTeams[positionKey]) {
+                          currentPlacedTeams[positionKey] = 'TBD';
+                          sessionStorage.setItem(
+                            `placedTeams_${matchId}`,
+                            JSON.stringify(currentPlacedTeams),
+                          );
+                        }
+                      }, 0);
+                    }
+                    return <TeamItem teamName="TBD" className="w-[160px]" />;
+                  })()
                 )}
               </div>
             );
