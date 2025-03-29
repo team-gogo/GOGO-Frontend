@@ -171,6 +171,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
           (team: { teamName: string }) => team.teamName,
         );
         setTeams(teamNames);
+        setTotalTeams(Math.max(2, teamNames.length));
       } catch (error) {
         console.error(error);
       }
@@ -181,6 +182,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
           (team: { teamName: string }) => team.teamName,
         );
         setTeams(teamNames);
+        setTotalTeams(Math.max(2, teamNames.length));
 
         sessionStorage.setItem(`confirmedTeams_${matchId}`, oldConfirmedTeams);
       } catch (error) {
@@ -188,6 +190,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
       }
     } else {
       setTeams(Array.from({ length: 10 }, (_, i) => `Team ${i + 1}`));
+      setTotalTeams(10);
     }
 
     try {
@@ -614,43 +617,43 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     );
   };
 
-  const renderControls = () => (
-    <div className={cn('flex', 'gap-4', 'mb-4')}>
-      <button
-        type="button"
-        onClick={() => setTotalTeams((prev) => Math.max(2, prev - 1))}
-        className={cn(
-          'px-4',
-          'py-2',
-          'bg-gray-600',
-          'text-white',
-          'rounded',
-          'hover:bg-gray-500',
-          'transition-colors',
-        )}
-      >
-        -
-      </button>
-      <span className={cn('text-white', 'flex', 'items-center')}>
-        {totalTeams}
-      </span>
-      <button
-        type="button"
-        onClick={() => setTotalTeams((prev) => Math.min(8, prev + 1))}
-        className={cn(
-          'px-4',
-          'py-2',
-          'bg-gray-600',
-          'text-white',
-          'rounded',
-          'hover:bg-gray-500',
-          'transition-colors',
-        )}
-      >
-        +
-      </button>
-    </div>
-  );
+  // const renderControls = () => (
+  //   <div className={cn('flex', 'gap-4', 'mb-4')}>
+  //     <button
+  //       type="button"
+  //       onClick={() => setTotalTeams((prev) => Math.max(2, prev - 1))}
+  //       className={cn(
+  //         'px-4',
+  //         'py-2',
+  //         'bg-gray-600',
+  //         'text-white',
+  //         'rounded',
+  //         'hover:bg-gray-500',
+  //         'transition-colors',
+  //       )}
+  //     >
+  //       -
+  //     </button>
+  //     <span className={cn('text-white', 'flex', 'items-center')}>
+  //       {totalTeams}
+  //     </span>
+  //     <button
+  //       type="button"
+  //       onClick={() => setTotalTeams((prev) => Math.min(8, prev + 1))}
+  //       className={cn(
+  //         'px-4',
+  //         'py-2',
+  //         'bg-gray-600',
+  //         'text-white',
+  //         'rounded',
+  //         'hover:bg-gray-500',
+  //         'transition-colors',
+  //       )}
+  //     >
+  //       +
+  //     </button>
+  //   </div>
+  // );
 
   const handleTeamDrop = (
     teamName: string,
@@ -1114,7 +1117,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
           isDragging && 'drag-active',
         )}
       >
-        {renderControls()}
+        {/* {renderControls()} */}
         <header className={cn('mb-30', 'flex', 'justify-between')}>
           <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>
           <div className={cn('flex', 'gap-24')}>
