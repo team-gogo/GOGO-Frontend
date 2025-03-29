@@ -147,6 +147,7 @@ const Bracket = () => {
     teamCount: number,
     nodes: BracketNode[],
     round: number,
+    side: 'left' | 'right',
   ) => {
     let placedTeams: Record<string, string> = {};
     try {
@@ -180,9 +181,9 @@ const Bracket = () => {
               isEmpty: true,
             };
             const node = nodes[_idx] || defaultNode;
-            const droppableId = `round_${round}_position_${node.position}`;
+            const droppableId = `round_${round}_position_${node.position}_side_${side}`;
 
-            const positionKey = `${round}_${node.position}`;
+            const positionKey = `${round}_${node.position}_${side}`;
             const placedTeamName = placedTeams[positionKey] || '';
             const hasTeam = !!placedTeamName;
 
@@ -248,6 +249,7 @@ const Bracket = () => {
     position: number,
     isFirstRound: boolean = false,
     distribution?: GroupDistribution,
+    side: 'left' | 'right' = 'left',
   ) => {
     const nodesInRound = getNodesAtRound(bracketTree, round);
 
@@ -269,8 +271,8 @@ const Bracket = () => {
             'gap-4',
           )}
         >
-          {renderFirstRoundGroup(distribution.top, topNodes, round)}
-          {renderFirstRoundGroup(distribution.bottom, bottomNodes, round)}
+          {renderFirstRoundGroup(distribution.top, topNodes, round, side)}
+          {renderFirstRoundGroup(distribution.bottom, bottomNodes, round, side)}
         </div>
       );
     }
@@ -309,10 +311,10 @@ const Bracket = () => {
               isEmpty: true,
             };
             const node = nodesInRound[_idx] || defaultNode;
-            const droppableId = `round_${round}_position_${node.position}`;
+            const droppableId = `round_${round}_position_${node.position}_side_${side}`;
             const isLeaf = isLeafNode(round);
 
-            const positionKey = `${round}_${node.position}`;
+            const positionKey = `${round}_${node.position}_${side}`;
             const placedTeamName = placedTeams[positionKey] || '';
             const hasTeam = isLeaf ? !!placedTeamName : false;
 
@@ -386,12 +388,18 @@ const Bracket = () => {
           {renderBracketColumn(
             1,
             firstRoundDistribution[0].top + firstRoundDistribution[0].bottom,
+            false,
+            undefined,
+            'left',
           )}
-          {renderBracketColumn(2, 1)}
-          {renderBracketColumn(2, 1)}
+          {renderBracketColumn(2, 1, false, undefined, 'left')}
+          {renderBracketColumn(2, 1, false, undefined, 'right')}
           {renderBracketColumn(
             1,
             firstRoundDistribution[1].top + firstRoundDistribution[1].bottom,
+            false,
+            undefined,
+            'right',
           )}
         </div>
       );
@@ -401,24 +409,30 @@ const Bracket = () => {
       <div
         className={cn('flex', 'justify-between', 'w-full', 'h-full', 'gap-4')}
       >
-        {renderBracketColumn(1, 0, true, firstRoundDistribution[0])}
+        {renderBracketColumn(1, 0, true, firstRoundDistribution[0], 'left')}
         {renderBracketColumn(
           2,
           Math.ceil(
             (firstRoundDistribution[0].top + firstRoundDistribution[0].bottom) /
               2,
           ),
+          false,
+          undefined,
+          'left',
         )}
-        {renderBracketColumn(3, 1)}
-        {renderBracketColumn(3, 1)}
+        {renderBracketColumn(3, 1, false, undefined, 'left')}
+        {renderBracketColumn(3, 1, false, undefined, 'right')}
         {renderBracketColumn(
           2,
           Math.ceil(
             (firstRoundDistribution[1].top + firstRoundDistribution[1].bottom) /
               2,
           ),
+          false,
+          undefined,
+          'right',
         )}
-        {renderBracketColumn(1, 0, true, firstRoundDistribution[1])}
+        {renderBracketColumn(1, 0, true, firstRoundDistribution[1], 'right')}
       </div>
     );
   };
@@ -465,9 +479,10 @@ const Bracket = () => {
     teamName: string,
     round: number,
     position: number,
+    side: 'left' | 'right',
   ) => {
     console.log(
-      `팀 ${teamName}을 라운드 ${round}, 포지션 ${position}에 배치합니다.`,
+      `팀 ${teamName}을 라운드 ${round}, 포지션 ${position}, 위치 ${side}에 배치합니다.`,
     );
 
     try {
@@ -477,7 +492,7 @@ const Bracket = () => {
         placedTeams = JSON.parse(placedTeamsData);
       }
 
-      const positionKey = `${round}_${position}`;
+      const positionKey = `${round}_${position}_${side}`;
       placedTeams[positionKey] = teamName;
 
       sessionStorage.setItem('placedTeams', JSON.stringify(placedTeams));
@@ -530,15 +545,16 @@ const Bracket = () => {
       result.source.droppableId === 'teams' &&
       result.destination.droppableId.startsWith('round_')
     ) {
-      const [, round, , position] = result.destination.droppableId.split('_');
-      const roundNum = parseInt(round);
-      const positionNum = parseInt(position);
+      const parts = result.destination.droppableId.split('_');
+      const roundNum = parseInt(parts[1]);
+      const positionNum = parseInt(parts[3]);
+      const side = parts[5] as 'left' | 'right';
 
       console.log(
-        `팀 ${result.draggableId}를 라운드 ${roundNum}, 포지션 ${positionNum}에 배치 시도`,
+        `팀 ${result.draggableId}를 라운드 ${roundNum}, 포지션 ${positionNum}, 위치 ${side}에 배치 시도`,
       );
 
-      handleTeamDrop(result.draggableId, roundNum, positionNum);
+      handleTeamDrop(result.draggableId, roundNum, positionNum, side);
 
       try {
         window.dispatchEvent(new Event('storage'));
