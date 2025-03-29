@@ -13,6 +13,7 @@ import { PlinkoGame, PlinkoInputBox } from '@/widgets/mini-game';
 const PlinkoPage = () => {
   const [plinkoData, setPlinkoData] = useState<PlinkoResponse | null>(null);
   const [gameRunningCount, setGameRunningCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const pathname = usePathname();
 
@@ -33,14 +34,20 @@ const PlinkoPage = () => {
   const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId));
 
   const onSubmit = (data: PlinkoFormType) => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     const formattedData = formatPlinkoData(data, selectedRisk);
+
     PostPlinko(formattedData, {
       onSuccess: (response: PlinkoResponse) => {
         console.log('게임 결과:', response);
         setPlinkoData(response);
+        setIsLoading(false);
       },
       onError: () => {
         console.error('게임 요청 실패');
+        setIsLoading(false);
       },
     });
   };
