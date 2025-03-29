@@ -7,11 +7,10 @@ import TemporaryPoint from '@/shared/ui/temporaryPoint';
 import { cn } from '@/shared/utils/cn';
 
 interface PointContainerProps {
-  tempPoint: TempPointsResponse;
+  tempPoint: TempPointsResponse | undefined;
 }
 
 const PointContainer = ({ tempPoint }: PointContainerProps) => {
-  const { tempPoints } = tempPoint;
   const { push } = useRouter();
 
   return (
@@ -27,7 +26,7 @@ const PointContainer = ({ tempPoint }: PointContainerProps) => {
       )}
     >
       <div className={cn('flex', 'items-center', 'gap-[0.75rem]', 'w-full')}>
-        {tempPoints.length === 0 ? (
+        {tempPoint?.tempPoints.length === 0 ? (
           <div className={cn('flex', 'w-full', 'justify-between')}>
             <h4 className={cn('text-h4s', 'text-gray-500')}>
               임시포인트가 들어오지 않았습니다.
@@ -44,13 +43,15 @@ const PointContainer = ({ tempPoint }: PointContainerProps) => {
           </div>
         ) : (
           <div className={cn('flex', 'items-center', 'gap-[0.75rem]')}>
-            {tempPoints.map(({ tempPointId, tempPoint, expiredDate }) => (
-              <TemporaryPoint
-                key={tempPointId}
-                tempPoint={tempPoint}
-                expiredDate={expiredDate}
-              />
-            ))}
+            {tempPoint?.tempPoints.map(
+              ({ tempPointId, tempPoint, expiredDate }) => (
+                <TemporaryPoint
+                  key={tempPointId}
+                  tempPoint={tempPoint}
+                  expiredDate={expiredDate}
+                />
+              ),
+            )}
           </div>
         )}
       </div>

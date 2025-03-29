@@ -1,3 +1,8 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getStageMaintainer } from '@/entities/stage/api/getStageMaintainer';
 import { MatchGameType } from '@/shared/types/stage/apply';
 import Button from '@/shared/ui/button';
 import MatchTypeLabel from '@/shared/ui/matchTypeLabel';
@@ -6,10 +11,36 @@ import { cn } from '@/shared/utils/cn';
 
 interface StageApplyProps {
   game: MatchGameType;
+  stageId: number;
 }
 
-const StageApply = ({ game }: StageApplyProps) => {
-  const { gameName, teamCount, category, isParticipating } = game;
+const StageApply = ({ game, stageId }: StageApplyProps) => {
+  const { gameName, teamCount, category, isParticipating, gameId } = game;
+  const router = useRouter();
+  const [isMaintainer, setIsMaintainer] = useState(false);
+
+  useEffect(() => {
+    const checkMaintainer = async () => {
+      try {
+        const response = await getStageMaintainer(String(stageId));
+        setIsMaintainer(response.isMaintainer);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    checkMaintainer();
+  }, [stageId]);
+
+  const handleApply = () => {
+    if (isMaintainer) {
+      router.push(`/team/confirm/${gameId}`);
+    } else {
+      router.push(
+        `/team/create/${stageId}?matchId=${gameId}&category=${category}`,
+      );
+    }
+  };
 
   return (
     <div
@@ -59,7 +90,12 @@ const StageApply = ({ game }: StageApplyProps) => {
             {gameName}
           </h1>
           <div className={cn('flex', 'w-full', 'justify-center')}>
-            <Button disabled={isParticipating}>신청하기</Button>
+            <Button
+              disabled={isParticipating && !isMaintainer}
+              onClick={handleApply}
+            >
+              {isMaintainer ? '종료하기' : '신청하기'}
+            </Button>
           </div>
         </div>
       </div>

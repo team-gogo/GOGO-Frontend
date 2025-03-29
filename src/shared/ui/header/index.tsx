@@ -1,14 +1,25 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Logo } from '@/shared/assets/svg';
 import { useNavigation } from '@/shared/model/useNavigation';
+import { useUserNameStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
+import { useGetMyInfo } from '@/views/my/model/useGetMyInfo';
 
 const Header = () => {
   const { navItems, getColor } = useNavigation();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const { data: userData } = useGetMyInfo();
+
+  const { setUserName } = useUserNameStore();
+
+  useEffect(() => {
+    if (userData?.name) {
+      setUserName(userData.name);
+    }
+  }, [userData]);
 
   return (
     <header

@@ -10,6 +10,8 @@ const getStageInMatch = (): StageInMatchResponse => {
         teamCount: 2,
         category: 'SOCCER',
         system: 'TOURNAMENT',
+        teamMinCapacity: 11,
+        teamMaxCapacity: 15,
       },
       {
         gameId: 2,
@@ -17,6 +19,8 @@ const getStageInMatch = (): StageInMatchResponse => {
         teamCount: 4,
         category: 'BASKET_BALL',
         system: 'FULL_LEAGUE',
+        teamMinCapacity: 5,
+        teamMaxCapacity: 7,
       },
       {
         gameId: 3,
@@ -24,6 +28,8 @@ const getStageInMatch = (): StageInMatchResponse => {
         teamCount: 2,
         category: 'BADMINTON',
         system: 'SINGLE',
+        teamMinCapacity: 1,
+        teamMaxCapacity: 2,
       },
       {
         gameId: 4,
@@ -31,6 +37,8 @@ const getStageInMatch = (): StageInMatchResponse => {
         teamCount: 5,
         category: 'LOL',
         system: 'SINGLE',
+        teamMinCapacity: 5,
+        teamMaxCapacity: 5,
       },
       {
         gameId: 5,
@@ -38,6 +46,8 @@ const getStageInMatch = (): StageInMatchResponse => {
         teamCount: 12,
         category: 'VOLLEY_BALL',
         system: 'SINGLE',
+        teamMinCapacity: 6,
+        teamMaxCapacity: 8,
       },
     ],
   };

@@ -1,15 +1,50 @@
 'use client';
 import { usePathname } from 'next/navigation';
-import { navLinks } from './navLinks';
+import { useUserNameStore } from '@/shared/stores';
+import {
+  FaqIcon,
+  HelpIcon,
+  HumanIcon,
+  MiniGameIcon,
+  NoticeIcon,
+} from '../assets/svg';
 
 export const useNavigation = () => {
   const pathname = usePathname();
+  const { userName } = useUserNameStore();
 
   const isActive = (path: string): boolean => pathname === path;
 
   const getColor = (path: string): string =>
     isActive(path) ? '#fff' : '#6B6B6B';
 
-  const navItems = navLinks;
+  const navItems = [
+    {
+      name: '고객센터',
+      href: '/help',
+      icon: HelpIcon,
+    },
+    {
+      name: 'FAQ',
+      href: '/faq',
+      icon: FaqIcon,
+    },
+    {
+      name: '미니게임',
+      href: '/mini-game',
+      icon: MiniGameIcon,
+    },
+    {
+      name: '공지',
+      href: '/notice',
+      icon: NoticeIcon,
+    },
+    {
+      name: userName || '홍길동',
+      href: '/my',
+      icon: HumanIcon,
+    },
+  ];
+
   return { navItems, getColor };
 };
