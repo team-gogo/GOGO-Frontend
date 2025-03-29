@@ -14,6 +14,8 @@ const PlinkoPage = () => {
   const [plinkoData, setPlinkoData] = useState<PlinkoResponse | null>(null);
   const [gameRunningCount, setGameRunningCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [point, setPoint] = useState<number>(0);
+  const [ticket, setTicket] = useState<number>(0);
 
   const pathname = usePathname();
 
@@ -31,6 +33,8 @@ const PlinkoPage = () => {
     setSelectedRisk,
   } = usePlinkoForm();
 
+  const amount = watch('amount');
+
   const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId));
 
   const onSubmit = (data: PlinkoFormType) => {
@@ -39,9 +43,12 @@ const PlinkoPage = () => {
     setIsLoading(true);
     const formattedData = formatPlinkoData(data, selectedRisk);
 
+    const updatedPoint = point - amount;
+    setPoint(updatedPoint);
+    setTicket((prev) => prev - 1);
+
     PostPlinko(formattedData, {
       onSuccess: (response: PlinkoResponse) => {
-        console.log('게임 결과:', response);
         setPlinkoData(response);
         setIsLoading(false);
       },
@@ -52,15 +59,16 @@ const PlinkoPage = () => {
     });
   };
 
-  useEffect(() => {
-    console.log(plinkoData);
-  }, [plinkoData]);
-
   const storedTicketCount = sessionStorage.getItem('ticketCount');
   const ticketCount = storedTicketCount ? JSON.parse(storedTicketCount) : null;
 
   const storeMyPoint = sessionStorage.getItem('myPoint');
   const myPoint = storeMyPoint ? JSON.parse(storeMyPoint) : null;
+
+  useEffect(() => {
+    setPoint(myPoint.point);
+    setTicket(ticketCount.plinko);
+  }, []);
 
   return (
     <div
@@ -89,8 +97,8 @@ const PlinkoPage = () => {
             className={cn('flex', 'gap-[2.5rem]', 'flex-col')}
           >
             <PlinkoInputBox
-              money={myPoint.point}
-              ticket={ticketCount.plinko}
+              money={point}
+              ticket={ticket}
               isDisabled={isDisabled}
               register={register}
               setValue={setValue}
@@ -104,6 +112,7 @@ const PlinkoPage = () => {
             watch={watch}
             plinkoData={plinkoData}
             setGameRunningCount={setGameRunningCount}
+            setPoint={setPoint}
           />
         </div>
       </div>

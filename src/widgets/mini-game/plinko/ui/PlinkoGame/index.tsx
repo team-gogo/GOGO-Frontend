@@ -19,12 +19,14 @@ interface PlinkoGameProps {
   watch: UseFormWatch<PlinkoFormType>;
   plinkoData: PlinkoResponse | null;
   setGameRunningCount: Dispatch<SetStateAction<number>>;
+  setPoint: Dispatch<SetStateAction<number>>;
 }
 
 const PlinkoGame = ({
   watch,
   plinkoData,
   setGameRunningCount,
+  setPoint,
 }: PlinkoGameProps) => {
   const [gameInitialized, setGameInitialized] = useState<boolean>(false);
   const [engine, setEngine] = useState<Matter.Engine | null>(null);
@@ -102,6 +104,16 @@ const PlinkoGame = ({
             setFallingOrder((prev) => {
               const updatedFallingOrder = prev.map((item) => {
                 if (item.id === body.id && !item.passed550) {
+                  if (plinkoData?.amount) {
+                    console.log(plinkoData.amount);
+
+                    if (!item.passed550) {
+                      setPoint(
+                        (prevPoint) =>
+                          prevPoint + Number(plinkoData?.amount / 2),
+                      );
+                    }
+                  }
                   return { ...item, passed550: true };
                 }
                 return item;
@@ -235,7 +247,10 @@ const PlinkoGame = ({
       if (plinkoData.multi >= 0 && plinkoData.multi < targetXValues.length) {
         const targetX = targetXValues[plinkoData.multi];
         setBtnClickIdxs((prev) => [...prev, plinkoData.multi]);
-        spawnBall(targetX, plinkoData.multi);
+
+        setTimeout(() => {
+          spawnBall(targetX, plinkoData.multi);
+        }, 0);
       }
     }
   }, [plinkoData]);
