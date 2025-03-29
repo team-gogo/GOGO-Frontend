@@ -652,6 +652,149 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     }
   };
 
+  const handleRandomPlacement = () => {
+    try {
+      let placedTeams: Record<string, string> = {};
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
+      if (placedTeamsData) {
+        placedTeams = JSON.parse(placedTeamsData);
+      }
+
+      const confirmedTeamsData = sessionStorage.getItem(
+        `confirmedTeams_${matchId}`,
+      );
+      if (!confirmedTeamsData) {
+        toast.error('배치할 팀이 없습니다.');
+        return;
+      }
+
+      const parsedTeams = JSON.parse(confirmedTeamsData);
+      const allTeamNames = parsedTeams.map(
+        (team: { teamName: string }) => team.teamName,
+      );
+
+      const placedTeamNames = Object.values(placedTeams);
+      const availableTeams = allTeamNames.filter(
+        (teamName: string) => !placedTeamNames.includes(teamName),
+      );
+
+      if (availableTeams.length === 0) {
+        toast.error('모든 팀이 이미 배치되었습니다.');
+        return;
+      }
+
+      const emptyPositions: Array<{
+        round: number;
+        position: number;
+        side: 'left' | 'right';
+      }> = [];
+
+      if (finalStage === 4) {
+        const round = 1;
+        const leftCount =
+          firstRoundDistribution[0].top + firstRoundDistribution[0].bottom;
+        const rightCount =
+          firstRoundDistribution[1].top + firstRoundDistribution[1].bottom;
+
+        for (let i = 0; i < leftCount; i++) {
+          const positionKey = `${round}_${i}_left`;
+          if (!placedTeams[positionKey]) {
+            emptyPositions.push({ round, position: i, side: 'left' });
+          }
+        }
+
+        for (let i = 0; i < rightCount; i++) {
+          const positionKey = `${round}_${i}_right`;
+          if (!placedTeams[positionKey]) {
+            emptyPositions.push({ round, position: i, side: 'right' });
+          }
+        }
+      } else {
+        const round = 1;
+
+        for (let i = 0; i < firstRoundDistribution[0].top; i++) {
+          const positionKey = `${round}_${i}_left`;
+          if (!placedTeams[positionKey]) {
+            emptyPositions.push({ round, position: i, side: 'left' });
+          }
+        }
+
+        for (let i = 0; i < firstRoundDistribution[0].bottom; i++) {
+          const position = firstRoundDistribution[0].top + i;
+          const positionKey = `${round}_${position}_left`;
+          if (!placedTeams[positionKey]) {
+            emptyPositions.push({ round, position, side: 'left' });
+          }
+        }
+
+        for (let i = 0; i < firstRoundDistribution[1].top; i++) {
+          const positionKey = `${round}_${i}_right`;
+          if (!placedTeams[positionKey]) {
+            emptyPositions.push({ round, position: i, side: 'right' });
+          }
+        }
+
+        for (let i = 0; i < firstRoundDistribution[1].bottom; i++) {
+          const position = firstRoundDistribution[1].top + i;
+          const positionKey = `${round}_${position}_right`;
+          if (!placedTeams[positionKey]) {
+            emptyPositions.push({ round, position, side: 'right' });
+          }
+        }
+      }
+
+      if (emptyPositions.length === 0) {
+        toast.error('비어있는 위치가 없습니다.');
+        return;
+      }
+
+      const maxPositions = Math.min(
+        availableTeams.length,
+        emptyPositions.length,
+      );
+
+      const shuffledTeams = [...availableTeams].sort(() => Math.random() - 0.5);
+      const shuffledPositions = [...emptyPositions].sort(
+        () => Math.random() - 0.5,
+      );
+
+      for (let i = 0; i < maxPositions; i++) {
+        const team = shuffledTeams[i];
+        const { round, position, side } = shuffledPositions[i];
+        const positionKey = `${round}_${position}_${side}`;
+        placedTeams[positionKey] = team;
+      }
+
+      sessionStorage.setItem(
+        `placedTeams_${matchId}`,
+        JSON.stringify(placedTeams),
+      );
+
+      const customEvent = new CustomEvent('bracketStorage', {
+        detail: { matchId },
+      });
+      window.dispatchEvent(customEvent);
+
+      if (bracketTree) {
+        const cloneTree = (node: BracketNode): BracketNode => {
+          return {
+            ...node,
+            left: node.left ? cloneTree(node.left) : null,
+            right: node.right ? cloneTree(node.right) : null,
+          };
+        };
+
+        const updatedTree = cloneTree(bracketTree);
+        setBracketTree(updatedTree);
+      }
+
+      toast.success(`${maxPositions}개 팀이 랜덤으로 배치되었습니다.`);
+    } catch (error) {
+      console.error(error);
+      toast.error('팀 랜덤 배치 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <DragDropContext
       onDragEnd={handleDragEnd}
@@ -706,6 +849,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
             <button
               type="button"
               className={cn('flex', 'items-center', 'gap-10')}
+              onClick={handleRandomPlacement}
             >
               <PlusButtonIcon color="#6B6B6B" />
               <h2 className={cn('text-gray-500', 'text-body1s')}>랜덤 추가</h2>
