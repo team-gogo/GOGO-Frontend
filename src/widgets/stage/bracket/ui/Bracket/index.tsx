@@ -559,102 +559,6 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     );
   };
 
-  const renderBracket = () => {
-    if (finalStage === 4) {
-      return (
-        <div
-          className={cn('flex', 'justify-between', 'w-full', 'h-full', 'gap-4')}
-        >
-          {renderBracketColumn(
-            1,
-            firstRoundDistribution[0].top + firstRoundDistribution[0].bottom,
-            false,
-            undefined,
-            'left',
-          )}
-          {renderBracketColumn(2, 1, false, undefined, 'left')}
-          {renderBracketColumn(2, 1, false, undefined, 'right')}
-          {renderBracketColumn(
-            1,
-            firstRoundDistribution[1].top + firstRoundDistribution[1].bottom,
-            false,
-            undefined,
-            'right',
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <div
-        className={cn('flex', 'justify-between', 'w-full', 'h-full', 'gap-4')}
-      >
-        {renderBracketColumn(1, 0, true, firstRoundDistribution[0], 'left')}
-        {renderBracketColumn(
-          2,
-          Math.ceil(
-            (firstRoundDistribution[0].top + firstRoundDistribution[0].bottom) /
-              2,
-          ),
-          false,
-          undefined,
-          'left',
-        )}
-        {renderBracketColumn(3, 1, false, undefined, 'left')}
-        {renderBracketColumn(3, 1, false, undefined, 'right')}
-        {renderBracketColumn(
-          2,
-          Math.ceil(
-            (firstRoundDistribution[1].top + firstRoundDistribution[1].bottom) /
-              2,
-          ),
-          false,
-          undefined,
-          'right',
-        )}
-        {renderBracketColumn(1, 0, true, firstRoundDistribution[1], 'right')}
-      </div>
-    );
-  };
-
-  // const renderControls = () => (
-  //   <div className={cn('flex', 'gap-4', 'mb-4')}>
-  //     <button
-  //       type="button"
-  //       onClick={() => setTotalTeams((prev) => Math.max(2, prev - 1))}
-  //       className={cn(
-  //         'px-4',
-  //         'py-2',
-  //         'bg-gray-600',
-  //         'text-white',
-  //         'rounded',
-  //         'hover:bg-gray-500',
-  //         'transition-colors',
-  //       )}
-  //     >
-  //       -
-  //     </button>
-  //     <span className={cn('text-white', 'flex', 'items-center')}>
-  //       {totalTeams}
-  //     </span>
-  //     <button
-  //       type="button"
-  //       onClick={() => setTotalTeams((prev) => Math.min(8, prev + 1))}
-  //       className={cn(
-  //         'px-4',
-  //         'py-2',
-  //         'bg-gray-600',
-  //         'text-white',
-  //         'rounded',
-  //         'hover:bg-gray-500',
-  //         'transition-colors',
-  //       )}
-  //     >
-  //       +
-  //     </button>
-  //   </div>
-  // );
-
   const handleTeamDrop = (
     teamName: string,
     round: number,
@@ -938,8 +842,138 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     }
   };
 
-  const renderTeamArray = () => {
-    return (
+  return (
+    <DragDropContext
+      onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
+      enableDefaultSensors={true}
+    >
+      <div
+        className={cn(
+          'min-h-[600px]',
+          'bg-black',
+          'p-30',
+          'flex',
+          'flex-col',
+          isDragging && 'drag-active',
+        )}
+      >
+        <header className={cn('mb-30', 'flex', 'justify-between')}>
+          <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>
+          <div className={cn('flex', 'gap-24')}>
+            <button
+              type="button"
+              className={cn('flex', 'items-center', 'gap-10')}
+              onClick={handleRandomPlacement}
+            >
+              <PlusButtonIcon color="#6B6B6B" />
+              <h2 className={cn('text-gray-500', 'text-body1s')}>랜덤 추가</h2>
+            </button>
+            <button
+              type="button"
+              onClick={() => setDeleteMode(!deleteMode)}
+              className={cn(
+                'flex',
+                'items-center',
+                'gap-10',
+                deleteMode && 'text-red-500',
+              )}
+            >
+              <MinusButtonIcon isActive={deleteMode} />
+              <h2
+                className={cn(
+                  'text-gray-500',
+                  'text-body1s',
+                  deleteMode && 'text-red-500',
+                )}
+              >
+                빼기
+              </h2>
+            </button>
+          </div>
+        </header>
+        <div className={cn('flex-1', 'bg-gray-700', 'rounded-lg', 'p-20')}>
+          {finalStage === 4 ? (
+            <div
+              className={cn(
+                'flex',
+                'justify-between',
+                'w-full',
+                'h-full',
+                'gap-4',
+              )}
+            >
+              {renderBracketColumn(
+                1,
+                firstRoundDistribution[0].top +
+                  firstRoundDistribution[0].bottom,
+                false,
+                undefined,
+                'left',
+              )}
+              {renderBracketColumn(2, 1, false, undefined, 'left')}
+              {renderBracketColumn(2, 1, false, undefined, 'right')}
+              {renderBracketColumn(
+                1,
+                firstRoundDistribution[1].top +
+                  firstRoundDistribution[1].bottom,
+                false,
+                undefined,
+                'right',
+              )}
+            </div>
+          ) : (
+            <div
+              className={cn(
+                'flex',
+                'justify-between',
+                'w-full',
+                'h-full',
+                'gap-4',
+              )}
+            >
+              {renderBracketColumn(
+                1,
+                0,
+                true,
+                firstRoundDistribution[0],
+                'left',
+              )}
+              {renderBracketColumn(
+                2,
+                Math.ceil(
+                  (firstRoundDistribution[0].top +
+                    firstRoundDistribution[0].bottom) /
+                    2,
+                ),
+                false,
+                undefined,
+                'left',
+              )}
+              {renderBracketColumn(3, 1, false, undefined, 'left')}
+              {renderBracketColumn(3, 1, false, undefined, 'right')}
+              {renderBracketColumn(
+                2,
+                Math.ceil(
+                  (firstRoundDistribution[1].top +
+                    firstRoundDistribution[1].bottom) /
+                    2,
+                ),
+                false,
+                undefined,
+                'right',
+              )}
+              {renderBracketColumn(
+                1,
+                0,
+                true,
+                firstRoundDistribution[1],
+                'right',
+              )}
+            </div>
+          )}
+        </div>
+      </div>
       <div className={cn('w-full', 'flex', 'justify-center', 'mb-30')}>
         <div className={cn('relative', 'w-[75%]', 'flex', 'justify-center')}>
           <button
@@ -1098,65 +1132,6 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
           </button>
         </div>
       </div>
-    );
-  };
-
-  return (
-    <DragDropContext
-      onDragEnd={handleDragEnd}
-      onDragStart={handleDragStart}
-      enableDefaultSensors={true}
-    >
-      <div
-        className={cn(
-          'min-h-[600px]',
-          'bg-black',
-          'p-30',
-          'flex',
-          'flex-col',
-          isDragging && 'drag-active',
-        )}
-      >
-        {/* {renderControls()} */}
-        <header className={cn('mb-30', 'flex', 'justify-between')}>
-          <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>
-          <div className={cn('flex', 'gap-24')}>
-            <button
-              type="button"
-              className={cn('flex', 'items-center', 'gap-10')}
-              onClick={handleRandomPlacement}
-            >
-              <PlusButtonIcon color="#6B6B6B" />
-              <h2 className={cn('text-gray-500', 'text-body1s')}>랜덤 추가</h2>
-            </button>
-            <button
-              type="button"
-              onClick={() => setDeleteMode(!deleteMode)}
-              className={cn(
-                'flex',
-                'items-center',
-                'gap-10',
-                deleteMode && 'text-red-500',
-              )}
-            >
-              <MinusButtonIcon isActive={deleteMode} />
-              <h2
-                className={cn(
-                  'text-gray-500',
-                  'text-body1s',
-                  deleteMode && 'text-red-500',
-                )}
-              >
-                빼기
-              </h2>
-            </button>
-          </div>
-        </header>
-        <div className={cn('flex-1', 'bg-gray-700', 'rounded-lg', 'p-20')}>
-          {renderBracket()}
-        </div>
-      </div>
-      {renderTeamArray()}
     </DragDropContext>
   );
 };
