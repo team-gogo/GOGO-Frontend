@@ -1,9 +1,15 @@
+'use client';
+
+import { useSearchParams } from 'next/navigation';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
 import { Bracket } from '@/widgets/stage/bracket';
 
 const CreateBracketPage = () => {
+  const searchParams = useSearchParams();
+  const matchId = parseInt(searchParams.get('matchId') || '0', 10);
+
   return (
     <div className={cn('flex', 'justify-center', 'w-full')}>
       <div
@@ -21,7 +27,7 @@ const CreateBracketPage = () => {
           <BackPageButton type="back" label="대진표" />
         </div>
 
-        <Bracket />
+        <Bracket matchId={matchId} />
         <div className={cn('p-30', 'mt-32')}>
           <Button>확인</Button>
         </div>

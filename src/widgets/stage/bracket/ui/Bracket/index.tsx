@@ -2,6 +2,7 @@
 
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import { cn } from '@/shared/utils/cn';
 import TeamArray from '@/widgets/stage/bracket/ui/TeamArray';
@@ -20,7 +21,11 @@ interface BracketNode {
   isEmpty: boolean;
 }
 
-const Bracket = () => {
+interface BracketProps {
+  matchId?: number;
+}
+
+const Bracket = ({ matchId = 0 }: BracketProps) => {
   const [totalTeams, setTotalTeams] = useState(4);
   const [finalStage, setFinalStage] = useState(4);
   const [bracketTree, setBracketTree] = useState<BracketNode | null>(null);
@@ -158,7 +163,7 @@ const Bracket = () => {
   ) => {
     let placedTeams: Record<string, string> = {};
     try {
-      const placedTeamsData = sessionStorage.getItem('placedTeams');
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
       if (placedTeamsData) {
         placedTeams = JSON.parse(placedTeamsData);
       }
@@ -286,7 +291,7 @@ const Bracket = () => {
 
     let placedTeams: Record<string, string> = {};
     try {
-      const placedTeamsData = sessionStorage.getItem('placedTeams');
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
       if (placedTeamsData) {
         placedTeams = JSON.parse(placedTeamsData);
       }
@@ -488,13 +493,9 @@ const Bracket = () => {
     position: number,
     side: 'left' | 'right',
   ) => {
-    console.log(
-      `팀 ${teamName}을 라운드 ${round}, 포지션 ${position}, 위치 ${side}에 배치합니다.`,
-    );
-
     try {
       let placedTeams: Record<string, string> = {};
-      const placedTeamsData = sessionStorage.getItem('placedTeams');
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
       if (placedTeamsData) {
         placedTeams = JSON.parse(placedTeamsData);
       }
@@ -502,7 +503,10 @@ const Bracket = () => {
       const positionKey = `${round}_${position}_${side}`;
       placedTeams[positionKey] = teamName;
 
-      sessionStorage.setItem('placedTeams', JSON.stringify(placedTeams));
+      sessionStorage.setItem(
+        `placedTeams_${matchId}`,
+        JSON.stringify(placedTeams),
+      );
 
       if (!bracketTree) {
         const newRoot = createBracketTree(totalTeams);
@@ -522,11 +526,22 @@ const Bracket = () => {
         setBracketTree(updatedTree);
       }
 
-      window.dispatchEvent(new Event('storage'));
+      try {
+        const customEvent = new CustomEvent('bracketStorage', {
+          detail: { matchId },
+        });
+        window.dispatchEvent(customEvent);
 
-      setTimeout(() => {
-        window.dispatchEvent(new Event('storage'));
-      }, 100);
+        setTimeout(() => {
+          window.dispatchEvent(
+            new CustomEvent('bracketStorage', {
+              detail: { matchId },
+            }),
+          );
+        }, 100);
+      } catch (error) {
+        console.error('스토리지 이벤트 발생 중 오류:', error);
+      }
     } catch (error) {
       console.error('팀 배치 중 오류 발생:', error);
     }
@@ -537,16 +552,10 @@ const Bracket = () => {
       document.body.classList.remove('dragging');
     }
 
-    console.log('드래그 종료:', result);
-
     if (!result.destination) {
-      console.log('드롭 대상이 없습니다.');
+      toast.error('드롭 대상이 없습니다.');
       return;
     }
-
-    console.log(
-      `드래그 소스: ${result.source.droppableId}, 드롭 대상: ${result.destination.droppableId}`,
-    );
 
     if (
       result.source.droppableId === 'teams' &&
@@ -557,25 +566,26 @@ const Bracket = () => {
       const positionNum = parseInt(parts[3]);
       const side = parts[5] as 'left' | 'right';
 
-      console.log(
-        `팀 ${result.draggableId}를 라운드 ${roundNum}, 포지션 ${positionNum}, 위치 ${side}에 배치 시도`,
-      );
-
       handleTeamDrop(result.draggableId, roundNum, positionNum, side);
 
       try {
-        window.dispatchEvent(new Event('storage'));
+        const customEvent = new CustomEvent('bracketStorage', {
+          detail: { matchId },
+        });
+        window.dispatchEvent(customEvent);
       } catch (error) {
         console.error('스토리지 이벤트 발생 중 오류:', error);
       }
     } else {
-      console.log('드래그 소스가 팀 목록이 아니거나 대상이 유효하지 않습니다.');
+      toast.error('드래그 대상이 유효하지 않습니다.');
     }
   };
 
   useEffect(() => {
     try {
-      const savedBracketState = sessionStorage.getItem('bracketState');
+      const savedBracketState = sessionStorage.getItem(
+        `bracketState_${matchId}`,
+      );
       if (savedBracketState) {
         const parsedState = JSON.parse(savedBracketState);
         setBracketTree(parsedState);
@@ -583,7 +593,7 @@ const Bracket = () => {
     } catch (error) {
       console.error('저장된 브래킷 상태 복원 중 오류 발생:', error);
     }
-  }, []);
+  }, [matchId]);
 
   return (
     <DragDropContext
@@ -640,7 +650,7 @@ const Bracket = () => {
           {renderBracket()}
         </div>
       </div>
-      <TeamArray className="mb-30" />
+      <TeamArray matchId={matchId} className="mb-30" />
     </DragDropContext>
   );
 };

@@ -7,6 +7,7 @@ import { cn } from '@/shared/utils/cn';
 
 interface TeamArrayProps {
   className?: string;
+  matchId?: number;
 }
 
 const VISIBLE_ITEMS = 8;
@@ -14,7 +15,7 @@ const ITEM_WIDTH = 160;
 const ITEM_GAP = 8;
 const CONTAINER_PADDING = 16;
 
-const TeamArray = ({ className }: TeamArrayProps) => {
+const TeamArray = ({ className, matchId = 0 }: TeamArrayProps) => {
   const [teams, setTeams] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [placedTeams, setPlacedTeams] = useState<{ [key: string]: boolean }>(
@@ -22,19 +23,37 @@ const TeamArray = ({ className }: TeamArrayProps) => {
   );
 
   useEffect(() => {
-    const confirmedTeams = sessionStorage.getItem('confirmedTeams');
+    const confirmedTeams = sessionStorage.getItem(`confirmedTeams_${matchId}`);
+    const oldConfirmedTeams = sessionStorage.getItem('confirmedTeams');
+
     if (confirmedTeams) {
-      const parsedTeams = JSON.parse(confirmedTeams);
-      const teamNames = parsedTeams.map(
-        (team: { teamName: string }) => team.teamName,
-      );
-      setTeams(teamNames);
+      try {
+        const parsedTeams = JSON.parse(confirmedTeams);
+        const teamNames = parsedTeams.map(
+          (team: { teamName: string }) => team.teamName,
+        );
+        setTeams(teamNames);
+      } catch (error) {
+        console.error(`확정 팀 데이터 파싱 오류(matchId=${matchId}):`, error);
+      }
+    } else if (oldConfirmedTeams && matchId === 0) {
+      try {
+        const parsedTeams = JSON.parse(oldConfirmedTeams);
+        const teamNames = parsedTeams.map(
+          (team: { teamName: string }) => team.teamName,
+        );
+        setTeams(teamNames);
+
+        sessionStorage.setItem(`confirmedTeams_${matchId}`, oldConfirmedTeams);
+      } catch (error) {
+        console.error(`구 확정 팀 데이터 파싱 오류:`, error);
+      }
     } else {
       setTeams(Array.from({ length: 10 }, (_, i) => `Team ${i + 1}`));
     }
 
     try {
-      const placedTeamsData = sessionStorage.getItem('placedTeams');
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
       if (placedTeamsData) {
         const placedTeamsRecord = JSON.parse(placedTeamsData);
         const placedTeamsMap: { [key: string]: boolean } = {};
@@ -48,12 +67,19 @@ const TeamArray = ({ className }: TeamArrayProps) => {
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [matchId]);
 
   useEffect(() => {
-    const handleTeamPlacement = () => {
+    const handleTeamPlacement = (event: Event) => {
       try {
-        const placedTeamsData = sessionStorage.getItem('placedTeams');
+        const customEvent = event as CustomEvent;
+        if (customEvent.detail && customEvent.detail.matchId !== matchId) {
+          return;
+        }
+
+        const placedTeamsData = sessionStorage.getItem(
+          `placedTeams_${matchId}`,
+        );
         if (placedTeamsData) {
           const placedTeamsRecord = JSON.parse(placedTeamsData);
           const newPlacedTeams: { [key: string]: boolean } = {};
@@ -70,12 +96,29 @@ const TeamArray = ({ className }: TeamArrayProps) => {
     };
 
     window.addEventListener('storage', handleTeamPlacement);
-    handleTeamPlacement();
+    window.addEventListener('bracketStorage', handleTeamPlacement);
+
+    try {
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
+      if (placedTeamsData) {
+        const placedTeamsRecord = JSON.parse(placedTeamsData);
+        const newPlacedTeams: { [key: string]: boolean } = {};
+        for (const key in placedTeamsRecord) {
+          if (Object.prototype.hasOwnProperty.call(placedTeamsRecord, key)) {
+            newPlacedTeams[placedTeamsRecord[key]] = true;
+          }
+        }
+        setPlacedTeams(newPlacedTeams);
+      }
+    } catch (error) {
+      console.error(error);
+    }
 
     return () => {
       window.removeEventListener('storage', handleTeamPlacement);
+      window.removeEventListener('bracketStorage', handleTeamPlacement);
     };
-  }, []);
+  }, [matchId]);
 
   const availableTeams = teams.filter((team) => !placedTeams[team]);
 

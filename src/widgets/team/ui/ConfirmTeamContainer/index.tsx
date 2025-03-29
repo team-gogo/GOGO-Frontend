@@ -50,9 +50,12 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
     const selectedTeams = teams.filter((team) =>
       selectedTeamIds.includes(team.teamId),
     );
-    sessionStorage.setItem('confirmedTeams', JSON.stringify(selectedTeams));
-    router.push('/stage/bracket');
-  }, [teams, selectedTeamIds, router]);
+    sessionStorage.setItem(
+      `confirmedTeams_${matchId}`,
+      JSON.stringify(selectedTeams),
+    );
+    router.push(`/stage/bracket?matchId=${matchId}`);
+  }, [teams, selectedTeamIds, router, matchId]);
 
   const handleToggleSelect = useCallback((teamId: number) => {
     setSelectedTeamIds((prev) => {
