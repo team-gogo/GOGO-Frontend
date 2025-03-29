@@ -34,7 +34,7 @@ const TeamArray = ({ className, matchId = 0 }: TeamArrayProps) => {
         );
         setTeams(teamNames);
       } catch (error) {
-        console.error(`확정 팀 데이터 파싱 오류(matchId=${matchId}):`, error);
+        console.error(error);
       }
     } else if (oldConfirmedTeams && matchId === 0) {
       try {
@@ -46,7 +46,7 @@ const TeamArray = ({ className, matchId = 0 }: TeamArrayProps) => {
 
         sessionStorage.setItem(`confirmedTeams_${matchId}`, oldConfirmedTeams);
       } catch (error) {
-        console.error(`구 확정 팀 데이터 파싱 오류:`, error);
+        console.error(error);
       }
     } else {
       setTeams(Array.from({ length: 10 }, (_, i) => `Team ${i + 1}`));

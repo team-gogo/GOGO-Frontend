@@ -540,10 +540,12 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
           );
         }, 100);
       } catch (error) {
-        console.error('스토리지 이벤트 발생 중 오류:', error);
+        console.error(error);
+        toast.error('스토리지 이벤트 오류 발생');
       }
     } catch (error) {
-      console.error('팀 배치 중 오류 발생:', error);
+      toast.error('팀 배치 중 오류 발생');
+      console.error(error);
     }
   };
 
@@ -574,7 +576,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
         });
         window.dispatchEvent(customEvent);
       } catch (error) {
-        console.error('스토리지 이벤트 발생 중 오류:', error);
+        console.error(error);
       }
     } else {
       toast.error('드래그 대상이 유효하지 않습니다.');
@@ -591,7 +593,8 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
         setBracketTree(parsedState);
       }
     } catch (error) {
-      console.error('저장된 브래킷 상태 복원 중 오류 발생:', error);
+      console.error(error);
+      toast.error('대진표 상태 오류 발생');
     }
   }, [matchId]);
 
