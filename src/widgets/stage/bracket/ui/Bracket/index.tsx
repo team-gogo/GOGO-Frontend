@@ -156,7 +156,7 @@ const Bracket = () => {
         placedTeams = JSON.parse(placedTeamsData);
       }
     } catch (error) {
-      console.error('배치된 팀 정보 가져오기 오류:', error);
+      console.error(error);
     }
 
     return (
@@ -284,7 +284,7 @@ const Bracket = () => {
         placedTeams = JSON.parse(placedTeamsData);
       }
     } catch (error) {
-      console.error('배치된 팀 정보 가져오기 오류:', error);
+      console.error(error);
     }
 
     return (

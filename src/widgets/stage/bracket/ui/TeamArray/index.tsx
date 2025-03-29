@@ -46,7 +46,7 @@ const TeamArray = ({ className }: TeamArrayProps) => {
         setPlacedTeams(placedTeamsMap);
       }
     } catch (error) {
-      console.error('저장된 팀 배치 상태 확인 중 오류 발생:', error);
+      console.error(error);
     }
   }, []);
 
@@ -65,7 +65,7 @@ const TeamArray = ({ className }: TeamArrayProps) => {
           setPlacedTeams(newPlacedTeams);
         }
       } catch (error) {
-        console.error('팀 배치 업데이트 중 오류 발생:', error);
+        console.error(error);
       }
     };
 
