@@ -17,7 +17,7 @@ interface BracketNode {
   teamName: string;
   left: BracketNode | null;
   right: BracketNode | null;
-  isEmpty?: boolean;
+  isEmpty: boolean;
 }
 
 const Bracket = () => {
@@ -114,6 +114,19 @@ const Bracket = () => {
   ): BracketNode[] => {
     if (!root) return [];
 
+    if (targetRound === 1) {
+      return Array(4)
+        .fill(null)
+        .map((_, idx) => ({
+          round: 1,
+          position: idx,
+          teamName: '',
+          left: null,
+          right: null,
+          isEmpty: true,
+        }));
+    }
+
     const result: BracketNode[] = [];
     const queue = [root];
 
@@ -134,58 +147,97 @@ const Bracket = () => {
     teamCount: number,
     nodes: BracketNode[],
     round: number,
-  ) => (
-    <div
-      className={cn(
-        'flex-1',
-        'flex',
-        'flex-col',
-        'justify-around',
-        'items-center',
-      )}
-    >
-      {Array(teamCount)
-        .fill(null)
-        .map((_, _idx) => {
-          const node = nodes[_idx];
-          const droppableId = `round_${round}_position_${node?.position ?? _idx}`;
+  ) => {
+    let placedTeams: Record<string, string> = {};
+    try {
+      const placedTeamsData = sessionStorage.getItem('placedTeams');
+      if (placedTeamsData) {
+        placedTeams = JSON.parse(placedTeamsData);
+      }
+    } catch (error) {
+      console.error('배치된 팀 정보 가져오기 오류:', error);
+    }
 
-          return (
-            <div key={droppableId} className="relative">
-              <TeamItem
-                teamName=""
-                isEmpty={true}
-                className={cn('w-[160px]', 'absolute', 'top-0', 'left-0')}
-              />
-              <Droppable key={droppableId} droppableId={droppableId}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
+    return (
+      <div
+        className={cn(
+          'flex-1',
+          'flex',
+          'flex-col',
+          'justify-around',
+          'items-center',
+        )}
+      >
+        {Array(teamCount)
+          .fill(null)
+          .map((_, _idx) => {
+            const defaultNode = {
+              round: 1,
+              position: _idx,
+              teamName: '',
+              left: null,
+              right: null,
+              isEmpty: true,
+            };
+            const node = nodes[_idx] || defaultNode;
+            const droppableId = `round_${round}_position_${node.position}`;
+
+            const positionKey = `${round}_${node.position}`;
+            const placedTeamName = placedTeams[positionKey] || '';
+            const hasTeam = !!placedTeamName;
+
+            return (
+              <div key={droppableId} className="relative">
+                {!hasTeam && (
+                  <TeamItem
+                    teamName=""
+                    isEmpty={true}
                     className={cn(
                       'w-[160px]',
-                      'h-[48px]',
-                      'relative',
-                      snapshot.isDraggingOver && 'bg-blue-500/20',
-                      'rounded-lg',
+                      'absolute',
+                      'top-0',
+                      'left-0',
+                      'z-0',
+                      'team-item-empty',
                     )}
-                  >
-                    {node && !node.isEmpty && (
-                      <TeamItem
-                        teamName={node.teamName}
-                        isEmpty={false}
-                        className="w-[160px]"
-                      />
-                    )}
-                    {provided.placeholder}
-                  </div>
+                  />
                 )}
-              </Droppable>
-            </div>
-          );
-        })}
-    </div>
-  );
+                <Droppable key={droppableId} droppableId={droppableId}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className={cn(
+                        'w-[160px]',
+                        'h-[48px]',
+                        'relative',
+                        'rounded-lg',
+                        'transition-all',
+                        'duration-200',
+                        'z-10',
+                        snapshot.isDraggingOver && !hasTeam
+                          ? 'border-2 border-blue-400 bg-blue-500/40'
+                          : 'bg-transparent',
+                        snapshot.isDraggingOver && hasTeam && 'bg-red-500/20',
+                      )}
+                    >
+                      {hasTeam && (
+                        <TeamItem
+                          teamName={placedTeamName}
+                          isEmpty={false}
+                          className="w-[160px]"
+                        />
+                      )}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </div>
+            );
+          })}
+      </div>
+    );
+  };
 
   const isLeafNode = (round: number): boolean => {
     return round === 1;
@@ -223,6 +275,16 @@ const Bracket = () => {
       );
     }
 
+    let placedTeams: Record<string, string> = {};
+    try {
+      const placedTeamsData = sessionStorage.getItem('placedTeams');
+      if (placedTeamsData) {
+        placedTeams = JSON.parse(placedTeamsData);
+      }
+    } catch (error) {
+      console.error('배치된 팀 정보 가져오기 오류:', error);
+    }
+
     return (
       <div
         className={cn(
@@ -238,19 +300,40 @@ const Bracket = () => {
         {Array(position)
           .fill(null)
           .map((_, _idx) => {
-            const node = nodesInRound[_idx];
-            const droppableId = `round_${round}_position_${node?.position ?? _idx}`;
+            const defaultNode = {
+              round,
+              position: _idx,
+              teamName: '',
+              left: null,
+              right: null,
+              isEmpty: true,
+            };
+            const node = nodesInRound[_idx] || defaultNode;
+            const droppableId = `round_${round}_position_${node.position}`;
             const isLeaf = isLeafNode(round);
+
+            const positionKey = `${round}_${node.position}`;
+            const placedTeamName = placedTeams[positionKey] || '';
+            const hasTeam = isLeaf ? !!placedTeamName : false;
 
             return (
               <div key={droppableId} className="relative">
                 {isLeaf ? (
                   <>
-                    <TeamItem
-                      teamName=""
-                      isEmpty={true}
-                      className={cn('w-[160px]', 'absolute', 'top-0', 'left-0')}
-                    />
+                    {!hasTeam && (
+                      <TeamItem
+                        teamName=""
+                        isEmpty={true}
+                        className={cn(
+                          'w-[160px]',
+                          'absolute',
+                          'top-0',
+                          'left-0',
+                          'z-0',
+                          'team-item-empty',
+                        )}
+                      />
+                    )}
                     <Droppable droppableId={droppableId}>
                       {(provided, snapshot) => (
                         <div
@@ -260,13 +343,21 @@ const Bracket = () => {
                             'w-[160px]',
                             'h-[48px]',
                             'relative',
-                            snapshot.isDraggingOver && 'bg-blue-500/20',
                             'rounded-lg',
+                            'transition-all',
+                            'duration-200',
+                            'z-10',
+                            snapshot.isDraggingOver && !hasTeam
+                              ? 'border-2 border-blue-400 bg-blue-500/40'
+                              : 'bg-transparent',
+                            snapshot.isDraggingOver &&
+                              hasTeam &&
+                              'bg-red-500/20',
                           )}
                         >
-                          {node && !node.isEmpty && (
+                          {hasTeam && (
                             <TeamItem
-                              teamName={node.teamName}
+                              teamName={placedTeamName}
                               isEmpty={false}
                               className="w-[160px]"
                             />
@@ -375,45 +466,149 @@ const Bracket = () => {
     round: number,
     position: number,
   ) => {
-    if (!bracketTree) return;
+    console.log(
+      `팀 ${teamName}을 라운드 ${round}, 포지션 ${position}에 배치합니다.`,
+    );
 
-    const updateNode = (node: BracketNode): BracketNode => {
-      if (node.round === round && node.position === position) {
-        return {
-          ...node,
-          teamName,
-          isEmpty: false,
+    try {
+      let placedTeams: Record<string, string> = {};
+      const placedTeamsData = sessionStorage.getItem('placedTeams');
+      if (placedTeamsData) {
+        placedTeams = JSON.parse(placedTeamsData);
+      }
+
+      const positionKey = `${round}_${position}`;
+      placedTeams[positionKey] = teamName;
+
+      sessionStorage.setItem('placedTeams', JSON.stringify(placedTeams));
+
+      if (!bracketTree) {
+        const newRoot = createBracketTree(totalTeams);
+        if (newRoot) {
+          setBracketTree(newRoot);
+        }
+      } else {
+        const cloneTree = (node: BracketNode): BracketNode => {
+          return {
+            ...node,
+            left: node.left ? cloneTree(node.left) : null,
+            right: node.right ? cloneTree(node.right) : null,
+          };
         };
+
+        const updatedTree = cloneTree(bracketTree);
+        setBracketTree(updatedTree);
       }
 
-      return {
-        ...node,
-        left: node.left ? updateNode(node.left) : null,
-        right: node.right ? updateNode(node.right) : null,
-      };
-    };
+      window.dispatchEvent(new Event('storage'));
 
-    setBracketTree(updateNode(bracketTree));
-  };
-
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-
-    if (result.destination.droppableId.startsWith('round_')) {
-      const [, round, , position] = result.destination.droppableId.split('_');
-      const roundNum = parseInt(round);
-
-      if (isLeafNode(roundNum)) {
-        handleTeamDrop(result.draggableId, roundNum, parseInt(position));
-      }
+      setTimeout(() => {
+        window.dispatchEvent(new Event('storage'));
+      }, 100);
+    } catch (error) {
+      console.error('팀 배치 중 오류 발생:', error);
     }
   };
 
+  const handleDragEnd = (result: DropResult) => {
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('dragging');
+    }
+
+    console.log('드래그 종료:', result);
+
+    if (!result.destination) {
+      console.log('드롭 대상이 없습니다.');
+      return;
+    }
+
+    console.log(
+      `드래그 소스: ${result.source.droppableId}, 드롭 대상: ${result.destination.droppableId}`,
+    );
+
+    if (
+      result.source.droppableId === 'teams' &&
+      result.destination.droppableId.startsWith('round_')
+    ) {
+      const [, round, , position] = result.destination.droppableId.split('_');
+      const roundNum = parseInt(round);
+      const positionNum = parseInt(position);
+
+      console.log(
+        `팀 ${result.draggableId}를 라운드 ${roundNum}, 포지션 ${positionNum}에 배치 시도`,
+      );
+
+      handleTeamDrop(result.draggableId, roundNum, positionNum);
+
+      try {
+        window.dispatchEvent(new Event('storage'));
+      } catch (error) {
+        console.error('스토리지 이벤트 발생 중 오류:', error);
+      }
+    } else {
+      console.log('드래그 소스가 팀 목록이 아니거나 대상이 유효하지 않습니다.');
+    }
+  };
+
+  useEffect(() => {
+    try {
+      const savedBracketState = sessionStorage.getItem('bracketState');
+      if (savedBracketState) {
+        const parsedState = JSON.parse(savedBracketState);
+        setBracketTree(parsedState);
+      }
+    } catch (error) {
+      console.error('저장된 브래킷 상태 복원 중 오류 발생:', error);
+    }
+  }, []);
+
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
+    <DragDropContext
+      onDragEnd={handleDragEnd}
+      onDragStart={() => {
+        if (typeof document !== 'undefined') {
+          document.body.classList.add('dragging');
+        }
+      }}
+      enableDefaultSensors={true}
+      dragHandleUsageInstructions=""
+    >
       <div
         className={cn('min-h-[600px]', 'bg-black', 'p-30', 'flex', 'flex-col')}
       >
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+            [data-rbd-drag-placeholder] {
+              opacity: 0 !important;
+            }
+            [data-rbd-draggable-context-id] {
+              transition: transform 0.1s;
+            }
+            .draggable-clone {
+              z-index: 9999 !important;
+              cursor: grabbing !important;
+              opacity: 1 !important;
+              box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+            }
+            .relative {
+              position: relative;
+            }
+            .team-item-empty {
+              visibility: visible !important;
+              opacity: 0.4 !important;
+            }
+            
+            [data-rbd-placeholder-context-id] {
+              display: none !important;
+            }
+            
+            div[data-rbd-draggable-id] {
+              transition: none !important;
+            }
+          `,
+          }}
+        />
         {renderControls()}
         <header className={cn('mb-30')}>
           <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>

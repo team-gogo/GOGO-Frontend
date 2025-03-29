@@ -20,7 +20,9 @@ const TeamItem = ({ teamName, className, isEmpty = false }: TeamItemProps) => {
           'justify-center',
           'text-body1',
           'text-white',
-          'opacity-30',
+          'opacity-40',
+          'border',
+          'border-gray-500',
           className,
         )}
       />
