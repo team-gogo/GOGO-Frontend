@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { MatchData } from '../types/my/bet';
 
-interface MatchStatus {
+export interface MatchStatus {
   isPlaying: boolean;
   isMatchFinish: boolean;
   time: string;
