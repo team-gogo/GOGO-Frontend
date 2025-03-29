@@ -73,6 +73,13 @@ const Bracket = () => {
   const calculateTeamDistribution = (
     teamCount: number,
   ): [GroupDistribution, GroupDistribution] => {
+    if (teamCount === 6) {
+      return [
+        { top: 2, bottom: 1 },
+        { top: 1, bottom: 2 },
+      ];
+    }
+
     if (teamCount <= 4) {
       const leftTotal = Math.ceil(teamCount / 2);
       const rightTotal = Math.floor(teamCount / 2);
