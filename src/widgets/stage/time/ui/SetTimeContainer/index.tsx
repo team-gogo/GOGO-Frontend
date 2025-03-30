@@ -236,6 +236,7 @@ const SetTimeContainer = () => {
               index={match.index}
               teamA={match.teamA}
               teamB={match.teamB}
+              selected={false}
             />
           ))
         ) : (
@@ -259,6 +260,7 @@ const SetTimeContainer = () => {
                     index={match.index}
                     teamA={match.teamA}
                     teamB={match.teamB}
+                    selected={false}
                   />
                 ))
               ) : (
@@ -277,6 +279,7 @@ const SetTimeContainer = () => {
                     index={match.index}
                     teamA={match.teamA}
                     teamB={match.teamB}
+                    selected={false}
                   />
                 ))
               ) : (
