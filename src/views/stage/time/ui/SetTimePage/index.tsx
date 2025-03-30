@@ -1,4 +1,5 @@
 'use client';
+import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
@@ -7,6 +8,20 @@ import SetTimeContainer from '@/widgets/stage/time/ui/SetTimeContainer';
 
 const SetTimePage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const matchId = searchParams.get('matchId');
+
+  const handleConfirm = () => {
+    if (matchId) {
+      sessionStorage.setItem(`isConfirmed_${matchId}`, 'true');
+
+      setTimeout(() => {
+        router.push('/stage');
+      }, 300);
+    } else {
+      router.push('/stage');
+    }
+  };
 
   return (
     <div className={cn('flex', 'justify-center', 'w-full')}>
@@ -43,13 +58,7 @@ const SetTimePage = () => {
           )}
         >
           <div className={cn('max-w-[1320px]', 'w-full', 'px-24')}>
-            <Button
-              onClick={() => {
-                router.push('/stage');
-              }}
-            >
-              확인
-            </Button>
+            <Button onClick={handleConfirm}>확인</Button>
           </div>
         </div>
       </div>

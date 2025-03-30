@@ -12,12 +12,18 @@ import { cn } from '@/shared/utils/cn';
 interface StageApplyProps {
   game: MatchGameType;
   stageId: number;
+  isConfirmed: boolean;
 }
 
-const StageApply = ({ game, stageId }: StageApplyProps) => {
+const StageApply = ({
+  game,
+  stageId,
+  isConfirmed: initialIsConfirmed,
+}: StageApplyProps) => {
   const { gameName, teamCount, category, isParticipating, gameId } = game;
   const router = useRouter();
   const [isMaintainer, setIsMaintainer] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(initialIsConfirmed);
 
   useEffect(() => {
     const checkMaintainer = async () => {
@@ -31,6 +37,13 @@ const StageApply = ({ game, stageId }: StageApplyProps) => {
 
     checkMaintainer();
   }, [stageId]);
+
+  useEffect(() => {
+    const storedIsConfirmed = sessionStorage.getItem(`isConfirmed_${gameId}`);
+    if (storedIsConfirmed === 'true') {
+      setIsConfirmed(true);
+    }
+  }, [gameId]);
 
   const handleApply = () => {
     if (isMaintainer) {
@@ -90,12 +103,18 @@ const StageApply = ({ game, stageId }: StageApplyProps) => {
             {gameName}
           </h1>
           <div className={cn('flex', 'w-full', 'justify-center')}>
-            <Button
-              disabled={isParticipating && !isMaintainer}
-              onClick={handleApply}
-            >
-              {isMaintainer ? '종료하기' : '신청하기'}
-            </Button>
+            {isConfirmed ? (
+              <Button disabled={true} onClick={handleApply}>
+                확정된 경기입니다.
+              </Button>
+            ) : (
+              <Button
+                disabled={isParticipating && !isMaintainer}
+                onClick={handleApply}
+              >
+                {isMaintainer ? '종료하기' : '신청하기'}
+              </Button>
+            )}
           </div>
         </div>
       </div>
