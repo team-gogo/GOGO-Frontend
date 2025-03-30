@@ -16,6 +16,11 @@ const CreateBracketPage = () => {
     router.push(`/stage/time?matchId=${matchId}`);
   };
 
+  const handleBackClick = () => {
+    sessionStorage.removeItem(`placedTeams_${matchId}`);
+    router.back();
+  };
+
   return (
     <div className={cn('flex', 'justify-center', 'w-full')}>
       <div
@@ -30,7 +35,11 @@ const CreateBracketPage = () => {
         )}
       >
         <div className={cn('m-30')}>
-          <BackPageButton type="back" label="대진표" />
+          <BackPageButton
+            type="back"
+            label="대진표"
+            onClick={handleBackClick}
+          />
         </div>
 
         <Bracket matchId={matchId} />
