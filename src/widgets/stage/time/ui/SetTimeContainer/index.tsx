@@ -473,11 +473,9 @@ const SetTimeContainer = () => {
                 teamA={match.teamA}
                 teamB={match.teamB}
                 selected={isMatchSelected(match.round, match.index)}
+                solved={!isMatchTimeSet(match.round, match.index)}
                 onClick={() => handleMatchSelect(match.round, match.index)}
               />
-              {isMatchTimeSet(match.round, match.index) && (
-                <div className="absolute -right-2 -top-2 h-10 w-10 rounded-full bg-main-500" />
-              )}
             </div>
           ))
         ) : (
@@ -508,10 +506,8 @@ const SetTimeContainer = () => {
                       onClick={() =>
                         handleMatchSelect(match.round, match.index)
                       }
+                      solved={!isMatchTimeSet(match.round, match.index)}
                     />
-                    {isMatchTimeSet(match.round, match.index) && (
-                      <div className="absolute -right-2 -top-2 h-10 w-10 rounded-full bg-main-500" />
-                    )}
                   </div>
                 ))
               ) : (
@@ -534,13 +530,11 @@ const SetTimeContainer = () => {
                       teamA={match.teamA}
                       teamB={match.teamB}
                       selected={isMatchSelected(match.round, match.index)}
+                      solved={!isMatchTimeSet(match.round, match.index)}
                       onClick={() =>
                         handleMatchSelect(match.round, match.index)
                       }
                     />
-                    {isMatchTimeSet(match.round, match.index) && (
-                      <div className="absolute -right-2 -top-2 h-10 w-10 rounded-full bg-main-500" />
-                    )}
                   </div>
                 ))
               ) : (
