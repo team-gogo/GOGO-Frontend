@@ -119,8 +119,8 @@ const BracketConnectionLayer = ({
             id="bracket-svg-8"
             className="bracket-connection-svg"
             style={{
-              maxWidth: '80%',
-              maxHeight: '70%',
+              maxWidth: '95%',
+              maxHeight: '90%',
               position: 'absolute',
               left: '50%',
               top: '50%',
