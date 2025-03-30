@@ -17,7 +17,7 @@ const MatchItem = ({
 }: MatchItemProps) => {
   return (
     <div
-      className={`flex min-h-20 w-[300px] items-center rounded-lg ${selected ? 'bg-main-600' : 'bg-gray-600'} cursor-pointer p-[8px_16px] text-white`}
+      className={`flex min-h-20 w-[300px] items-center rounded-lg bg-gray-600 ${selected ? 'outline-3 outline outline-main-600' : ''} cursor-pointer p-[8px_16px] text-white`}
       onClick={onClick}
     >
       <div className="mr-[20px] text-h4s font-bold">{index}</div>
