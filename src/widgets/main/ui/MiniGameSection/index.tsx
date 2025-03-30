@@ -1,36 +1,50 @@
 'use client';
 
-import { useState } from 'react';
-import MiniGameModal from '@/entities/main/ui/MiniGameModal';
+import { useRouter } from 'next/navigation';
 import { CoinIcon, PlinkoIcon, ShellGameIcon } from '@/shared/assets/icons';
+import { ActiveGameList } from '@/shared/types/mini-game';
 import { cn } from '@/shared/utils/cn';
 
-const MiniGameSection = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedGame, setSelectedGame] = useState<{
-    Icon: React.ComponentType<{ size: number; color: string }>;
-    label: string;
-  } | null>(null);
+interface MiniGameSectionProps {
+  stageId: string;
+  activeGameList: ActiveGameList | undefined;
+}
+
+const MiniGameSection = ({ stageId, activeGameList }: MiniGameSectionProps) => {
+  const router = useRouter();
 
   const gameData = [
-    { Icon: ShellGameIcon, label: '야바위' },
-    { Icon: CoinIcon, label: '코인' },
-    { Icon: PlinkoIcon, label: '플린코' },
+    {
+      Icon: ShellGameIcon,
+      label: '야바위',
+      path: 'shell-game',
+      isActive: activeGameList?.isYavarweeActive,
+    },
+    {
+      Icon: CoinIcon,
+      label: '코인',
+      path: 'coin',
+      isActive: activeGameList?.isCoinTossActive,
+    },
+    {
+      Icon: PlinkoIcon,
+      label: '플린코',
+      path: 'plinko',
+      isActive: activeGameList?.isPlinkoActive,
+    },
   ];
 
-  const handleGameClick = (
-    Icon: React.ComponentType<{ size: number; color: string }>,
-    label: string,
-  ) => {
-    setSelectedGame({ Icon, label });
-    setIsModalOpen(true);
+  const handleGameClick = (path: string, isActive?: boolean) => {
+    if (isActive) {
+      router.push(`/mini-game/${stageId}/${path}`);
+    }
   };
 
   return (
     <div
       className={cn('w-full', 'h-full', 'gap-[1.5rem]', 'flex', 'items-center')}
     >
-      {gameData.map(({ Icon, label }, index) => (
+      {gameData.map(({ Icon, label, path, isActive }, index) => (
         <button
           key={index}
           className={cn(
@@ -41,23 +55,25 @@ const MiniGameSection = () => {
             'items-center',
             'p-[1.25rem]',
             'flex-col',
-            'bg-gray-700',
-            'w-full',
             'h-full',
             'gap-[1rem]',
+            isActive
+              ? 'cursor-pointer bg-main-600'
+              : 'cursor-default bg-gray-700 opacity-50 blur-[2px]',
           )}
-          onClick={() => handleGameClick(Icon, label)}
+          onClick={() => handleGameClick(path, isActive)}
         >
-          <Icon size={60} color="#898989" />
-          <h2 className={cn('text-body1s', 'text-gray-400')}>{label}</h2>
+          <Icon size={60} color={isActive ? '#FFFFFF' : '#898989'} />
+          <h2
+            className={cn(
+              'text-body1s',
+              isActive ? 'text-white' : 'text-gray-400',
+            )}
+          >
+            {label}
+          </h2>
         </button>
       ))}
-      {isModalOpen && selectedGame && (
-        <MiniGameModal
-          onClose={() => setIsModalOpen(false)}
-          selectedGame={selectedGame}
-        />
-      )}
     </div>
   );
 };
