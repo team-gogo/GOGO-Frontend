@@ -101,6 +101,22 @@ const SetTimeContainer = () => {
   };
 
   const getFormattedData = () => {
+    const teamIdMap = new Map<string, string>();
+
+    try {
+      const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+      const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+
+      if (confirmedTeamsData) {
+        const parsedTeams = JSON.parse(confirmedTeamsData);
+        parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
+          teamIdMap.set(team.teamName, team.teamId.toString());
+        });
+      }
+    } catch (error) {
+      console.error('Error loading confirmed teams:', error);
+    }
+
     const tournamentGames = savedMatches.map((match) => {
       let round = '';
 
@@ -112,9 +128,12 @@ const SetTimeContainer = () => {
         round = 'FINALS';
       }
 
+      const teamAId = teamIdMap.get(match.teamA) || 'TBD';
+      const teamBId = teamIdMap.get(match.teamB) || 'TBD';
+
       return {
-        teamA: match.teamA,
-        teamB: match.teamB,
+        teamA: teamAId,
+        teamB: teamBId,
         round,
         turn: match.index,
         startDate: match.startDate,
