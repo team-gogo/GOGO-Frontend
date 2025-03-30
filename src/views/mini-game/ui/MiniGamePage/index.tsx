@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GameInfo, StoreInfo } from '@/entities/mini-game';
 import { StoreIcon } from '@/shared/assets/icons';
 import { MiniGameIcon } from '@/shared/assets/svg';
@@ -35,6 +35,18 @@ const MiniGamePage = () => {
 
   const storeItems = createStoreItems(buyTicket, isPending);
   const miniGames = createMiniGameItems(router, stageId);
+
+  useEffect(() => {
+    if (myPoint) {
+      sessionStorage.setItem('myPoint', JSON.stringify(myPoint));
+    }
+  }, [myPoint]);
+
+  useEffect(() => {
+    if (ticketCount) {
+      sessionStorage.setItem('ticketCount', JSON.stringify(ticketCount));
+    }
+  }, [ticketCount]);
 
   if (activeGameIsLoading || !activeGameList || myPointIsLoading || !myPoint) {
     return <div>Loading...</div>;

@@ -5,8 +5,7 @@ export const formatPlinkoData = (
   selectedRisk: 'LOW' | 'MEDIUM' | 'HIGH',
 ) => {
   return {
-    deviceToken: null,
-    amount: data.amount,
+    amount: Number(data.amount),
     risk: selectedRisk,
   };
 };

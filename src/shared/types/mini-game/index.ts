@@ -25,7 +25,6 @@ export interface ShopTicketStatusDto {
 
 export interface PlinkoFormType {
   amount: number;
-  times: number;
   risk: 'LOW' | 'MEDIUM' | 'HIGH';
 }
 

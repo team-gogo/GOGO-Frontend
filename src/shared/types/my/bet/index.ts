@@ -1,17 +1,20 @@
+export interface TeamType {
+  teamId: number;
+  teamName: string;
+  bettingPoint: number;
+  winCount: number;
+}
+
+export interface BetType {
+  isBetting: boolean;
+  bettingPoint?: number;
+  predictedWinTeamId?: number;
+}
+
 export type MatchData = {
   matchId: number;
-  ateam: {
-    teamId: number;
-    teamName: string;
-    bettingPoint: number;
-    winCount: number;
-  };
-  bteam: {
-    teamId: number;
-    teamName: string;
-    bettingPoint: number;
-    winCount: number;
-  };
+  ateam: TeamType;
+  bteam: TeamType;
   startDate: string;
   endDate: string;
   isEnd: boolean;
@@ -33,11 +36,7 @@ export type MatchData = {
   turn?: number;
   isNotice: boolean;
   isPlayer: boolean;
-  betting: {
-    isBetting: boolean;
-    bettingPoint?: number;
-    predictedWinTeamId?: number;
-  };
+  betting: BetType;
   result?: {
     victoryTeamId: number;
     aTeamScore: number;
