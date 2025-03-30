@@ -1,10 +1,13 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
 import SetTimeContainer from '@/widgets/stage/time/ui/SetTimeContainer';
+
 const SetTimePage = () => {
+  const router = useRouter();
+
   return (
     <div className={cn('flex', 'justify-center', 'w-full')}>
       <div
@@ -40,7 +43,13 @@ const SetTimePage = () => {
           )}
         >
           <div className={cn('max-w-[1320px]', 'w-full', 'px-24')}>
-            <Button>확인</Button>
+            <Button
+              onClick={() => {
+                router.push('/stage');
+              }}
+            >
+              확인
+            </Button>
           </div>
         </div>
       </div>
