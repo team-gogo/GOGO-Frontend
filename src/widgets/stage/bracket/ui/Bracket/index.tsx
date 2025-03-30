@@ -15,6 +15,7 @@ import FiveBracketLine from '@/shared/assets/svg/BarcketLine/FiveBracketLine';
 import FourBracketLine from '@/shared/assets/svg/BarcketLine/FourBracketLine';
 import SevenBracketLine from '@/shared/assets/svg/BarcketLine/SevenBracketLine';
 import SixBracketLine from '@/shared/assets/svg/BarcketLine/SixBracketLine';
+import ThreeBracketLine from '@/shared/assets/svg/BarcketLine/ThreeBracketLine';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 
@@ -93,7 +94,28 @@ const BracketConnectionLayer = ({
           pointerEvents: 'none',
         }}
       >
-        {teamCount <= 4 ? (
+        {teamCount === 3 ? (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 992 220"
+            preserveAspectRatio="xMidYMid meet"
+            id="bracket-svg-4"
+            className="bracket-connection-svg"
+            style={{
+              maxWidth: '80%',
+              maxHeight: '70%',
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              opacity: 0.85,
+              zIndex: 1,
+            }}
+          >
+            <ThreeBracketLine />
+          </svg>
+        ) : teamCount === 4 ? (
           <svg
             width="100%"
             height="100%"
