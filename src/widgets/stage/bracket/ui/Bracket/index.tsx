@@ -10,6 +10,8 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
+import EightBracketLine from '@/shared/assets/svg/BarcketLine/EightBracketLine';
+import FourBracketLine from '@/shared/assets/svg/BarcketLine/FourBracketLine';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { cn } from '@/shared/utils/cn';
@@ -31,6 +33,109 @@ interface BracketNode {
 interface BracketProps {
   matchId?: number;
 }
+
+interface BracketConnectionLayerProps {
+  finalStage: number;
+  teamCount: number;
+  firstRoundDistribution: [GroupDistribution, GroupDistribution];
+}
+
+const BracketConnectionLayer = ({
+  finalStage,
+  teamCount,
+  firstRoundDistribution,
+}: BracketConnectionLayerProps) => {
+  const cssVars = {
+    '--bracket-final-stage': finalStage,
+    '--bracket-left-top-count': firstRoundDistribution[0].top,
+    '--bracket-left-bottom-count': firstRoundDistribution[0].bottom,
+    '--bracket-right-top-count': firstRoundDistribution[1].top,
+    '--bracket-right-bottom-count': firstRoundDistribution[1].bottom,
+    '--bracket-total-teams':
+      firstRoundDistribution[0].top +
+      firstRoundDistribution[0].bottom +
+      firstRoundDistribution[1].top +
+      firstRoundDistribution[1].bottom,
+  } as React.CSSProperties;
+
+  return (
+    <div
+      className={cn(
+        'absolute',
+        'inset-0',
+        'z-0',
+        'pointer-events-none',
+        'overflow-visible',
+      )}
+      data-bracket-stage={finalStage}
+      id="bracket-connection-layer"
+      style={cssVars}
+    >
+      <div
+        data-top-left-count={firstRoundDistribution[0].top}
+        data-bottom-left-count={firstRoundDistribution[0].bottom}
+        data-top-right-count={firstRoundDistribution[1].top}
+        data-bottom-right-count={firstRoundDistribution[1].bottom}
+        className="hidden"
+      />
+
+      <div
+        className="absolute inset-0 h-full w-full"
+        id="bracket-svg-container"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+        }}
+      >
+        {teamCount <= 4 ? (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 992 220"
+            preserveAspectRatio="xMidYMid meet"
+            id="bracket-svg-4"
+            className="bracket-connection-svg"
+            style={{
+              maxWidth: '80%',
+              maxHeight: '70%',
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              opacity: 0.85,
+              zIndex: 1,
+            }}
+          >
+            <FourBracketLine />
+          </svg>
+        ) : (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 1184 364"
+            preserveAspectRatio="xMidYMid meet"
+            id="bracket-svg-8"
+            className="bracket-connection-svg"
+            style={{
+              maxWidth: '80%',
+              maxHeight: '70%',
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              opacity: 0.85,
+              zIndex: 1,
+            }}
+          >
+            <EightBracketLine />
+          </svg>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const Bracket = ({ matchId = 0 }: BracketProps) => {
   const [totalTeams, setTotalTeams] = useState(4);
@@ -997,7 +1102,33 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
             </button>
           </div>
         </header>
-        <div className={cn('flex-1', 'bg-gray-700', 'rounded-lg', 'p-20')}>
+        <div
+          className={cn(
+            'flex-1',
+            'bg-gray-700',
+            'rounded-lg',
+            'p-20',
+            'relative',
+            'bracket-container',
+            finalStage === 4 ? 'four-bracket' : 'eight-bracket',
+          )}
+          style={
+            {
+              '--bracket-left-teams':
+                firstRoundDistribution[0].top +
+                firstRoundDistribution[0].bottom,
+              '--bracket-right-teams':
+                firstRoundDistribution[1].top +
+                firstRoundDistribution[1].bottom,
+            } as React.CSSProperties
+          }
+        >
+          <BracketConnectionLayer
+            finalStage={finalStage}
+            firstRoundDistribution={firstRoundDistribution}
+            teamCount={totalTeams}
+          />
+
           {finalStage === 4 ? (
             <div
               className={cn(
@@ -1006,6 +1137,8 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                 'w-full',
                 'h-full',
                 'gap-4',
+                'relative',
+                'z-10',
               )}
             >
               {renderBracketColumn(
@@ -1035,6 +1168,8 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                 'w-full',
                 'h-full',
                 'gap-4',
+                'relative',
+                'z-10',
               )}
             >
               {renderBracketColumn(
