@@ -81,7 +81,7 @@ const DetailFormation = ({
       }));
       setPlayers((prev) => [...prev, ...team2Players]);
     }
-  }, [team1DetailData, team2DetailData]);
+  }, [team1DetailData, team2DetailData, svgBounds]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -154,8 +154,6 @@ const DetailFormation = ({
       };
     }
   }, [isLargeScreen]);
-
-  console.log(svgBounds.width);
 
   const onDragStart = useCallback((start: DragStart) => {
     setIsDragging(true);
