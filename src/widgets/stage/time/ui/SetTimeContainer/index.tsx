@@ -14,6 +14,10 @@ interface MatchData {
 const SetTimeContainer = () => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [selectedMatch, setSelectedMatch] = useState<{
+    round: string;
+    index: number;
+  } | null>(null);
   const [matches, setMatches] = useState<{
     quarterFinals: MatchData[];
     semiFinals: MatchData[];
@@ -225,6 +229,22 @@ const SetTimeContainer = () => {
     }
   }, [matchId, finalStage]);
 
+  const handleMatchSelect = (round: string, index: number) => {
+    if (
+      selectedMatch &&
+      selectedMatch.round === round &&
+      selectedMatch.index === index
+    ) {
+      setSelectedMatch(null);
+    } else {
+      setSelectedMatch({ round, index });
+    }
+  };
+
+  const isMatchSelected = (round: string, index: number) => {
+    return selectedMatch?.round === round && selectedMatch?.index === index;
+  };
+
   const renderMatchSection = (title: string, matchList: MatchData[]) => (
     <div className="flex w-1/3 flex-col gap-20 rounded-lg border border-gray-500 bg-gray-700 p-6">
       <h2 className="text-center text-h4s text-white">{title}</h2>
@@ -236,7 +256,8 @@ const SetTimeContainer = () => {
               index={match.index}
               teamA={match.teamA}
               teamB={match.teamB}
-              selected={false}
+              selected={isMatchSelected(match.round, match.index)}
+              onClick={() => handleMatchSelect(match.round, match.index)}
             />
           ))
         ) : (
@@ -260,7 +281,8 @@ const SetTimeContainer = () => {
                     index={match.index}
                     teamA={match.teamA}
                     teamB={match.teamB}
-                    selected={false}
+                    selected={isMatchSelected(match.round, match.index)}
+                    onClick={() => handleMatchSelect(match.round, match.index)}
                   />
                 ))
               ) : (
@@ -279,7 +301,8 @@ const SetTimeContainer = () => {
                     index={match.index}
                     teamA={match.teamA}
                     teamB={match.teamB}
-                    selected={false}
+                    selected={isMatchSelected(match.round, match.index)}
+                    onClick={() => handleMatchSelect(match.round, match.index)}
                   />
                 ))
               ) : (

@@ -5,6 +5,7 @@ interface MatchItemProps {
   teamA: string;
   teamB: string;
   selected: boolean;
+  onClick?: () => void;
 }
 
 const MatchItem = ({
@@ -12,10 +13,12 @@ const MatchItem = ({
   teamA,
   teamB,
   selected = false,
+  onClick,
 }: MatchItemProps) => {
   return (
     <div
-      className={`flex min-h-20 w-[300px] items-center rounded-lg ${selected ? 'bg-main-600' : 'bg-gray-600'} p-[8px_16px] text-white`}
+      className={`flex min-h-20 w-[300px] items-center rounded-lg ${selected ? 'bg-main-600' : 'bg-gray-600'} cursor-pointer p-[8px_16px] text-white`}
+      onClick={onClick}
     >
       <div className="mr-[20px] text-h4s font-bold">{index}</div>
       <div className="flex flex-1 items-center justify-center">
