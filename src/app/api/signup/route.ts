@@ -18,14 +18,14 @@ export async function POST(request: Request) {
     cookies().set('accessToken', response.data.accessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: Number.MAX_SAFE_INTEGER,
     });
 
     cookies().set('refreshToken', response.data.refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: Number.MAX_SAFE_INTEGER,
     });
 
