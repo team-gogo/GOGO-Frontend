@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import serverInstance from '@/shared/api/serverInstance';
+import { refreshAccessToken } from '@/shared/utils/refreshAccessToken';
 
 const globalForRefresh = global as unknown as {
   refreshTokenPromise: Promise<{
@@ -100,12 +101,7 @@ async function handleRequest(
             if (newTokens) {
               accessToken = newTokens.accessToken;
 
-              cookies().set('accessToken', accessToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'lax',
-                maxAge: Number.MAX_SAFE_INTEGER,
-              });
+              // 불필요한 코드 제거
               return retryRequest(
                 req,
                 accessToken,
@@ -148,12 +144,6 @@ async function handleRequest(
           if (newTokens) {
             accessToken = newTokens.accessToken;
 
-            cookies().set('accessToken', accessToken, {
-              httpOnly: true,
-              secure: true,
-              sameSite: 'lax',
-              maxAge: Number.MAX_SAFE_INTEGER,
-            });
             return retryRequest(
               req,
               accessToken,
@@ -199,36 +189,6 @@ async function handleRequest(
       },
       { status },
     );
-  }
-}
-
-async function refreshAccessToken(
-  refreshToken: string,
-): Promise<{ accessToken: string; refreshToken: string } | null> {
-  try {
-    const response = await serverInstance.post('/user/auth/refresh', null, {
-      headers: { 'Refresh-Token': refreshToken },
-    });
-
-    const { accessToken, refreshToken: newRefreshToken } = response.data;
-
-    cookies().set('accessToken', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: Number.MAX_SAFE_INTEGER,
-    });
-
-    cookies().set('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: Number.MAX_SAFE_INTEGER,
-    });
-
-    return { accessToken, refreshToken: newRefreshToken };
-  } catch (error) {
-    return null;
   }
 }
 

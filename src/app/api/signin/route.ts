@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import serverInstance from '@/shared/api/serverInstance';
+import { setAuthCookies } from '@/shared/utils/setAuthCookies';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,19 +42,7 @@ export async function GET(request: Request) {
 
     const { accessToken, refreshToken, authority } = backendResponse.data;
 
-    cookies().set('accessToken', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: Number.MAX_SAFE_INTEGER,
-    });
-
-    cookies().set('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: Number.MAX_SAFE_INTEGER,
-    });
+    setAuthCookies(accessToken, refreshToken);
 
     if (authority === 'UNAUTHENTICATED') {
       return NextResponse.redirect(new URL('/signup', request.url));
