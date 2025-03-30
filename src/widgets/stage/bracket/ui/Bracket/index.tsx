@@ -12,6 +12,8 @@ import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import EightBracketLine from '@/shared/assets/svg/BarcketLine/EightBracketLine';
 import FourBracketLine from '@/shared/assets/svg/BarcketLine/FourBracketLine';
+import SevenBracketLine from '@/shared/assets/svg/BarcketLine/SevenBracketLine';
+import SixBracketLine from '@/shared/assets/svg/BarcketLine/SixBracketLine';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { cn } from '@/shared/utils/cn';
@@ -110,13 +112,53 @@ const BracketConnectionLayer = ({
           >
             <FourBracketLine />
           </svg>
-        ) : (
+        ) : teamCount === 7 ? (
           <svg
             width="100%"
             height="100%"
             viewBox="0 0 1184 364"
             preserveAspectRatio="xMidYMid meet"
-            id="bracket-svg-8"
+            id="bracket-svg-7"
+            className="bracket-connection-svg"
+            style={{
+              maxWidth: '95%',
+              maxHeight: '90%',
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              opacity: 0.85,
+              zIndex: 1,
+            }}
+          >
+            <SevenBracketLine />
+          </svg>
+        ) : teamCount === 6 ? (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 1184 364"
+            preserveAspectRatio="xMidYMid meet"
+            id="bracket-svg-6"
+            className="bracket-connection-svg"
+            style={{
+              maxWidth: '95%',
+              maxHeight: '90%',
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              opacity: 0.85,
+              zIndex: 1,
+            }}
+          >
+            <SixBracketLine />
+          </svg>
+        ) : (
+          <svg
+            width="100%"
+            height="100%"
+            id="bracket-svg-6"
             className="bracket-connection-svg"
             style={{
               maxWidth: '95%',
