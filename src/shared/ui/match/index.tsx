@@ -24,6 +24,7 @@ import { usePatchMatchNotice } from '@/views/main/model/usePatchMatchNotice';
 import Button from '../button';
 import MatchTypeLabel from '../matchTypeLabel';
 import SportTypeLabel from '../sportTypelabel';
+import SystemLabel from '../systemLabel';
 
 interface MatchProps {
   match: MatchData;
@@ -37,6 +38,7 @@ const Match = ({ match }: MatchProps) => {
     startDate,
     endDate,
     round,
+    system,
     category,
     isNotice,
     isPlayer,
@@ -196,10 +198,10 @@ const Match = ({ match }: MatchProps) => {
               {isAlarmClicked ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
             </button>
             <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
-              <MatchTypeLabel
-                type={isFinal ? 'FINAL' : 'OFFICIAL'}
-                customText={roundText}
-                color={isFinal ? '#97A9FF' : '#FFF'}
+              <SystemLabel
+                system={system}
+                roundText={roundText}
+                isFinal={isFinal}
               />
               <MatchTypeLabel
                 type={'TIME'}

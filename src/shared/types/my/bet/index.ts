@@ -1,3 +1,12 @@
+export type Round =
+  | 'ROUND_OF_32'
+  | 'ROUND_OF_16'
+  | 'QUARTER_FINALS'
+  | 'SEMI_FINALS'
+  | 'FINALS';
+
+export type System = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';
+
 export interface TeamType {
   teamId: number;
   teamName: string;
@@ -18,12 +27,7 @@ export type MatchData = {
   startDate: string;
   endDate: string;
   isEnd: boolean;
-  round?:
-    | 'ROUND_OF_32'
-    | 'ROUND_OF_16'
-    | 'QUARTER_FINALS'
-    | 'SEMI_FINALS'
-    | 'FINALS';
+  round?: Round;
   category:
     | 'SOCCER'
     | 'BASKET_BALL'
@@ -32,7 +36,7 @@ export type MatchData = {
     | 'BADMINTON'
     | 'LOL'
     | 'ETC';
-  system?: 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';
+  system?: System;
   turn?: number;
   isNotice: boolean;
   isPlayer: boolean;
