@@ -47,6 +47,11 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   }, []);
 
   const handleConfirmTeam = useCallback(() => {
+    if (selectedTeamIds.length < 3) {
+      toast.error('최소 3개 이상의 팀을 선택해주세요.');
+      return;
+    }
+
     const selectedTeams = teams.filter((team) =>
       selectedTeamIds.includes(team.teamId),
     );
@@ -97,9 +102,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
             )}
           >
             <button
-              onClick={
-                selectedTeamIds.length > 0 ? handleConfirmTeam : undefined
-              }
+              onClick={handleConfirmTeam}
               className={cn(
                 'h-[50px]',
                 'w-[160px]',
@@ -109,14 +112,14 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
                 'justify-center',
                 'px-24',
                 'text-body3s',
-                selectedTeamIds.length === 0
+                selectedTeamIds.length < 3
                   ? 'border-[2px] border-solid border-[#526FFE] text-[#526FFE]'
                   : 'bg-[#526FFE] text-white',
               )}
             >
               <span className="mr-10">팀 확정하기</span>
               <ButtonCheckIcon
-                color={selectedTeamIds.length === 0 ? '#526FFE' : 'white'}
+                color={selectedTeamIds.length < 3 ? '#526FFE' : 'white'}
               />
             </button>
           </div>
