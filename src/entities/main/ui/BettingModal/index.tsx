@@ -8,6 +8,7 @@ import Input from '@/shared/ui/input';
 import MatchTypeLabel from '@/shared/ui/matchTypeLabel';
 import ModalLayout from '@/shared/ui/modalLayout';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
+import SystemLabel from '@/shared/ui/systemLabel';
 import { cn } from '@/shared/utils/cn';
 import { formatBettingData } from '../../model/formatBettingData';
 import { useBettingForm } from '../../model/useBettingForm';
@@ -56,7 +57,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
     console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
   };
 
-  const { ateam, bteam, category, betting } = match;
+  const { ateam, bteam, category, betting, system } = match;
 
   const { isPlaying, isMatchFinish, time, roundText } = matchStatus;
 
@@ -104,10 +105,10 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
         className={cn('flex', 'gap-[2.5rem]', 'flex-col')}
       >
         <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
-          <MatchTypeLabel
-            type={isFinal ? 'FINAL' : 'OFFICIAL'}
-            customText={roundText}
-            color={isFinal ? '#97A9FF' : '#FFF'}
+          <SystemLabel
+            system={system}
+            roundText={roundText}
+            isFinal={isFinal}
           />
           <MatchTypeLabel
             type={'TIME'}

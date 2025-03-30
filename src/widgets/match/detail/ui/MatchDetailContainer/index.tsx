@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { BlueAlarmIcon, GrayAlarmIcon } from '@/shared/assets/svg';
 import { useAlarmClickStore, useMatchStore } from '@/shared/stores';
 import { MatchStatus } from '@/shared/stores/useMatchStore';
+import { System } from '@/shared/types/my/bet';
 import MatchTypeLabel from '@/shared/ui/matchTypeLabel';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
+import SystemLabel from '@/shared/ui/systemLabel';
 import { cn } from '@/shared/utils/cn';
 import { usePatchMatchNotice } from '@/views/main/model/usePatchMatchNotice';
 
@@ -17,9 +19,14 @@ interface MatchDetailProps {
     | 'BADMINTON'
     | 'LOL'
     | 'ETC';
+  system: System | undefined;
 }
 
-const MatchDetailContainer = ({ matchId, category }: MatchDetailProps) => {
+const MatchDetailContainer = ({
+  matchId,
+  category,
+  system,
+}: MatchDetailProps) => {
   const { isAlarmClicked, setIsAlarmClicked } = useAlarmClickStore();
   const { matchStatus } = useMatchStore();
 
@@ -76,11 +83,7 @@ const MatchDetailContainer = ({ matchId, category }: MatchDetailProps) => {
         )}
       </button>
       <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
-        <MatchTypeLabel
-          type={isFinal ? 'FINAL' : 'OFFICIAL'}
-          customText={roundText}
-          color={isFinal ? '#97A9FF' : '#FFF'}
-        />
+        <SystemLabel system={system} roundText={roundText} isFinal={isFinal} />
         <MatchTypeLabel
           type={'TIME'}
           customText={
