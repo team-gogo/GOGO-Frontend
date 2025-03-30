@@ -6,8 +6,8 @@ import Input from '@/shared/ui/input';
 
 interface MatchData {
   index: number;
-  teamA: string;
-  teamB: string;
+  teamAName: string;
+  teamBName: string;
   round: string;
   startDate?: string;
   endDate?: string;
@@ -18,8 +18,8 @@ interface SavedMatchData {
   index: number;
   startDate: string;
   endDate: string;
-  teamA: string;
-  teamB: string;
+  teamAName: string;
+  teamBName: string;
 }
 
 const SetTimeContainer = () => {
@@ -47,7 +47,7 @@ const SetTimeContainer = () => {
   const getSelectedMatchTeams = (
     round: string,
     index: number,
-  ): { teamA: string; teamB: string } => {
+  ): { teamAName: string; teamBName: string } => {
     let match: MatchData | undefined;
 
     if (round === '8강') {
@@ -59,23 +59,23 @@ const SetTimeContainer = () => {
     }
 
     return {
-      teamA: match?.teamA || 'TBD',
-      teamB: match?.teamB || 'TBD',
+      teamAName: match?.teamAName || 'TBD',
+      teamBName: match?.teamBName || 'TBD',
     };
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
     if (selectedMatch && e.target.value && time) {
-      const { teamA, teamB } = getSelectedMatchTeams(
+      const { teamAName, teamBName } = getSelectedMatchTeams(
         selectedMatch.round,
         selectedMatch.index,
       );
       saveMatchTime(
         selectedMatch.round,
         selectedMatch.index,
-        teamA,
-        teamB,
+        teamAName,
+        teamBName,
         e.target.value,
         time,
       );
@@ -85,15 +85,15 @@ const SetTimeContainer = () => {
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTime(e.target.value);
     if (selectedMatch && date && e.target.value) {
-      const { teamA, teamB } = getSelectedMatchTeams(
+      const { teamAName, teamBName } = getSelectedMatchTeams(
         selectedMatch.round,
         selectedMatch.index,
       );
       saveMatchTime(
         selectedMatch.round,
         selectedMatch.index,
-        teamA,
-        teamB,
+        teamAName,
+        teamBName,
         date,
         e.target.value,
       );
@@ -101,7 +101,7 @@ const SetTimeContainer = () => {
   };
 
   const getFormattedData = () => {
-    const teamIdMap = new Map<string, string>();
+    const teamNameToIdMap = new Map<string, string>();
 
     try {
       const confirmedTeamsKey = `confirmedTeams_${matchId}`;
@@ -110,7 +110,7 @@ const SetTimeContainer = () => {
       if (confirmedTeamsData) {
         const parsedTeams = JSON.parse(confirmedTeamsData);
         parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
-          teamIdMap.set(team.teamName, team.teamId.toString());
+          teamNameToIdMap.set(team.teamName, team.teamId.toString());
         });
       }
     } catch (error) {
@@ -128,12 +128,12 @@ const SetTimeContainer = () => {
         round = 'FINALS';
       }
 
-      const teamAId = teamIdMap.get(match.teamA) || 'TBD';
-      const teamBId = teamIdMap.get(match.teamB) || 'TBD';
+      const teamAId = teamNameToIdMap.get(match.teamAName) || 'TBD';
+      const teamBId = teamNameToIdMap.get(match.teamBName) || 'TBD';
 
       return {
-        teamA: teamAId,
-        teamB: teamBId,
+        teamAId: teamAId,
+        teamBId: teamBId,
         round,
         turn: match.index,
         startDate: match.startDate,
@@ -147,8 +147,8 @@ const SetTimeContainer = () => {
   const saveMatchTime = (
     round: string,
     index: number,
-    teamA: string,
-    teamB: string,
+    teamAName: string,
+    teamBName: string,
     dateVal: string,
     timeVal: string,
   ) => {
@@ -166,8 +166,8 @@ const SetTimeContainer = () => {
         index: index,
         startDate: startDateStr,
         endDate: endDateStr,
-        teamA: teamA,
-        teamB: teamB,
+        teamAName: teamAName,
+        teamBName: teamBName,
       };
 
       const existingMatchIndex = savedMatches.findIndex(
@@ -324,8 +324,8 @@ const SetTimeContainer = () => {
           if (finalTeamA || finalTeamB) {
             finals.push({
               index: 1,
-              teamA: finalTeamA || 'TBD',
-              teamB: finalTeamB || 'TBD',
+              teamAName: finalTeamA || 'TBD',
+              teamBName: finalTeamB || 'TBD',
               round: '결승',
             });
           }
@@ -360,8 +360,8 @@ const SetTimeContainer = () => {
 
                 const match: MatchData = {
                   index: Math.floor(i / 2) + 1,
-                  teamA,
-                  teamB,
+                  teamAName: teamA,
+                  teamBName: teamB,
                   round: roundName,
                 };
 
@@ -381,8 +381,8 @@ const SetTimeContainer = () => {
 
                 const match: MatchData = {
                   index: Math.floor(i / 2) + 1,
-                  teamA,
-                  teamB: 'TBD',
+                  teamAName: teamA,
+                  teamBName: 'TBD',
                   round: roundName,
                 };
 
@@ -404,9 +404,10 @@ const SetTimeContainer = () => {
 
         const sortAndAdjustIndexes = (matches: MatchData[]) => {
           matches.sort((a, b) => {
-            if (a.teamA.includes('left') && !b.teamA.includes('left'))
+            if (a.teamAName.includes('left') && !b.teamAName.includes('left'))
               return -1;
-            if (!a.teamA.includes('left') && b.teamA.includes('left')) return 1;
+            if (!a.teamAName.includes('left') && b.teamAName.includes('left'))
+              return 1;
             return a.index - b.index;
           });
 
@@ -489,8 +490,8 @@ const SetTimeContainer = () => {
             <div key={`${match.round}-${match.index}`} className="relative">
               <MatchItem
                 index={match.index}
-                teamA={match.teamA}
-                teamB={match.teamB}
+                teamAName={match.teamAName}
+                teamBName={match.teamBName}
                 selected={isMatchSelected(match.round, match.index)}
                 solved={!isMatchTimeSet(match.round, match.index)}
                 onClick={() => handleMatchSelect(match.round, match.index)}
@@ -519,8 +520,8 @@ const SetTimeContainer = () => {
                   >
                     <MatchItem
                       index={match.index}
-                      teamA={match.teamA}
-                      teamB={match.teamB}
+                      teamAName={match.teamAName}
+                      teamBName={match.teamBName}
                       selected={isMatchSelected(match.round, match.index)}
                       onClick={() =>
                         handleMatchSelect(match.round, match.index)
@@ -546,8 +547,8 @@ const SetTimeContainer = () => {
                   >
                     <MatchItem
                       index={match.index}
-                      teamA={match.teamA}
-                      teamB={match.teamB}
+                      teamAName={match.teamAName}
+                      teamBName={match.teamBName}
                       selected={isMatchSelected(match.round, match.index)}
                       solved={!isMatchTimeSet(match.round, match.index)}
                       onClick={() =>

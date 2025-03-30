@@ -2,8 +2,8 @@ import React from 'react';
 
 interface MatchItemProps {
   index: number;
-  teamA: string;
-  teamB: string;
+  teamAName: string;
+  teamBName: string;
   selected: boolean;
   solved: boolean;
   onClick?: () => void;
@@ -11,8 +11,8 @@ interface MatchItemProps {
 
 const MatchItem = ({
   index,
-  teamA,
-  teamB,
+  teamAName,
+  teamBName,
   selected = false,
   solved = false,
   onClick,
@@ -24,9 +24,9 @@ const MatchItem = ({
     >
       <div className="mr-[20px] text-h4s font-bold">{index}</div>
       <div className="flex flex-1 items-center justify-center">
-        <div className="text-16 font-medium">{teamA}</div>
+        <div className="text-16 font-medium">{teamAName}</div>
         <div className="text-12 mx-[10px] opacity-70">vs</div>
-        <div className="text-16 font-medium">{teamB}</div>
+        <div className="text-16 font-medium">{teamBName}</div>
       </div>
     </div>
   );
