@@ -114,7 +114,7 @@ const SetTimeContainer = () => {
         });
       }
     } catch (error) {
-      console.error('Error loading confirmed teams:', error);
+      console.error(error);
     }
 
     const tournamentGames = savedMatches.map((match) => {
@@ -486,18 +486,30 @@ const SetTimeContainer = () => {
       <h2 className="text-center text-h4s text-white">{title}</h2>
       <div className="flex flex-col items-center gap-10">
         {matchList.length > 0 ? (
-          matchList.map((match) => (
-            <div key={`${match.round}-${match.index}`} className="relative">
-              <MatchItem
-                index={match.index}
-                teamAName={match.teamAName}
-                teamBName={match.teamBName}
-                selected={isMatchSelected(match.round, match.index)}
-                solved={!isMatchTimeSet(match.round, match.index)}
-                onClick={() => handleMatchSelect(match.round, match.index)}
-              />
-            </div>
-          ))
+          matchList
+            .filter(
+              (match) =>
+                !(
+                  (finalStage === 8 &&
+                    match.round === '8강' &&
+                    match.teamBName === 'TBD') ||
+                  (finalStage === 4 &&
+                    match.round === '4강' &&
+                    match.teamBName === 'TBD')
+                ),
+            )
+            .map((match) => (
+              <div key={`${match.round}-${match.index}`} className="relative">
+                <MatchItem
+                  index={match.index}
+                  teamAName={match.teamAName}
+                  teamBName={match.teamBName}
+                  selected={isMatchSelected(match.round, match.index)}
+                  solved={!isMatchTimeSet(match.round, match.index)}
+                  onClick={() => handleMatchSelect(match.round, match.index)}
+                />
+              </div>
+            ))
         ) : (
           <div className="text-center text-gray-400">경기 없음</div>
         )}
@@ -513,23 +525,28 @@ const SetTimeContainer = () => {
             <h2 className="text-center text-h4s text-white">4강</h2>
             <div className="flex flex-col items-center gap-10">
               {matches.semiFinals.length > 0 ? (
-                matches.semiFinals.map((match) => (
-                  <div
-                    key={`${match.round}-${match.index}`}
-                    className="relative"
-                  >
-                    <MatchItem
-                      index={match.index}
-                      teamAName={match.teamAName}
-                      teamBName={match.teamBName}
-                      selected={isMatchSelected(match.round, match.index)}
-                      onClick={() =>
-                        handleMatchSelect(match.round, match.index)
-                      }
-                      solved={!isMatchTimeSet(match.round, match.index)}
-                    />
-                  </div>
-                ))
+                matches.semiFinals
+                  .filter(
+                    (match) =>
+                      !(match.round === '4강' && match.teamBName === 'TBD'),
+                  )
+                  .map((match) => (
+                    <div
+                      key={`${match.round}-${match.index}`}
+                      className="relative"
+                    >
+                      <MatchItem
+                        index={match.index}
+                        teamAName={match.teamAName}
+                        teamBName={match.teamBName}
+                        selected={isMatchSelected(match.round, match.index)}
+                        onClick={() =>
+                          handleMatchSelect(match.round, match.index)
+                        }
+                        solved={!isMatchTimeSet(match.round, match.index)}
+                      />
+                    </div>
+                  ))
               ) : (
                 <div className="text-center text-gray-400">경기 없음</div>
               )}
