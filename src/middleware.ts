@@ -10,9 +10,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const publicPaths = ['/signin', '/callback'];
-  const isPublicPath = publicPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path),
-  );
+  const isPublicPath = publicPaths.includes(request.nextUrl.pathname);
 
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
