@@ -1,4 +1,4 @@
-import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 
 interface Participant {
   studentId: number;
@@ -14,8 +14,8 @@ interface CreateTeamRequest {
 
 export const postTeam = async (data: CreateTeamRequest) => {
   try {
-    const response = await axios.post(
-      `/api/server/stage/team/${data.gameId}`,
+    const response = await clientInstance.post(
+      `/stage/team/${data.gameId}`,
       data,
     );
     return response.data;

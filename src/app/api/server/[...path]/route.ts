@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import instance from '@/shared/api/instance';
+import serverInstance from '@/shared/api/serverInstance';
 
 const globalForRefresh = global as unknown as {
   refreshTokenPromise: Promise<{
@@ -70,7 +70,7 @@ async function handleRequest(
   }
 
   try {
-    const response = await instance.request({
+    const response = await serverInstance.request({
       url,
       method,
       params,
@@ -87,13 +87,62 @@ async function handleRequest(
     const axiosError = error as AxiosError<{ message: string }>;
     const status = axiosError.response?.status || 500;
 
-    if (status === 401 && !isRetry && refreshToken) {
-      const now = Date.now();
+    if (status === 401 && !isRetry) {
+      if (refreshToken) {
+        const now = Date.now();
 
-      const recentRefresh = now - globalForRefresh.refreshTimestamp < 1000;
+        const recentRefresh = now - globalForRefresh.refreshTimestamp < 1000;
 
-      if (globalForRefresh.isRefreshing || recentRefresh) {
-        if (globalForRefresh.refreshTokenPromise) {
+        if (globalForRefresh.isRefreshing || recentRefresh) {
+          if (globalForRefresh.refreshTokenPromise) {
+            const newTokens = await globalForRefresh.refreshTokenPromise;
+
+            if (newTokens) {
+              accessToken = newTokens.accessToken;
+
+              cookies().set('accessToken', accessToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'lax',
+                maxAge: Number.MAX_SAFE_INTEGER,
+              });
+              return retryRequest(
+                req,
+                accessToken,
+                requestId,
+                originalBody || JSON.stringify(data),
+              );
+            } else {
+              cookieStore.delete('accessToken');
+              cookieStore.delete('refreshToken');
+              return NextResponse.json(
+                {
+                  error: 'Token refresh failed',
+                  status: 401,
+                  isRefreshError: true,
+                },
+                { status: 401 },
+              );
+            }
+          }
+
+          if (recentRefresh && !globalForRefresh.refreshTokenPromise) {
+            accessToken = cookies().get('accessToken')?.value || '';
+
+            return retryRequest(
+              req,
+              accessToken,
+              requestId,
+              originalBody || JSON.stringify(data),
+            );
+          }
+        }
+
+        globalForRefresh.isRefreshing = true;
+        globalForRefresh.refreshTimestamp = now;
+        globalForRefresh.refreshTokenPromise = refreshAccessToken(refreshToken);
+
+        try {
           const newTokens = await globalForRefresh.refreshTokenPromise;
 
           if (newTokens) {
@@ -114,52 +163,30 @@ async function handleRequest(
           } else {
             cookieStore.delete('accessToken');
             cookieStore.delete('refreshToken');
-            return NextResponse.redirect(new URL('/signin', req.url));
+            return NextResponse.json(
+              {
+                error: 'Token refresh failed',
+                status: 401,
+                isRefreshError: true,
+              },
+              { status: 401 },
+            );
           }
+        } finally {
+          globalForRefresh.isRefreshing = false;
+          globalForRefresh.refreshTokenPromise = null;
         }
-
-        if (recentRefresh && !globalForRefresh.refreshTokenPromise) {
-          accessToken = cookies().get('accessToken')?.value || '';
-
-          return retryRequest(
-            req,
-            accessToken,
-            requestId,
-            originalBody || JSON.stringify(data),
-          );
-        }
-      }
-
-      globalForRefresh.isRefreshing = true;
-      globalForRefresh.refreshTimestamp = now;
-      globalForRefresh.refreshTokenPromise = refreshAccessToken(refreshToken);
-
-      try {
-        const newTokens = await globalForRefresh.refreshTokenPromise;
-
-        if (newTokens) {
-          accessToken = newTokens.accessToken;
-
-          cookies().set('accessToken', accessToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'lax',
-            maxAge: Number.MAX_SAFE_INTEGER,
-          });
-          return retryRequest(
-            req,
-            accessToken,
-            requestId,
-            originalBody || JSON.stringify(data),
-          );
-        } else {
-          cookieStore.delete('accessToken');
-          cookieStore.delete('refreshToken');
-          return NextResponse.redirect(new URL('/signin', req.url));
-        }
-      } finally {
-        globalForRefresh.isRefreshing = false;
-        globalForRefresh.refreshTokenPromise = null;
+      } else {
+        cookieStore.delete('accessToken');
+        cookieStore.delete('refreshToken');
+        return NextResponse.json(
+          {
+            error: 'No refresh token available',
+            status: 401,
+            isRefreshError: true,
+          },
+          { status: 401 },
+        );
       }
     }
 
@@ -179,7 +206,7 @@ async function refreshAccessToken(
   refreshToken: string,
 ): Promise<{ accessToken: string; refreshToken: string } | null> {
   try {
-    const response = await instance.post('/user/auth/refresh', null, {
+    const response = await serverInstance.post('/user/auth/refresh', null, {
       headers: { 'Refresh-Token': refreshToken },
     });
 

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { CommunityCreateFormData } from '@/shared/types/community/create';
 
 export const postCommunity = async (
@@ -6,7 +7,7 @@ export const postCommunity = async (
   data: CommunityCreateFormData,
 ) => {
   try {
-    await axios.post(`/api/server/stage/community/${StageId}`, data);
+    await clientInstance.post(`/stage/community/${StageId}`, data);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

@@ -1,12 +1,13 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { TempPointsResponse } from '@/shared/types/my/bet';
 
 export const getMyTempPoint = async (
   stageId: number,
 ): Promise<TempPointsResponse> => {
   try {
-    const response = await axios.get<TempPointsResponse>(
-      `/api/server/stage/temp-point/me/${stageId}`,
+    const response = await clientInstance.get<TempPointsResponse>(
+      `/stage/temp-point/me/${stageId}`,
     );
     return response.data;
   } catch (error) {

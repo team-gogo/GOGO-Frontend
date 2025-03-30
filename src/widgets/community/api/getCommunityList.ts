@@ -1,4 +1,4 @@
-import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { SortType } from '@/shared/model/sportTypes';
 import { SportType } from '@/shared/model/sportTypes';
 import { BoardData } from '@/shared/types/community';
@@ -10,8 +10,8 @@ export const getCommunityList = async (
   selectedSort?: SortType | null,
 ): Promise<BoardData> => {
   try {
-    const { data } = await axios.get<BoardData>(
-      `/api/server/stage/community/${stageId}`,
+    const { data } = await clientInstance.get<BoardData>(
+      `/stage/community/${stageId}`,
       {
         params: {
           page: currentPage - 1,

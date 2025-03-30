@@ -1,11 +1,12 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 
 export const postBuyTicket = async (
   ticketType: 'COINTOSS' | 'YAVARWEE' | 'PLINKO',
   shopId: string,
 ) => {
   try {
-    await axios.post(`/api/server/shop/${shopId}`, {
+    await clientInstance.post(`/shop/${shopId}`, {
       purchaseQuantity: 1,
       ticketType,
     });
