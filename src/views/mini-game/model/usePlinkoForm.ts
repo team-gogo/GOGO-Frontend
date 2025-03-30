@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useForm, FieldErrors } from 'react-hook-form';
 import { PlinkoFormType } from '@/shared/types/mini-game';
-import { formatPlinkoData } from './formatPlinkoData';
 
 export const usePlinkoForm = () => {
   const { register, handleSubmit, setValue, watch } = useForm<PlinkoFormType>({
@@ -17,11 +16,6 @@ export const usePlinkoForm = () => {
 
   const isDisabled = !amount || !risk;
 
-  const onSubmit = (data: PlinkoFormType) => {
-    const formattedData = formatPlinkoData(data, selectedRisk);
-    console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
-  };
-
   const onError = (errors: FieldErrors<PlinkoFormType>) => {
     console.log('제출에러:', errors);
   };
@@ -34,7 +28,6 @@ export const usePlinkoForm = () => {
     selectedRisk,
     setSelectedRisk,
     isDisabled,
-    onSubmit,
     onError,
   };
 };
