@@ -9,6 +9,15 @@ interface MatchData {
   teamA: string;
   teamB: string;
   round: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+interface SavedMatchData {
+  round: string;
+  index: number;
+  startDate: string;
+  endDate: string;
 }
 
 const SetTimeContainer = () => {
@@ -18,6 +27,7 @@ const SetTimeContainer = () => {
     round: string;
     index: number;
   } | null>(null);
+  const [savedMatches, setSavedMatches] = useState<SavedMatchData[]>([]);
   const [matches, setMatches] = useState<{
     quarterFinals: MatchData[];
     semiFinals: MatchData[];
@@ -34,15 +44,153 @@ const SetTimeContainer = () => {
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
+    if (selectedMatch && e.target.value && time) {
+      saveMatchTime(
+        selectedMatch.round,
+        selectedMatch.index,
+        e.target.value,
+        time,
+      );
+    }
   };
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTime(e.target.value);
+    if (selectedMatch && date && e.target.value) {
+      saveMatchTime(
+        selectedMatch.round,
+        selectedMatch.index,
+        date,
+        e.target.value,
+      );
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const getFormattedData = () => {
+    const tournamentGames = savedMatches.map((match) => {
+      let round = '';
+
+      if (match.round === '8강') {
+        round = 'QUARTER_FINALS';
+      } else if (match.round === '4강') {
+        round = 'SEMI_FINALS';
+      } else if (match.round === '결승') {
+        round = 'FINALS';
+      }
+
+      return {
+        round,
+        turn: match.index,
+        startDate: match.startDate,
+        endDate: match.endDate,
+      };
+    });
+
+    return tournamentGames;
   };
+
+  const saveMatchTime = (
+    round: string,
+    index: number,
+    dateVal: string,
+    timeVal: string,
+  ) => {
+    try {
+      const startDateTime = new Date(`${dateVal}T${timeVal}`);
+
+      const endDateTime = new Date(startDateTime);
+      endDateTime.setHours(endDateTime.getHours() + 2);
+
+      const startDateStr = startDateTime.toISOString();
+      const endDateStr = endDateTime.toISOString();
+
+      const newSavedMatch: SavedMatchData = {
+        round: round,
+        index: index,
+        startDate: startDateStr,
+        endDate: endDateStr,
+      };
+
+      const existingMatchIndex = savedMatches.findIndex(
+        (match) => match.round === round && match.index === index,
+      );
+
+      if (existingMatchIndex !== -1) {
+        const updatedSavedMatches = [...savedMatches];
+        updatedSavedMatches[existingMatchIndex] = newSavedMatch;
+        setSavedMatches(updatedSavedMatches);
+      } else {
+        setSavedMatches([...savedMatches, newSavedMatch]);
+      }
+
+      updateMatchDateInfo(round, index, startDateStr, endDateStr);
+
+      console.log(getFormattedData());
+    } catch (error) {
+      toast.error('날짜 또는 시간 형식이 올바르지 않습니다.');
+      console.error(error);
+    }
+  };
+
+  const updateMatchDateInfo = (
+    round: string,
+    index: number,
+    startDate: string,
+    endDate: string,
+  ) => {
+    const newMatches = { ...matches };
+
+    if (round === '8강') {
+      const matchIndex = newMatches.quarterFinals.findIndex(
+        (match) => match.index === index,
+      );
+      if (matchIndex !== -1) {
+        newMatches.quarterFinals[matchIndex].startDate = startDate;
+        newMatches.quarterFinals[matchIndex].endDate = endDate;
+      }
+    } else if (round === '4강') {
+      const matchIndex = newMatches.semiFinals.findIndex(
+        (match) => match.index === index,
+      );
+      if (matchIndex !== -1) {
+        newMatches.semiFinals[matchIndex].startDate = startDate;
+        newMatches.semiFinals[matchIndex].endDate = endDate;
+      }
+    } else if (round === '결승') {
+      const matchIndex = newMatches.finals.findIndex(
+        (match) => match.index === index,
+      );
+      if (matchIndex !== -1) {
+        newMatches.finals[matchIndex].startDate = startDate;
+        newMatches.finals[matchIndex].endDate = endDate;
+      }
+    }
+
+    setMatches(newMatches);
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedMatchesKey = `savedMatches_${matchId}`;
+      const savedMatchesData = sessionStorage.getItem(savedMatchesKey);
+
+      if (savedMatchesData) {
+        try {
+          const parsedSavedMatches = JSON.parse(savedMatchesData);
+          setSavedMatches(parsedSavedMatches);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+  }, [matchId]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && savedMatches.length > 0) {
+      const savedMatchesKey = `savedMatches_${matchId}`;
+      sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
+    }
+  }, [savedMatches, matchId]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -236,13 +384,40 @@ const SetTimeContainer = () => {
       selectedMatch.index === index
     ) {
       setSelectedMatch(null);
+      setDate('');
+      setTime('');
     } else {
       setSelectedMatch({ round, index });
+
+      const savedMatch = savedMatches.find(
+        (match) => match.round === round && match.index === index,
+      );
+
+      if (savedMatch) {
+        const startDate = new Date(savedMatch.startDate);
+        const formattedDate = startDate.toISOString().split('T')[0];
+        const formattedTime = startDate
+          .toTimeString()
+          .split(' ')[0]
+          .substring(0, 5);
+
+        setDate(formattedDate);
+        setTime(formattedTime);
+      } else {
+        setDate('');
+        setTime('');
+      }
     }
   };
 
   const isMatchSelected = (round: string, index: number) => {
     return selectedMatch?.round === round && selectedMatch?.index === index;
+  };
+
+  const isMatchTimeSet = (round: string, index: number) => {
+    return savedMatches.some(
+      (match) => match.round === round && match.index === index,
+    );
   };
 
   const renderMatchSection = (title: string, matchList: MatchData[]) => (
@@ -251,14 +426,18 @@ const SetTimeContainer = () => {
       <div className="flex flex-col items-center gap-10">
         {matchList.length > 0 ? (
           matchList.map((match) => (
-            <MatchItem
-              key={`${match.round}-${match.index}`}
-              index={match.index}
-              teamA={match.teamA}
-              teamB={match.teamB}
-              selected={isMatchSelected(match.round, match.index)}
-              onClick={() => handleMatchSelect(match.round, match.index)}
-            />
+            <div key={`${match.round}-${match.index}`} className="relative">
+              <MatchItem
+                index={match.index}
+                teamA={match.teamA}
+                teamB={match.teamB}
+                selected={isMatchSelected(match.round, match.index)}
+                onClick={() => handleMatchSelect(match.round, match.index)}
+              />
+              {isMatchTimeSet(match.round, match.index) && (
+                <div className="absolute -right-2 -top-2 h-4 w-4 rounded-full bg-main-500" />
+              )}
+            </div>
           ))
         ) : (
           <div className="text-center text-gray-400">경기 없음</div>
@@ -276,14 +455,23 @@ const SetTimeContainer = () => {
             <div className="flex flex-col items-center gap-10">
               {matches.semiFinals.length > 0 ? (
                 matches.semiFinals.map((match) => (
-                  <MatchItem
+                  <div
                     key={`${match.round}-${match.index}`}
-                    index={match.index}
-                    teamA={match.teamA}
-                    teamB={match.teamB}
-                    selected={isMatchSelected(match.round, match.index)}
-                    onClick={() => handleMatchSelect(match.round, match.index)}
-                  />
+                    className="relative"
+                  >
+                    <MatchItem
+                      index={match.index}
+                      teamA={match.teamA}
+                      teamB={match.teamB}
+                      selected={isMatchSelected(match.round, match.index)}
+                      onClick={() =>
+                        handleMatchSelect(match.round, match.index)
+                      }
+                    />
+                    {isMatchTimeSet(match.round, match.index) && (
+                      <div className="absolute -right-2 -top-2 h-4 w-4 rounded-full bg-main-500" />
+                    )}
+                  </div>
                 ))
               ) : (
                 <div className="text-center text-gray-400">경기 없음</div>
@@ -296,14 +484,23 @@ const SetTimeContainer = () => {
             <div className="flex flex-col items-center gap-10">
               {matches.finals.length > 0 ? (
                 matches.finals.map((match) => (
-                  <MatchItem
+                  <div
                     key={`${match.round}-${match.index}`}
-                    index={match.index}
-                    teamA={match.teamA}
-                    teamB={match.teamB}
-                    selected={isMatchSelected(match.round, match.index)}
-                    onClick={() => handleMatchSelect(match.round, match.index)}
-                  />
+                    className="relative"
+                  >
+                    <MatchItem
+                      index={match.index}
+                      teamA={match.teamA}
+                      teamB={match.teamB}
+                      selected={isMatchSelected(match.round, match.index)}
+                      onClick={() =>
+                        handleMatchSelect(match.round, match.index)
+                      }
+                    />
+                    {isMatchTimeSet(match.round, match.index) && (
+                      <div className="absolute -right-2 -top-2 h-4 w-4 rounded-full bg-main-500" />
+                    )}
+                  </div>
                 ))
               ) : (
                 <div className="text-center text-gray-400">경기 없음</div>
@@ -333,24 +530,28 @@ const SetTimeContainer = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex gap-20">
-        <div className="flex-1">
-          <Input
-            placeholder="날짜를 입력해주세요"
-            value={date}
-            onChange={handleDateChange}
-            showBorder={true}
-          />
+      {selectedMatch && (
+        <div className="flex gap-20">
+          <div className="flex-1">
+            <Input
+              type="date"
+              placeholder="날짜를 입력해주세요"
+              value={date}
+              onChange={handleDateChange}
+              showBorder={true}
+            />
+          </div>
+          <div className="flex-1">
+            <Input
+              type="time"
+              placeholder="시간을 입력해주세요"
+              value={time}
+              onChange={handleTimeChange}
+              showBorder={true}
+            />
+          </div>
         </div>
-        <div className="flex-1">
-          <Input
-            placeholder="시간을 입력해주세요"
-            value={time}
-            onChange={handleTimeChange}
-            showBorder={true}
-          />
-        </div>
-      </form>
+      )}
     </div>
   );
 };
