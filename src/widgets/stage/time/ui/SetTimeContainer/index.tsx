@@ -18,6 +18,8 @@ interface SavedMatchData {
   index: number;
   startDate: string;
   endDate: string;
+  teamA: string;
+  teamB: string;
 }
 
 const SetTimeContainer = () => {
@@ -42,12 +44,38 @@ const SetTimeContainer = () => {
   const searchParams = useSearchParams();
   const matchId = parseInt(searchParams.get('matchId') || '0', 10);
 
+  const getSelectedMatchTeams = (
+    round: string,
+    index: number,
+  ): { teamA: string; teamB: string } => {
+    let match: MatchData | undefined;
+
+    if (round === '8강') {
+      match = matches.quarterFinals.find((m) => m.index === index);
+    } else if (round === '4강') {
+      match = matches.semiFinals.find((m) => m.index === index);
+    } else if (round === '결승') {
+      match = matches.finals.find((m) => m.index === index);
+    }
+
+    return {
+      teamA: match?.teamA || 'TBD',
+      teamB: match?.teamB || 'TBD',
+    };
+  };
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
     if (selectedMatch && e.target.value && time) {
+      const { teamA, teamB } = getSelectedMatchTeams(
+        selectedMatch.round,
+        selectedMatch.index,
+      );
       saveMatchTime(
         selectedMatch.round,
         selectedMatch.index,
+        teamA,
+        teamB,
         e.target.value,
         time,
       );
@@ -57,9 +85,15 @@ const SetTimeContainer = () => {
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTime(e.target.value);
     if (selectedMatch && date && e.target.value) {
+      const { teamA, teamB } = getSelectedMatchTeams(
+        selectedMatch.round,
+        selectedMatch.index,
+      );
       saveMatchTime(
         selectedMatch.round,
         selectedMatch.index,
+        teamA,
+        teamB,
         date,
         e.target.value,
       );
@@ -79,6 +113,8 @@ const SetTimeContainer = () => {
       }
 
       return {
+        teamA: match.teamA,
+        teamB: match.teamB,
         round,
         turn: match.index,
         startDate: match.startDate,
@@ -92,6 +128,8 @@ const SetTimeContainer = () => {
   const saveMatchTime = (
     round: string,
     index: number,
+    teamA: string,
+    teamB: string,
     dateVal: string,
     timeVal: string,
   ) => {
@@ -109,6 +147,8 @@ const SetTimeContainer = () => {
         index: index,
         startDate: startDateStr,
         endDate: endDateStr,
+        teamA: teamA,
+        teamB: teamB,
       };
 
       const existingMatchIndex = savedMatches.findIndex(
@@ -126,6 +166,7 @@ const SetTimeContainer = () => {
       updateMatchDateInfo(round, index, startDateStr, endDateStr);
 
       console.log(getFormattedData());
+      toast.success('매치 시간이 저장되었습니다.');
     } catch (error) {
       toast.error('날짜 또는 시간 형식이 올바르지 않습니다.');
       console.error(error);
