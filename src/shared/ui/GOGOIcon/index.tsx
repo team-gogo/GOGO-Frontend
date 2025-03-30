@@ -2,10 +2,10 @@ import { GIcon, OIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 interface SizeProps {
-  GWidth: string;
-  GHeight: string;
-  OWidth: string;
-  OHeight: string;
+  GWidth?: string;
+  GHeight?: string;
+  OWidth?: string;
+  OHeight?: string;
 }
 
 const GOGOIcon = ({ GWidth, GHeight, OWidth, OHeight }: SizeProps) => {
