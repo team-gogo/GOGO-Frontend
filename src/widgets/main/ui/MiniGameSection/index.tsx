@@ -34,8 +34,10 @@ const MiniGameSection = ({ stageId, activeGameList }: MiniGameSectionProps) => {
     },
   ];
 
-  const handleGameClick = (path: string) => {
-    router.push(`/mini-game/${stageId}/${path}`);
+  const handleGameClick = (path: string, isActive?: boolean) => {
+    if (isActive) {
+      router.push(`/mini-game/${stageId}/${path}`);
+    }
   };
 
   return (
@@ -55,9 +57,11 @@ const MiniGameSection = ({ stageId, activeGameList }: MiniGameSectionProps) => {
             'flex-col',
             'h-full',
             'gap-[1rem]',
-            isActive ? 'bg-main-600' : 'bg-gray-700',
+            isActive
+              ? 'cursor-pointer bg-main-600'
+              : 'cursor-default bg-gray-700 opacity-50 blur-[2px]',
           )}
-          onClick={() => handleGameClick(path)}
+          onClick={() => handleGameClick(path, isActive)}
         >
           <Icon size={60} color={isActive ? '#FFFFFF' : '#898989'} />
           <h2
