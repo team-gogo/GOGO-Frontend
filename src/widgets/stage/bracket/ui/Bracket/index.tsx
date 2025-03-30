@@ -45,6 +45,45 @@ interface BracketConnectionLayerProps {
   firstRoundDistribution: [GroupDistribution, GroupDistribution];
 }
 
+interface BracketSvgProps {
+  viewBox: string;
+  maxWidth: string;
+  maxHeight: string;
+  id: string;
+  children: React.ReactNode;
+}
+
+const BracketSvg = ({
+  viewBox,
+  maxWidth,
+  maxHeight,
+  id,
+  children,
+}: BracketSvgProps) => {
+  return (
+    <svg
+      width="100%"
+      height="100%"
+      viewBox={viewBox}
+      preserveAspectRatio="xMidYMid meet"
+      id={id}
+      className="bracket-connection-svg"
+      style={{
+        maxWidth,
+        maxHeight,
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        opacity: 0.85,
+        zIndex: 1,
+      }}
+    >
+      {children}
+    </svg>
+  );
+};
+
 const BracketConnectionLayer = ({
   finalStage,
   teamCount,
@@ -62,6 +101,19 @@ const BracketConnectionLayer = ({
       firstRoundDistribution[1].top +
       firstRoundDistribution[1].bottom,
   } as React.CSSProperties;
+
+  const smallViewBox = '0 0 992 220';
+  const largeViewBox = '0 0 1184 364';
+
+  const smallSvgStyle = {
+    maxWidth: '80%',
+    maxHeight: '70%',
+  };
+
+  const largeSvgStyle = {
+    maxWidth: '95%',
+    maxHeight: '90%',
+  };
 
   return (
     <div
@@ -95,131 +147,59 @@ const BracketConnectionLayer = ({
         }}
       >
         {teamCount === 3 ? (
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 992 220"
-            preserveAspectRatio="xMidYMid meet"
-            id="bracket-svg-4"
-            className="bracket-connection-svg"
-            style={{
-              maxWidth: '80%',
-              maxHeight: '70%',
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              opacity: 0.85,
-              zIndex: 1,
-            }}
+          <BracketSvg
+            viewBox={smallViewBox}
+            maxWidth={smallSvgStyle.maxWidth}
+            maxHeight={smallSvgStyle.maxHeight}
+            id="bracket-svg-3"
           >
             <ThreeBracketLine />
-          </svg>
+          </BracketSvg>
         ) : teamCount === 4 ? (
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 992 220"
-            preserveAspectRatio="xMidYMid meet"
+          <BracketSvg
+            viewBox={smallViewBox}
+            maxWidth={smallSvgStyle.maxWidth}
+            maxHeight={smallSvgStyle.maxHeight}
             id="bracket-svg-4"
-            className="bracket-connection-svg"
-            style={{
-              maxWidth: '80%',
-              maxHeight: '70%',
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              opacity: 0.85,
-              zIndex: 1,
-            }}
           >
             <FourBracketLine />
-          </svg>
+          </BracketSvg>
         ) : teamCount === 5 ? (
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 1184 364"
-            preserveAspectRatio="xMidYMid meet"
-            id="bracket-svg-7"
-            className="bracket-connection-svg"
-            style={{
-              maxWidth: '95%',
-              maxHeight: '90%',
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              opacity: 0.85,
-              zIndex: 1,
-            }}
+          <BracketSvg
+            viewBox={largeViewBox}
+            maxWidth={largeSvgStyle.maxWidth}
+            maxHeight={largeSvgStyle.maxHeight}
+            id="bracket-svg-5"
           >
             <FiveBracketLine />
-          </svg>
+          </BracketSvg>
         ) : teamCount === 7 ? (
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 1184 364"
-            preserveAspectRatio="xMidYMid meet"
+          <BracketSvg
+            viewBox={largeViewBox}
+            maxWidth={largeSvgStyle.maxWidth}
+            maxHeight={largeSvgStyle.maxHeight}
             id="bracket-svg-7"
-            className="bracket-connection-svg"
-            style={{
-              maxWidth: '95%',
-              maxHeight: '90%',
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              opacity: 0.85,
-              zIndex: 1,
-            }}
           >
             <SevenBracketLine />
-          </svg>
+          </BracketSvg>
         ) : teamCount === 6 ? (
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 1184 364"
-            preserveAspectRatio="xMidYMid meet"
+          <BracketSvg
+            viewBox={largeViewBox}
+            maxWidth={largeSvgStyle.maxWidth}
+            maxHeight={largeSvgStyle.maxHeight}
             id="bracket-svg-6"
-            className="bracket-connection-svg"
-            style={{
-              maxWidth: '95%',
-              maxHeight: '90%',
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              opacity: 0.85,
-              zIndex: 1,
-            }}
           >
             <SixBracketLine />
-          </svg>
+          </BracketSvg>
         ) : (
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 1184 364"
-            preserveAspectRatio="xMidYMid meet"
+          <BracketSvg
+            viewBox={largeViewBox}
+            maxWidth={largeSvgStyle.maxWidth}
+            maxHeight={largeSvgStyle.maxHeight}
             id="bracket-svg-8"
-            className="bracket-connection-svg"
-            style={{
-              maxWidth: '95%',
-              maxHeight: '90%',
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              opacity: 0.85,
-              zIndex: 1,
-            }}
           >
             <EightBracketLine />
-          </svg>
+          </BracketSvg>
         )}
       </div>
     </div>
