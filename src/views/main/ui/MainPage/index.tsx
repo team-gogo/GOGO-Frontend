@@ -162,7 +162,7 @@ const MainPage = () => {
             <SectionWrapper
               text={'포인트 랭킹'}
               icon={<PriceIcon />}
-              path="/ranking"
+              path={`/ranking/${stageId}`}
             >
               <div
                 className={cn('flex', 'w-full', 'flex-col', 'justify-between')}
