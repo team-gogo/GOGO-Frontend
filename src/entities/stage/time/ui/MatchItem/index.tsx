@@ -4,11 +4,19 @@ interface MatchItemProps {
   index: number;
   teamA: string;
   teamB: string;
+  selected: boolean;
 }
 
-const MatchItem = ({ index, teamA, teamB }: MatchItemProps) => {
+const MatchItem = ({
+  index,
+  teamA,
+  teamB,
+  selected = false,
+}: MatchItemProps) => {
   return (
-    <div className="flex min-h-20 w-[300px] items-center rounded-lg bg-gray-600 p-[8px_16px] text-white">
+    <div
+      className={`flex min-h-20 w-[300px] items-center rounded-lg ${selected ? 'bg-main-600' : 'bg-gray-600'} p-[8px_16px] text-white`}
+    >
       <div className="mr-[20px] text-h4s font-bold">{index}</div>
       <div className="flex flex-1 items-center justify-center">
         <div className="text-16 font-medium">{teamA}</div>
