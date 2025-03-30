@@ -148,15 +148,6 @@ const BracketConnectionLayer = ({
           >
             <FiveBracketLine />
           </BracketSvg>
-        ) : teamCount === 7 ? (
-          <BracketSvg
-            viewBox={largeViewBox}
-            maxWidth={largeSvgStyle.maxWidth}
-            maxHeight={largeSvgStyle.maxHeight}
-            id="bracket-svg-7"
-          >
-            <SevenBracketLine />
-          </BracketSvg>
         ) : teamCount === 6 ? (
           <BracketSvg
             viewBox={largeViewBox}
@@ -165,6 +156,15 @@ const BracketConnectionLayer = ({
             id="bracket-svg-6"
           >
             <SixBracketLine />
+          </BracketSvg>
+        ) : teamCount === 7 ? (
+          <BracketSvg
+            viewBox={largeViewBox}
+            maxWidth={largeSvgStyle.maxWidth}
+            maxHeight={largeSvgStyle.maxHeight}
+            id="bracket-svg-7"
+          >
+            <SevenBracketLine />
           </BracketSvg>
         ) : (
           <BracketSvg
