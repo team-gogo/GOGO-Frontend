@@ -13,9 +13,11 @@ const SetTimePage = () => {
           'max-w-[1320px]',
           'flex',
           'flex-col',
+          'mt-28',
           'align-middle',
           'justify-center',
           'relative',
+          'pb-28',
         )}
       >
         <div className={cn('m-30')}>
@@ -26,15 +28,20 @@ const SetTimePage = () => {
 
         <div
           className={cn(
-            'p-30',
-            'mt-32',
-            'sticky',
+            'fixed',
             'bottom-0',
+            'left-0',
+            'right-0',
+            'p-30',
             'bg-[#1F1F1F]',
             'z-10',
+            'flex',
+            'justify-center',
           )}
         >
-          <Button>확인</Button>
+          <div className={cn('max-w-[1320px]', 'w-full', 'px-24')}>
+            <Button>확인</Button>
+          </div>
         </div>
       </div>
     </div>
