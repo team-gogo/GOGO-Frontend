@@ -84,7 +84,7 @@ export const postStage = async (
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(
-        error.response.data.error || '게임 정보 전송에 실패했습니다.',
+        error.response.data.error || '스테이지 정보 전송에 실패했습니다.',
       );
     }
     throw error;
