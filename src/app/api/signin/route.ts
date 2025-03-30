@@ -45,14 +45,14 @@ export async function GET(request: Request) {
     cookies().set('accessToken', accessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: Number.MAX_SAFE_INTEGER,
     });
 
     cookies().set('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: Number.MAX_SAFE_INTEGER,
     });
 
