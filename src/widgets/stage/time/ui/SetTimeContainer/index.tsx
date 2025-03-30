@@ -435,7 +435,7 @@ const SetTimeContainer = () => {
                 onClick={() => handleMatchSelect(match.round, match.index)}
               />
               {isMatchTimeSet(match.round, match.index) && (
-                <div className="absolute -right-2 -top-2 h-4 w-4 rounded-full bg-main-500" />
+                <div className="absolute -right-2 -top-2 h-10 w-10 rounded-full bg-main-500" />
               )}
             </div>
           ))
@@ -469,7 +469,7 @@ const SetTimeContainer = () => {
                       }
                     />
                     {isMatchTimeSet(match.round, match.index) && (
-                      <div className="absolute -right-2 -top-2 h-4 w-4 rounded-full bg-main-500" />
+                      <div className="absolute -right-2 -top-2 h-10 w-10 rounded-full bg-main-500" />
                     )}
                   </div>
                 ))
@@ -498,7 +498,7 @@ const SetTimeContainer = () => {
                       }
                     />
                     {isMatchTimeSet(match.round, match.index) && (
-                      <div className="absolute -right-2 -top-2 h-4 w-4 rounded-full bg-main-500" />
+                      <div className="absolute -right-2 -top-2 h-10 w-10 rounded-full bg-main-500" />
                     )}
                   </div>
                 ))
