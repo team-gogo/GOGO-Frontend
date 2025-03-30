@@ -1,5 +1,6 @@
 export * from './TagIcon';
 export * from './MainIcon';
+export * from './GOGOIcon';
 export { default as Logo } from './Logo';
 export { default as GoogleLogo } from './GoogleLogo';
 export { default as FaqIcon } from './FaqIcon';
