@@ -5,6 +5,8 @@ import { useState, useEffect, useCallback } from 'react';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
+import { getMatchApplyList } from '@/views/stage/apply/api/getMatchApplyList';
+import { getStageList } from '@/views/stage/ui/api/getStageList';
 import SetTimeContainer from '@/widgets/stage/time/ui/SetTimeContainer';
 
 const MATCH_CHECK_INTERVAL = 1000;
@@ -13,6 +15,7 @@ const SetTimePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const matchId = searchParams.get('matchId');
+  const [stageId, setStageId] = useState<number | null>(null);
   const [allMatchesScheduled, setAllMatchesScheduled] = useState(true);
 
   const checkMatchesScheduled = useCallback(() => {
@@ -122,11 +125,65 @@ const SetTimePage = () => {
     };
   }, [checkMatchesScheduled, matchId]);
 
+  useEffect(() => {
+    const fetchStageId = async () => {
+      if (matchId) {
+        try {
+          const stageResponse = await getStageList();
+
+          if (
+            stageResponse &&
+            stageResponse.stages &&
+            stageResponse.stages.length > 0
+          ) {
+            for (const stage of stageResponse.stages) {
+              try {
+                const gamesResponse = await getMatchApplyList(stage.stageId);
+
+                if (gamesResponse && gamesResponse.games) {
+                  const foundGame = gamesResponse.games.find(
+                    (game) => game.gameId === parseInt(matchId),
+                  );
+
+                  if (foundGame) {
+                    setStageId(stage.stageId);
+                    sessionStorage.setItem(
+                      `gameStageId_${matchId}`,
+                      String(stage.stageId),
+                    );
+                    break;
+                  }
+                }
+              } catch (error) {
+                console.error('스테이지 게임 정보 가져오기 실패:', error);
+              }
+            }
+          }
+        } catch (error) {
+          console.error('스테이지 목록 가져오기 실패:', error);
+        }
+      }
+    };
+
+    if (matchId) {
+      const savedStageId = sessionStorage.getItem(`gameStageId_${matchId}`);
+      if (savedStageId) {
+        setStageId(parseInt(savedStageId));
+      } else {
+        fetchStageId();
+      }
+    }
+  }, [matchId]);
+
   const handleConfirm = () => {
     if (matchId) {
       sessionStorage.setItem(`isConfirmed_${matchId}`, 'true');
       setTimeout(() => {
-        router.push(`/stage`);
+        if (stageId) {
+          router.push(`/stage/stageId=${stageId}`);
+        } else {
+          router.push(`/stage`);
+        }
       }, 100);
     } else {
       router.push(`/stage`);
