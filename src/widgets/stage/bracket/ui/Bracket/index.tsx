@@ -52,10 +52,43 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
   );
 
   const [isDragging, setIsDragging] = useState(false);
+  const [savedTeamPlacements, setSavedTeamPlacements] = useState<
+    Record<string, string>
+  >({});
+  const [isClient, setIsClient] = useState(false);
 
   const portalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    setIsClient(true);
+
+    try {
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
+      if (placedTeamsData) {
+        setSavedTeamPlacements(JSON.parse(placedTeamsData));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    const handleBracketStorage = (event: CustomEvent) => {
+      if (event.detail?.matchId === matchId) {
+        try {
+          const updatedData = sessionStorage.getItem(`placedTeams_${matchId}`);
+          if (updatedData) {
+            setSavedTeamPlacements(JSON.parse(updatedData));
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    window.addEventListener(
+      'bracketStorage',
+      handleBracketStorage as EventListener,
+    );
+
     const portalContainer = document.createElement('div');
     portalContainer.style.position = 'fixed';
     portalContainer.style.zIndex = '9999';
@@ -68,11 +101,15 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     document.body.appendChild(portalContainer);
 
     return () => {
+      window.removeEventListener(
+        'bracketStorage',
+        handleBracketStorage as EventListener,
+      );
       if (portalRef.current && document.body.contains(portalRef.current)) {
         document.body.removeChild(portalRef.current);
       }
     };
-  }, []);
+  }, [matchId]);
 
   const VISIBLE_ITEMS = 8;
   const ITEM_WIDTH = 160;
@@ -343,15 +380,9 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     round: number,
     side: 'left' | 'right',
   ) => {
-    let placedTeams: Record<string, string> = {};
-    try {
-      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
-      if (placedTeamsData) {
-        placedTeams = JSON.parse(placedTeamsData);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    const placedTeams: Record<string, string> = isClient
+      ? savedTeamPlacements
+      : {};
 
     return (
       <div
@@ -476,15 +507,9 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
       );
     }
 
-    let placedTeams: Record<string, string> = {};
-    try {
-      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
-      if (placedTeamsData) {
-        placedTeams = JSON.parse(placedTeamsData);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    const placedTeams: Record<string, string> = isClient
+      ? savedTeamPlacements
+      : {};
 
     return (
       <div
@@ -613,19 +638,14 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     side: 'left' | 'right',
   ) => {
     try {
-      let placedTeams: Record<string, string> = {};
-      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
-      if (placedTeamsData) {
-        placedTeams = JSON.parse(placedTeamsData);
-      }
-
+      const placedTeams: Record<string, string> = { ...savedTeamPlacements };
       const positionKey = `${round}_${position}_${side}`;
       placedTeams[positionKey] = teamName;
-
       sessionStorage.setItem(
         `placedTeams_${matchId}`,
         JSON.stringify(placedTeams),
       );
+      setSavedTeamPlacements(placedTeams);
 
       if (!bracketTree) {
         const newRoot = createBracketTree(totalTeams);
@@ -709,20 +729,15 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     side: 'left' | 'right',
   ) => {
     try {
-      let placedTeams: Record<string, string> = {};
-      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
-      if (placedTeamsData) {
-        placedTeams = JSON.parse(placedTeamsData);
-      }
-
+      const placedTeams: Record<string, string> = { ...savedTeamPlacements };
       const positionKey = `${round}_${position}_${side}`;
 
       delete placedTeams[positionKey];
-
       sessionStorage.setItem(
         `placedTeams_${matchId}`,
         JSON.stringify(placedTeams),
       );
+      setSavedTeamPlacements(placedTeams);
 
       const customEvent = new CustomEvent('bracketStorage', {
         detail: { matchId },
@@ -748,10 +763,10 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
 
   const handleRandomPlacement = () => {
     try {
-      let placedTeams: Record<string, string> = {};
+      const placedTeams: Record<string, string> = { ...savedTeamPlacements };
       const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
       if (placedTeamsData) {
-        placedTeams = JSON.parse(placedTeamsData);
+        Object.assign(placedTeams, JSON.parse(placedTeamsData));
       }
 
       const confirmedTeamsData = sessionStorage.getItem(
@@ -863,6 +878,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
         `placedTeams_${matchId}`,
         JSON.stringify(placedTeams),
       );
+      setSavedTeamPlacements(placedTeams);
 
       const customEvent = new CustomEvent('bracketStorage', {
         detail: { matchId },
