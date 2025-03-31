@@ -3,7 +3,7 @@ import ConfirmTeamPage from '@/views/team/ui/ConfirmTeamPage';
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
-  params: { matchId: string };
+  params: { gameId: string };
 }
 
 const Page = ({ params }: PageProps) => {

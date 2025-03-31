@@ -3,7 +3,7 @@ import ConfirmTeamContainer from '@/widgets/team/ui/ConfirmTeamContainer/index';
 
 interface ConfirmTeamPageProps {
   params: {
-    matchId: string;
+    gameId: string;
   };
 }
 

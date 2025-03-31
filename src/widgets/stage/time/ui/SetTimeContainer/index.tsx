@@ -47,6 +47,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
 
   const searchParams = useSearchParams();
   const matchId = parseInt(searchParams.get('matchId') || '0', 10);
+  const system = searchParams.get('system') || 'FULL_LEAGUE';
 
   const getSelectedMatchTeams = (
     round: string,
@@ -283,171 +284,202 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
 
   useEffect(() => {
     try {
-      const placedTeamsKey = `placedTeams_${matchId}`;
-      const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
+      if (system === 'FULL_LEAGUE') {
+        const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+        const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
-      if (placedTeamsData) {
-        const placedTeams: Record<string, string> = JSON.parse(placedTeamsData);
+        if (confirmedTeamsData) {
+          const teams = JSON.parse(confirmedTeamsData);
+          const n = teams.length;
+          const leagueMatches: MatchData[] = [];
 
-        const teamsBySide: Record<
-          number,
-          Record<string, Record<number, string>>
-        > = {};
-
-        Object.entries(placedTeams).forEach(([positionKey, teamName]) => {
-          const [round, position, side] = positionKey.split('_');
-          const roundNum = Number(round);
-          const positionNum = Number(position);
-
-          if (!teamsBySide[roundNum]) {
-            teamsBySide[roundNum] = { left: {}, right: {} };
+          for (let i = 0; i < n - 1; i++) {
+            for (let j = i + 1; j < n; j++) {
+              leagueMatches.push({
+                index: leagueMatches.length + 1,
+                teamAName: teams[i].teamName,
+                teamBName: teams[j].teamName,
+                round: '리그',
+              });
+            }
           }
 
-          if (teamName && teamName !== 'TBD') {
-            teamsBySide[roundNum][side][positionNum] = teamName;
-          }
-        });
-
-        const quarterFinals: MatchData[] = [];
-        const semiFinals: MatchData[] = [];
-        const finals: MatchData[] = [];
-
-        const finalRound = finalStage === 4 ? 2 : 3;
-        let finalTeamA: string | undefined;
-        let finalTeamB: string | undefined;
-
-        if (teamsBySide[finalRound]) {
-          const leftPositions = Object.keys(
-            teamsBySide[finalRound]['left'],
-          ).map(Number);
-          if (leftPositions.length > 0) {
-            finalTeamA = teamsBySide[finalRound]['left'][leftPositions[0]];
-          }
-
-          const rightPositions = Object.keys(
-            teamsBySide[finalRound]['right'],
-          ).map(Number);
-          if (rightPositions.length > 0) {
-            finalTeamB = teamsBySide[finalRound]['right'][rightPositions[0]];
-          }
-
-          if (finalTeamA || finalTeamB) {
-            finals.push({
-              index: 1,
-              teamAName: finalTeamA || 'TBD',
-              teamBName: finalTeamB || 'TBD',
-              round: '결승',
-            });
-          }
+          setMatches({
+            quarterFinals: [],
+            semiFinals: [],
+            finals: leagueMatches,
+          });
         }
+        return;
+      } else if (system === 'TOURNAMENT') {
+        const placedTeamsKey = `placedTeams_${matchId}`;
+        const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
-        Object.entries(teamsBySide).forEach(([roundStr, sides]) => {
-          const roundNum = Number(roundStr);
-          if (
-            (finalStage === 4 && roundNum === 2) ||
-            (finalStage === 8 && roundNum === 3)
-          ) {
-            return;
-          }
+        if (placedTeamsData) {
+          const placedTeams: Record<string, string> =
+            JSON.parse(placedTeamsData);
 
-          let roundName: string;
-          if (finalStage === 4) {
-            roundName = roundNum === 1 ? '4강' : '결승';
-          } else {
-            roundName =
-              roundNum === 1 ? '8강' : roundNum === 2 ? '4강' : '결승';
-          }
+          const teamsBySide: Record<
+            number,
+            Record<string, Record<number, string>>
+          > = {};
 
-          ['left', 'right'].forEach((side) => {
-            const positions = Object.keys(sides[side])
-              .map(Number)
-              .sort((a, b) => a - b);
+          Object.entries(placedTeams).forEach(([positionKey, teamName]) => {
+            const [round, position, side] = positionKey.split('_');
+            const roundNum = Number(round);
+            const positionNum = Number(position);
 
-            for (let i = 0; i < positions.length; i += 2) {
-              if (i + 1 < positions.length) {
-                const teamA = sides[side][positions[i]];
-                const teamB = sides[side][positions[i + 1]];
+            if (!teamsBySide[roundNum]) {
+              teamsBySide[roundNum] = { left: {}, right: {} };
+            }
 
-                const match: MatchData = {
-                  index: Math.floor(i / 2) + 1,
-                  teamAName: teamA,
-                  teamBName: teamB,
-                  round: roundName,
-                };
-
-                if (finalStage === 4) {
-                  if (roundNum === 1) {
-                    semiFinals.push(match);
-                  }
-                } else {
-                  if (roundNum === 1) {
-                    quarterFinals.push(match);
-                  } else if (roundNum === 2) {
-                    semiFinals.push(match);
-                  }
-                }
-              } else if (positions.length % 2 === 1) {
-                const teamA = sides[side][positions[i]];
-
-                const nextRound = roundNum + 1;
-                const nextPosition = Math.floor(i / 2);
-                const nextPositionKey = `${nextRound}_${nextPosition}_${side}`;
-
-                const placedTeamsKey = `placedTeams_${matchId}`;
-                const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
-                let allPlacedTeams: Record<string, string> = {};
-
-                if (placedTeamsData) {
-                  allPlacedTeams = JSON.parse(placedTeamsData);
-                }
-
-                if (teamA && teamA !== 'TBD') {
-                  allPlacedTeams[nextPositionKey] = teamA;
-                  sessionStorage.setItem(
-                    placedTeamsKey,
-                    JSON.stringify(allPlacedTeams),
-                  );
-                }
-              }
+            if (teamName && teamName !== 'TBD') {
+              teamsBySide[roundNum][side][positionNum] = teamName;
             }
           });
-        });
 
-        const sortAndAdjustIndexes = (matches: MatchData[]) => {
-          matches.sort((a, b) => {
-            if (a.teamAName.includes('left') && !b.teamAName.includes('left'))
-              return -1;
-            if (!a.teamAName.includes('left') && b.teamAName.includes('left'))
-              return 1;
-            return a.index - b.index;
+          const quarterFinals: MatchData[] = [];
+          const semiFinals: MatchData[] = [];
+          const finals: MatchData[] = [];
+
+          const finalRound = finalStage === 4 ? 2 : 3;
+          let finalTeamA: string | undefined;
+          let finalTeamB: string | undefined;
+
+          if (teamsBySide[finalRound]) {
+            const leftPositions = Object.keys(
+              teamsBySide[finalRound]['left'],
+            ).map(Number);
+            if (leftPositions.length > 0) {
+              finalTeamA = teamsBySide[finalRound]['left'][leftPositions[0]];
+            }
+
+            const rightPositions = Object.keys(
+              teamsBySide[finalRound]['right'],
+            ).map(Number);
+            if (rightPositions.length > 0) {
+              finalTeamB = teamsBySide[finalRound]['right'][rightPositions[0]];
+            }
+
+            if (finalTeamA || finalTeamB) {
+              finals.push({
+                index: 1,
+                teamAName: finalTeamA || 'TBD',
+                teamBName: finalTeamB || 'TBD',
+                round: '결승',
+              });
+            }
+          }
+
+          Object.entries(teamsBySide).forEach(([roundStr, sides]) => {
+            const roundNum = Number(roundStr);
+            if (
+              (finalStage === 4 && roundNum === 2) ||
+              (finalStage === 8 && roundNum === 3)
+            ) {
+              return;
+            }
+
+            let roundName: string;
+            if (finalStage === 4) {
+              roundName = roundNum === 1 ? '4강' : '결승';
+            } else {
+              roundName =
+                roundNum === 1 ? '8강' : roundNum === 2 ? '4강' : '결승';
+            }
+
+            ['left', 'right'].forEach((side) => {
+              const positions = Object.keys(sides[side])
+                .map(Number)
+                .sort((a, b) => a - b);
+
+              for (let i = 0; i < positions.length; i += 2) {
+                if (i + 1 < positions.length) {
+                  const teamA = sides[side][positions[i]];
+                  const teamB = sides[side][positions[i + 1]];
+
+                  const match: MatchData = {
+                    index: Math.floor(i / 2) + 1,
+                    teamAName: teamA,
+                    teamBName: teamB,
+                    round: roundName,
+                  };
+
+                  if (finalStage === 4) {
+                    if (roundNum === 1) {
+                      semiFinals.push(match);
+                    }
+                  } else {
+                    if (roundNum === 1) {
+                      quarterFinals.push(match);
+                    } else if (roundNum === 2) {
+                      semiFinals.push(match);
+                    }
+                  }
+                } else if (positions.length % 2 === 1) {
+                  const teamA = sides[side][positions[i]];
+
+                  const nextRound = roundNum + 1;
+                  const nextPosition = Math.floor(i / 2);
+                  const nextPositionKey = `${nextRound}_${nextPosition}_${side}`;
+
+                  const placedTeamsKey = `placedTeams_${matchId}`;
+                  const placedTeamsData =
+                    sessionStorage.getItem(placedTeamsKey);
+                  let allPlacedTeams: Record<string, string> = {};
+
+                  if (placedTeamsData) {
+                    allPlacedTeams = JSON.parse(placedTeamsData);
+                  }
+
+                  if (teamA && teamA !== 'TBD') {
+                    allPlacedTeams[nextPositionKey] = teamA;
+                    sessionStorage.setItem(
+                      placedTeamsKey,
+                      JSON.stringify(allPlacedTeams),
+                    );
+                  }
+                }
+              }
+            });
           });
 
-          matches.forEach((match, idx) => {
-            match.index = idx + 1;
+          const sortAndAdjustIndexes = (matches: MatchData[]) => {
+            matches.sort((a, b) => {
+              if (a.teamAName.includes('left') && !b.teamAName.includes('left'))
+                return -1;
+              if (!a.teamAName.includes('left') && b.teamAName.includes('left'))
+                return 1;
+              return a.index - b.index;
+            });
+
+            matches.forEach((match, idx) => {
+              match.index = idx + 1;
+            });
+
+            return matches;
+          };
+
+          const sortedQuarterFinals = sortAndAdjustIndexes([...quarterFinals]);
+          const sortedSemiFinals = sortAndAdjustIndexes([...semiFinals]);
+
+          setMatches({
+            quarterFinals: sortedQuarterFinals,
+            semiFinals: sortedSemiFinals,
+            finals: finals,
           });
-
-          return matches;
-        };
-
-        const sortedQuarterFinals = sortAndAdjustIndexes([...quarterFinals]);
-        const sortedSemiFinals = sortAndAdjustIndexes([...semiFinals]);
-
-        setMatches({
-          quarterFinals: sortedQuarterFinals,
-          semiFinals: sortedSemiFinals,
-          finals: finals,
-        });
-      } else {
-        setMatches({
-          quarterFinals: [],
-          semiFinals: [],
-          finals: [],
-        });
+        } else {
+          setMatches({
+            quarterFinals: [],
+            semiFinals: [],
+            finals: [],
+          });
+        }
       }
     } catch (error) {
       console.error(error);
     }
-  }, [matchId, finalStage]);
+  }, [matchId, finalStage, system]);
 
   const handleMatchSelect = (round: string, index: number) => {
     if (
@@ -611,7 +643,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     <div className="m-30 flex flex-col gap-8">
       <div className="my-20 min-h-[calc(50vh-120px)] rounded-lg bg-gray-700 p-8">
         <div
-          className={`m-20 flex ${finalStage === 4 ? 'justify-center' : 'justify-between'} gap-4 p-20`}
+          className={`m-20 flex ${system === 'FULL_LEAGUE' ? '' : finalStage === 4 ? 'justify-center' : 'justify-between'} gap-4 p-20`}
         >
           {renderSections()}
         </div>
