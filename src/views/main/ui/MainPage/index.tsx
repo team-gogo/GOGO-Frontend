@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
+import { useGetStageGameQuery } from '@/entities/community/model/useGetStageGameQuery';
 import { DateContainer, BettingModal } from '@/entities/main';
 import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
@@ -37,11 +38,7 @@ import { RankingUserContainer } from '@/widgets/ranking';
 import { useGetSearchMatch } from '../../model/useGetSearchMatch';
 import { useGetUserStagePoint } from '../../model/useGetUserStagePoint';
 
-import getStageInMatch from '../Mock/getStageInMatch';
-
 const MainPage = () => {
-  const stageInMatch = getStageInMatch();
-
   const params = useParams<{ stageId: string }>();
   const { stageId } = params;
 
@@ -77,6 +74,8 @@ const MainPage = () => {
   const { data: rankingData } = useGetRankingQuery(stageId);
 
   const { data: activeGameList } = useGetActiveGameQuery(stageId);
+
+  const { data: gameData } = useGetStageGameQuery(stageId);
 
   const rankItem = rankingData?.rank || [];
 
@@ -198,9 +197,9 @@ const MainPage = () => {
             <SectionWrapper
               text={'경기'}
               icon={<RankingIcon />}
-              path="/match/team"
+              path={`/match/team/${stageId}`}
             >
-              <MatchListSection stageInMatch={stageInMatch} />
+              <MatchListSection stageInMatch={gameData} />
             </SectionWrapper>
           </div>
         </div>

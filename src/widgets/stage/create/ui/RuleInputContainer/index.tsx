@@ -18,45 +18,45 @@ const RuleInputContainer = ({ register, watch }: Props) => {
       <div className={cn('space-y-24')}>
         <Input
           {...register('rule.minBettingPoint', {
-            required: '규칙의 최소 보유 포인트는 필수 입력 항목입니다.',
+            required: '규칙의 최소 배팅 포인트는 필수 입력 항목입니다.',
             valueAsNumber: true,
             min: {
               value: 1000,
               message:
-                '규칙의 최소 보유 포인트는 1000 이상의 값을 입력해주세요.',
+                '규칙의 최소 배팅 포인트는 1000 이상의 값을 입력해주세요.',
             },
             max: {
               value: 100000,
               message:
-                '규칙의 최소 보유 포인트는 100000 이하의 값을 입력해주세요.',
+                '규칙의 최소 뱌탕 포인트는 100000 이하의 값을 입력해주세요.',
             },
             validate: (value) =>
               value <= (maxBettingPoint || 100000) ||
-              '규칙의 최소 보유 포인트는 최대 보유 포인트보다 작거나 같아야 합니다.',
+              '규칙의 최소 배팅 포인트는 최대 배팅 포인트보다 작거나 같아야 합니다.',
           })}
-          placeholder="최소 보유 포인트"
+          placeholder="최소 배팅 포인트"
           type="number"
         />
 
         <Input
           {...register('rule.maxBettingPoint', {
-            required: '규칙의 최대 보유 포인트는 필수 입력 항목입니다.',
+            required: '규칙의 최대 배팅 포인트는 필수 입력 항목입니다.',
             valueAsNumber: true,
             min: {
               value: 1000,
               message:
-                '규칙의 최대 보유 포인트는 1000 이상의 값을 입력해주세요.',
+                '규칙의 최대 배팅 포인트는 1000 이상의 값을 입력해주세요.',
             },
             max: {
               value: 100000,
               message:
-                '규칙의 최대 보유 포인트는 100000 이하의 값을 입력해주세요.',
+                '규칙의 최대 배팅 포인트는 100000 이하의 값을 입력해주세요.',
             },
             validate: (value) =>
               value >= (minBettingPoint || 1000) ||
-              '규칙의 최대 보유 포인트는 최소 보유 포인트보다 크거나 같아야 합니다.',
+              '규칙의 최대 배팅 포인트는 최소 배팅 포인트보다 크거나 같아야 합니다.',
           })}
-          placeholder="최대 보유 포인트"
+          placeholder="최대 배팅 포인트"
           type="number"
         />
       </div>

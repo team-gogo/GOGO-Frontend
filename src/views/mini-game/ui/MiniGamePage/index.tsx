@@ -1,7 +1,6 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
 import { GameInfo, StoreInfo } from '@/entities/mini-game';
 import { StoreIcon } from '@/shared/assets/icons';
 import { MiniGameIcon } from '@/shared/assets/svg';
@@ -28,25 +27,14 @@ const MiniGamePage = () => {
   const { data: myPoint, isLoading: myPointIsLoading } =
     useGetMyPointQuery(stageId);
 
-  const { mutate: buyTicket, isPending } = usePostBuyTicketMutation(
+  const { buyTicket, isPending } = usePostBuyTicketMutation(
     shopTicketStatus?.shopId ? shopTicketStatus.shopId.toString() : '',
     stageId,
   );
 
   const storeItems = createStoreItems(buyTicket, isPending);
+
   const miniGames = createMiniGameItems(router, stageId);
-
-  useEffect(() => {
-    if (myPoint) {
-      sessionStorage.setItem('myPoint', JSON.stringify(myPoint));
-    }
-  }, [myPoint]);
-
-  useEffect(() => {
-    if (ticketCount) {
-      sessionStorage.setItem('ticketCount', JSON.stringify(ticketCount));
-    }
-  }, [ticketCount]);
 
   if (activeGameIsLoading || !activeGameList || myPointIsLoading || !myPoint) {
     return <div>Loading...</div>;

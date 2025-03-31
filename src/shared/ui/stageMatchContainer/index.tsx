@@ -22,15 +22,15 @@ const StageMatchContainer = ({
 }: StageContainerProps) => {
   const visibleCount = 2;
 
-  const { matchBatchArr, setMatchBatchArr } = useMatchBatchArrStore();
+  const { setMatchBatchArr } = useMatchBatchArrStore();
 
   useEffect(() => {
-    if (matches?.matches && matchBatchArr.length === 0) {
+    if (matches?.matches) {
       setMatchBatchArr(
         matches.matches.map(({ matchId, isEnd }) => ({ matchId, isEnd })),
       );
     }
-  }, [matches, matchBatchArr]);
+  }, [matches]);
 
   return (
     <div
