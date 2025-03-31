@@ -43,7 +43,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   }, [matchId]);
 
   const handleViewDetails = useCallback((_teamId: number) => {
-    // TODO: 팀 자세히보기 클릭했을 때
+    router.push(`/match/${matchId}`);
   }, []);
 
   const handleConfirmTeam = useCallback(() => {
