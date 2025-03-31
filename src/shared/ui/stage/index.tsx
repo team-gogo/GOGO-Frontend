@@ -288,6 +288,10 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
       if ('status' in stage) {
         (stage as MyStageType | StagesType).status = 'CONFIRMED';
       }
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } catch (error) {
       console.error(error);
       toast.error(
