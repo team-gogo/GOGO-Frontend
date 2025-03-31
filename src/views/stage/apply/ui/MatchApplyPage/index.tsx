@@ -40,6 +40,9 @@ const MatchApplyPage = () => {
     ? matchApplyList?.games.filter((game) => game.category === selectedSport)
     : matchApplyList?.games;
 
+  console.log(matchApplyList?.games);
+  console.log(filteredGames?.map((game) => game.gameId));
+
   return (
     <div
       className={cn(

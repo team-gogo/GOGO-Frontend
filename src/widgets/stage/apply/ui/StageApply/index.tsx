@@ -50,7 +50,7 @@ const StageApply = ({
       router.push(`/team/confirm/${gameId}`);
     } else {
       router.push(
-        `/team/create/${stageId}?matchId=${gameId}&category=${category}`,
+        `/team/create/${stageId}?gameId=${gameId}&category=${category}`,
       );
     }
   };
