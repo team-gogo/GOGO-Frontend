@@ -1,4 +1,5 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { PostStageRequest } from '@/shared/types/stage/game';
 
 export const postStage = async (
@@ -31,15 +32,9 @@ export const postStage = async (
       games,
     };
 
-    const response = await axios.post(
-      `/api/server/stage/confirm/${stageId}`,
+    const response = await clientInstance.post(
+      `/stage/confirm/${stageId}`,
       requestData,
-      {
-        headers: {
-          Authorization: localStorage.getItem('token') || '',
-          'Content-Type': 'application/json',
-        },
-      },
     );
     return response.data;
   } catch (error) {
