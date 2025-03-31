@@ -359,15 +359,11 @@ const SetTimePage = () => {
             }, 1000);
             return;
           } else {
-            toast.error('모집 종료 처리에 실패했습니다.');
+            toast.error('모집 종료에 실패했습니다.');
           }
         } catch (error) {
           console.error(error);
-          toast.error(
-            error instanceof Error
-              ? error.message
-              : '모집 종료에 실패했습니다.',
-          );
+          toast.error('모집 종료에 실패했습니다.');
         }
       }
 
