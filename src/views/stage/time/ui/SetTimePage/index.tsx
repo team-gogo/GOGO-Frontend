@@ -2,132 +2,55 @@
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
-import { toast } from 'react-hot-toast';
+import { toast } from 'react-toastify';
+import { postStage } from '@/entities/stage/api/postStage';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
-import { postStage } from '@/views/stage/apply/api/postStage';
 import { getMatchApplyList } from '@/views/stage/apply/api/getMatchApplyList';
 import { getStageList } from '@/views/stage/ui/api/getStageList';
 import SetTimeContainer from '@/widgets/stage/time/ui/SetTimeContainer';
 
 const MATCH_CHECK_INTERVAL = 1000;
 
+interface MatchSchedule {
+  startDate: string;
+  endDate: string;
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  [key: string]: any;
+}
+
 const SetTimePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const matchId = searchParams.get('matchId');
+  const gameId = searchParams.get('gameId');
   const [stageId, setStageId] = useState<number | null>(null);
   const [allMatchesScheduled, setAllMatchesScheduled] = useState(true);
 
   const checkMatchesScheduled = useCallback(() => {
-    if (typeof window !== 'undefined' && matchId) {
-      const savedMatchesKey = `savedMatches_${matchId}`;
+    if (typeof window !== 'undefined' && gameId) {
+      const savedMatchesKey = `savedMatches_${gameId}`;
       const savedMatchesData = sessionStorage.getItem(savedMatchesKey);
-      const placedTeamsKey = `placedTeams_${matchId}`;
-      const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
-      if (!savedMatchesData || !placedTeamsData) {
+      if (!savedMatchesData) {
         setAllMatchesScheduled(false);
         return;
       }
 
       try {
-        const savedMatches = JSON.parse(savedMatchesData);
-        const parsedPlacedTeamsData = JSON.parse(placedTeamsData);
+        const savedMatches = JSON.parse(savedMatchesData) as MatchSchedule[];
 
-        const byeMatchKeys = Object.entries(parsedPlacedTeamsData)
-          .filter(([key, value]) => {
-            const hasTeam =
-              value !== '' && value !== undefined && value !== 'TBD';
-            if (!hasTeam) return false;
-
-            const [round, position, side] = key.split('_');
-            const roundNum = Number(round);
-            const positionNum = Number(position);
-
-            const neighborPosition =
-              positionNum % 2 === 0 ? positionNum + 1 : positionNum - 1;
-            const neighborKey = `${roundNum}_${neighborPosition}_${side}`;
-
-            return (
-              !parsedPlacedTeamsData[neighborKey] ||
-              parsedPlacedTeamsData[neighborKey] === 'TBD'
-            );
-          })
-          .map(([key]) => key);
-
-        const placedTeams = Object.entries(parsedPlacedTeamsData).filter(
-          ([key, value]) =>
-            value !== '' && value !== undefined && !byeMatchKeys.includes(key),
+        const allScheduled = savedMatches.every(
+          (match) => match.startDate && match.endDate,
         );
 
-        let validMatchCount = 0;
-        let savedMatchCount = 0;
-
-        const teamCount = Object.keys(parsedPlacedTeamsData).length;
-        const finalStage = teamCount < 10 ? 4 : 8;
-
-        if (finalStage === 4) {
-          const semiFinalsMatchKeys = placedTeams
-            .filter(([key]) => key.startsWith('1_'))
-            .map(([key]) => key.split('_'));
-
-          const semiFinalsPositions: Record<string, number> = {};
-          semiFinalsMatchKeys.forEach(([_, pos, side]) => {
-            const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
-            semiFinalsPositions[posKey] =
-              (semiFinalsPositions[posKey] || 0) + 1;
-          });
-
-          validMatchCount += Object.values(semiFinalsPositions).filter(
-            (count) => count === 2,
-          ).length;
-
-          validMatchCount += 1;
-        } else {
-          const quarterFinalsMatchKeys = placedTeams
-            .filter(([key]) => key.startsWith('1_'))
-            .map(([key]) => key.split('_'));
-
-          const semiFinalsMatchKeys = placedTeams
-            .filter(([key]) => key.startsWith('2_'))
-            .map(([key]) => key.split('_'));
-
-          const quarterFinalsPositions: Record<string, number> = {};
-          quarterFinalsMatchKeys.forEach(([_, pos, side]) => {
-            const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
-            quarterFinalsPositions[posKey] =
-              (quarterFinalsPositions[posKey] || 0) + 1;
-          });
-
-          validMatchCount += Object.values(quarterFinalsPositions).filter(
-            (count) => count === 2,
-          ).length;
-
-          const semiFinalsPositions: Record<string, number> = {};
-          semiFinalsMatchKeys.forEach(([_, pos, side]) => {
-            const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
-            semiFinalsPositions[posKey] =
-              (semiFinalsPositions[posKey] || 0) + 1;
-          });
-
-          validMatchCount += Object.values(semiFinalsPositions).filter(
-            (count) => count === 2,
-          ).length;
-
-          validMatchCount += 1;
-        }
-
-        savedMatchCount = savedMatches.length;
-
-        setAllMatchesScheduled(savedMatchCount >= validMatchCount);
+        setAllMatchesScheduled(allScheduled);
       } catch (error) {
         console.error(error);
         setAllMatchesScheduled(false);
       }
     }
-  }, [matchId]);
+  }, [gameId]);
 
   useEffect(() => {
     checkMatchesScheduled();
@@ -137,7 +60,7 @@ const SetTimePage = () => {
     window.addEventListener('focus', checkMatchesScheduled);
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === `savedMatches_${matchId}`) {
+      if (e.key === `savedMatches_${gameId}`) {
         checkMatchesScheduled();
       }
     };
@@ -149,11 +72,11 @@ const SetTimePage = () => {
       window.removeEventListener('focus', checkMatchesScheduled);
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, [checkMatchesScheduled, matchId]);
+  }, [checkMatchesScheduled, gameId]);
 
   useEffect(() => {
     const fetchStageId = async () => {
-      if (matchId) {
+      if (gameId) {
         try {
           const stageResponse = await getStageList();
 
@@ -168,13 +91,14 @@ const SetTimePage = () => {
 
                 if (gamesResponse && gamesResponse.games) {
                   const foundGame = gamesResponse.games.find(
-                    (game) => game.gameId === parseInt(matchId),
+                    (game) => game.gameId === parseInt(gameId),
                   );
 
                   if (foundGame) {
+                    console.log(foundGame);
                     setStageId(stage.stageId);
                     sessionStorage.setItem(
-                      `gameStageId_${matchId}`,
+                      `gameStageId_${foundGame.gameId}`,
                       String(stage.stageId),
                     );
                     break;
@@ -191,19 +115,19 @@ const SetTimePage = () => {
       }
     };
 
-    if (matchId) {
-      const savedStageId = sessionStorage.getItem(`gameStageId_${matchId}`);
+    if (gameId) {
+      const savedStageId = sessionStorage.getItem(`gameStageId_${gameId}`);
       if (savedStageId) {
         setStageId(parseInt(savedStageId));
       } else {
         fetchStageId();
       }
     }
-  }, [matchId]);
+  }, [gameId]);
 
-  const handleConfirm = async () => {
-    if (matchId) {
-      sessionStorage.setItem(`isConfirmed_${matchId}`, 'true');
+  const handleConfirm = async (gameId: number) => {
+    if (gameId) {
+      sessionStorage.setItem(`isConfirmed_${gameId}`, 'true');
 
       if (allMatchesScheduled && stageId) {
         try {
@@ -258,6 +182,7 @@ const SetTimePage = () => {
 
           for (const game of stageGames) {
             try {
+              console.log(game);
               const gameId = game.gameId;
               const system = game.system.toLowerCase();
               const confirmedTeamsData = sessionStorage.getItem(
@@ -482,7 +407,7 @@ const SetTimePage = () => {
             type="back"
             label="팀들 날짜와 시간 설정하기"
             onClick={() => {
-              sessionStorage.removeItem(`placedTeams_${matchId}`);
+              sessionStorage.removeItem(`placedTeams_${gameId}`);
               router.back();
               setTimeout(() => {
                 window.location.reload();
@@ -509,7 +434,7 @@ const SetTimePage = () => {
         >
           <div className={cn('max-w-[1320px]', 'w-full', 'px-24')}>
             <Button
-              onClick={handleConfirm}
+              onClick={() => handleConfirm(gameId ? parseInt(gameId) : 0)}
               disabled={!allMatchesScheduled}
               className={
                 !allMatchesScheduled ? 'cursor-not-allowed opacity-50' : ''
