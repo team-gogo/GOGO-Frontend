@@ -1,10 +1,8 @@
 import { TicketIcon } from '@/shared/assets/icons';
 
-type TicketType = 'YAVARWEE' | 'COINTOSS' | 'PLINKO';
-
 export const createStoreItems = (
-  buyTicket: (ticketType: TicketType) => void,
-  isPending: boolean,
+  buyTicket: (ticketType: 'COINTOSS' | 'YAVARWEE' | 'PLINKO') => void,
+  isPending: (ticketType: 'COINTOSS' | 'YAVARWEE' | 'PLINKO') => boolean,
 ) => [
   {
     icon: (isActive: boolean) => (
@@ -16,7 +14,7 @@ export const createStoreItems = (
     name: '야바위',
     type: 'store',
     action: () => buyTicket('YAVARWEE'),
-    isPending,
+    isPending: isPending('YAVARWEE'),
   },
   {
     icon: (isActive: boolean) => (
@@ -28,7 +26,7 @@ export const createStoreItems = (
     name: '코인 토스',
     type: 'store',
     action: () => buyTicket('COINTOSS'),
-    isPending,
+    isPending: isPending('COINTOSS'),
   },
   {
     icon: (isActive: boolean) => (
@@ -40,6 +38,6 @@ export const createStoreItems = (
     name: '플린코',
     type: 'store',
     action: () => buyTicket('PLINKO'),
-    isPending,
+    isPending: isPending('PLINKO'),
   },
 ];
