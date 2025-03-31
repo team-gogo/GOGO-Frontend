@@ -22,16 +22,17 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   const [teams, setTeams] = useState<
     Array<{ teamId: number; teamName: string; participantCount: number }>
   >([]);
+
+  if (!params?.gameId) {
+    toast.error('게임 ID가 유효하지 않습니다.');
+    return null;
+  }
+
   const { gameId } = params;
   const router = useRouter();
 
   useEffect(() => {
     const fetchTeams = async () => {
-      if (!gameId) {
-        toast.error('게임 정보가 없습니다.');
-        return;
-      }
-
       try {
         const response = await getTempTeam(gameId);
         setTeams(response.team);
