@@ -9,6 +9,7 @@ import TeamItem from '@/entities/team/ui/TeamItem';
 import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
+import { getMatchApplyList } from '@/views/stage/apply/api/getMatchApplyList';
 
 interface ConfirmTeamContainerProps {
   params: {
@@ -46,7 +47,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
     router.push(`/match/${matchId}`);
   }, []);
 
-  const handleConfirmTeam = useCallback(() => {
+  const handleConfirmTeam = useCallback(async () => {
     if (selectedTeamIds.length < 3) {
       toast.error('최소 3개 이상의 팀을 선택해주세요.');
       return;
@@ -59,7 +60,58 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
       `confirmedTeams_${matchId}`,
       JSON.stringify(selectedTeams),
     );
-    router.push(`/stage/bracket?matchId=${matchId}`);
+
+    try {
+      let stageId = 1;
+      let foundGame = null;
+
+      while (stageId <= 1000) {
+        try {
+          const response = await getMatchApplyList(stageId);
+          const game = response.games.find(
+            (g) => g.gameId.toString() === matchId,
+          );
+          if (game) {
+            foundGame = game;
+            break;
+          }
+          stageId++;
+        } catch (error) {
+          stageId++;
+          continue;
+        }
+      }
+
+      if (!foundGame) {
+        toast.error('게임 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      if (foundGame.system === 'TOURNAMENT') {
+        router.push(
+          `/stage/bracket?matchId=${matchId}&system=${foundGame.system}`,
+        );
+      } else if (foundGame.system === 'FULL_LEAGUE') {
+        sessionStorage.setItem(
+          `confirmedTeams_${matchId}`,
+          JSON.stringify(selectedTeams),
+        );
+        router.push(
+          `/stage/time?matchId=${matchId}&system=${foundGame.system}`,
+        );
+      } else {
+        sessionStorage.setItem(
+          `confirmedTeams_${matchId}`,
+          JSON.stringify(selectedTeams),
+        );
+        router.push(
+          `/stage/time?matchId=${matchId}&system=${foundGame.system}`,
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('게임 정보를 불러오는데 실패했습니다.');
+    }
   }, [teams, selectedTeamIds, router, matchId]);
 
   const handleToggleSelect = useCallback((teamId: number) => {

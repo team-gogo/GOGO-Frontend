@@ -24,7 +24,7 @@ const CreateBracketPage = () => {
 
   const handleConfirmClick = () => {
     isConfirmNavigationRef.current = true;
-    router.push(`/stage/time?matchId=${matchId}`);
+    router.push(`/stage/time?matchId=${matchId}&system=TOURNAMENT`);
   };
 
   const handleBackClick = () => {

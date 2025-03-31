@@ -47,6 +47,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
 
   const searchParams = useSearchParams();
   const matchId = parseInt(searchParams.get('matchId') || '0', 10);
+  const system = searchParams.get('system') || 'FULL_LEAGUE';
 
   const getSelectedMatchTeams = (
     round: string,
@@ -283,6 +284,35 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
 
   useEffect(() => {
     try {
+      if (system === 'FULL_LEAGUE') {
+        const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+        const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+
+        if (confirmedTeamsData) {
+          const teams = JSON.parse(confirmedTeamsData);
+          const n = teams.length;
+          const leagueMatches: MatchData[] = [];
+
+          for (let i = 0; i < n - 1; i++) {
+            for (let j = i + 1; j < n; j++) {
+              leagueMatches.push({
+                index: leagueMatches.length + 1,
+                teamAName: teams[i].teamName,
+                teamBName: teams[j].teamName,
+                round: '리그',
+              });
+            }
+          }
+
+          setMatches({
+            quarterFinals: [],
+            semiFinals: [],
+            finals: leagueMatches,
+          });
+        }
+        return;
+      }
+
       const placedTeamsKey = `placedTeams_${matchId}`;
       const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
@@ -447,7 +477,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     } catch (error) {
       console.error(error);
     }
-  }, [matchId, finalStage]);
+  }, [matchId, finalStage, system]);
 
   const handleMatchSelect = (round: string, index: number) => {
     if (
@@ -530,6 +560,28 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
   );
 
   const renderSections = () => {
+    if (system === 'FULL_LEAGUE') {
+      return (
+        <div className="flex w-full flex-col gap-20 rounded-lg border border-gray-500 bg-gray-700 p-6">
+          <h2 className="text-center text-h4s text-white">리그 경기</h2>
+          <div className="grid grid-cols-3 gap-10">
+            {matches.finals.map((match) => (
+              <div key={`리그-${match.index}`} className="relative">
+                <MatchItem
+                  index={match.index}
+                  teamAName={match.teamAName}
+                  teamBName={match.teamBName}
+                  selected={isMatchSelected('리그', match.index)}
+                  solved={!isMatchTimeSet('리그', match.index)}
+                  onClick={() => handleMatchSelect('리그', match.index)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     if (finalStage === 4) {
       return (
         <>
@@ -611,7 +663,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     <div className="m-30 flex flex-col gap-8">
       <div className="my-20 min-h-[calc(50vh-120px)] rounded-lg bg-gray-700 p-8">
         <div
-          className={`m-20 flex ${finalStage === 4 ? 'justify-center' : 'justify-between'} gap-4 p-20`}
+          className={`m-20 flex ${system === 'FULL_LEAGUE' ? '' : finalStage === 4 ? 'justify-center' : 'justify-between'} gap-4 p-20`}
         >
           {renderSections()}
         </div>
