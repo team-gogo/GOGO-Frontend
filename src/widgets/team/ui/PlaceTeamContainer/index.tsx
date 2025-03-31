@@ -60,6 +60,8 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
 
   const { gameId, category } = params;
 
+  console.log(category);
+
   const getSportType = (): SportType | null => {
     if (
       category === 'BASKET_BALL' ||
