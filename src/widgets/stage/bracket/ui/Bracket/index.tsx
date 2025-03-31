@@ -166,7 +166,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
         const node: BracketNode = {
           round: round + 1,
           position: Math.floor(i / 2),
-          teamName: 'TBD',
+          teamName: '',
           left: prevRoundNodes[i],
           right: prevRoundNodes[i + 1] || null,
           isEmpty: true,
@@ -601,6 +601,13 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                 ) : (
                   (() => {
                     if (!placedTeamName) {
+                      const isPreviousRound = round > 1;
+                      if (isPreviousRound) {
+                        return (
+                          <TeamItem teamName="TBD" className="w-[160px]" />
+                        );
+                      }
+
                       setTimeout(() => {
                         let currentPlacedTeams: Record<string, string> = {};
                         const currentPlacedTeamsData = sessionStorage.getItem(
@@ -612,7 +619,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                           );
                         }
 
-                        if (!currentPlacedTeams[positionKey]) {
+                        if (round === 1 && !currentPlacedTeams[positionKey]) {
                           currentPlacedTeams[positionKey] = 'TBD';
                           sessionStorage.setItem(
                             `placedTeams_${matchId}`,

@@ -303,7 +303,9 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
             teamsBySide[roundNum] = { left: {}, right: {} };
           }
 
-          teamsBySide[roundNum][side][positionNum] = teamName || 'TBD';
+          if (teamName && teamName !== 'TBD') {
+            teamsBySide[roundNum][side][positionNum] = teamName;
+          }
         });
 
         const quarterFinals: MatchData[] = [];
@@ -387,23 +389,24 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
               } else if (positions.length % 2 === 1) {
                 const teamA = sides[side][positions[i]];
 
-                const match: MatchData = {
-                  index: Math.floor(i / 2) + 1,
-                  teamAName: teamA,
-                  teamBName: 'TBD',
-                  round: roundName,
-                };
+                const nextRound = roundNum + 1;
+                const nextPosition = Math.floor(i / 2);
+                const nextPositionKey = `${nextRound}_${nextPosition}_${side}`;
 
-                if (finalStage === 4) {
-                  if (roundNum === 1) {
-                    semiFinals.push(match);
-                  }
-                } else {
-                  if (roundNum === 1) {
-                    quarterFinals.push(match);
-                  } else if (roundNum === 2) {
-                    semiFinals.push(match);
-                  }
+                const placedTeamsKey = `placedTeams_${matchId}`;
+                const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
+                let allPlacedTeams: Record<string, string> = {};
+
+                if (placedTeamsData) {
+                  allPlacedTeams = JSON.parse(placedTeamsData);
+                }
+
+                if (teamA && teamA !== 'TBD') {
+                  allPlacedTeams[nextPositionKey] = teamA;
+                  sessionStorage.setItem(
+                    placedTeamsKey,
+                    JSON.stringify(allPlacedTeams),
+                  );
                 }
               }
             }
@@ -503,7 +506,8 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                     match.teamBName === 'TBD') ||
                   (finalStage === 4 &&
                     match.round === '4강' &&
-                    match.teamBName === 'TBD')
+                    match.teamBName === 'TBD') ||
+                  match.teamBName === '부전승'
                 ),
             )
             .map((match) => (
@@ -536,7 +540,8 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                 matches.semiFinals
                   .filter(
                     (match) =>
-                      !(match.round === '4강' && match.teamBName === 'TBD'),
+                      !(match.round === '4강' && match.teamBName === 'TBD') &&
+                      match.teamBName !== '부전승',
                   )
                   .map((match) => (
                     <div
@@ -565,23 +570,25 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
             <h2 className="text-center text-h4s text-white">결승</h2>
             <div className="flex flex-col items-center gap-10">
               {matches.finals.length > 0 ? (
-                matches.finals.map((match) => (
-                  <div
-                    key={`${match.round}-${match.index}`}
-                    className="relative"
-                  >
-                    <MatchItem
-                      index={match.index}
-                      teamAName={match.teamAName}
-                      teamBName={match.teamBName}
-                      selected={isMatchSelected(match.round, match.index)}
-                      solved={!isMatchTimeSet(match.round, match.index)}
-                      onClick={() =>
-                        handleMatchSelect(match.round, match.index)
-                      }
-                    />
-                  </div>
-                ))
+                matches.finals
+                  .filter((match) => match.teamBName !== '부전승')
+                  .map((match) => (
+                    <div
+                      key={`${match.round}-${match.index}`}
+                      className="relative"
+                    >
+                      <MatchItem
+                        index={match.index}
+                        teamAName={match.teamAName}
+                        teamBName={match.teamBName}
+                        selected={isMatchSelected(match.round, match.index)}
+                        solved={!isMatchTimeSet(match.round, match.index)}
+                        onClick={() =>
+                          handleMatchSelect(match.round, match.index)
+                        }
+                      />
+                    </div>
+                  ))
               ) : (
                 <div className="text-center text-gray-400">경기 없음</div>
               )}

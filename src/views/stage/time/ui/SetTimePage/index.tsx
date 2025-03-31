@@ -32,14 +32,38 @@ const SetTimePage = () => {
 
       try {
         const savedMatches = JSON.parse(savedMatchesData);
-        const placedTeams = Object.entries(JSON.parse(placedTeamsData)).filter(
-          ([_, value]) => value !== 'TBD' && value !== '',
+        const parsedPlacedTeamsData = JSON.parse(placedTeamsData);
+
+        const byeMatchKeys = Object.entries(parsedPlacedTeamsData)
+          .filter(([key, value]) => {
+            const hasTeam =
+              value !== '' && value !== undefined && value !== 'TBD';
+            if (!hasTeam) return false;
+
+            const [round, position, side] = key.split('_');
+            const roundNum = Number(round);
+            const positionNum = Number(position);
+
+            const neighborPosition =
+              positionNum % 2 === 0 ? positionNum + 1 : positionNum - 1;
+            const neighborKey = `${roundNum}_${neighborPosition}_${side}`;
+
+            return (
+              !parsedPlacedTeamsData[neighborKey] ||
+              parsedPlacedTeamsData[neighborKey] === 'TBD'
+            );
+          })
+          .map(([key]) => key);
+
+        const placedTeams = Object.entries(parsedPlacedTeamsData).filter(
+          ([key, value]) =>
+            value !== '' && value !== undefined && !byeMatchKeys.includes(key),
         );
 
         let validMatchCount = 0;
         let savedMatchCount = 0;
 
-        const teamCount = placedTeams.length;
+        const teamCount = Object.keys(parsedPlacedTeamsData).length;
         const finalStage = teamCount < 10 ? 4 : 8;
 
         if (finalStage === 4) {
