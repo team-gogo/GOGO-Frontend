@@ -1,12 +1,13 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { MatchGamesResponse } from '@/shared/types/stage/apply';
 
 export const getMatchApplyList = async (
   stageId: number,
 ): Promise<MatchGamesResponse> => {
   try {
-    const response = await axios.get<MatchGamesResponse>(
-      `/api/server/stage/game/${stageId}`,
+    const response = await clientInstance.get<MatchGamesResponse>(
+      `/stage/game/${stageId}`,
     );
     return response.data;
   } catch (error) {

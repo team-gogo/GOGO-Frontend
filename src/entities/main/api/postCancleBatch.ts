@@ -1,8 +1,9 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 
 export const postCancleBatch = async (matchId: number) => {
   try {
-    await axios.post(`/api/server/betting/batch/cancel/${matchId}`);
+    await clientInstance.post(`/betting/batch/cancel/${matchId}`);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 
 interface GetStageMaintainerResponse {
   isMaintainer: boolean;
@@ -8,8 +8,8 @@ export const getStageMaintainer = async (
   stageId: string,
 ): Promise<GetStageMaintainerResponse> => {
   try {
-    const response = await axios.get<GetStageMaintainerResponse>(
-      `/api/server/stage/maintainer/me/${stageId}`,
+    const response = await clientInstance.get<GetStageMaintainerResponse>(
+      `/stage/maintainer/me/${stageId}`,
     );
     return response.data;
   } catch (error) {
