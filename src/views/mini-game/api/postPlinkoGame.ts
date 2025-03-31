@@ -1,4 +1,5 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 
 export const postPlinkoGame = async (
@@ -6,8 +7,8 @@ export const postPlinkoGame = async (
   data: PlinkoFormType,
 ): Promise<PlinkoResponse> => {
   try {
-    const response = await axios.post(
-      `/api/server/minigame/plinko/${stageId}`,
+    const response = await clientInstance.post(
+      `/minigame/plinko/${stageId}`,
       data,
     );
     return response.data;
