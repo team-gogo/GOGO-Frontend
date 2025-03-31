@@ -7,7 +7,11 @@ import { toast } from 'react-toastify';
 import { postStage } from '@/entities/stage/api/postStage';
 import { usePostPassCode } from '@/entities/stage/ui/model/usePostPassCode';
 import KebabMenuIcon from '@/shared/assets/icons/KebabMenuIcon';
-import { useMyStageIdStore, usePasswordModalStore } from '@/shared/stores';
+import {
+  useMyStageIdStore,
+  usePasswordModalStore,
+  useStageStatus,
+} from '@/shared/stores';
 import useStageNameStore from '@/shared/stores/useStageNameStore';
 import { MyStageType } from '@/shared/types/my';
 import { StagesType } from '@/shared/types/stage';
@@ -33,6 +37,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
   const { setStageName } = useStageNameStore();
   const { setIsPasswordModalOpen, setClickedStageId } = usePasswordModalStore();
   const { setStageId } = useMyStageIdStore();
+  const { setIsStatusConfirmed } = useStageStatus();
 
   const isParticipating =
     'isParticipating' in stage ? stage.isParticipating : undefined;
@@ -53,11 +58,10 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
       push(`/my/bet/${stageId}`);
     } else if (status === 'CONFIRMED') {
       if (!isParticipating) {
+        setIsStatusConfirmed(true);
         PostPassCode(undefined);
+        setStageName(stageName);
       }
-      push(`/${stageId}`);
-    } else if (isParticipating) {
-      push(`/stage/stageId=${stage.stageId}`);
     } else if (Participate) {
       setStageId(stageId);
       if (isStagePage) {
@@ -70,9 +74,9 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
       setIsPasswordModalOpen(true);
       setClickedStageId(stageId);
     } else {
+      setIsStatusConfirmed(false);
       PostPassCode(undefined);
       setStageName(stageName);
-      push(`/stage/stageId=${stage.stageId}`);
     }
   };
 
