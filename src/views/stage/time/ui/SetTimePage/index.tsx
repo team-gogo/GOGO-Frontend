@@ -234,7 +234,17 @@ const SetTimePage = () => {
         )}
       >
         <div className={cn('m-30')}>
-          <BackPageButton type="back" label="팀들 날짜와 시간 설정하기" />
+          <BackPageButton
+            type="back"
+            label="팀들 날짜와 시간 설정하기"
+            onClick={() => {
+              sessionStorage.removeItem(`placedTeams_${matchId}`);
+              router.back();
+              setTimeout(() => {
+                window.location.reload();
+              }, 100);
+            }}
+          />
         </div>
 
         <div id="match-container">
