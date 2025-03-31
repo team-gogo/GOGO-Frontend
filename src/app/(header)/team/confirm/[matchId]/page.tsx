@@ -4,7 +4,7 @@ import ConfirmTeamPage from '@/views/team/ui/ConfirmTeamPage';
 const Page = ({ params }: { params: { matchId: string } }) => {
   return (
     <Suspense fallback={<div>로딩중...</div>}>
-      <ConfirmTeamPage params={params} />
+      <ConfirmTeamPage params={{ gameId: params.matchId }} />
     </Suspense>
   );
 };
