@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Logo } from '@/shared/assets/svg';
 import { useNavigation } from '@/shared/model/useNavigation';
 import { useUserNameStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 import { useGetMyInfo } from '@/views/my/model/useGetMyInfo';
+import GOGOIcon from '../GOGOIcon';
 
 const Header = () => {
   const { navItems, getColor } = useNavigation();
@@ -37,21 +37,16 @@ const Header = () => {
     >
       <div className={cn('flex', 'justify-between', 'w-full', 'w-[1320px]')}>
         <Link href="/stage">
-          <Logo
-            className={cn(
-              'tablet:h-[34px]',
-              'tablet:w-[100px]',
-              'h-[48px]',
-              'w-[140px]',
-            )}
-          />
+          <div className={cn('flex', 'max-w-[11.75rem]')}>
+            <GOGOIcon className="h-auto w-full" />
+          </div>
         </Link>
         <nav className={cn('flex', 'gap-28', 'tablet:gap-16')}>
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="group flex items-center gap-5"
+              className="group flex items-center gap-8"
               onMouseEnter={() => setHoveredItem(item.href)}
               onMouseLeave={() => setHoveredItem(null)}
             >

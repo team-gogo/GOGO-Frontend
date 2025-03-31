@@ -1,13 +1,7 @@
 'use client';
 import { usePathname } from 'next/navigation';
 import { useUserNameStore } from '@/shared/stores';
-import {
-  FaqIcon,
-  HelpIcon,
-  HumanIcon,
-  MiniGameIcon,
-  NoticeIcon,
-} from '../assets/svg';
+import { FaqIcon, HelpIcon, HumanIcon, NoticeIcon } from '../assets/svg';
 
 export const useNavigation = () => {
   const pathname = usePathname();
@@ -28,11 +22,6 @@ export const useNavigation = () => {
       name: 'FAQ',
       href: '/faq',
       icon: FaqIcon,
-    },
-    {
-      name: '미니게임',
-      href: '/mini-game',
-      icon: MiniGameIcon,
     },
     {
       name: '공지',
