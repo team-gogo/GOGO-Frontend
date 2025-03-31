@@ -132,7 +132,7 @@ const MainPage = () => {
           <SectionWrapper
             text={isToday ? '오늘 최신 매치' : `${selectDate.slice(5)} 매치`}
             icon={<MatchClockIcon />}
-            path="/match"
+            path={`/match/list/${stageId}`}
           >
             <StageMatchSection
               matches={searchMatchData}
@@ -199,7 +199,7 @@ const MainPage = () => {
               icon={<RankingIcon />}
               path={`/match/team/${stageId}`}
             >
-              <MatchListSection stageInMatch={gameData} />
+              <MatchListSection stageInMatch={gameData} stageId={stageId} />
             </SectionWrapper>
           </div>
         </div>
