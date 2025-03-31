@@ -969,7 +969,6 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
       <div
         className={cn(
           'min-h-[700px]',
-          'bg-black',
           'p-30',
           'flex',
           'flex-col',
