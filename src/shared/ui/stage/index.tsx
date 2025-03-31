@@ -342,9 +342,11 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
               {isMaintainer && <MatchTypeLabel type="ADMIN" color="#526FFE" />}
             </div>
             <div className="relative">
-              <button onClick={() => setMenuOpen(!menuOpen)}>
-                <KebabMenuIcon />
-              </button>
+              {isMaintainer && (
+                <button onClick={() => setMenuOpen(!menuOpen)}>
+                  <KebabMenuIcon />
+                </button>
+              )}
               {menuOpen && (
                 <>
                   <div
