@@ -167,7 +167,6 @@ const SetTimePage = () => {
             'left-0',
             'right-0',
             'p-30',
-            'bg-[#1F1F1F]',
             'z-10',
             'flex',
             'justify-center',
