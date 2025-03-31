@@ -3,17 +3,17 @@ import {
   RightArrowIcon,
   TeamCountIcon,
 } from '@/shared/assets/svg';
-import { Team } from '@/shared/types/match';
+import { TeamListResponse } from '@/shared/types/match';
 import { cn } from '@/shared/utils/cn';
 
 interface TeamListContainerProps {
-  teams: Team[];
+  teams: TeamListResponse | undefined;
 }
 
 const TeamListContainer = ({ teams }: TeamListContainerProps) => {
   return (
     <div className={cn('flex', 'flex-col', 'w-full', 'gap-[1.25rem]')}>
-      {teams.map((team) => (
+      {teams?.team.map((team) => (
         <div
           key={team.teamId}
           className={cn(

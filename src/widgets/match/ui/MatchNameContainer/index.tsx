@@ -1,34 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { ResponseStageGame } from '@/shared/types/community';
 import { cn } from '@/shared/utils/cn';
 
-const matchNames = ['경기 이름 1', '경기 이름 2', '경기 이름 3'];
+interface MatchNameContainerProps {
+  gameData: ResponseStageGame | undefined;
+  selectedGameId: string;
+  setSelectedGameId: (gameId: string) => void;
+}
 
-const MatchNameContainer = () => {
-  const [selected, setSelected] = useState(matchNames[0]);
+const MatchNameContainer = ({
+  gameData,
+  selectedGameId,
+  setSelectedGameId,
+}: MatchNameContainerProps) => {
+  const matchNames =
+    gameData?.games.map((game) => ({
+      name: game.gameName,
+      id: game.gameId,
+    })) ?? [];
 
   return (
     <div className={cn('flex', 'gap-[2.25rem]')}>
-      {matchNames.map((name) => (
+      {matchNames.map(({ name, id }) => (
         <div
-          key={name}
+          key={id}
           className={cn(
             'flex',
             'pb-[1.25rem]',
             'flex-col',
             'justify-center',
             'items-center',
-            selected === name && 'border-b-2 border-solid border-main-600',
+            Number(selectedGameId) === id &&
+              'border-b-2 border-solid border-main-600',
           )}
         >
           <button
             className={cn(
               'text-body1e',
               'text-center',
-              selected === name ? 'text-white' : 'text-gray-500',
+              Number(selectedGameId) === id ? 'text-white' : 'text-gray-500',
             )}
-            onClick={() => setSelected(name)}
+            onClick={() => setSelectedGameId(String(id))}
           >
             {name}
           </button>
