@@ -13,7 +13,7 @@ import { getMatchApplyList } from '@/views/stage/apply/api/getMatchApplyList';
 
 interface ConfirmTeamContainerProps {
   params: {
-    matchId: string;
+    gameId: string;
   };
 }
 
@@ -22,18 +22,18 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   const [teams, setTeams] = useState<
     Array<{ teamId: number; teamName: string; participantCount: number }>
   >([]);
-  const { matchId } = params;
+  const { gameId } = params;
   const router = useRouter();
 
   useEffect(() => {
     const fetchTeams = async () => {
-      if (!matchId) {
+      if (!gameId) {
         toast.error('게임 정보가 없습니다.');
         return;
       }
 
       try {
-        const response = await getTempTeam(matchId);
+        const response = await getTempTeam(gameId);
         setTeams(response.team);
       } catch (error) {
         console.error(error);
@@ -41,10 +41,10 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
       }
     };
     fetchTeams();
-  }, [matchId]);
+  }, [gameId]);
 
   const handleViewDetails = useCallback((_teamId: number) => {
-    router.push(`/match/${matchId}`);
+    router.push(`/match/${gameId}`);
   }, []);
 
   const handleConfirmTeam = useCallback(async () => {
@@ -52,7 +52,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
       selectedTeamIds.includes(team.teamId),
     );
     sessionStorage.setItem(
-      `confirmedTeams_${matchId}`,
+      `confirmedTeams_${gameId}`,
       JSON.stringify(selectedTeams),
     );
 
@@ -64,7 +64,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
         try {
           const response = await getMatchApplyList(stageId);
           const game = response.games.find(
-            (g) => g.gameId.toString() === matchId,
+            (g) => g.gameId.toString() === gameId,
           );
           if (game) {
             foundGame = game;
@@ -88,7 +88,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
           return;
         } else {
           router.push(
-            `/stage/bracket?matchId=${matchId}&system=${foundGame.system}`,
+            `/stage/bracket?gameId=${gameId}&system=${foundGame.system}`,
           );
         }
       } else if (
@@ -100,11 +100,11 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
           return;
         } else {
           sessionStorage.setItem(
-            `confirmedTeams_${matchId}`,
+            `confirmedTeams_${gameId}`,
             JSON.stringify(selectedTeams),
           );
           router.push(
-            `/stage/time?matchId=${matchId}&system=${foundGame.system}`,
+            `/stage/time?gameId=${gameId}&system=${foundGame.system}`,
           );
         }
       }
@@ -112,7 +112,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
       console.error(error);
       toast.error('게임 정보를 불러오는데 실패했습니다.');
     }
-  }, [teams, selectedTeamIds, router, matchId]);
+  }, [teams, selectedTeamIds, router, gameId]);
 
   const handleToggleSelect = useCallback((teamId: number) => {
     setSelectedTeamIds((prev) => {
