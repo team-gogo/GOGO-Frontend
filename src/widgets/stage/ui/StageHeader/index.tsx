@@ -6,7 +6,7 @@ const StageHeader = () => {
   const { push } = useRouter();
 
   return (
-    <div className={cn('flex h-full w-full items-center justify-between')}>
+    <div className={cn('flex h-full w-[95%] items-center justify-between')}>
       <h1 className={cn('text-body1e text-white')}>참여하는 스테이지</h1>
       <div className={cn('flex items-center gap-[1.5rem]')}>
         <CreateButton onClick={() => push('/stage/create/fast')}>

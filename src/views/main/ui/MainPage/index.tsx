@@ -9,6 +9,7 @@ import { MatchClockIcon } from '@/shared/assets/svg';
 import {
   CommunityIcon,
   MiniGameIcon,
+  PriceIcon,
   RankingIcon,
 } from '@/shared/assets/svg/MainIcon';
 
@@ -23,6 +24,8 @@ import useMatchModalStore from '@/shared/stores/useMatchModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
+import { useGetActiveGameQuery } from '@/views/mini-game/model/useGetActiveGameQuery';
+import { useGetRankingQuery } from '@/views/ranking/model/useGetRankingQuery';
 import { CommunityItemContainer } from '@/widgets/community';
 import {
   MatchListSection,
@@ -31,31 +34,28 @@ import {
 } from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
 
-import { getRankingMock } from '../..';
 import { useGetSearchMatch } from '../../model/useGetSearchMatch';
 import { useGetUserStagePoint } from '../../model/useGetUserStagePoint';
 
 import getStageInMatch from '../Mock/getStageInMatch';
 
 const MainPage = () => {
-  const rankingMock = getRankingMock();
   const stageInMatch = getStageInMatch();
 
   const params = useParams<{ stageId: string }>();
   const { stageId } = params;
 
-  const { data: userPointData } = useGetUserStagePoint(Number(stageId));
-
+  const { setStageId } = useMyStageIdStore();
   const { point, setPoint } = usePointStore();
+  const { selectDate, setSelectDate } = useSelectDateStore();
+
+  const { data: userPointData } = useGetUserStagePoint(Number(stageId));
 
   useEffect(() => {
     if (userPointData?.point) {
       setPoint(userPointData.point);
     }
   }, [userPointData]);
-
-  const { setStageId } = useMyStageIdStore();
-  const { selectDate, setSelectDate } = useSelectDateStore();
 
   useEffect(() => {
     setStageId(Number(stageId));
@@ -73,6 +73,12 @@ const MainPage = () => {
 
   const { data: searchMatchData, isPending: searchMatchPending } =
     useGetSearchMatch(Number(stageId), year, month, day);
+
+  const { data: rankingData } = useGetRankingQuery(stageId);
+
+  const { data: activeGameList } = useGetActiveGameQuery(stageId);
+
+  const rankItem = rankingData?.rank || [];
 
   useEffect(() => {
     setStageId(Number(stageId));
@@ -140,6 +146,7 @@ const MainPage = () => {
               'w-full',
               'gap-[1.75rem]',
               'tablet:flex-wrap',
+              'min-h-[15.5rem]',
             )}
           >
             <SectionWrapper
@@ -147,18 +154,21 @@ const MainPage = () => {
               icon={<MiniGameIcon />}
               path={`/mini-game/${stageId}`}
             >
-              <MiniGameSection />
+              <MiniGameSection
+                stageId={stageId}
+                activeGameList={activeGameList}
+              />
             </SectionWrapper>
             <SectionWrapper
               text={'포인트 랭킹'}
-              icon={<RankingIcon />}
-              path="/ranking"
+              icon={<PriceIcon />}
+              path={`/ranking/${stageId}`}
             >
               <div
                 className={cn('flex', 'w-full', 'flex-col', 'justify-between')}
               >
                 <RankingUserContainer
-                  remainingRanks={rankingMock.rank}
+                  remainingRanks={rankItem}
                   isMainUsed={isMainUsed}
                 />
               </div>

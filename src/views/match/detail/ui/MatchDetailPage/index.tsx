@@ -42,7 +42,7 @@ const MatchDetailPage = ({ params }: MatchDetailPageProps) => {
     return null;
   }
 
-  const { ateam, bteam, category, betting } = matchData || {};
+  const { ateam, bteam, category, betting, system } = matchData || {};
 
   return (
     <div
@@ -77,7 +77,11 @@ const MatchDetailPage = ({ params }: MatchDetailPageProps) => {
           <div
             className={cn('flex', 'flex-col', 'items-center', 'gap-[2.25rem]')}
           >
-            <MatchDetailContainer matchId={matchId} category={category} />
+            <MatchDetailContainer
+              matchId={matchId}
+              category={category}
+              system={system}
+            />
 
             <MatchPointContainer
               ateam={ateam}
