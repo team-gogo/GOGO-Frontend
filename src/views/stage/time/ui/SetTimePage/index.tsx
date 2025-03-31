@@ -14,12 +14,8 @@ const SetTimePage = () => {
   const handleConfirm = () => {
     if (matchId) {
       sessionStorage.setItem(`isConfirmed_${matchId}`, 'true');
-
-      setTimeout(() => {
-        router.push('/stage');
-      }, 300);
     } else {
-      router.push('/stage');
+      router.push(`/stage`);
     }
   };
 
