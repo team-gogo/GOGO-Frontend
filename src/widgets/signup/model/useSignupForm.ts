@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm, FieldErrors } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { handleFormErrors } from '@/shared/model/formErrorUtils';
 import {
   FormattedSignupData,
   School,
@@ -47,7 +48,7 @@ export const useSignupForm = () => {
   };
 
   const onError = (errors: FieldErrors<SignupFormData>) => {
-    console.log('제출에러:', errors);
+    handleFormErrors(errors, toast.error);
   };
 
   return {

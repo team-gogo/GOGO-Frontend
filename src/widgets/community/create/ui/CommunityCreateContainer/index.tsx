@@ -3,7 +3,9 @@
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm, SubmitHandler, FieldErrors } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { CategoryContainer, PageTitleBar } from '@/entities/community/create';
+import { handleFormErrors } from '@/shared/model/formErrorUtils';
 import { SportType } from '@/shared/model/sportTypes';
 import { CommunityCreateFormData } from '@/shared/types/community/create';
 import Button from '@/shared/ui/button';
@@ -34,7 +36,7 @@ const CommunityCreateContainer = () => {
   };
 
   const onError = (errors: FieldErrors<CommunityCreateFormData>) => {
-    console.error('Form errors:', errors);
+    handleFormErrors(errors, toast.error);
   };
 
   return (

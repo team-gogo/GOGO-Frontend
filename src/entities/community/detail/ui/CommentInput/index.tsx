@@ -51,13 +51,9 @@ const CommentInput = ({
       <Input
         {...register('content', { required: true })}
         placeholder="댓글을 입력해주세요"
+        maxLength={300}
+        icon={<SendIcon />}
       />
-      <button
-        type="submit"
-        className={cn('absolute', 'right-16', 'top-1/2', '-translate-y-1/2')}
-      >
-        <SendIcon />
-      </button>
     </form>
   );
 };
