@@ -313,6 +313,30 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
         return;
       }
 
+      if (system === 'SINGLE') {
+        const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+        const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+
+        if (confirmedTeamsData) {
+          const teams = JSON.parse(confirmedTeamsData);
+          if (teams.length === 2) {
+            setMatches({
+              quarterFinals: [],
+              semiFinals: [],
+              finals: [
+                {
+                  index: 1,
+                  teamAName: teams[0].teamName,
+                  teamBName: teams[1].teamName,
+                  round: '단판전',
+                },
+              ],
+            });
+          }
+        }
+        return;
+      }
+
       const placedTeamsKey = `placedTeams_${matchId}`;
       const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
@@ -574,6 +598,28 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                   selected={isMatchSelected('리그', match.index)}
                   solved={!isMatchTimeSet('리그', match.index)}
                   onClick={() => handleMatchSelect('리그', match.index)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (system === 'SINGLE') {
+      return (
+        <div className="flex w-full flex-col gap-20 rounded-lg border border-gray-500 bg-gray-700 p-6">
+          <h2 className="text-center text-h4s text-white">단판전</h2>
+          <div className="flex justify-center">
+            {matches.finals.map((match) => (
+              <div key={`단판전-${match.index}`} className="relative">
+                <MatchItem
+                  index={match.index}
+                  teamAName={match.teamAName}
+                  teamBName={match.teamBName}
+                  selected={isMatchSelected('단판전', match.index)}
+                  solved={!isMatchTimeSet('단판전', match.index)}
+                  onClick={() => handleMatchSelect('단판전', match.index)}
                 />
               </div>
             ))}
