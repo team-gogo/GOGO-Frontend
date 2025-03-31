@@ -1,8 +1,8 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
 import { useGetStageGameQuery } from '@/entities/community/model/useGetStageGameQuery';
+import { useSelectedGameIdStore } from '@/shared/stores';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { useGetTeamInfo } from '@/views/match/model/useGetTeamInfo';
@@ -14,9 +14,7 @@ const MatchTeamPage = () => {
 
   const { data: gameData } = useGetStageGameQuery(stageId);
 
-  const [selectedGameId, setSelectedGameId] = useState(
-    String(gameData?.games[0]?.gameId ?? '1'),
-  );
+  const { selectedGameId } = useSelectedGameIdStore();
 
   const { data: teamInfoData } = useGetTeamInfo(Number(selectedGameId));
 
@@ -45,11 +43,7 @@ const MatchTeamPage = () => {
       >
         <BackPageButton />
         <div className={cn('flex', 'w-full', 'gap-[1.5rem]', 'flex-col')}>
-          <MatchNameContainer
-            gameData={gameData}
-            selectedGameId={selectedGameId}
-            setSelectedGameId={setSelectedGameId}
-          />
+          <MatchNameContainer gameData={gameData} />
 
           <TeamListContainer teams={teamInfoData} />
         </div>

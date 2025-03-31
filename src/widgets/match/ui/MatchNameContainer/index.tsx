@@ -1,19 +1,15 @@
 'use client';
 
+import { useSelectedGameIdStore } from '@/shared/stores';
 import { ResponseStageGame } from '@/shared/types/community';
 import { cn } from '@/shared/utils/cn';
 
 interface MatchNameContainerProps {
   gameData: ResponseStageGame | undefined;
-  selectedGameId: string;
-  setSelectedGameId: (gameId: string) => void;
 }
 
-const MatchNameContainer = ({
-  gameData,
-  selectedGameId,
-  setSelectedGameId,
-}: MatchNameContainerProps) => {
+const MatchNameContainer = ({ gameData }: MatchNameContainerProps) => {
+  const { selectedGameId, setSelectedGameId } = useSelectedGameIdStore();
   const matchNames =
     gameData?.games.map((game) => ({
       name: game.gameName,
@@ -41,7 +37,7 @@ const MatchNameContainer = ({
               'text-center',
               Number(selectedGameId) === id ? 'text-white' : 'text-gray-500',
             )}
-            onClick={() => setSelectedGameId(String(id))}
+            onClick={() => setSelectedGameId(id)}
           >
             {name}
           </button>

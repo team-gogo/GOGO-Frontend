@@ -199,7 +199,7 @@ const MainPage = () => {
               icon={<RankingIcon />}
               path={`/match/team/${stageId}`}
             >
-              <MatchListSection stageInMatch={gameData} />
+              <MatchListSection stageInMatch={gameData} stageId={stageId} />
             </SectionWrapper>
           </div>
         </div>

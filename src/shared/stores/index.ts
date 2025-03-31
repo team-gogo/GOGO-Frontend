@@ -14,3 +14,4 @@ export { default as useSelectDateStore } from './useSelectDateStore';
 export { default as useBettingMatchArrStore } from './useBettingMatchArrStore';
 export { default as useAlarmClickStore } from './useAlarmClickStore';
 export { default as useStageStatus } from './useStageStatus';
+export { default as useSelectedGameIdStore } from './useSelectedGameIdStore';
