@@ -108,7 +108,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
   };
 
   return (
-    <div className={cn('h-screen', 'bg-black', 'p-30', 'flex', 'flex-col')}>
+    <div className={cn('h-screen', 'p-30', 'flex', 'flex-col')}>
       <header className={cn('mb-30')}>
         <BackPageButton type="back" label="팀 생성하기" />
       </header>
