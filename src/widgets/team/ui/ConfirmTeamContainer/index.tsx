@@ -72,7 +72,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   }, []);
 
   return (
-    <div className={cn('min-h-screen', 'bg-black')}>
+    <div className={cn('min-h-screen')}>
       <header className={cn('mt-24', 'mb-24')}>
         <BackPageButton type="back" label="뒤로가기" />
       </header>
