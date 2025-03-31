@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
@@ -11,8 +12,18 @@ const CreateBracketPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const matchId = parseInt(searchParams.get('matchId') || '0', 10);
+  const isConfirmNavigationRef = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      if (!isConfirmNavigationRef.current) {
+        sessionStorage.removeItem(`placedTeams_${matchId}`);
+      }
+    };
+  }, [matchId]);
 
   const handleConfirmClick = () => {
+    isConfirmNavigationRef.current = true;
     router.push(`/stage/time?matchId=${matchId}`);
   };
 
