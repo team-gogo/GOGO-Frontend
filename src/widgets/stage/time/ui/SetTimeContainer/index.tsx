@@ -22,7 +22,11 @@ interface SavedMatchData {
   teamBName: string;
 }
 
-const SetTimeContainer = () => {
+interface SetTimeContainerProps {
+  onMatchSave?: () => void;
+}
+
+const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [selectedMatch, setSelectedMatch] = useState<{
@@ -186,6 +190,10 @@ const SetTimeContainer = () => {
 
       console.log(getFormattedData());
       toast.success('매치 시간이 저장되었습니다.');
+
+      if (onMatchSave) {
+        onMatchSave();
+      }
     } catch (error) {
       toast.error('날짜 또는 시간 형식이 올바르지 않습니다.');
       console.error(error);

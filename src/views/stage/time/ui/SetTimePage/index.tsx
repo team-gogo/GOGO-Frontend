@@ -1,11 +1,13 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
 import SetTimeContainer from '@/widgets/stage/time/ui/SetTimeContainer';
+
+const MATCH_CHECK_INTERVAL = 1000;
 
 const SetTimePage = () => {
   const router = useRouter();
@@ -13,93 +15,95 @@ const SetTimePage = () => {
   const matchId = searchParams.get('matchId');
   const [allMatchesScheduled, setAllMatchesScheduled] = useState(true);
 
-  useEffect(() => {
-    const checkMatchesScheduled = () => {
-      if (typeof window !== 'undefined' && matchId) {
-        const savedMatchesKey = `savedMatches_${matchId}`;
-        const savedMatchesData = sessionStorage.getItem(savedMatchesKey);
-        const placedTeamsKey = `placedTeams_${matchId}`;
-        const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
+  const checkMatchesScheduled = useCallback(() => {
+    if (typeof window !== 'undefined' && matchId) {
+      const savedMatchesKey = `savedMatches_${matchId}`;
+      const savedMatchesData = sessionStorage.getItem(savedMatchesKey);
+      const placedTeamsKey = `placedTeams_${matchId}`;
+      const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
-        if (!savedMatchesData || !placedTeamsData) {
-          setAllMatchesScheduled(false);
-          return;
-        }
-
-        try {
-          const savedMatches = JSON.parse(savedMatchesData);
-          const placedTeams = Object.entries(
-            JSON.parse(placedTeamsData),
-          ).filter(([_, value]) => value !== 'TBD' && value !== '');
-
-          let validMatchCount = 0;
-          let savedMatchCount = 0;
-
-          const teamCount = placedTeams.length;
-          const finalStage = teamCount < 10 ? 4 : 8;
-
-          if (finalStage === 4) {
-            const semiFinalsMatchKeys = placedTeams
-              .filter(([key]) => key.startsWith('1_'))
-              .map(([key]) => key.split('_'));
-
-            const semiFinalsPositions: Record<string, number> = {};
-            semiFinalsMatchKeys.forEach(([_, pos, side]) => {
-              const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
-              semiFinalsPositions[posKey] =
-                (semiFinalsPositions[posKey] || 0) + 1;
-            });
-
-            validMatchCount += Object.values(semiFinalsPositions).filter(
-              (count) => count === 2,
-            ).length;
-
-            validMatchCount += 1;
-          } else {
-            const quarterFinalsMatchKeys = placedTeams
-              .filter(([key]) => key.startsWith('1_'))
-              .map(([key]) => key.split('_'));
-
-            const semiFinalsMatchKeys = placedTeams
-              .filter(([key]) => key.startsWith('2_'))
-              .map(([key]) => key.split('_'));
-
-            const quarterFinalsPositions: Record<string, number> = {};
-            quarterFinalsMatchKeys.forEach(([_, pos, side]) => {
-              const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
-              quarterFinalsPositions[posKey] =
-                (quarterFinalsPositions[posKey] || 0) + 1;
-            });
-
-            validMatchCount += Object.values(quarterFinalsPositions).filter(
-              (count) => count === 2,
-            ).length;
-
-            const semiFinalsPositions: Record<string, number> = {};
-            semiFinalsMatchKeys.forEach(([_, pos, side]) => {
-              const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
-              semiFinalsPositions[posKey] =
-                (semiFinalsPositions[posKey] || 0) + 1;
-            });
-
-            validMatchCount += Object.values(semiFinalsPositions).filter(
-              (count) => count === 2,
-            ).length;
-
-            validMatchCount += 1;
-          }
-
-          savedMatchCount = savedMatches.length;
-
-          setAllMatchesScheduled(savedMatchCount >= validMatchCount);
-        } catch (error) {
-          console.error(error);
-          setAllMatchesScheduled(false);
-        }
+      if (!savedMatchesData || !placedTeamsData) {
+        setAllMatchesScheduled(false);
+        return;
       }
-    };
 
+      try {
+        const savedMatches = JSON.parse(savedMatchesData);
+        const placedTeams = Object.entries(JSON.parse(placedTeamsData)).filter(
+          ([_, value]) => value !== 'TBD' && value !== '',
+        );
+
+        let validMatchCount = 0;
+        let savedMatchCount = 0;
+
+        const teamCount = placedTeams.length;
+        const finalStage = teamCount < 10 ? 4 : 8;
+
+        if (finalStage === 4) {
+          const semiFinalsMatchKeys = placedTeams
+            .filter(([key]) => key.startsWith('1_'))
+            .map(([key]) => key.split('_'));
+
+          const semiFinalsPositions: Record<string, number> = {};
+          semiFinalsMatchKeys.forEach(([_, pos, side]) => {
+            const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
+            semiFinalsPositions[posKey] =
+              (semiFinalsPositions[posKey] || 0) + 1;
+          });
+
+          validMatchCount += Object.values(semiFinalsPositions).filter(
+            (count) => count === 2,
+          ).length;
+
+          validMatchCount += 1;
+        } else {
+          const quarterFinalsMatchKeys = placedTeams
+            .filter(([key]) => key.startsWith('1_'))
+            .map(([key]) => key.split('_'));
+
+          const semiFinalsMatchKeys = placedTeams
+            .filter(([key]) => key.startsWith('2_'))
+            .map(([key]) => key.split('_'));
+
+          const quarterFinalsPositions: Record<string, number> = {};
+          quarterFinalsMatchKeys.forEach(([_, pos, side]) => {
+            const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
+            quarterFinalsPositions[posKey] =
+              (quarterFinalsPositions[posKey] || 0) + 1;
+          });
+
+          validMatchCount += Object.values(quarterFinalsPositions).filter(
+            (count) => count === 2,
+          ).length;
+
+          const semiFinalsPositions: Record<string, number> = {};
+          semiFinalsMatchKeys.forEach(([_, pos, side]) => {
+            const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
+            semiFinalsPositions[posKey] =
+              (semiFinalsPositions[posKey] || 0) + 1;
+          });
+
+          validMatchCount += Object.values(semiFinalsPositions).filter(
+            (count) => count === 2,
+          ).length;
+
+          validMatchCount += 1;
+        }
+
+        savedMatchCount = savedMatches.length;
+
+        setAllMatchesScheduled(savedMatchCount >= validMatchCount);
+      } catch (error) {
+        console.error(error);
+        setAllMatchesScheduled(false);
+      }
+    }
+  }, [matchId]);
+
+  useEffect(() => {
     checkMatchesScheduled();
+
+    const intervalId = setInterval(checkMatchesScheduled, MATCH_CHECK_INTERVAL);
 
     window.addEventListener('focus', checkMatchesScheduled);
 
@@ -112,10 +116,11 @@ const SetTimePage = () => {
     window.addEventListener('storage', handleStorageChange);
 
     return () => {
+      clearInterval(intervalId);
       window.removeEventListener('focus', checkMatchesScheduled);
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, [matchId]);
+  }, [checkMatchesScheduled, matchId]);
 
   const handleConfirm = () => {
     if (matchId) {
@@ -127,6 +132,10 @@ const SetTimePage = () => {
       router.push(`/stage`);
     }
   };
+
+  const handleMatchSave = useCallback(() => {
+    checkMatchesScheduled();
+  }, [checkMatchesScheduled]);
 
   return (
     <div className={cn('flex', 'justify-center', 'w-full')}>
@@ -147,7 +156,9 @@ const SetTimePage = () => {
           <BackPageButton type="back" label="팀들 날짜와 시간 설정하기" />
         </div>
 
-        <SetTimeContainer />
+        <div id="match-container">
+          <SetTimeContainer onMatchSave={handleMatchSave} />
+        </div>
 
         <div
           className={cn(
@@ -156,6 +167,7 @@ const SetTimePage = () => {
             'left-0',
             'right-0',
             'p-30',
+            'bg-[#1F1F1F]',
             'z-10',
             'flex',
             'justify-center',
