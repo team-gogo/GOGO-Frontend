@@ -13,15 +13,9 @@ const globalForRefresh = global as unknown as {
   refreshTimestamp: number;
 };
 
-if (!globalForRefresh.isRefreshing) {
-  globalForRefresh.isRefreshing = false;
-}
-if (!globalForRefresh.refreshTokenPromise) {
-  globalForRefresh.refreshTokenPromise = null;
-}
-if (!globalForRefresh.refreshTimestamp) {
-  globalForRefresh.refreshTimestamp = 0;
-}
+globalForRefresh.isRefreshing = false;
+globalForRefresh.refreshTokenPromise = null;
+globalForRefresh.refreshTimestamp = 0;
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   return handleRequest(req);
@@ -90,18 +84,11 @@ async function handleRequest(
 
     if (status === 401 && !isRetry) {
       if (refreshToken) {
-        const now = Date.now();
-
-        const recentRefresh = now - globalForRefresh.refreshTimestamp < 1000;
-
-        if (globalForRefresh.isRefreshing || recentRefresh) {
+        if (globalForRefresh.isRefreshing) {
           if (globalForRefresh.refreshTokenPromise) {
             const newTokens = await globalForRefresh.refreshTokenPromise;
-
             if (newTokens) {
               accessToken = newTokens.accessToken;
-
-              // 불필요한 코드 제거
               return retryRequest(
                 req,
                 accessToken,
@@ -121,21 +108,9 @@ async function handleRequest(
               );
             }
           }
-
-          if (recentRefresh && !globalForRefresh.refreshTokenPromise) {
-            accessToken = cookies().get('accessToken')?.value || '';
-
-            return retryRequest(
-              req,
-              accessToken,
-              requestId,
-              originalBody || JSON.stringify(data),
-            );
-          }
         }
 
         globalForRefresh.isRefreshing = true;
-        globalForRefresh.refreshTimestamp = now;
         globalForRefresh.refreshTokenPromise = refreshAccessToken(refreshToken);
 
         try {
@@ -143,7 +118,6 @@ async function handleRequest(
 
           if (newTokens) {
             accessToken = newTokens.accessToken;
-
             return retryRequest(
               req,
               accessToken,
