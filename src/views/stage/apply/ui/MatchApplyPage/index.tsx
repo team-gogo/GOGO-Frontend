@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import useSelectSport from '@/shared/model/useSelectSport';
 import useStageNameStore from '@/shared/stores/useStageNameStore';
@@ -10,6 +10,7 @@ import { MatchFilterHeader, StageApply } from '@/widgets/stage/apply';
 import { useGetMatchApplyList } from '../../model/useGetMatchApplyList';
 
 const MatchApplyPage = () => {
+  const router = useRouter();
   const pathname = usePathname();
   const stageId = pathname.match(/stageId=(\d+)/)?.[1];
   const { data: matchApplyList, isPending } = useGetMatchApplyList(
@@ -63,7 +64,7 @@ const MatchApplyPage = () => {
           'flex-grow',
         )}
       >
-        <BackPageButton />
+        <BackPageButton onClick={() => router.push(`/stage`)} />
         <div
           className={cn(
             'flex',
