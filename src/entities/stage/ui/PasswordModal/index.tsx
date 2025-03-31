@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { usePasswordModalStore } from '@/shared/stores';
+import { usePasswordModalStore, useStageStatus } from '@/shared/stores';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import ModalLayout from '@/shared/ui/modalLayout';
@@ -19,6 +19,8 @@ interface PassCodeType {
 
 const PasswordModal = ({ onClose }: PasswordModalProps) => {
   const { clickedStageId } = usePasswordModalStore();
+  const { setIsStatusConfirmed } = useStageStatus();
+
   const { mutate: PostPassCode } = usePostPassCode(clickedStageId);
   const { register, handleSubmit, watch } = useForm<PassCodeType>();
 
@@ -27,6 +29,7 @@ const PasswordModal = ({ onClose }: PasswordModalProps) => {
   const Disabled = !passCode;
 
   const onSubmit: SubmitHandler<PassCodeType> = async (data) => {
+    setIsStatusConfirmed(false);
     PostPassCode(data);
   };
 

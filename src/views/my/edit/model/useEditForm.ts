@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm, FieldErrors } from 'react-hook-form';
 import { PatchStudentInfo } from '@/shared/types/my/edit';
@@ -9,6 +10,8 @@ interface UseEditFormProps {
 }
 
 export const useEditForm = ({ defaultValues }: UseEditFormProps = {}) => {
+  const queryClient = useQueryClient();
+
   const { mutate: patchInfo } = usePatchMyInfo();
   const { register, handleSubmit, setValue, watch } = useForm<PatchStudentInfo>(
     {
@@ -29,7 +32,11 @@ export const useEditForm = ({ defaultValues }: UseEditFormProps = {}) => {
 
   const onSubmit = (data: PatchStudentInfo) => {
     const formattedData = formatEditData(data, selectedSex, filtered);
-    patchInfo(formattedData);
+    patchInfo(formattedData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['my', 'info', 'get'] });
+      },
+    });
     console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
   };
 
