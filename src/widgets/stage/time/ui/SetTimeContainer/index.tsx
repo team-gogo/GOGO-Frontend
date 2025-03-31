@@ -46,7 +46,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
   const [finalStage, setFinalStage] = useState<4 | 8>(8);
 
   const searchParams = useSearchParams();
-  const matchId = parseInt(searchParams.get('matchId') || '0', 10);
+  const gameId = parseInt(searchParams.get('gameId') || '0', 10);
   const system = searchParams.get('system') || 'FULL_LEAGUE';
 
   const getSelectedMatchTeams = (
@@ -109,7 +109,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     const teamNameToIdMap = new Map<string, string>();
 
     try {
-      const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+      const confirmedTeamsKey = `confirmedTeams_${gameId}`;
       const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
       if (confirmedTeamsData) {
@@ -240,7 +240,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedMatchesKey = `savedMatches_${matchId}`;
+      const savedMatchesKey = `savedMatches_${gameId}`;
       const savedMatchesData = sessionStorage.getItem(savedMatchesKey);
 
       if (savedMatchesData) {
@@ -252,18 +252,18 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
         }
       }
     }
-  }, [matchId]);
+  }, [gameId]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && savedMatches.length > 0) {
-      const savedMatchesKey = `savedMatches_${matchId}`;
+      const savedMatchesKey = `savedMatches_${gameId}`;
       sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
     }
-  }, [savedMatches, matchId]);
+  }, [savedMatches, gameId]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+      const confirmedTeamsKey = `confirmedTeams_${gameId}`;
       const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
       if (confirmedTeamsData) {
@@ -280,16 +280,17 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
         setFinalStage(8);
       }
     }
-  }, [matchId]);
+  }, [gameId]);
 
   useEffect(() => {
     try {
       if (system === 'FULL_LEAGUE') {
-        const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+        const confirmedTeamsKey = `confirmedTeams_${gameId}`;
         const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
         if (confirmedTeamsData) {
           const teams = JSON.parse(confirmedTeamsData);
+
           const n = teams.length;
           const leagueMatches: MatchData[] = [];
 
@@ -309,12 +310,18 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
             semiFinals: [],
             finals: leagueMatches,
           });
+        } else {
+          setMatches({
+            quarterFinals: [],
+            semiFinals: [],
+            finals: [],
+          });
         }
         return;
       }
 
       if (system === 'SINGLE') {
-        const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+        const confirmedTeamsKey = `confirmedTeams_${gameId}`;
         const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
         if (confirmedTeamsData) {
@@ -337,7 +344,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
         return;
       }
 
-      const placedTeamsKey = `placedTeams_${matchId}`;
+      const placedTeamsKey = `placedTeams_${gameId}`;
       const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
       if (placedTeamsData) {
@@ -447,7 +454,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                 const nextPosition = Math.floor(i / 2);
                 const nextPositionKey = `${nextRound}_${nextPosition}_${side}`;
 
-                const placedTeamsKey = `placedTeams_${matchId}`;
+                const placedTeamsKey = `placedTeams_${gameId}`;
                 const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
                 let allPlacedTeams: Record<string, string> = {};
 
@@ -501,7 +508,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     } catch (error) {
       console.error(error);
     }
-  }, [matchId, finalStage, system]);
+  }, [gameId, finalStage, system]);
 
   const handleMatchSelect = (round: string, index: number) => {
     if (
@@ -589,18 +596,24 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
         <div className="flex w-full flex-col gap-20 rounded-lg border border-gray-500 bg-gray-700 p-6">
           <h2 className="text-center text-h4s text-white">리그 경기</h2>
           <div className="grid grid-cols-3 gap-10">
-            {matches.finals.map((match) => (
-              <div key={`리그-${match.index}`} className="relative">
-                <MatchItem
-                  index={match.index}
-                  teamAName={match.teamAName}
-                  teamBName={match.teamBName}
-                  selected={isMatchSelected('리그', match.index)}
-                  solved={!isMatchTimeSet('리그', match.index)}
-                  onClick={() => handleMatchSelect('리그', match.index)}
-                />
+            {matches.finals.length > 0 ? (
+              matches.finals.map((match) => (
+                <div key={`리그-${match.index}`} className="relative">
+                  <MatchItem
+                    index={match.index}
+                    teamAName={match.teamAName}
+                    teamBName={match.teamBName}
+                    selected={isMatchSelected('리그', match.index)}
+                    solved={!isMatchTimeSet('리그', match.index)}
+                    onClick={() => handleMatchSelect('리그', match.index)}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="col-span-3 text-center text-gray-400">
+                등록된 팀이 없습니다.
               </div>
-            ))}
+            )}
           </div>
         </div>
       );
