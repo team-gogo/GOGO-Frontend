@@ -1,9 +1,10 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 
 export const postCommentLike = async (commentId: number) => {
   try {
-    const response = await axios.post(
-      `/api/server/stage/community/comment/like/${commentId}`,
+    const response = await clientInstance.post(
+      `/stage/community/comment/like/${commentId}`,
     );
     return response.data;
   } catch (error) {

@@ -1,9 +1,10 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { MyTicketType } from '@/shared/types/mini-game';
 
 export const getMyTicket = async (stageId: string): Promise<MyTicketType> => {
   try {
-    const response = await axios.get(`/api/server/minigame/ticket/${stageId}`);
+    const response = await clientInstance.get(`/minigame/ticket/${stageId}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

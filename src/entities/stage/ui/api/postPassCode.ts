@@ -1,9 +1,10 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { PassCodeType } from '@/shared/types/stage';
 
 export const postPassCode = async (stageId: number, data?: PassCodeType) => {
   try {
-    await axios.post(`/api/server/stage/join/${stageId}`, data ?? {});
+    await clientInstance.post(`/stage/join/${stageId}`, data ?? {});
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

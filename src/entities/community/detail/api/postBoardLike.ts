@@ -1,9 +1,10 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 
 export const postBoardLike = async (boardId: string) => {
   try {
-    const response = await axios.post(
-      `/api/server/stage/community/board/like/${boardId}`,
+    const response = await clientInstance.post(
+      `/stage/community/board/like/${boardId}`,
     );
     return response.data;
   } catch (error) {

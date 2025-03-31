@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { XIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
@@ -16,6 +17,12 @@ const ModalLayout = ({
   containerClassName,
   showHeader = true,
 }: ModalLayoutProps) => {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
   return (
     <div
       className={cn(
@@ -27,7 +34,6 @@ const ModalLayout = ({
         'justify-center',
         'bg-black',
         'bg-opacity-50',
-        'mx-[1rem]',
       )}
       onClick={onClose}
     >

@@ -1,9 +1,10 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { StageResponse } from '@/shared/types/stage';
 
 export const getStageList = async (): Promise<StageResponse> => {
   try {
-    const response = await axios.get<StageResponse>('/api/server/stage');
+    const response = await clientInstance.get<StageResponse>('/stage');
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

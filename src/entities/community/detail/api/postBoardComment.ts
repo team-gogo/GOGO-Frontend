@@ -1,9 +1,10 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 
 export const postBoardComment = async (boardId: string, content: string) => {
   try {
-    const response = await axios.post(
-      `/api/server/stage/community/comment/${boardId}`,
+    const response = await clientInstance.post(
+      `/stage/community/comment/${boardId}`,
       {
         content,
       },

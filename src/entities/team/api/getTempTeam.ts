@@ -1,4 +1,4 @@
-import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 
 interface Team {
   teamId: number;
@@ -15,8 +15,8 @@ export const getTempTeam = async (
   gameId: string,
 ): Promise<GetTempTeamResponse> => {
   try {
-    const response = await axios.get<GetTempTeamResponse>(
-      `/api/server/stage/team/temp/${gameId}`,
+    const response = await clientInstance.get<GetTempTeamResponse>(
+      `/stage/team/temp/${gameId}`,
     );
     return response.data;
   } catch (error) {

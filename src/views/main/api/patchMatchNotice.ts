@@ -1,4 +1,5 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { MatchNoticeType } from '@/shared/types/main';
 
 export const patchMatchNotice = async (
@@ -6,7 +7,7 @@ export const patchMatchNotice = async (
   matchId: number,
 ) => {
   try {
-    await axios.patch(`/api/server/stage/match/notice/${matchId}`, data);
+    await clientInstance.patch(`/stage/match/notice/${matchId}`, data);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

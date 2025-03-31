@@ -1,9 +1,10 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { PatchStudentInfo } from '@/shared/types/my/edit';
 
 export const patchMyInfo = async (data: PatchStudentInfo) => {
   try {
-    await axios.patch('/api/server/user/student/me', data);
+    await clientInstance.patch('/user/student/me', data);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

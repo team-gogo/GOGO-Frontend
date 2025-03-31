@@ -1,9 +1,10 @@
 import axios from 'axios';
+import clientInstance from '@/shared/api/clientInstance';
 import { StageData } from '@/shared/types/stage/create';
 
 export const postOfficialStage = async (data: StageData) => {
   try {
-    await axios.post('/api/server/stage/official', data);
+    await clientInstance.post('/stage/official', data);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
