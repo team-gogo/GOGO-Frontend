@@ -105,9 +105,11 @@ const Match = ({ match }: MatchProps) => {
   const winnerTeam =
     result?.victoryTeamId === ateam?.teamId
       ? ateam?.teamName
-      : result?.victoryTeamId === ateam?.teamId
+      : result?.victoryTeamId === bteam?.teamId
         ? ateam?.teamName
         : '없음';
+
+  console.log(winnerTeam);
 
   const isPredictSuccess = result?.isPredictionSuccess;
 
@@ -254,7 +256,7 @@ const Match = ({ match }: MatchProps) => {
                 {formatPoint(ateam?.bettingPoint + bteam?.bettingPoint)}
               </p>
             </div>
-            {isMatchFinish && isBatchEnd ? (
+            {isMatchFinish ? (
               <h2 className={cn('text-h2e', 'text-white')}>
                 {winnerTeam}팀 승리
               </h2>
@@ -319,7 +321,7 @@ const Match = ({ match }: MatchProps) => {
               </div>
             )}
           </div>
-          {isMatchFinish && isBatchEnd && betting.isBetting ? (
+          {isMatchFinish && betting.isBetting ? (
             <div
               className={cn(
                 'flex',
