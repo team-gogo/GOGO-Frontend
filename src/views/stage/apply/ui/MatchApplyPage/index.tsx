@@ -1,6 +1,7 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import useSelectSport from '@/shared/model/useSelectSport';
 import useStageNameStore from '@/shared/stores/useStageNameStore';
 import BackPageButton from '@/shared/ui/backPageButton';
@@ -9,6 +10,7 @@ import { MatchFilterHeader, StageApply } from '@/widgets/stage/apply';
 import { useGetMatchApplyList } from '../../model/useGetMatchApplyList';
 
 const MatchApplyPage = () => {
+  const router = useRouter();
   const pathname = usePathname();
   const stageId = pathname.match(/stageId=(\d+)/)?.[1];
   const { data: matchApplyList, isPending } = useGetMatchApplyList(
@@ -16,6 +18,23 @@ const MatchApplyPage = () => {
   );
   const { selectedSport, toggleSportSelection } = useSelectSport();
   const { stageName } = useStageNameStore();
+
+  const [confirmedGames, setConfirmedGames] = useState<Record<string, boolean>>(
+    {},
+  );
+
+  useEffect(() => {
+    if (matchApplyList?.games) {
+      const confirmed: Record<string, boolean> = {};
+      matchApplyList.games.forEach((game) => {
+        const storedIsConfirmed = sessionStorage.getItem(
+          `isConfirmed_${game.gameId}`,
+        );
+        confirmed[game.gameId] = storedIsConfirmed === 'true';
+      });
+      setConfirmedGames(confirmed);
+    }
+  }, [matchApplyList?.games]);
 
   const filteredGames = selectedSport
     ? matchApplyList?.games.filter((game) => game.category === selectedSport)
@@ -45,7 +64,7 @@ const MatchApplyPage = () => {
           'flex-grow',
         )}
       >
-        <BackPageButton />
+        <BackPageButton onClick={() => router.push(`/stage`)} />
         <div
           className={cn(
             'flex',
@@ -90,6 +109,7 @@ const MatchApplyPage = () => {
                   key={game.gameId}
                   game={game}
                   stageId={Number(stageId)}
+                  isConfirmed={confirmedGames[game.gameId] || false}
                 />
               ))}
             </div>

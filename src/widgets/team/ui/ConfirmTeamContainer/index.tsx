@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { getTempTeam } from '@/entities/team/api/getTempTeam';
@@ -21,6 +22,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
     Array<{ teamId: number; teamName: string; participantCount: number }>
   >([]);
   const { matchId } = params;
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -41,12 +43,24 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   }, [matchId]);
 
   const handleViewDetails = useCallback((_teamId: number) => {
-    // TODO: 팀 자세히보기 클릭했을 때
+    router.push(`/match/${matchId}`);
   }, []);
 
   const handleConfirmTeam = useCallback(() => {
-    // TODO: 팀 확정하기 클릭했을 때
-  }, []);
+    if (selectedTeamIds.length < 3) {
+      toast.error('최소 3개 이상의 팀을 선택해주세요.');
+      return;
+    }
+
+    const selectedTeams = teams.filter((team) =>
+      selectedTeamIds.includes(team.teamId),
+    );
+    sessionStorage.setItem(
+      `confirmedTeams_${matchId}`,
+      JSON.stringify(selectedTeams),
+    );
+    router.push(`/stage/bracket?matchId=${matchId}`);
+  }, [teams, selectedTeamIds, router, matchId]);
 
   const handleToggleSelect = useCallback((teamId: number) => {
     setSelectedTeamIds((prev) => {
@@ -58,7 +72,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   }, []);
 
   return (
-    <div className={cn('min-h-screen', 'bg-black')}>
+    <div className={cn('min-h-screen')}>
       <header className={cn('mt-24', 'mb-24')}>
         <BackPageButton type="back" label="뒤로가기" />
       </header>
@@ -88,9 +102,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
             )}
           >
             <button
-              onClick={
-                selectedTeamIds.length > 0 ? handleConfirmTeam : undefined
-              }
+              onClick={handleConfirmTeam}
               className={cn(
                 'h-[50px]',
                 'w-[160px]',
@@ -100,14 +112,14 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
                 'justify-center',
                 'px-24',
                 'text-body3s',
-                selectedTeamIds.length === 0
+                selectedTeamIds.length < 3
                   ? 'border-[2px] border-solid border-[#526FFE] text-[#526FFE]'
                   : 'bg-[#526FFE] text-white',
               )}
             >
               <span className="mr-10">팀 확정하기</span>
               <ButtonCheckIcon
-                color={selectedTeamIds.length === 0 ? '#526FFE' : 'white'}
+                color={selectedTeamIds.length < 3 ? '#526FFE' : 'white'}
               />
             </button>
           </div>

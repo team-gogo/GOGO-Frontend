@@ -8,17 +8,21 @@ interface BackPageButtonProps {
   type?: 'push' | 'back';
   path?: string;
   label?: string;
+  onClick?: () => void;
 }
 
 const BackPageButton = ({
   type = 'back',
   path = '/',
   label = '뒤로가기',
+  onClick,
 }: BackPageButtonProps) => {
   const router = useRouter();
 
   const handleClick = () => {
-    if (type === 'push' && path) {
+    if (onClick) {
+      onClick();
+    } else if (type === 'push' && path) {
       router.push(path);
     } else {
       router.back();

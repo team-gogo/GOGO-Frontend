@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
-import ConfirmTeamContainer from '@/widgets/team/ui/ConfirmTeamContainer';
+import ConfirmTeamPage from '@/views/team/ui/ConfirmTeamPage';
 
 const Page = ({ params }: { params: { matchId: string } }) => {
   return (
     <Suspense fallback={<div>로딩중...</div>}>
-      <ConfirmTeamContainer params={params} />
+      <ConfirmTeamPage params={params} />
     </Suspense>
   );
 };
