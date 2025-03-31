@@ -64,6 +64,7 @@ const Match = ({ match }: MatchProps) => {
   const isStageAdmin = adminIdxArr.includes(stageId);
 
   const matchItem = matchBatchArr.find((item) => item.matchId === matchId);
+
   const isBatchEnd = matchItem ? matchItem.isEnd : false;
   const bettingMatch = bettingMatchArr.find((item) => item.matchId === matchId);
   const alreadyBetting = bettingMatch !== undefined;
@@ -105,7 +106,7 @@ const Match = ({ match }: MatchProps) => {
   const winnerTeam =
     result?.victoryTeamId === ateam?.teamId
       ? ateam?.teamName
-      : result?.victoryTeamId === ateam?.teamId
+      : result?.victoryTeamId === bteam?.teamId
         ? ateam?.teamName
         : '없음';
 
@@ -254,7 +255,7 @@ const Match = ({ match }: MatchProps) => {
                 {formatPoint(ateam?.bettingPoint + bteam?.bettingPoint)}
               </p>
             </div>
-            {isMatchFinish && isBatchEnd ? (
+            {isMatchFinish && result !== null && isExpired ? (
               <h2 className={cn('text-h2e', 'text-white')}>
                 {winnerTeam}팀 승리
               </h2>
@@ -319,7 +320,10 @@ const Match = ({ match }: MatchProps) => {
               </div>
             )}
           </div>
-          {isMatchFinish && isBatchEnd && betting.isBetting ? (
+          {isMatchFinish &&
+          betting.isBetting &&
+          result !== null &&
+          isExpired ? (
             <div
               className={cn(
                 'flex',

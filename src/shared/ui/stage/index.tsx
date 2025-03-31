@@ -2,12 +2,16 @@
 
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { postStage } from '@/entities/stage/api/postStage';
 import { usePostPassCode } from '@/entities/stage/ui/model/usePostPassCode';
 import KebabMenuIcon from '@/shared/assets/icons/KebabMenuIcon';
-import { useMyStageIdStore, usePasswordModalStore } from '@/shared/stores';
+import {
+  useMyStageIdStore,
+  usePasswordModalStore,
+  useStageStatus,
+} from '@/shared/stores';
 import useStageNameStore from '@/shared/stores/useStageNameStore';
 import { MyStageType } from '@/shared/types/my';
 import { StagesType } from '@/shared/types/stage';
@@ -19,10 +23,12 @@ import MatchTypeLabel from '../matchTypeLabel';
 interface StageProps {
   stage: MyStageType | StagesType;
   isMyStage?: boolean;
+  onStatusChange?: (stageId: number, newStatus: string) => void;
 }
 
-const Stage = ({ stage, isMyStage = false }: StageProps) => {
-  const { stageId, stageName, type, status, isMaintainer } = stage;
+const Stage = ({ stage, isMyStage = false, onStatusChange }: StageProps) => {
+  const { stageId, stageName, type, isMaintainer } = stage;
+  const [status, setStatus] = useState(stage.status);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { mutate: PostPassCode } = usePostPassCode(stageId);
@@ -33,6 +39,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
   const { setStageName } = useStageNameStore();
   const { setIsPasswordModalOpen, setClickedStageId } = usePasswordModalStore();
   const { setStageId } = useMyStageIdStore();
+  const { setIsStatusConfirmed } = useStageStatus();
 
   const isParticipating =
     'isParticipating' in stage ? stage.isParticipating : undefined;
@@ -43,14 +50,22 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
 
   const isStagePage = pathname === '/stage';
 
+  useEffect(() => {
+    setStageId(Number(stageId));
+  }, []);
+
   const handleClick = () => {
     if (isMyStage) {
-      push(`/my/bet?stageId=${stageId}`);
+      setStageId(stageId);
+      push(`/my/bet/${stageId}`);
     } else if (status === 'CONFIRMED') {
       if (!isParticipating) {
+        setIsStatusConfirmed(true);
         PostPassCode(undefined);
+        setStageName(stageName);
+      } else if (isParticipating && isStagePage) {
+        push(`/${stageId}`);
       }
-      push(`/${stageId}`);
     } else if (isParticipating) {
       push(`/stage/stageId=${stage.stageId}`);
     } else if (Participate) {
@@ -58,15 +73,16 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
       if (isStagePage) {
         push(`/${stageId}`);
       } else {
-        push(`/my/bet?stageId=${stageId}`);
+        setStageId(stageId);
+        push(`/my/bet/${stageId}`);
       }
     } else if (isPassCode) {
       setIsPasswordModalOpen(true);
       setClickedStageId(stageId);
     } else {
+      setIsStatusConfirmed(false);
       PostPassCode(undefined);
       setStageName(stageName);
-      push(`/stage/stageId=${stage.stageId}`);
     }
   };
 
@@ -263,6 +279,8 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
         return;
       }
 
+      let hasSuccessfulPost = false;
+
       for (const system of uniqueSystems) {
         const filteredGames = {
           games: confirmedGamesArray.filter((game) => {
@@ -276,6 +294,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
         if (filteredGames.games.length > 0) {
           try {
             await postStage(stageId, filteredGames, system);
+            hasSuccessfulPost = true;
           } catch (error) {
             console.error(error);
             throw error;
@@ -283,15 +302,20 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
         }
       }
 
-      toast.success('모집 종료가 완료되었습니다.');
+      if (hasSuccessfulPost) {
+        toast.success('모집 종료가 완료되었습니다.');
+        setStatus('CONFIRMED');
 
-      if ('status' in stage) {
-        (stage as MyStageType | StagesType).status = 'CONFIRMED';
+        if (onStatusChange) {
+          onStatusChange(stageId, 'CONFIRMED');
+        }
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        toast.error('모집 종료 처리에 실패했습니다.');
       }
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
     } catch (error) {
       console.error(error);
       toast.error(

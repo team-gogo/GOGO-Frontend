@@ -2,6 +2,8 @@
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
+import { toast } from 'react-toastify';
+import { postStage } from '@/entities/stage/api/postStage';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
@@ -11,121 +13,44 @@ import SetTimeContainer from '@/widgets/stage/time/ui/SetTimeContainer';
 
 const MATCH_CHECK_INTERVAL = 1000;
 
+interface MatchSchedule {
+  startDate: string;
+  endDate: string;
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  [key: string]: any;
+}
+
 const SetTimePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const matchId = searchParams.get('matchId');
+  const gameId = searchParams.get('gameId');
   const [stageId, setStageId] = useState<number | null>(null);
   const [allMatchesScheduled, setAllMatchesScheduled] = useState(true);
 
   const checkMatchesScheduled = useCallback(() => {
-    if (typeof window !== 'undefined' && matchId) {
-      const savedMatchesKey = `savedMatches_${matchId}`;
+    if (typeof window !== 'undefined' && gameId) {
+      const savedMatchesKey = `savedMatches_${gameId}`;
       const savedMatchesData = sessionStorage.getItem(savedMatchesKey);
-      const placedTeamsKey = `placedTeams_${matchId}`;
-      const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
-      if (!savedMatchesData || !placedTeamsData) {
+      if (!savedMatchesData) {
         setAllMatchesScheduled(false);
         return;
       }
 
       try {
-        const savedMatches = JSON.parse(savedMatchesData);
-        const parsedPlacedTeamsData = JSON.parse(placedTeamsData);
+        const savedMatches = JSON.parse(savedMatchesData) as MatchSchedule[];
 
-        const byeMatchKeys = Object.entries(parsedPlacedTeamsData)
-          .filter(([key, value]) => {
-            const hasTeam =
-              value !== '' && value !== undefined && value !== 'TBD';
-            if (!hasTeam) return false;
-
-            const [round, position, side] = key.split('_');
-            const roundNum = Number(round);
-            const positionNum = Number(position);
-
-            const neighborPosition =
-              positionNum % 2 === 0 ? positionNum + 1 : positionNum - 1;
-            const neighborKey = `${roundNum}_${neighborPosition}_${side}`;
-
-            return (
-              !parsedPlacedTeamsData[neighborKey] ||
-              parsedPlacedTeamsData[neighborKey] === 'TBD'
-            );
-          })
-          .map(([key]) => key);
-
-        const placedTeams = Object.entries(parsedPlacedTeamsData).filter(
-          ([key, value]) =>
-            value !== '' && value !== undefined && !byeMatchKeys.includes(key),
+        const allScheduled = savedMatches.every(
+          (match) => match.startDate && match.endDate,
         );
 
-        let validMatchCount = 0;
-        let savedMatchCount = 0;
-
-        const teamCount = Object.keys(parsedPlacedTeamsData).length;
-        const finalStage = teamCount < 10 ? 4 : 8;
-
-        if (finalStage === 4) {
-          const semiFinalsMatchKeys = placedTeams
-            .filter(([key]) => key.startsWith('1_'))
-            .map(([key]) => key.split('_'));
-
-          const semiFinalsPositions: Record<string, number> = {};
-          semiFinalsMatchKeys.forEach(([_, pos, side]) => {
-            const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
-            semiFinalsPositions[posKey] =
-              (semiFinalsPositions[posKey] || 0) + 1;
-          });
-
-          validMatchCount += Object.values(semiFinalsPositions).filter(
-            (count) => count === 2,
-          ).length;
-
-          validMatchCount += 1;
-        } else {
-          const quarterFinalsMatchKeys = placedTeams
-            .filter(([key]) => key.startsWith('1_'))
-            .map(([key]) => key.split('_'));
-
-          const semiFinalsMatchKeys = placedTeams
-            .filter(([key]) => key.startsWith('2_'))
-            .map(([key]) => key.split('_'));
-
-          const quarterFinalsPositions: Record<string, number> = {};
-          quarterFinalsMatchKeys.forEach(([_, pos, side]) => {
-            const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
-            quarterFinalsPositions[posKey] =
-              (quarterFinalsPositions[posKey] || 0) + 1;
-          });
-
-          validMatchCount += Object.values(quarterFinalsPositions).filter(
-            (count) => count === 2,
-          ).length;
-
-          const semiFinalsPositions: Record<string, number> = {};
-          semiFinalsMatchKeys.forEach(([_, pos, side]) => {
-            const posKey = `${side}_${Math.floor(Number(pos) / 2)}`;
-            semiFinalsPositions[posKey] =
-              (semiFinalsPositions[posKey] || 0) + 1;
-          });
-
-          validMatchCount += Object.values(semiFinalsPositions).filter(
-            (count) => count === 2,
-          ).length;
-
-          validMatchCount += 1;
-        }
-
-        savedMatchCount = savedMatches.length;
-
-        setAllMatchesScheduled(savedMatchCount >= validMatchCount);
+        setAllMatchesScheduled(allScheduled);
       } catch (error) {
         console.error(error);
         setAllMatchesScheduled(false);
       }
     }
-  }, [matchId]);
+  }, [gameId]);
 
   useEffect(() => {
     checkMatchesScheduled();
@@ -135,7 +60,7 @@ const SetTimePage = () => {
     window.addEventListener('focus', checkMatchesScheduled);
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === `savedMatches_${matchId}`) {
+      if (e.key === `savedMatches_${gameId}`) {
         checkMatchesScheduled();
       }
     };
@@ -147,11 +72,11 @@ const SetTimePage = () => {
       window.removeEventListener('focus', checkMatchesScheduled);
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, [checkMatchesScheduled, matchId]);
+  }, [checkMatchesScheduled, gameId]);
 
   useEffect(() => {
     const fetchStageId = async () => {
-      if (matchId) {
+      if (gameId) {
         try {
           const stageResponse = await getStageList();
 
@@ -166,13 +91,14 @@ const SetTimePage = () => {
 
                 if (gamesResponse && gamesResponse.games) {
                   const foundGame = gamesResponse.games.find(
-                    (game) => game.gameId === parseInt(matchId),
+                    (game) => game.gameId === parseInt(gameId),
                   );
 
                   if (foundGame) {
+                    console.log(foundGame);
                     setStageId(stage.stageId);
                     sessionStorage.setItem(
-                      `gameStageId_${matchId}`,
+                      `gameStageId_${foundGame.gameId}`,
                       String(stage.stageId),
                     );
                     break;
@@ -189,19 +115,258 @@ const SetTimePage = () => {
       }
     };
 
-    if (matchId) {
-      const savedStageId = sessionStorage.getItem(`gameStageId_${matchId}`);
+    if (gameId) {
+      const savedStageId = sessionStorage.getItem(`gameStageId_${gameId}`);
       if (savedStageId) {
         setStageId(parseInt(savedStageId));
       } else {
         fetchStageId();
       }
     }
-  }, [matchId]);
+  }, [gameId]);
 
-  const handleConfirm = () => {
-    if (matchId) {
-      sessionStorage.setItem(`isConfirmed_${matchId}`, 'true');
+  const handleConfirm = async (gameId: number) => {
+    if (gameId) {
+      sessionStorage.setItem(`isConfirmed_${gameId}`, 'true');
+
+      if (allMatchesScheduled && stageId) {
+        try {
+          let stageGames = [];
+          try {
+            const response = await getMatchApplyList(stageId);
+            stageGames = response.games || [];
+          } catch (error) {
+            toast.error('스테이지 게임 정보를 가져오는데 실패했습니다.');
+            return;
+          }
+
+          const systemTypes = stageGames.map((game) =>
+            game.system.toLowerCase(),
+          );
+          const uniqueSystems = Array.from(new Set(systemTypes));
+
+          if (uniqueSystems.length === 0) {
+            toast.error('스테이지에 등록된 게임 시스템이 없습니다.');
+            return;
+          }
+
+          const confirmedGamesArray: {
+            gameId: number;
+            single?: {
+              teamAId: number;
+              teamBId: number;
+              startDate: string;
+              endDate: string;
+            };
+            tournament?: Array<{
+              teamAId?: number;
+              teamBId?: number;
+              round:
+                | 'ROUND_OF_32'
+                | 'ROUND_OF_16'
+                | 'QUARTER_FINALS'
+                | 'SEMI_FINALS'
+                | 'FINALS';
+              turn: number;
+              startDate: string;
+              endDate: string;
+            }>;
+            fullLeague?: Array<{
+              teamAId: number;
+              teamBId: number;
+              leagueTurn: number;
+              startDate: string;
+              endDate: string;
+            }>;
+          }[] = [];
+
+          for (const game of stageGames) {
+            try {
+              console.log(game);
+              const gameId = game.gameId;
+              const system = game.system.toLowerCase();
+              const confirmedTeamsData = sessionStorage.getItem(
+                `confirmedTeams_${gameId}`,
+              );
+              const savedMatchesData = sessionStorage.getItem(
+                `savedMatches_${gameId}`,
+              );
+
+              if (confirmedTeamsData && savedMatchesData) {
+                const teams = JSON.parse(confirmedTeamsData);
+                const savedMatches = JSON.parse(savedMatchesData);
+
+                if (teams.length >= 2 && savedMatches.length > 0) {
+                  const gameObj: {
+                    gameId: number;
+                    single?: {
+                      teamAId: number;
+                      teamBId: number;
+                      startDate: string;
+                      endDate: string;
+                    };
+                    tournament?: Array<{
+                      teamAId?: number;
+                      teamBId?: number;
+                      round:
+                        | 'ROUND_OF_32'
+                        | 'ROUND_OF_16'
+                        | 'QUARTER_FINALS'
+                        | 'SEMI_FINALS'
+                        | 'FINALS';
+                      turn: number;
+                      startDate: string;
+                      endDate: string;
+                    }>;
+                    fullLeague?: Array<{
+                      teamAId: number;
+                      teamBId: number;
+                      leagueTurn: number;
+                      startDate: string;
+                      endDate: string;
+                    }>;
+                  } = { gameId };
+
+                  if (system === 'single') {
+                    const match = savedMatches[0];
+                    gameObj.single = {
+                      teamAId: teams[0]?.teamId || 1,
+                      teamBId: teams[1]?.teamId || 2,
+                      startDate: match.startDate || new Date().toISOString(),
+                      endDate:
+                        match.endDate ||
+                        new Date(Date.now() + 3600000).toISOString(),
+                    };
+                  } else if (system === 'tournament') {
+                    const teamNameToIdMap = new Map();
+                    teams.forEach(
+                      (team: { teamId: number; teamName: string }) => {
+                        teamNameToIdMap.set(team.teamName, team.teamId);
+                      },
+                    );
+
+                    const tournamentGames = savedMatches.map(
+                      (match: {
+                        round?: string;
+                        index?: number;
+                        teamAName: string;
+                        teamBName: string;
+                        startDate?: string;
+                        endDate?: string;
+                      }) => {
+                        let round:
+                          | 'ROUND_OF_32'
+                          | 'ROUND_OF_16'
+                          | 'QUARTER_FINALS'
+                          | 'SEMI_FINALS'
+                          | 'FINALS' = 'FINALS';
+                        if (match.round === '8강') round = 'QUARTER_FINALS';
+                        else if (match.round === '4강') round = 'SEMI_FINALS';
+                        else if (match.round === '결승') round = 'FINALS';
+
+                        return {
+                          teamAId:
+                            teamNameToIdMap.get(match.teamAName) || undefined,
+                          teamBId:
+                            teamNameToIdMap.get(match.teamBName) || undefined,
+                          round,
+                          turn: match.index || 1,
+                          startDate:
+                            match.startDate || new Date().toISOString(),
+                          endDate:
+                            match.endDate ||
+                            new Date(Date.now() + 3600000).toISOString(),
+                        };
+                      },
+                    );
+
+                    gameObj.tournament = tournamentGames;
+                  } else if (system === 'fullleague') {
+                    const teamNameToIdMap = new Map();
+                    teams.forEach(
+                      (team: { teamId: number; teamName: string }) => {
+                        teamNameToIdMap.set(team.teamName, team.teamId);
+                      },
+                    );
+
+                    const leagueGames = savedMatches.map(
+                      (
+                        match: {
+                          index?: number;
+                          teamAName: string;
+                          teamBName: string;
+                          startDate?: string;
+                          endDate?: string;
+                        },
+                        index: number,
+                      ) => {
+                        return {
+                          teamAId: teamNameToIdMap.get(match.teamAName) || 1,
+                          teamBId: teamNameToIdMap.get(match.teamBName) || 2,
+                          leagueTurn: match.index || index + 1,
+                          startDate:
+                            match.startDate || new Date().toISOString(),
+                          endDate:
+                            match.endDate ||
+                            new Date(Date.now() + 3600000).toISOString(),
+                        };
+                      },
+                    );
+
+                    gameObj.fullLeague = leagueGames;
+                  }
+
+                  confirmedGamesArray.push(gameObj);
+                }
+              }
+            } catch (error) {
+              console.error(error);
+            }
+          }
+
+          if (confirmedGamesArray.length === 0) {
+            toast.error('확인된 게임이 없습니다.');
+            return;
+          }
+
+          let hasSuccessfulPost = false;
+
+          for (const system of uniqueSystems) {
+            const filteredGames = {
+              games: confirmedGamesArray.filter((game) => {
+                if (system === 'single' && game.single) return true;
+                if (system === 'tournament' && game.tournament) return true;
+                if (system === 'fullleague' && game.fullLeague) return true;
+                return false;
+              }),
+            };
+
+            if (filteredGames.games.length > 0) {
+              try {
+                await postStage(stageId, filteredGames, system);
+                hasSuccessfulPost = true;
+              } catch (error) {
+                console.error(error);
+                throw error;
+              }
+            }
+          }
+
+          if (hasSuccessfulPost) {
+            toast.success('모집 종료가 완료되었습니다.');
+            setTimeout(() => {
+              router.push(`/stage/stageId=${stageId}`);
+            }, 1000);
+            return;
+          } else {
+            toast.error('모집 종료에 실패했습니다.');
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error('모집 종료에 실패했습니다.');
+        }
+      }
+
       setTimeout(() => {
         if (stageId) {
           router.push(`/stage/stageId=${stageId}`);
@@ -238,7 +403,7 @@ const SetTimePage = () => {
             type="back"
             label="팀들 날짜와 시간 설정하기"
             onClick={() => {
-              sessionStorage.removeItem(`placedTeams_${matchId}`);
+              sessionStorage.removeItem(`placedTeams_${gameId}`);
               router.back();
               setTimeout(() => {
                 window.location.reload();
@@ -265,7 +430,7 @@ const SetTimePage = () => {
         >
           <div className={cn('max-w-[1320px]', 'w-full', 'px-24')}>
             <Button
-              onClick={handleConfirm}
+              onClick={() => handleConfirm(gameId ? parseInt(gameId) : 0)}
               disabled={!allMatchesScheduled}
               className={
                 !allMatchesScheduled ? 'cursor-not-allowed opacity-50' : ''

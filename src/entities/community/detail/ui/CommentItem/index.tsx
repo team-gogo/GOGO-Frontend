@@ -62,13 +62,17 @@ const CommentItem = ({
         className={cn(
           'text-body3s',
           'text-white',
-          'flex-grow',
           'px-24',
           'mobile:text-caption1s',
+          'break-words',
+          'whitespace-normal',
+          'overflow-hidden',
+          'w-full',
         )}
       >
         {content}
       </p>
+
       <div
         className={cn('flex', 'items-center', 'gap-8', 'cursor-pointer')}
         onClick={handleLike}

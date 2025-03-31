@@ -40,6 +40,12 @@ const MatchApplyPage = () => {
     ? matchApplyList?.games.filter((game) => game.category === selectedSport)
     : matchApplyList?.games;
 
+  const { data } = useGetMatchApplyList(Number(stageId));
+
+  const handleButton = () => {
+    console.log(data);
+  };
+
   return (
     <div
       className={cn(
@@ -75,6 +81,13 @@ const MatchApplyPage = () => {
             'flex-grow',
           )}
         >
+          <button
+            onClick={() => {
+              handleButton();
+            }}
+          >
+            버튼
+          </button>
           <MatchFilterHeader
             stageName={stageName}
             selectedSport={selectedSport}

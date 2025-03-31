@@ -1,16 +1,16 @@
 import { RightArrowIcon } from '@/shared/assets/svg';
-import { StageInMatchResponse } from '@/shared/types/main';
+import { ResponseStageGame } from '@/shared/types/community';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
 
 interface MatchListSectionProps {
-  stageInMatch: StageInMatchResponse;
+  stageInMatch: ResponseStageGame | undefined;
 }
 
 const MatchListSection = ({ stageInMatch }: MatchListSectionProps) => {
   return (
     <div className={cn('flex', 'w-full', 'gap-[1rem]', 'flex-col')}>
-      {stageInMatch.games.slice(0, 4).map((game) => (
+      {stageInMatch?.games.slice(0, 4).map((game) => (
         <div
           key={game.gameId}
           className={cn(
