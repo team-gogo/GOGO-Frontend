@@ -37,10 +37,9 @@ const Header = () => {
     >
       <div className={cn('flex', 'justify-between', 'w-full', 'w-[1320px]')}>
         <Link href="/stage">
-          {/* <div className="relative h-[52px] w-[152px] tablet:h-[40px] tablet:w-[120px]">
-            <Image src={imageSrc} alt="GOGO Logo" fill />
-          </div> */}
-          <GOGOIcon />
+          <div className={cn('flex', 'max-w-[11.75rem]')}>
+            <GOGOIcon className="h-auto w-full" />
+          </div>
         </Link>
         <nav className={cn('flex', 'gap-28', 'tablet:gap-16')}>
           {navItems.map((item) => (
