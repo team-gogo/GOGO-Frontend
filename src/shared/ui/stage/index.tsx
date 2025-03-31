@@ -19,10 +19,12 @@ import MatchTypeLabel from '../matchTypeLabel';
 interface StageProps {
   stage: MyStageType | StagesType;
   isMyStage?: boolean;
+  onStatusChange?: (stageId: number, newStatus: string) => void;
 }
 
-const Stage = ({ stage, isMyStage = false }: StageProps) => {
-  const { stageId, stageName, type, status, isMaintainer } = stage;
+const Stage = ({ stage, isMyStage = false, onStatusChange }: StageProps) => {
+  const { stageId, stageName, type, isMaintainer } = stage;
+  const [status, setStatus] = useState(stage.status);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { mutate: PostPassCode } = usePostPassCode(stageId);
@@ -263,6 +265,8 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
         return;
       }
 
+      let hasSuccessfulPost = false;
+
       for (const system of uniqueSystems) {
         const filteredGames = {
           games: confirmedGamesArray.filter((game) => {
@@ -276,6 +280,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
         if (filteredGames.games.length > 0) {
           try {
             await postStage(stageId, filteredGames, system);
+            hasSuccessfulPost = true;
           } catch (error) {
             console.error(error);
             throw error;
@@ -283,10 +288,19 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
         }
       }
 
-      toast.success('모집 종료가 완료되었습니다.');
+      if (hasSuccessfulPost) {
+        toast.success('모집 종료가 완료되었습니다.');
+        setStatus('CONFIRMED');
 
-      if ('status' in stage) {
-        (stage as MyStageType | StagesType).status = 'CONFIRMED';
+        if (onStatusChange) {
+          onStatusChange(stageId, 'CONFIRMED');
+        }
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        toast.error('모집 종료 처리에 실패했습니다.');
       }
     } catch (error) {
       console.error(error);
