@@ -61,7 +61,11 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
         setIsStatusConfirmed(true);
         PostPassCode(undefined);
         setStageName(stageName);
+      } else if (isParticipating && isStagePage) {
+        push(`/${stageId}`);
       }
+    } else if (isParticipating) {
+      push(`/stage/stageId=${stage.stageId}`);
     } else if (Participate) {
       setStageId(stageId);
       if (isStagePage) {
