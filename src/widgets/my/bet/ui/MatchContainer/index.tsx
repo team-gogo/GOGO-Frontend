@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { SportType } from '@/shared/model/sportTypes';
+import { useMatchBatchArrStore } from '@/shared/stores';
 import { MatchResponse } from '@/shared/types/my/bet';
 import Match from '@/shared/ui/match';
 import { cn } from '@/shared/utils/cn';
@@ -14,11 +16,21 @@ const MatchContainer = ({
   isMyBetInfo = false,
   selectedSport,
 }: MatchContainerProps) => {
+  const { setMatchBatchArr } = useMatchBatchArrStore();
+
   const filteredMatches = selectedSport
     ? matchInfo?.matches.filter((match) =>
         match.category?.includes(selectedSport),
       )
     : matchInfo?.matches;
+
+  useEffect(() => {
+    if (matchInfo?.matches) {
+      setMatchBatchArr(
+        matchInfo.matches.map(({ matchId, isEnd }) => ({ matchId, isEnd })),
+      );
+    }
+  }, [matchInfo]);
 
   return (
     <div className={cn('w-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>

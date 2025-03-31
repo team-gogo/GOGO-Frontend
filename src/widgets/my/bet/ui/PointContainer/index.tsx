@@ -8,9 +8,10 @@ import { cn } from '@/shared/utils/cn';
 
 interface PointContainerProps {
   tempPoint: TempPointsResponse | undefined;
+  stageId: string | null;
 }
 
-const PointContainer = ({ tempPoint }: PointContainerProps) => {
+const PointContainer = ({ tempPoint, stageId }: PointContainerProps) => {
   const { push } = useRouter();
 
   return (
@@ -33,7 +34,7 @@ const PointContainer = ({ tempPoint }: PointContainerProps) => {
             </h4>
             <button
               className={cn('flex', 'items-center', 'gap-[1rem]')}
-              onClick={() => push('/bet')}
+              onClick={() => push(`/${stageId}`)}
             >
               <p className={cn('text-body2s', 'text-main-500')}>
                 베팅하러 가기

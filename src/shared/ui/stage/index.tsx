@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { postStage } from '@/entities/stage/api/postStage';
 import { usePostPassCode } from '@/entities/stage/ui/model/usePostPassCode';
@@ -43,9 +43,14 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
 
   const isStagePage = pathname === '/stage';
 
+  useEffect(() => {
+    setStageId(Number(stageId));
+  }, []);
+
   const handleClick = () => {
     if (isMyStage) {
-      push(`/my/bet?stageId=${stageId}`);
+      setStageId(stageId);
+      push(`/my/bet/${stageId}`);
     } else if (status === 'CONFIRMED') {
       if (!isParticipating) {
         PostPassCode(undefined);
@@ -58,7 +63,8 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
       if (isStagePage) {
         push(`/${stageId}`);
       } else {
-        push(`/my/bet?stageId=${stageId}`);
+        setStageId(stageId);
+        push(`/my/bet/${stageId}`);
       }
     } else if (isPassCode) {
       setIsPasswordModalOpen(true);
