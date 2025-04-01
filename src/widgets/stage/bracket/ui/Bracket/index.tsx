@@ -609,6 +609,57 @@ const Bracket = () => {
                   </>
                 ) : (
                   (() => {
+                    if (round === 2 && totalTeams === 3) {
+                      const confirmedTeamsData = sessionStorage.getItem(
+                        `confirmedTeams_${gameId}`,
+                      );
+                      if (confirmedTeamsData) {
+                        const allTeams = JSON.parse(
+                          confirmedTeamsData,
+                        ) as TeamData[];
+                        if (allTeams.length === 3) {
+                          const teamIn4Round: string[] = [];
+                          Object.entries(placedTeams).forEach(
+                            ([key, value]) => {
+                              const [r, _p, _s] = key.split('_');
+                              if (Number(r) === 1) {
+                                if (
+                                  typeof value === 'object' &&
+                                  'teamName' in value &&
+                                  value.teamName
+                                ) {
+                                  teamIn4Round.push(value.teamName);
+                                }
+                              }
+                            },
+                          );
+
+                          const teamsIn4Round = teamIn4Round.filter(
+                            (teamName) =>
+                              allTeams.some(
+                                (team) => team.teamName === teamName,
+                              ),
+                          );
+
+                          const byeTeam = allTeams.find(
+                            (team) => !teamsIn4Round.includes(team.teamName),
+                          );
+                          if (
+                            byeTeam &&
+                            side === 'right' &&
+                            node.position === 0
+                          ) {
+                            return (
+                              <TeamItem
+                                teamName={byeTeam.teamName}
+                                className="w-[160px]"
+                              />
+                            );
+                          }
+                        }
+                      }
+                    }
+
                     if (!placedTeam.teamName) {
                       const isPreviousRound = round > 1;
                       if (isPreviousRound) {
@@ -682,6 +733,36 @@ const Bracket = () => {
 
         const updatedTree = cloneTree(bracketTree);
         setBracketTree(updatedTree);
+      }
+
+      const confirmedTeamsData = sessionStorage.getItem(
+        `confirmedTeams_${gameId}`,
+      );
+      if (confirmedTeamsData) {
+        const allTeams = JSON.parse(confirmedTeamsData) as TeamData[];
+
+        if (allTeams.length === 3) {
+          const teamsIn4Round: string[] = [];
+          Object.entries(placedTeams).forEach(([key, value]) => {
+            const [r, _p, _s] = key.split('_');
+            if (Number(r) === 1) {
+              if (value && value.teamName && value.teamName !== 'TBD') {
+                teamsIn4Round.push(value.teamName);
+              }
+            }
+          });
+
+          const byeTeam = allTeams.find(
+            (team) => !teamsIn4Round.includes(team.teamName),
+          );
+
+          if (byeTeam) {
+            sessionStorage.setItem(
+              `threeTeamBye_${gameId}`,
+              JSON.stringify(byeTeam),
+            );
+          }
+        }
       }
 
       try {

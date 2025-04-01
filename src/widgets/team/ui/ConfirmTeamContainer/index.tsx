@@ -83,8 +83,8 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
       }
 
       if (foundGame.system === 'TOURNAMENT') {
-        if (selectedTeamIds.length < 2) {
-          toast.error('최소 3개 이상의 팀을 선택해주세요.');
+        if (selectedTeamIds.length < 2 || selectedTeamIds.length > 8) {
+          toast.error('3개 이상 8개 이하의 팀을 선택해주세요.');
           return;
         } else {
           router.push(
