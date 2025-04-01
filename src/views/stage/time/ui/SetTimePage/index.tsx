@@ -267,7 +267,7 @@ const SetTimePage = () => {
   const handleConfirm = () => {
     try {
       const games = [];
-      const teamNameToIdMap = new Map<string, string>();
+      const teamNameToIdMap = new Map<string, number>();
 
       try {
         const confirmedTeamsKey = `confirmedTeams_${gameId}`;
@@ -275,9 +275,9 @@ const SetTimePage = () => {
 
         if (confirmedTeamsData) {
           const parsedTeams = JSON.parse(confirmedTeamsData);
-          console.log(parsedTeams);
+          console.log('확인된 팀 데이터:', parsedTeams);
           parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
-            teamNameToIdMap.set(team.teamName, team.teamId.toString());
+            teamNameToIdMap.set(team.teamName, team.teamId);
           });
           console.log('팀 이름-ID:', Object.fromEntries(teamNameToIdMap));
         }
@@ -299,10 +299,10 @@ const SetTimePage = () => {
             round = 'FINALS';
           }
 
-          const teamAId = teamNameToIdMap.get(match.teamAName) || 'TBD';
-          const teamBId = teamNameToIdMap.get(match.teamBName) || 'TBD';
+          const teamAId = teamNameToIdMap.get(match.teamAName) || 0;
+          const teamBId = teamNameToIdMap.get(match.teamBName) || 0;
 
-          console.log({
+          console.log('매치 팀 정보:', {
             teamAName: match.teamAName,
             teamAId,
             teamBName: match.teamBName,
@@ -310,8 +310,8 @@ const SetTimePage = () => {
           });
 
           return {
-            teamAId: teamAId,
-            teamBId: teamBId,
+            teamAId,
+            teamBId,
             round,
             turn: match.index,
             startDate: match.startDate,
@@ -331,8 +331,8 @@ const SetTimePage = () => {
         });
       } else if (system === GameSystem.FULL_LEAGUE) {
         const leagueGames = savedMatches.map((match, index) => ({
-          teamAId: parseInt(teamNameToIdMap.get(match.teamAName) || '0', 10),
-          teamBId: parseInt(teamNameToIdMap.get(match.teamBName) || '0', 10),
+          teamAId: teamNameToIdMap.get(match.teamAName) || 0,
+          teamBId: teamNameToIdMap.get(match.teamBName) || 0,
           startDate: match.startDate,
           endDate: match.endDate,
           leagueTurn: index + 1,
@@ -360,14 +360,8 @@ const SetTimePage = () => {
           gameId: parseInt(gameId || '0', 10),
           system: GameSystem.SINGLE,
           single: {
-            teamAId: parseInt(
-              teamNameToIdMap.get(singleMatch.teamAName) || '0',
-              10,
-            ),
-            teamBId: parseInt(
-              teamNameToIdMap.get(singleMatch.teamBName) || '0',
-              10,
-            ),
+            teamAId: teamNameToIdMap.get(singleMatch.teamAName) || 0,
+            teamBId: teamNameToIdMap.get(singleMatch.teamBName) || 0,
             startDate: singleMatch.startDate,
             endDate: singleMatch.endDate,
           },
