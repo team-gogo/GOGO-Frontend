@@ -2,11 +2,13 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { postStage } from '@/entities/stage/api/postStage';
 import useSelectSport from '@/shared/model/useSelectSport';
 import useStageNameStore from '@/shared/stores/useStageNameStore';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
+import { useStageStore } from '@/store/stageStore';
 import { MatchFilterHeader, StageApply } from '@/widgets/stage/apply';
 import ConfirmStage from '@/widgets/stage/apply/ui/ConfirmStage';
 import { useGetMatchApplyList } from '../../model/useGetMatchApplyList';
@@ -20,6 +22,7 @@ const MatchApplyPage = () => {
   );
   const { selectedSport, toggleSportSelection } = useSelectSport();
   const { stageName } = useStageNameStore();
+  const { getStageGames } = useStageStore();
 
   const [confirmedGames, setConfirmedGames] = useState<Record<string, boolean>>(
     {},
@@ -42,18 +45,38 @@ const MatchApplyPage = () => {
     ? matchApplyList?.games.filter((game) => game.category === selectedSport)
     : matchApplyList?.games;
 
-  const games = filteredGames?.map((game) => ({
-    gameId: game.gameId,
-  }));
+  const handleConfirmStage = async () => {
+    try {
+      if (!stageId) {
+        toast.error('스테이지 ID를 찾을 수 없습니다.');
+        return;
+      }
 
-  console.log(
-    'game',
-    games,
-    games?.map((game) => game.gameId),
-  );
+      const stageGames = getStageGames(Number(stageId));
+      if (!stageGames || stageGames.length === 0) {
+        toast.error('저장된 경기 일정이 없습니다.');
+        return;
+      }
 
-  const handleConfirmStage = () => {
-    // postStage(Number(stageId), { games });
+      const allGamesConfirmed = stageGames.every((game) => {
+        const isConfirmed = sessionStorage.getItem(
+          `isConfirmed_${game.gameId}`,
+        );
+        return isConfirmed === 'true';
+      });
+
+      if (!allGamesConfirmed) {
+        toast.error('모든 경기의 시간을 설정해주세요.');
+        return;
+      }
+
+      await postStage(Number(stageId), { games: stageGames });
+      toast.success('스테이지 정보가 성공적으로 저장되었습니다.');
+      router.push('/stage');
+    } catch (error) {
+      console.error('Stage confirmation error:', error);
+      toast.error('스테이지 저장 중 오류가 발생했습니다.');
+    }
   };
 
   return (
