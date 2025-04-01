@@ -658,25 +658,18 @@ const Bracket = () => {
         const allTeams = JSON.parse(confirmedTeamsData) as TeamData[];
 
         if (allTeams.length === 3) {
-          const teamsIn4Round: string[] = [];
-          Object.entries(placedTeams).forEach(([key, value]) => {
-            const [r, _p, _s] = key.split('_');
-            if (Number(r) === 1) {
-              if (value && value.teamName && value.teamName !== 'TBD') {
-                teamsIn4Round.push(value.teamName);
-              }
-            }
-          });
-
-          const byeTeam = allTeams.find(
-            (team) => !teamsIn4Round.includes(team.teamName),
+          const placedTeamsData = sessionStorage.getItem(
+            `placedTeams_${gameId}`,
           );
-
-          if (byeTeam) {
-            sessionStorage.setItem(
-              `threeTeamBye_${gameId}`,
-              JSON.stringify(byeTeam),
-            );
+          if (placedTeamsData) {
+            const placedTeamsObj = JSON.parse(placedTeamsData);
+            const byeTeam = placedTeamsObj['1_0_right'];
+            if (byeTeam) {
+              sessionStorage.setItem(
+                `threeTeamBye_${gameId}`,
+                JSON.stringify(byeTeam),
+              );
+            }
           }
         }
       }
