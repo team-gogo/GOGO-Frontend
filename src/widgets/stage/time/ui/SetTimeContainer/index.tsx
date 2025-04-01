@@ -234,11 +234,11 @@ const SetTimeContainer = ({
       const savedMatchesKey = `savedMatches_${matchId}`;
       sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
       if (system === GameSystem.FULL_LEAGUE) {
+        /* eslint-disable */
         const modifiedSavedMatches = savedMatches.map(({ round, ...rest }) => ({
           ...rest,
           leagueTurn: rest.index,
         }));
-        console.log(savedMatchesKey, modifiedSavedMatches);
         sessionStorage.setItem(
           savedMatchesKey,
           JSON.stringify(modifiedSavedMatches),
