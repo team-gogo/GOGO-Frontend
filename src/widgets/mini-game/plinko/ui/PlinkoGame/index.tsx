@@ -86,6 +86,9 @@ const PlinkoGame = ({
 
       bodies.forEach((body) => {
         if (body.position.y > 700) {
+          if (plinkoData?.amount) {
+            setPoint((prevPoint) => prevPoint + Number(plinkoData?.amount));
+          }
           Composite.remove(engine.world, body);
           setGameRunningCount((prev) => prev - 1);
         } else if (body.position.y > 530) {
@@ -104,16 +107,6 @@ const PlinkoGame = ({
             setFallingOrder((prev) => {
               const updatedFallingOrder = prev.map((item) => {
                 if (item.id === body.id && !item.passed550) {
-                  if (plinkoData?.amount) {
-                    console.log(plinkoData.amount);
-
-                    if (!item.passed550) {
-                      setPoint(
-                        (prevPoint) =>
-                          prevPoint + Number(plinkoData?.amount / 2),
-                      );
-                    }
-                  }
                   return { ...item, passed550: true };
                 }
                 return item;

@@ -20,6 +20,7 @@ interface DetailFormationProps {
     | 'ETC';
   team1DetailData?: TeamDetailType;
   team2DetailData?: TeamDetailType;
+  isModalUsed?: boolean;
 }
 
 interface Player {
@@ -36,6 +37,7 @@ const DetailFormation = ({
   category,
   team1DetailData,
   team2DetailData,
+  isModalUsed = false,
 }: DetailFormationProps) => {
   const draggedPlayerRef = useRef<string | null>(null);
   const mousePositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -197,7 +199,8 @@ const DetailFormation = ({
 
       const horizontalMargin = scaledWidth * 0.01;
       const maxX = viewBox.width - scaledWidth - horizontalMargin;
-      const maxY = viewBox.height - verticalMargin - scaledHeight * scaleY;
+      const maxY =
+        viewBox.height * 0.8 - verticalMargin - scaledHeight * scaleY;
       const minY = verticalMargin;
 
       const boundedX = Math.max(
@@ -272,7 +275,9 @@ const DetailFormation = ({
       const verticalMargin = viewBox.height * verticalMarginRatio;
 
       const horizontalMargin = scaledWidth * 0.01;
-      const maxX = viewBox.width - scaledWidth - horizontalMargin;
+      const maxX = isModalUsed
+        ? viewBox.width / 2 - scaledWidth - horizontalMargin
+        : viewBox.width - scaledWidth - horizontalMargin;
       const maxY = viewBox.height - verticalMargin - scaledHeight * scaleY;
       const minY = verticalMargin;
 
@@ -295,7 +300,9 @@ const DetailFormation = ({
       const screenY =
         ((boundedY - minY) / scaleY) * heightScale + verticalMargin / scaleY;
 
-      const relativeX = boundedX / viewBox.width;
+      const relativeX = isModalUsed
+        ? boundedX / (viewBox.width / 2)
+        : boundedX / viewBox.width;
       const relativeY = normalizedY * heightScale;
 
       setPlayers((prev) =>
@@ -327,7 +334,7 @@ const DetailFormation = ({
             className={`relative w-full ${isLargeScreen ? 'h-[500px]' : 'h-[400px]'}`}
             style={{
               maxWidth: isLargeScreen ? 'none' : '100%',
-              minWidth: '780px',
+              minWidth: isModalUsed ? '660px' : '780px',
               margin: '0 auto',
             }}
           >
@@ -357,6 +364,7 @@ const DetailFormation = ({
                           );
                         }
                       }}
+                      isModalUsed={isModalUsed}
                     />
                     <div
                       className="absolute inset-0"

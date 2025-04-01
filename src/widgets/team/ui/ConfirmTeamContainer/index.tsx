@@ -7,6 +7,10 @@ import { getTempTeam } from '@/entities/team/api/getTempTeam';
 import SelectedTeamCounter from '@/entities/team/ui/SelectedTeamCounter';
 import TeamItem from '@/entities/team/ui/TeamItem';
 import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
+import {
+  useTeamDetailInfoStore,
+  useTeamDetailModalStore,
+} from '@/shared/stores';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { getMatchApplyList } from '@/views/stage/apply/api/getMatchApplyList';
@@ -18,6 +22,10 @@ interface ConfirmTeamContainerProps {
 }
 
 const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
+  const { setTeamId } = useTeamDetailInfoStore();
+  const { setIsTeamDetailModalOpen, setIsConfirmUsed } =
+    useTeamDetailModalStore();
+
   const [selectedTeamIds, setSelectedTeamIds] = useState<number[]>([]);
   const [teams, setTeams] = useState<
     Array<{ teamId: number; teamName: string; participantCount: number }>
@@ -44,7 +52,9 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
   }, [gameId]);
 
   const handleViewDetails = useCallback((_teamId: number) => {
-    router.push(`/match/${gameId}`);
+    setTeamId(_teamId);
+    setIsConfirmUsed(true);
+    setIsTeamDetailModalOpen(true);
   }, []);
 
   const handleConfirmTeam = useCallback(async () => {
