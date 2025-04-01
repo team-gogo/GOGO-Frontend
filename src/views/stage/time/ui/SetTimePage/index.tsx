@@ -43,6 +43,24 @@ const SetTimePage = () => {
 
       const systemParam =
         new URLSearchParams(window.location.search).get('system') || '';
+
+      if (systemParam === 'SINGLE') {
+        if (!savedMatchesData) {
+          setAllMatchesScheduled(false);
+          return;
+        }
+
+        try {
+          const savedMatches = JSON.parse(savedMatchesData);
+          setAllMatchesScheduled(savedMatches.length === 1);
+          return;
+        } catch (error) {
+          console.error(error);
+          setAllMatchesScheduled(false);
+          return;
+        }
+      }
+
       const isFullLeague = systemParam === 'FULL_LEAGUE';
 
       if (isFullLeague) {

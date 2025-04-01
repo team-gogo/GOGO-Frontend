@@ -169,6 +169,13 @@ const SetTimeContainer = ({
 
       toast.success('매치 시간이 저장되었습니다.');
 
+      if (system === GameSystem.SINGLE) {
+        if (onMatchSave) {
+          onMatchSave();
+        }
+        return;
+      }
+
       if (onMatchSave) {
         onMatchSave();
       }
