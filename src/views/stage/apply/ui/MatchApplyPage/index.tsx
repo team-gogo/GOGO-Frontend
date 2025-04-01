@@ -7,6 +7,7 @@ import useStageNameStore from '@/shared/stores/useStageNameStore';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { MatchFilterHeader, StageApply } from '@/widgets/stage/apply';
+import ConfirmStage from '@/widgets/stage/apply/ui/ConfirmStage';
 import { useGetMatchApplyList } from '../../model/useGetMatchApplyList';
 
 const MatchApplyPage = () => {
@@ -80,6 +81,7 @@ const MatchApplyPage = () => {
             selectedSport={selectedSport}
             toggleSportSelection={toggleSportSelection}
           />
+          <ConfirmStage onClick={() => {}} />
           {isPending ? (
             <div
               className={cn(
