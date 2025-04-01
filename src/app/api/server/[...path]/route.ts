@@ -11,13 +11,22 @@ const globalForRefresh: {
   } | null> | null;
   isRefreshing: boolean;
   lastRefreshTime: number;
+  cachedTokens?: {
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: number;
+  };
+  waitingRequests: {
+    req: NextRequest;
+    isRetry: boolean;
+    originalBody?: string;
+  }[];
 } = {
   refreshTokenPromise: null,
   isRefreshing: false,
   lastRefreshTime: 0,
+  waitingRequests: [],
 };
-
-const MIN_REFRESH_INTERVAL = 10000;
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   return handleRequest(req);
@@ -48,10 +57,16 @@ async function handleRequest(
   let accessToken = cookieStore.get('accessToken')?.value;
   const refreshToken = cookieStore.get('refreshToken')?.value;
 
+  if (
+    globalForRefresh.cachedTokens &&
+    globalForRefresh.cachedTokens.expiresAt > Date.now()
+  ) {
+    accessToken = globalForRefresh.cachedTokens.accessToken;
+  }
+
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}${req.nextUrl.pathname.replace('/api/server', '')}`;
   const method = req.method;
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
-  const requestId = Math.random().toString(36).substring(7);
 
   let data;
   if (!['GET', 'DELETE', 'HEAD'].includes(method)) {
@@ -76,7 +91,7 @@ async function handleRequest(
         cookieStore.delete('refreshToken');
         return NextResponse.json(
           {
-            error: '인증이 필요합니다.',
+            error: '토큰 갱신에 실패했습니다.',
             status: 401,
             isRefreshError: true,
           },
@@ -104,27 +119,28 @@ async function handleRequest(
 
     if (status === 401 && !isRetry) {
       if (refreshToken) {
-        const newTokens = await performTokenRefresh(refreshToken);
-
-        if (newTokens) {
-          accessToken = newTokens.accessToken;
-          return retryRequest(
+        if (globalForRefresh.isRefreshing) {
+          globalForRefresh.waitingRequests.push({
             req,
-            accessToken,
-            requestId,
-            originalBody || (data ? JSON.stringify(data) : undefined),
-          );
+            isRetry: true,
+            originalBody,
+          });
         } else {
-          cookieStore.delete('accessToken');
-          cookieStore.delete('refreshToken');
-          return NextResponse.json(
-            {
-              error: '토큰 갱신에 실패했습니다.',
-              status: 401,
-              isRefreshError: true,
-            },
-            { status: 401 },
-          );
+          const newTokens = await performTokenRefresh(refreshToken);
+          if (newTokens) {
+            return retryRequest(req, newTokens.accessToken, originalBody);
+          } else {
+            cookieStore.delete('accessToken');
+            cookieStore.delete('refreshToken');
+            return NextResponse.json(
+              {
+                error: '토큰 갱신에 실패했습니다.',
+                status: 401,
+                isRefreshError: true,
+              },
+              { status: 401 },
+            );
+          }
         }
       } else {
         cookieStore.delete('accessToken');
@@ -156,31 +172,32 @@ async function performTokenRefresh(refreshToken: string): Promise<{
   accessToken: string;
   refreshToken: string;
 } | null> {
-  const currentTime = Date.now();
+  const now = Date.now();
 
-  if (currentTime - globalForRefresh.lastRefreshTime < MIN_REFRESH_INTERVAL) {
-    const cookieStore = cookies();
-    const currentAccessToken = cookieStore.get('accessToken')?.value;
-    const currentRefreshToken = cookieStore.get('refreshToken')?.value;
-
-    if (currentAccessToken && currentRefreshToken) {
-      return {
-        accessToken: currentAccessToken,
-        refreshToken: currentRefreshToken,
-      };
-    }
+  if (
+    globalForRefresh.cachedTokens &&
+    globalForRefresh.cachedTokens.expiresAt > now
+  ) {
+    return globalForRefresh.cachedTokens;
   }
 
   if (globalForRefresh.isRefreshing && globalForRefresh.refreshTokenPromise) {
     return await globalForRefresh.refreshTokenPromise;
   }
 
-  globalForRefresh.isRefreshing = true;
-  globalForRefresh.refreshTokenPromise = refreshAccessToken(refreshToken);
-
   try {
+    globalForRefresh.lastRefreshTime = now;
+    globalForRefresh.isRefreshing = true;
+    globalForRefresh.refreshTokenPromise = refreshAccessToken(refreshToken);
+
     const result = await globalForRefresh.refreshTokenPromise;
-    globalForRefresh.lastRefreshTime = Date.now();
+    if (result) {
+      globalForRefresh.cachedTokens = {
+        ...result,
+        expiresAt: Date.now() + 1000,
+      };
+      await processWaitingRequests();
+    }
     return result;
   } finally {
     globalForRefresh.isRefreshing = false;
@@ -188,19 +205,23 @@ async function performTokenRefresh(refreshToken: string): Promise<{
   }
 }
 
+async function processWaitingRequests() {
+  while (globalForRefresh.waitingRequests.length > 0) {
+    const { req, isRetry, originalBody } =
+      globalForRefresh.waitingRequests.shift()!;
+    await handleRequest(req, isRetry, originalBody);
+  }
+}
+
 async function retryRequest(
   req: NextRequest,
   accessToken: string,
-  requestId: string,
   body?: string,
 ): Promise<NextResponse> {
-  console.log(`[${requestId}] 새 토큰으로 요청 재시도 중...`);
-
   const newReq = new NextRequest(req.url, {
     method: req.method,
     headers: new Headers(req.headers),
     body: body,
   });
-
   return handleRequest(newReq, true, body);
 }
