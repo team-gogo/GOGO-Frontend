@@ -46,7 +46,11 @@ const MatchApplyPage = () => {
     gameId: game.gameId,
   }));
 
-  console.log(games);
+  console.log(
+    'game',
+    games,
+    games?.map((game) => game.gameId),
+  );
 
   const handleConfirmStage = () => {
     // postStage(Number(stageId), { games });
