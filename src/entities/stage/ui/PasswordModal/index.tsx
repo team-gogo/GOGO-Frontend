@@ -19,7 +19,6 @@ interface PassCodeType {
 
 const PasswordModal = ({ onClose }: PasswordModalProps) => {
   const { clickedStageId } = usePasswordModalStore();
-  const { setIsStatusConfirmed } = useStageStatus();
 
   const { mutate: PostPassCode } = usePostPassCode(clickedStageId);
   const { register, handleSubmit, watch } = useForm<PassCodeType>();
@@ -29,7 +28,6 @@ const PasswordModal = ({ onClose }: PasswordModalProps) => {
   const Disabled = !passCode;
 
   const onSubmit: SubmitHandler<PassCodeType> = async (data) => {
-    setIsStatusConfirmed(false);
     PostPassCode(data);
   };
 
