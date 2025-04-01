@@ -1,9 +1,15 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { useGetStageGameQuery } from '@/entities/community/model/useGetStageGameQuery';
-import { useSelectedGameIdStore } from '@/shared/stores';
+import {
+  useSelectedGameIdStore,
+  useTeamDetailInfoStore,
+  useTeamDetailModalStore,
+} from '@/shared/stores';
 import BackPageButton from '@/shared/ui/backPageButton';
+import TeamDetailModal from '@/shared/ui/teamDetailModal';
 import { cn } from '@/shared/utils/cn';
 import { useGetTeamInfo } from '@/views/match/model/useGetTeamInfo';
 import { MatchNameContainer, TeamListContainer } from '@/widgets/match';
@@ -15,10 +21,22 @@ const MatchTeamPage = () => {
   const { data: gameData } = useGetStageGameQuery(stageId);
 
   const { selectedGameId } = useSelectedGameIdStore();
+  const { isTeamDetailModalOpen, setIsTeamDetailModalOpen } =
+    useTeamDetailModalStore();
+  const { setCategory } = useTeamDetailInfoStore();
+
+  useEffect(() => {
+    if (!gameData?.games || !selectedGameId) return;
+
+    const selectedGame = gameData.games.find(
+      (game) => game.gameId === Number(selectedGameId),
+    );
+    if (selectedGame) {
+      setCategory(selectedGame.category);
+    }
+  }, [gameData, selectedGameId, setCategory]);
 
   const { data: teamInfoData } = useGetTeamInfo(Number(selectedGameId));
-
-  console.log(teamInfoData);
 
   return (
     <div
@@ -48,6 +66,9 @@ const MatchTeamPage = () => {
           <TeamListContainer teams={teamInfoData} />
         </div>
       </div>
+      {isTeamDetailModalOpen && (
+        <TeamDetailModal onClose={() => setIsTeamDetailModalOpen(false)} />
+      )}
     </div>
   );
 };
