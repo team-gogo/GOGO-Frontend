@@ -20,10 +20,16 @@ const MatchTeamPage = () => {
 
   const { data: gameData } = useGetStageGameQuery(stageId);
 
-  const { selectedGameId } = useSelectedGameIdStore();
+  const { selectedGameId, setSelectedGameId } = useSelectedGameIdStore();
   const { isTeamDetailModalOpen, setIsTeamDetailModalOpen } =
     useTeamDetailModalStore();
   const { setCategory } = useTeamDetailInfoStore();
+
+  useEffect(() => {
+    if (gameData) {
+      setSelectedGameId(gameData.games[0].gameId);
+    }
+  }, [gameData]);
 
   useEffect(() => {
     if (!gameData?.games || !selectedGameId) return;
