@@ -123,7 +123,11 @@ const StageApply = ({
                   신청하기
                 </Button>
                 {isMaintainer && (
-                  <Button className={cn('mx-10')} onClick={handleConfirm}>
+                  <Button
+                    className={cn('mx-10')}
+                    onClick={handleConfirm}
+                    bg="bg-[#FF4646]"
+                  >
                     종료하기
                   </Button>
                 )}
