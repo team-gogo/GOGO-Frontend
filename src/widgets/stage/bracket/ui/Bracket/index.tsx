@@ -21,10 +21,16 @@ interface GroupDistribution {
   bottom: number;
 }
 
+interface TeamData {
+  teamId: number;
+  teamName: string;
+}
+
 interface BracketNode {
   round: number;
   position: number;
   teamName: string;
+  teamId?: number;
   left: BracketNode | null;
   right: BracketNode | null;
   isEmpty: boolean;
@@ -45,15 +51,15 @@ const Bracket = () => {
   ]);
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const [teams, setTeams] = useState<string[]>([]);
+  const [teams, setTeams] = useState<TeamData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [placedTeams, setPlacedTeams] = useState<{ [key: string]: boolean }>(
+  const [placedTeams, setPlacedTeams] = useState<{ [key: number]: boolean }>(
     {},
   );
 
   const [isDragging, setIsDragging] = useState(false);
   const [savedTeamPlacements, setSavedTeamPlacements] = useState<
-    Record<string, string>
+    Record<string, TeamData>
   >({});
   const [isClient, setIsClient] = useState(false);
 
@@ -116,7 +122,7 @@ const Bracket = () => {
   const ITEM_GAP = 8;
   const CONTAINER_PADDING = 16;
 
-  const availableTeams = teams.filter((team) => !placedTeams[team]);
+  const availableTeams = teams.filter((team) => !placedTeams[team.teamId]);
 
   const canScrollPrev = currentIndex > 0;
   const canScrollNext = currentIndex + VISIBLE_ITEMS < availableTeams.length;
@@ -226,29 +232,28 @@ const Bracket = () => {
     if (confirmedTeams) {
       try {
         const parsedTeams = JSON.parse(confirmedTeams);
-        const teamNames = parsedTeams.map(
-          (team: { teamName: string }) => team.teamName,
-        );
-        setTeams(teamNames);
-        setTotalTeams(Math.max(2, teamNames.length));
+        setTeams(parsedTeams);
+        setTotalTeams(Math.max(2, parsedTeams.length));
       } catch (error) {
         console.error(error);
       }
     } else if (oldConfirmedTeams && gameId === 0) {
       try {
         const parsedTeams = JSON.parse(oldConfirmedTeams);
-        const teamNames = parsedTeams.map(
-          (team: { teamName: string }) => team.teamName,
-        );
-        setTeams(teamNames);
-        setTotalTeams(Math.max(2, teamNames.length));
+        setTeams(parsedTeams);
+        setTotalTeams(Math.max(2, parsedTeams.length));
 
         sessionStorage.setItem(`confirmedTeams_${gameId}`, oldConfirmedTeams);
       } catch (error) {
         console.error(error);
       }
     } else {
-      setTeams(Array.from({ length: 10 }, (_, i) => `Team ${i + 1}`));
+      setTeams(
+        Array.from({ length: 10 }, (_, i) => ({
+          teamId: i + 1,
+          teamName: `Team ${i + 1}`,
+        })),
+      );
       setTotalTeams(10);
     }
 
@@ -256,10 +261,10 @@ const Bracket = () => {
       const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
       if (placedTeamsData) {
         const placedTeamsRecord = JSON.parse(placedTeamsData);
-        const placedTeamsMap: { [key: string]: boolean } = {};
+        const placedTeamsMap: { [key: number]: boolean } = {};
         for (const key in placedTeamsRecord) {
           if (Object.prototype.hasOwnProperty.call(placedTeamsRecord, key)) {
-            placedTeamsMap[placedTeamsRecord[key]] = true;
+            placedTeamsMap[placedTeamsRecord[key].teamId] = true;
           }
         }
         setPlacedTeams(placedTeamsMap);
@@ -284,10 +289,10 @@ const Bracket = () => {
         const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
         if (placedTeamsData) {
           const placedTeamsRecord = JSON.parse(placedTeamsData);
-          const newPlacedTeams: { [key: string]: boolean } = {};
+          const newPlacedTeams: { [key: number]: boolean } = {};
           for (const key in placedTeamsRecord) {
             if (Object.prototype.hasOwnProperty.call(placedTeamsRecord, key)) {
-              newPlacedTeams[placedTeamsRecord[key]] = true;
+              newPlacedTeams[placedTeamsRecord[key].teamId] = true;
             }
           }
           setPlacedTeams(newPlacedTeams);
@@ -304,10 +309,10 @@ const Bracket = () => {
       const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
       if (placedTeamsData) {
         const placedTeamsRecord = JSON.parse(placedTeamsData);
-        const newPlacedTeams: { [key: string]: boolean } = {};
+        const newPlacedTeams: { [key: number]: boolean } = {};
         for (const key in placedTeamsRecord) {
           if (Object.prototype.hasOwnProperty.call(placedTeamsRecord, key)) {
-            newPlacedTeams[placedTeamsRecord[key]] = true;
+            newPlacedTeams[placedTeamsRecord[key].teamId] = true;
           }
         }
         setPlacedTeams(newPlacedTeams);
@@ -378,7 +383,7 @@ const Bracket = () => {
     round: number,
     side: 'left' | 'right',
   ) => {
-    const placedTeams: Record<string, string> = isClient
+    const placedTeams: Record<string, TeamData> = isClient
       ? savedTeamPlacements
       : {};
 
@@ -407,8 +412,11 @@ const Bracket = () => {
             const droppableId = `round_${round}_position_${node.position}_side_${side}`;
 
             const positionKey = `${round}_${node.position}_${side}`;
-            const placedTeamName = placedTeams[positionKey] || '';
-            const hasTeam = !!placedTeamName;
+            const placedTeam = placedTeams[positionKey] || {
+              teamId: 0,
+              teamName: '',
+            };
+            const hasTeam = !!placedTeam.teamName;
 
             return (
               <div key={droppableId} className="relative">
@@ -448,7 +456,7 @@ const Bracket = () => {
                     >
                       {hasTeam && (
                         <TeamItem
-                          teamName={placedTeamName}
+                          teamName={placedTeam.teamName}
                           isEmpty={false}
                           className="w-[160px]"
                           deleteMode={deleteMode}
@@ -505,7 +513,7 @@ const Bracket = () => {
       );
     }
 
-    const placedTeams: Record<string, string> = isClient
+    const placedTeams: Record<string, TeamData> = isClient
       ? savedTeamPlacements
       : {};
 
@@ -537,8 +545,11 @@ const Bracket = () => {
             const isLeaf = isLeafNode(round);
 
             const positionKey = `${round}_${node.position}_${side}`;
-            const placedTeamName = placedTeams[positionKey] || '';
-            const hasTeam = isLeaf ? !!placedTeamName : false;
+            const placedTeam = placedTeams[positionKey] || {
+              teamId: 0,
+              teamName: '',
+            };
+            const hasTeam = isLeaf ? !!placedTeam.teamName : false;
 
             return (
               <div key={droppableId} className="relative">
@@ -582,7 +593,7 @@ const Bracket = () => {
                         >
                           {hasTeam && (
                             <TeamItem
-                              teamName={placedTeamName}
+                              teamName={placedTeam.teamName}
                               isEmpty={false}
                               className="w-[160px]"
                               deleteMode={deleteMode}
@@ -598,7 +609,7 @@ const Bracket = () => {
                   </>
                 ) : (
                   (() => {
-                    if (!placedTeamName) {
+                    if (!placedTeam.teamName) {
                       const isPreviousRound = round > 1;
                       if (isPreviousRound) {
                         return (
@@ -607,7 +618,7 @@ const Bracket = () => {
                       }
 
                       setTimeout(() => {
-                        let currentPlacedTeams: Record<string, string> = {};
+                        let currentPlacedTeams: Record<string, TeamData> = {};
                         const currentPlacedTeamsData = sessionStorage.getItem(
                           `placedTeams_${gameId}`,
                         );
@@ -618,7 +629,10 @@ const Bracket = () => {
                         }
 
                         if (round === 1 && !currentPlacedTeams[positionKey]) {
-                          currentPlacedTeams[positionKey] = 'TBD';
+                          currentPlacedTeams[positionKey] = {
+                            teamId: 0,
+                            teamName: 'TBD',
+                          };
                           sessionStorage.setItem(
                             `placedTeams_${gameId}`,
                             JSON.stringify(currentPlacedTeams),
@@ -637,15 +651,15 @@ const Bracket = () => {
   };
 
   const handleTeamDrop = (
-    teamName: string,
+    team: TeamData,
     round: number,
     position: number,
     side: 'left' | 'right',
   ) => {
     try {
-      const placedTeams: Record<string, string> = { ...savedTeamPlacements };
+      const placedTeams: Record<string, TeamData> = { ...savedTeamPlacements };
       const positionKey = `${round}_${position}_${side}`;
-      placedTeams[positionKey] = teamName;
+      placedTeams[positionKey] = team;
       sessionStorage.setItem(
         `placedTeams_${gameId}`,
         JSON.stringify(placedTeams),
@@ -710,15 +724,20 @@ const Bracket = () => {
       const positionNum = parseInt(parts[3]);
       const side = parts[5] as 'left' | 'right';
 
-      handleTeamDrop(result.draggableId, roundNum, positionNum, side);
+      const team = teams.find(
+        (t) => t.teamId.toString() === result.draggableId,
+      );
+      if (team) {
+        handleTeamDrop(team, roundNum, positionNum, side);
 
-      try {
-        const customEvent = new CustomEvent('bracketStorage', {
-          detail: { gameId },
-        });
-        window.dispatchEvent(customEvent);
-      } catch (error) {
-        console.error(error);
+        try {
+          const customEvent = new CustomEvent('bracketStorage', {
+            detail: { gameId },
+          });
+          window.dispatchEvent(customEvent);
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
   };
@@ -734,7 +753,7 @@ const Bracket = () => {
     side: 'left' | 'right',
   ) => {
     try {
-      const placedTeams: Record<string, string> = { ...savedTeamPlacements };
+      const placedTeams: Record<string, TeamData> = { ...savedTeamPlacements };
       const positionKey = `${round}_${position}_${side}`;
 
       delete placedTeams[positionKey];
@@ -768,7 +787,7 @@ const Bracket = () => {
 
   const handleRandomPlacement = () => {
     try {
-      const placedTeams: Record<string, string> = { ...savedTeamPlacements };
+      const placedTeams: Record<string, TeamData> = { ...savedTeamPlacements };
       const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
       if (placedTeamsData) {
         Object.assign(placedTeams, JSON.parse(placedTeamsData));
@@ -783,13 +802,11 @@ const Bracket = () => {
       }
 
       const parsedTeams = JSON.parse(confirmedTeamsData);
-      const allTeamNames = parsedTeams.map(
-        (team: { teamName: string }) => team.teamName,
-      );
+      const allTeams = parsedTeams as TeamData[];
 
-      const placedTeamNames = Object.values(placedTeams);
-      const availableTeams = allTeamNames.filter(
-        (teamName: string) => !placedTeamNames.includes(teamName),
+      const placedTeamIds = Object.values(placedTeams).map((t) => t.teamId);
+      const availableTeams = allTeams.filter(
+        (team) => !placedTeamIds.includes(team.teamId),
       );
 
       if (availableTeams.length === 0) {
@@ -910,9 +927,13 @@ const Bracket = () => {
     }
   };
 
-  const renderDraggable = (team: string, index: number) => {
+  const renderDraggable = (team: TeamData, index: number) => {
     return (
-      <Draggable key={team} draggableId={team} index={index}>
+      <Draggable
+        key={team.teamId}
+        draggableId={team.teamId.toString()}
+        index={index}
+      >
         {(provided, snapshot) => {
           const draggableContent = (
             <div
@@ -939,7 +960,7 @@ const Bracket = () => {
               )}
             >
               <TeamItem
-                teamName={team}
+                teamName={team.teamName}
                 className={cn(
                   'flex-shrink-0',
                   'w-[160px]',
@@ -956,7 +977,7 @@ const Bracket = () => {
               {snapshot.isDragging && portalRef.current
                 ? createPortal(draggableContent, portalRef.current)
                 : draggableContent}
-              {/* @ts-expect-error - placeholder */}
+              {/* @ts-expect-error - DraggableProvided type is missing placeholder property */}
               {provided.placeholder}
             </>
           );
