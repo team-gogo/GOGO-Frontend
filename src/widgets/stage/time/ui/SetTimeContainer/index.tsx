@@ -46,7 +46,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
   const [finalStage, setFinalStage] = useState<4 | 8>(8);
 
   const searchParams = useSearchParams();
-  const matchId = parseInt(searchParams.get('matchId') || '0', 10);
+  const matchId = parseInt(searchParams.get('gameId') || '0', 10);
   const system = searchParams.get('system') || 'FULL_LEAGUE';
 
   const getSelectedMatchTeams = (

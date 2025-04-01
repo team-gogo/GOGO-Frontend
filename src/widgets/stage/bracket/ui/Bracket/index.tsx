@@ -6,6 +6,7 @@ import {
   Draggable,
   DropResult,
 } from '@hello-pangea/dnd';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { toast } from 'react-toastify';
@@ -29,11 +30,10 @@ interface BracketNode {
   isEmpty: boolean;
 }
 
-interface BracketProps {
-  matchId?: number;
-}
+const Bracket = () => {
+  const searchParams = useSearchParams();
+  const gameId = Number(searchParams.get('gameId')) || 0;
 
-const Bracket = ({ matchId = 0 }: BracketProps) => {
   const [totalTeams, setTotalTeams] = useState(4);
   const [finalStage, setFinalStage] = useState(4);
   const [bracketTree, setBracketTree] = useState<BracketNode | null>(null);
@@ -63,7 +63,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     setIsClient(true);
 
     try {
-      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
       if (placedTeamsData) {
         setSavedTeamPlacements(JSON.parse(placedTeamsData));
       }
@@ -72,9 +72,9 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     }
 
     const handleBracketStorage = (event: CustomEvent) => {
-      if (event.detail?.matchId === matchId) {
+      if (event.detail?.gameId === gameId) {
         try {
-          const updatedData = sessionStorage.getItem(`placedTeams_${matchId}`);
+          const updatedData = sessionStorage.getItem(`placedTeams_${gameId}`);
           if (updatedData) {
             setSavedTeamPlacements(JSON.parse(updatedData));
           }
@@ -109,7 +109,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
         document.body.removeChild(portalRef.current);
       }
     };
-  }, [matchId]);
+  }, [gameId]);
 
   const VISIBLE_ITEMS = 8;
   const ITEM_WIDTH = 160;
@@ -220,7 +220,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
   };
 
   useEffect(() => {
-    const confirmedTeams = sessionStorage.getItem(`confirmedTeams_${matchId}`);
+    const confirmedTeams = sessionStorage.getItem(`confirmedTeams_${gameId}`);
     const oldConfirmedTeams = sessionStorage.getItem('confirmedTeams');
 
     if (confirmedTeams) {
@@ -234,7 +234,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
       } catch (error) {
         console.error(error);
       }
-    } else if (oldConfirmedTeams && matchId === 0) {
+    } else if (oldConfirmedTeams && gameId === 0) {
       try {
         const parsedTeams = JSON.parse(oldConfirmedTeams);
         const teamNames = parsedTeams.map(
@@ -243,7 +243,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
         setTeams(teamNames);
         setTotalTeams(Math.max(2, teamNames.length));
 
-        sessionStorage.setItem(`confirmedTeams_${matchId}`, oldConfirmedTeams);
+        sessionStorage.setItem(`confirmedTeams_${gameId}`, oldConfirmedTeams);
       } catch (error) {
         console.error(error);
       }
@@ -253,7 +253,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     }
 
     try {
-      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
       if (placedTeamsData) {
         const placedTeamsRecord = JSON.parse(placedTeamsData);
         const placedTeamsMap: { [key: string]: boolean } = {};
@@ -267,7 +267,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     } catch (error) {
       console.error(error);
     }
-  }, [matchId]);
+  }, [gameId]);
 
   useEffect(() => {
     createBracket(totalTeams);
@@ -277,13 +277,11 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     const handleTeamPlacement = (event: Event) => {
       try {
         const customEvent = event as CustomEvent;
-        if (customEvent.detail && customEvent.detail.matchId !== matchId) {
+        if (customEvent.detail && customEvent.detail.gameId !== gameId) {
           return;
         }
 
-        const placedTeamsData = sessionStorage.getItem(
-          `placedTeams_${matchId}`,
-        );
+        const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
         if (placedTeamsData) {
           const placedTeamsRecord = JSON.parse(placedTeamsData);
           const newPlacedTeams: { [key: string]: boolean } = {};
@@ -303,7 +301,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
     window.addEventListener('bracketStorage', handleTeamPlacement);
 
     try {
-      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
       if (placedTeamsData) {
         const placedTeamsRecord = JSON.parse(placedTeamsData);
         const newPlacedTeams: { [key: string]: boolean } = {};
@@ -322,12 +320,12 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
       window.removeEventListener('storage', handleTeamPlacement);
       window.removeEventListener('bracketStorage', handleTeamPlacement);
     };
-  }, [matchId]);
+  }, [gameId]);
 
   useEffect(() => {
     try {
       const savedBracketState = sessionStorage.getItem(
-        `bracketState_${matchId}`,
+        `bracketState_${gameId}`,
       );
       if (savedBracketState) {
         const parsedState = JSON.parse(savedBracketState);
@@ -337,7 +335,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
       console.error(error);
       toast.error('대진표 상태 오류 발생');
     }
-  }, [matchId]);
+  }, [gameId]);
 
   const getNodesAtRound = (
     root: BracketNode | null,
@@ -611,7 +609,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                       setTimeout(() => {
                         let currentPlacedTeams: Record<string, string> = {};
                         const currentPlacedTeamsData = sessionStorage.getItem(
-                          `placedTeams_${matchId}`,
+                          `placedTeams_${gameId}`,
                         );
                         if (currentPlacedTeamsData) {
                           currentPlacedTeams = JSON.parse(
@@ -622,7 +620,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
                         if (round === 1 && !currentPlacedTeams[positionKey]) {
                           currentPlacedTeams[positionKey] = 'TBD';
                           sessionStorage.setItem(
-                            `placedTeams_${matchId}`,
+                            `placedTeams_${gameId}`,
                             JSON.stringify(currentPlacedTeams),
                           );
                         }
@@ -649,7 +647,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
       const positionKey = `${round}_${position}_${side}`;
       placedTeams[positionKey] = teamName;
       sessionStorage.setItem(
-        `placedTeams_${matchId}`,
+        `placedTeams_${gameId}`,
         JSON.stringify(placedTeams),
       );
       setSavedTeamPlacements(placedTeams);
@@ -674,14 +672,14 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
 
       try {
         const customEvent = new CustomEvent('bracketStorage', {
-          detail: { matchId },
+          detail: { gameId },
         });
         window.dispatchEvent(customEvent);
 
         setTimeout(() => {
           window.dispatchEvent(
             new CustomEvent('bracketStorage', {
-              detail: { matchId },
+              detail: { gameId },
             }),
           );
         }, 100);
@@ -716,7 +714,7 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
 
       try {
         const customEvent = new CustomEvent('bracketStorage', {
-          detail: { matchId },
+          detail: { gameId },
         });
         window.dispatchEvent(customEvent);
       } catch (error) {
@@ -741,13 +739,13 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
 
       delete placedTeams[positionKey];
       sessionStorage.setItem(
-        `placedTeams_${matchId}`,
+        `placedTeams_${gameId}`,
         JSON.stringify(placedTeams),
       );
       setSavedTeamPlacements(placedTeams);
 
       const customEvent = new CustomEvent('bracketStorage', {
-        detail: { matchId },
+        detail: { gameId },
       });
       window.dispatchEvent(customEvent);
 
@@ -771,13 +769,13 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
   const handleRandomPlacement = () => {
     try {
       const placedTeams: Record<string, string> = { ...savedTeamPlacements };
-      const placedTeamsData = sessionStorage.getItem(`placedTeams_${matchId}`);
+      const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
       if (placedTeamsData) {
         Object.assign(placedTeams, JSON.parse(placedTeamsData));
       }
 
       const confirmedTeamsData = sessionStorage.getItem(
-        `confirmedTeams_${matchId}`,
+        `confirmedTeams_${gameId}`,
       );
       if (!confirmedTeamsData) {
         toast.error('배치할 팀이 없습니다.');
@@ -882,13 +880,13 @@ const Bracket = ({ matchId = 0 }: BracketProps) => {
       }
 
       sessionStorage.setItem(
-        `placedTeams_${matchId}`,
+        `placedTeams_${gameId}`,
         JSON.stringify(placedTeams),
       );
       setSavedTeamPlacements(placedTeams);
 
       const customEvent = new CustomEvent('bracketStorage', {
-        detail: { matchId },
+        detail: { gameId },
       });
       window.dispatchEvent(customEvent);
 

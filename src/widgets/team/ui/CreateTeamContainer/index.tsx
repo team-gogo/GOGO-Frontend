@@ -20,7 +20,7 @@ import { cn } from '@/shared/utils/cn';
 interface CreateTeamContainerProps {
   params: {
     stageId: string;
-    matchId?: string;
+    gameId?: string;
     category?: string;
   };
 }
@@ -31,7 +31,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
   const [teamName, setTeamName] = useState('');
   const [teamCapacity, setTeamCapacity] = useState({ min: 0, max: 0 });
   const router = useRouter();
-  const { stageId, matchId, category } = params;
+  const { stageId, gameId, category } = params;
 
   useEffect(() => {
     const fetchGameInfo = async () => {
@@ -54,7 +54,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
   } = useForm<StageData>();
 
   const handleTeamCreation = async (selectedStudents: Student[]) => {
-    if (!matchId) {
+    if (!gameId) {
       toast.error('게임 정보가 없습니다.');
       return;
     }
@@ -69,10 +69,10 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
       await postTeam({
         teamName,
         participants,
-        gameId: matchId,
+        gameId: gameId || '',
       });
 
-      router.push(`/team/place/${matchId}/${category}`);
+      router.push(`/team/place/${gameId}/${category}`);
     } catch (error) {
       console.error(error);
       toast.error('팀 생성에 실패했습니다.');
@@ -101,7 +101,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
       sessionStorage.setItem('teamName', teamName);
       sessionStorage.setItem('members', JSON.stringify(selectedStudents));
 
-      router.push(`/team/place/${matchId}/${category}`);
+      router.push(`/team/place/${gameId}/${category}`);
     } else {
       await handleTeamCreation(selectedStudents);
     }
