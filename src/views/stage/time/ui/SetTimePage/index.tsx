@@ -14,15 +14,16 @@ const MATCH_CHECK_INTERVAL = 1000;
 const SetTimePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const matchId = searchParams.get('matchId');
+  const gameId = searchParams.get('gameId');
+  console.log(gameId);
   const [stageId, setStageId] = useState<number | null>(null);
   const [allMatchesScheduled, setAllMatchesScheduled] = useState(true);
 
   const checkMatchesScheduled = useCallback(() => {
-    if (typeof window !== 'undefined' && matchId) {
-      const savedMatchesKey = `savedMatches_${matchId}`;
+    if (typeof window !== 'undefined' && gameId) {
+      const savedMatchesKey = `savedMatches_${gameId}`;
       const savedMatchesData = sessionStorage.getItem(savedMatchesKey);
-      const placedTeamsKey = `placedTeams_${matchId}`;
+      const placedTeamsKey = `placedTeams_${gameId}`;
       const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
       if (!savedMatchesData || !placedTeamsData) {
@@ -125,7 +126,7 @@ const SetTimePage = () => {
         setAllMatchesScheduled(false);
       }
     }
-  }, [matchId]);
+  }, [gameId]);
 
   useEffect(() => {
     checkMatchesScheduled();
@@ -135,7 +136,7 @@ const SetTimePage = () => {
     window.addEventListener('focus', checkMatchesScheduled);
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === `savedMatches_${matchId}`) {
+      if (e.key === `savedMatches_${gameId}`) {
         checkMatchesScheduled();
       }
     };
@@ -147,11 +148,11 @@ const SetTimePage = () => {
       window.removeEventListener('focus', checkMatchesScheduled);
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, [checkMatchesScheduled, matchId]);
+  }, [checkMatchesScheduled, gameId]);
 
   useEffect(() => {
     const fetchStageId = async () => {
-      if (matchId) {
+      if (gameId) {
         try {
           const stageResponse = await getStageList();
 
@@ -166,13 +167,13 @@ const SetTimePage = () => {
 
                 if (gamesResponse && gamesResponse.games) {
                   const foundGame = gamesResponse.games.find(
-                    (game) => game.gameId === parseInt(matchId),
+                    (game) => game.gameId === parseInt(gameId),
                   );
 
                   if (foundGame) {
                     setStageId(stage.stageId);
                     sessionStorage.setItem(
-                      `gameStageId_${matchId}`,
+                      `gameStageId_${gameId}`,
                       String(stage.stageId),
                     );
                     break;
@@ -189,19 +190,19 @@ const SetTimePage = () => {
       }
     };
 
-    if (matchId) {
-      const savedStageId = sessionStorage.getItem(`gameStageId_${matchId}`);
+    if (gameId) {
+      const savedStageId = sessionStorage.getItem(`gameStageId_${gameId}`);
       if (savedStageId) {
         setStageId(parseInt(savedStageId));
       } else {
         fetchStageId();
       }
     }
-  }, [matchId]);
+  }, [gameId]);
 
   const handleConfirm = () => {
-    if (matchId) {
-      sessionStorage.setItem(`isConfirmed_${matchId}`, 'true');
+    if (gameId) {
+      sessionStorage.setItem(`isConfirmed_${gameId}`, 'true');
       setTimeout(() => {
         if (stageId) {
           router.push(`/stage/stageId=${stageId}`);
@@ -238,7 +239,7 @@ const SetTimePage = () => {
             type="back"
             label="팀들 날짜와 시간 설정하기"
             onClick={() => {
-              sessionStorage.removeItem(`placedTeams_${matchId}`);
+              sessionStorage.removeItem(`placedTeams_${gameId}`);
               router.back();
               setTimeout(() => {
                 window.location.reload();
