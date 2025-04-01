@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 import BackPageButton from '@/shared/ui/backPageButton';
@@ -13,16 +13,14 @@ import { usePostPlinkoGame } from '@/views/mini-game/model/usePostPlinkoGame';
 import { PlinkoGame, PlinkoInputBox } from '@/widgets/mini-game';
 
 const PlinkoPage = () => {
+  const params = useParams<{ boardId: string; stageId: string }>();
+  const { stageId } = params;
+
   const [plinkoData, setPlinkoData] = useState<PlinkoResponse | null>(null);
   const [gameRunningCount, setGameRunningCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [point, setPoint] = useState<number>(0);
   const [ticket, setTicket] = useState<number>(0);
-
-  const pathname = usePathname();
-
-  const match = pathname.match(/\/mini-game\/([^/]+)\/plinko/);
-  const stageId = match ? match[1] : null;
 
   const { data: myPoint } = useGetMyPointQuery(String(stageId));
   const { data: myTicket } = useGetMyTicketQuery(String(stageId));
