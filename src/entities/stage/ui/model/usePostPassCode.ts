@@ -6,7 +6,7 @@ import { PassCodeType } from '@/shared/types/stage';
 import { postPassCode } from '../api/postPassCode';
 
 export const usePostPassCode = (stageId: number) => {
-  const { isStatusConfirmed } = useStageStatus();
+  const { isStatusConfirmed, setIsStatusConfirmed } = useStageStatus();
   const { setIsPasswordModalOpen } = usePasswordModalStore();
   const { push } = useRouter();
 
@@ -17,6 +17,7 @@ export const usePostPassCode = (stageId: number) => {
       toast.success('스테이지 참여가 완료되었습니다.');
       if (isStatusConfirmed === true) {
         push(`/${stageId}`);
+        setIsStatusConfirmed(false);
       } else if (isStatusConfirmed === false) {
         push(`/stage/stageId=${stageId}`);
       }

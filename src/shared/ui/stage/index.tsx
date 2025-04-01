@@ -57,10 +57,15 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
       setStageId(stageId);
       push(`/my/bet/${stageId}`);
     } else if (status === 'CONFIRMED') {
+      setIsStatusConfirmed(true);
       if (!isParticipating) {
-        setIsStatusConfirmed(true);
-        PostPassCode(undefined);
-        setStageName(stageName);
+        if (isPassCode) {
+          setIsPasswordModalOpen(true);
+          setClickedStageId(stageId);
+        } else {
+          PostPassCode(undefined);
+          setStageName(stageName);
+        }
       } else if (isParticipating && isStagePage) {
         push(`/${stageId}`);
       }
