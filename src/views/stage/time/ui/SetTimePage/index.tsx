@@ -37,8 +37,11 @@ const SetTimePage = () => {
 
         const byeMatchKeys = Object.entries(parsedPlacedTeamsData)
           .filter(([key, value]) => {
+            const teamData = value as { teamId: number; teamName: string };
             const hasTeam =
-              value !== '' && value !== undefined && value !== 'TBD';
+              teamData &&
+              teamData.teamName !== '' &&
+              teamData.teamName !== 'TBD';
             if (!hasTeam) return false;
 
             const [round, position, side] = key.split('_');
@@ -49,16 +52,25 @@ const SetTimePage = () => {
               positionNum % 2 === 0 ? positionNum + 1 : positionNum - 1;
             const neighborKey = `${roundNum}_${neighborPosition}_${side}`;
 
+            const neighborTeam = parsedPlacedTeamsData[neighborKey];
             return (
-              !parsedPlacedTeamsData[neighborKey] ||
-              parsedPlacedTeamsData[neighborKey] === 'TBD'
+              !neighborTeam ||
+              !neighborTeam.teamName ||
+              neighborTeam.teamName === 'TBD'
             );
           })
           .map(([key]) => key);
 
         const placedTeams = Object.entries(parsedPlacedTeamsData).filter(
-          ([key, value]) =>
-            value !== '' && value !== undefined && !byeMatchKeys.includes(key),
+          ([key, value]) => {
+            const teamData = value as { teamId: number; teamName: string };
+            return (
+              teamData &&
+              teamData.teamName !== '' &&
+              teamData.teamName !== 'TBD' &&
+              !byeMatchKeys.includes(key)
+            );
+          },
         );
 
         let validMatchCount = 0;

@@ -23,6 +23,11 @@ interface SavedMatchData {
   teamBName: string;
 }
 
+interface TeamData {
+  teamId: number;
+  teamName: string;
+}
+
 interface SetTimeContainerProps {
   onMatchSave?: () => void;
 }
@@ -319,15 +324,17 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
         const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
         if (placedTeamsData) {
-          const placedTeams: Record<string, string> =
-            JSON.parse(placedTeamsData);
+          const placedTeams = JSON.parse(placedTeamsData) as Record<
+            string,
+            TeamData | string
+          >;
 
           const teamsBySide: Record<
             number,
             Record<string, Record<number, string>>
           > = {};
 
-          Object.entries(placedTeams).forEach(([positionKey, teamName]) => {
+          Object.entries(placedTeams).forEach(([positionKey, teamData]) => {
             const [round, position, side] = positionKey.split('_');
             const roundNum = Number(round);
             const positionNum = Number(position);
@@ -336,8 +343,18 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
               teamsBySide[roundNum] = { left: {}, right: {} };
             }
 
-            if (teamName && teamName !== 'TBD') {
-              teamsBySide[roundNum][side][positionNum] = teamName;
+            if (
+              teamData &&
+              typeof teamData === 'object' &&
+              'teamName' in teamData
+            ) {
+              teamsBySide[roundNum][side][positionNum] = teamData.teamName;
+            } else if (
+              teamData &&
+              typeof teamData === 'string' &&
+              teamData !== 'TBD'
+            ) {
+              teamsBySide[roundNum][side][positionNum] = teamData;
             }
           });
 
@@ -668,7 +685,13 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     <div className="m-30 flex flex-col gap-8">
       <div className="my-20 min-h-[calc(50vh-120px)] rounded-lg bg-gray-700 p-8">
         <div
-          className={`m-20 flex ${system === GameSystem.FULL_LEAGUE ? '' : finalStage === 4 ? 'justify-center' : 'justify-between'} gap-4 p-20`}
+          className={`m-20 flex ${
+            system === GameSystem.FULL_LEAGUE
+              ? ''
+              : finalStage === 4
+                ? 'justify-center'
+                : 'justify-between'
+          } gap-4 p-20`}
         >
           {renderSections()}
         </div>

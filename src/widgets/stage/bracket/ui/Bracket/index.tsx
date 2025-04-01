@@ -977,7 +977,7 @@ const Bracket = () => {
               {snapshot.isDragging && portalRef.current
                 ? createPortal(draggableContent, portalRef.current)
                 : draggableContent}
-              {/* @ts-expect-error - DraggableProvided type is missing placeholder property */}
+              {/* @ts-expect-error - DraggableProvided*/}
               {provided.placeholder}
             </>
           );
