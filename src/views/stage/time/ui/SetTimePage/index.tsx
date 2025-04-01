@@ -34,6 +34,7 @@ const SetTimePage = () => {
 
   const [stageId, setStageId] = useState<number | null>(null);
   const [allMatchesScheduled, setAllMatchesScheduled] = useState(true);
+  const [teamIds, setTeamIds] = useState<Record<string, number>>({});
 
   const checkMatchesScheduled = useCallback(() => {
     if (typeof window !== 'undefined' && gameId) {
@@ -274,9 +275,11 @@ const SetTimePage = () => {
 
         if (confirmedTeamsData) {
           const parsedTeams = JSON.parse(confirmedTeamsData);
+          console.log(parsedTeams);
           parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
             teamNameToIdMap.set(team.teamName, team.teamId.toString());
           });
+          console.log('팀 이름-ID:', Object.fromEntries(teamNameToIdMap));
         }
       } catch (error) {
         console.error(error);
@@ -298,6 +301,13 @@ const SetTimePage = () => {
 
           const teamAId = teamNameToIdMap.get(match.teamAName) || 'TBD';
           const teamBId = teamNameToIdMap.get(match.teamBName) || 'TBD';
+
+          console.log({
+            teamAName: match.teamAName,
+            teamAId,
+            teamBName: match.teamBName,
+            teamBId,
+          });
 
           return {
             teamAId: teamAId,
@@ -409,6 +419,26 @@ const SetTimePage = () => {
     }
   }, [gameId]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && gameId) {
+      const confirmedTeamsKey = `confirmedTeams_${gameId}`;
+      const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+
+      if (confirmedTeamsData) {
+        try {
+          const parsedTeams = JSON.parse(confirmedTeamsData);
+          const teamIdMap: Record<string, number> = {};
+          parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
+            teamIdMap[team.teamName] = team.teamId;
+          });
+          setTeamIds(teamIdMap);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+  }, [gameId]);
+
   return (
     <div className={cn('flex', 'justify-center', 'w-full')}>
       <div
@@ -444,6 +474,7 @@ const SetTimePage = () => {
             savedMatches={savedMatches}
             system={system}
             matchId={parseInt(gameId || '0', 10)}
+            teamIds={teamIds}
           />
         </div>
 

@@ -33,6 +33,7 @@ interface SetTimeContainerProps {
   savedMatches: SavedMatchData[];
   system: GameSystem;
   matchId: number;
+  teamIds: Record<string, number>;
 }
 
 const SetTimeContainer = ({
@@ -40,6 +41,7 @@ const SetTimeContainer = ({
   savedMatches: initialSavedMatches,
   system,
   matchId,
+  teamIds,
 }: SetTimeContainerProps) => {
   const { formatMatchData } = useMatchStore();
   const [date, setDate] = useState('');
@@ -60,6 +62,10 @@ const SetTimeContainer = ({
     finals: [],
   });
   const [finalStage, setFinalStage] = useState<4 | 8>(8);
+
+  useEffect(() => {
+    console.log('SetTimeContainer teamIds:', teamIds);
+  }, [teamIds]);
 
   const getSelectedMatchTeams = (
     round: string,
@@ -835,7 +841,7 @@ const SetTimeContainer = ({
     }
   };
 
-  const isMatchSelected = (round: string, index: number) => {
+  const isMatchSelected = (round: string, index: number): boolean => {
     return selectedMatch?.round === round && selectedMatch?.index === index;
   };
 
@@ -874,6 +880,8 @@ const SetTimeContainer = ({
                       ? `${match.teamAName}(부전승)`
                       : match.teamBName
                   }
+                  teamAId={teamIds[match.teamAName]}
+                  teamBId={teamIds[match.teamBName]}
                   selected={isMatchSelected(match.round, match.index)}
                   solved={!isMatchTimeSet(match.round, match.index)}
                   onClick={() => handleMatchSelect(match.round, match.index)}
@@ -900,6 +908,8 @@ const SetTimeContainer = ({
                     index={match.index}
                     teamAName={match.teamAName}
                     teamBName={match.teamBName}
+                    teamAId={teamIds[match.teamAName]}
+                    teamBId={teamIds[match.teamBName]}
                     selected={isMatchSelected(match.round, match.index)}
                     solved={!isMatchTimeSet(match.round, match.index)}
                     onClick={() => handleMatchSelect(match.round, match.index)}
@@ -992,6 +1002,8 @@ const SetTimeContainer = ({
                       index={1}
                       teamAName={semiFinalTeams[0] || 'TBD'}
                       teamBName={semiFinalTeams[1] || 'TBD'}
+                      teamAId={teamIds[semiFinalTeams[0] || 'TBD']}
+                      teamBId={teamIds[semiFinalTeams[1] || 'TBD']}
                       selected={isMatchSelected('4강', 1)}
                       solved={!isMatchTimeSet('4강', 1)}
                       onClick={() => handleMatchSelect('4강', 1)}
@@ -1008,6 +1020,8 @@ const SetTimeContainer = ({
                       index={1}
                       teamAName="TBD"
                       teamBName={byeTeamName}
+                      teamAId={teamIds['TBD']}
+                      teamBId={teamIds[byeTeamName]}
                       selected={isMatchSelected('결승', 1)}
                       solved={!isMatchTimeSet('결승', 1)}
                       onClick={() => handleMatchSelect('결승', 1)}
@@ -1044,6 +1058,8 @@ const SetTimeContainer = ({
                             ? `${match.teamAName}(부전승)`
                             : match.teamBName
                         }
+                        teamAId={teamIds[match.teamAName]}
+                        teamBId={teamIds[match.teamBName]}
                         selected={isMatchSelected(match.round, match.index)}
                         onClick={() =>
                           handleMatchSelect(match.round, match.index)
@@ -1071,6 +1087,8 @@ const SetTimeContainer = ({
                         ? `${match.teamAName}(부전승)`
                         : match.teamBName
                     }
+                    teamAId={teamIds[match.teamAName]}
+                    teamBId={teamIds[match.teamBName]}
                     selected={isMatchSelected(match.round, match.index)}
                     solved={!isMatchTimeSet(match.round, match.index)}
                     onClick={() => handleMatchSelect(match.round, match.index)}
