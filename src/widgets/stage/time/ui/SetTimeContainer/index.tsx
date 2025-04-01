@@ -77,6 +77,8 @@ const SetTimeContainer = ({
       match = matches.finals.find((m) => m.index === index);
     } else if (round === '리그') {
       match = matches.finals.find((m) => m.index === index);
+    } else if (round === '단판승부전') {
+      match = matches.finals.find((m) => m.index === index);
     }
 
     return {
