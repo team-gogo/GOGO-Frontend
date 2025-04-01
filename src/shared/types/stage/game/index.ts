@@ -39,3 +39,17 @@ interface PostStageRequest {
 }
 
 export type { Game, PostStageRequest };
+
+export const GameSystem = {
+  TOURNAMENT: 'TOURNAMENT',
+  FULL_LEAGUE: 'FULL_LEAGUE',
+  SINGLE: 'SINGLE',
+} as const;
+
+export type GameSystem = (typeof GameSystem)[keyof typeof GameSystem];
+
+export const GAME_SYSTEM_VALUES = Object.values(GameSystem);
+
+export const isValidGameSystem = (value: string): value is GameSystem => {
+  return GAME_SYSTEM_VALUES.includes(value as GameSystem);
+};

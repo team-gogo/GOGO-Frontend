@@ -2,6 +2,7 @@ import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import MatchItem from '@/entities/stage/time/ui/MatchItem';
+import { GameSystem, isValidGameSystem } from '@/shared/types/stage/game';
 import Input from '@/shared/ui/input';
 
 interface MatchData {
@@ -47,7 +48,10 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
 
   const searchParams = useSearchParams();
   const matchId = parseInt(searchParams.get('gameId') || '0', 10);
-  const system = searchParams.get('system') || 'FULL_LEAGUE';
+  const systemParam = searchParams.get('system') || GameSystem.FULL_LEAGUE;
+  const system = isValidGameSystem(systemParam)
+    ? systemParam
+    : GameSystem.FULL_LEAGUE;
 
   const getSelectedMatchTeams = (
     round: string,
@@ -105,49 +109,49 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     }
   };
 
-  const getFormattedData = () => {
-    const teamNameToIdMap = new Map<string, string>();
+  // const getFormattedData = () => {
+  //   const teamNameToIdMap = new Map<string, string>();
 
-    try {
-      const confirmedTeamsKey = `confirmedTeams_${matchId}`;
-      const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+  //   try {
+  //     const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+  //     const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
-      if (confirmedTeamsData) {
-        const parsedTeams = JSON.parse(confirmedTeamsData);
-        parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
-          teamNameToIdMap.set(team.teamName, team.teamId.toString());
-        });
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  //     if (confirmedTeamsData) {
+  //       const parsedTeams = JSON.parse(confirmedTeamsData);
+  //       parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
+  //         teamNameToIdMap.set(team.teamName, team.teamId.toString());
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
 
-    const tournamentGames = savedMatches.map((match) => {
-      let round = '';
+  //   const tournamentGames = savedMatches.map((match) => {
+  //     let round = '';
 
-      if (match.round === '8강') {
-        round = 'QUARTER_FINALS';
-      } else if (match.round === '4강') {
-        round = 'SEMI_FINALS';
-      } else if (match.round === '결승') {
-        round = 'FINALS';
-      }
+  //     if (match.round === '8강') {
+  //       round = 'QUARTER_FINALS';
+  //     } else if (match.round === '4강') {
+  //       round = 'SEMI_FINALS';
+  //     } else if (match.round === '결승') {
+  //       round = 'FINALS';
+  //     }
 
-      const teamAId = teamNameToIdMap.get(match.teamAName) || 'TBD';
-      const teamBId = teamNameToIdMap.get(match.teamBName) || 'TBD';
+  //     const teamAId = teamNameToIdMap.get(match.teamAName) || 'TBD';
+  //     const teamBId = teamNameToIdMap.get(match.teamBName) || 'TBD';
 
-      return {
-        teamAId: teamAId,
-        teamBId: teamBId,
-        round,
-        turn: match.index,
-        startDate: match.startDate,
-        endDate: match.endDate,
-      };
-    });
+  //     return {
+  //       teamAId: teamAId,
+  //       teamBId: teamBId,
+  //       round,
+  //       turn: match.index,
+  //       startDate: match.startDate,
+  //       endDate: match.endDate,
+  //     };
+  //   });
 
-    return tournamentGames;
-  };
+  //   return tournamentGames;
+  // };
 
   const saveMatchTime = (
     round: string,
@@ -283,7 +287,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
 
   useEffect(() => {
     try {
-      if (system === 'FULL_LEAGUE') {
+      if (system === GameSystem.FULL_LEAGUE) {
         const confirmedTeamsKey = `confirmedTeams_${matchId}`;
         const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
@@ -310,7 +314,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
           });
         }
         return;
-      } else if (system === 'TOURNAMENT') {
+      } else if (system === GameSystem.TOURNAMENT) {
         const placedTeamsKey = `placedTeams_${matchId}`;
         const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
@@ -474,7 +478,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
             finals: [],
           });
         }
-      } else if (system === 'SINGLE') {
+      } else if (system === GameSystem.SINGLE) {
         const confirmedTeamsKey = `confirmedTeams_${matchId}`;
         const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
@@ -664,7 +668,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     <div className="m-30 flex flex-col gap-8">
       <div className="my-20 min-h-[calc(50vh-120px)] rounded-lg bg-gray-700 p-8">
         <div
-          className={`m-20 flex ${system === 'FULL_LEAGUE' ? '' : finalStage === 4 ? 'justify-center' : 'justify-between'} gap-4 p-20`}
+          className={`m-20 flex ${system === GameSystem.FULL_LEAGUE ? '' : finalStage === 4 ? 'justify-center' : 'justify-between'} gap-4 p-20`}
         >
           {renderSections()}
         </div>
