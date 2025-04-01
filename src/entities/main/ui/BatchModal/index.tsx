@@ -19,7 +19,6 @@ interface BatchModalProps {
 const BatchModal = ({ onClose }: BatchModalProps) => {
   const { aTeam, bTeam, matchId } = useMatchTeamStore();
   const { mutate: PostBatch } = usePostBatchMatch(matchId);
-  const { matchBatchArr, setMatchBatchArr } = useMatchBatchArrStore();
 
   const { register, handleSubmit, reset, watch, setValue } =
     useForm<BatchMatchType>();
@@ -40,12 +39,6 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
   const onSubmit: SubmitHandler<BatchMatchType> = async (data) => {
     const formattedData = formatBatchData(data);
     PostBatch(formattedData);
-
-    const updatedMatchBatchArr = matchBatchArr.map((item) =>
-      item.matchId === matchId ? { ...item, isEnd: true } : item,
-    );
-
-    setMatchBatchArr(updatedMatchBatchArr);
 
     reset();
     onClose();
