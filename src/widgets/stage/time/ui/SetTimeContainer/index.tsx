@@ -189,7 +189,6 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
 
       updateMatchDateInfo(round, index, startDateStr, endDateStr);
 
-      console.log(getFormattedData());
       toast.success('매치 시간이 저장되었습니다.');
 
       if (onMatchSave) {

@@ -15,7 +15,7 @@ const SetTimePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const gameId = searchParams.get('gameId');
-  console.log(gameId);
+
   const [stageId, setStageId] = useState<number | null>(null);
   const [allMatchesScheduled, setAllMatchesScheduled] = useState(true);
 
