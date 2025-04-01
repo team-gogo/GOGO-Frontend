@@ -76,12 +76,14 @@ const MatchApplyPage = () => {
             'flex-grow',
           )}
         >
-          <MatchFilterHeader
-            stageName={stageName}
-            selectedSport={selectedSport}
-            toggleSportSelection={toggleSportSelection}
-          />
-          <ConfirmStage onClick={() => {}} />
+          <div className="flex flex-row justify-between">
+            <MatchFilterHeader
+              stageName={stageName}
+              selectedSport={selectedSport}
+              toggleSportSelection={toggleSportSelection}
+            />
+            <ConfirmStage onClick={() => {}} />
+          </div>
           {isPending ? (
             <div
               className={cn(
