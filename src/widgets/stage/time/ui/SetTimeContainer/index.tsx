@@ -681,17 +681,6 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
               );
             }
 
-            console.log(
-              '팀 수:',
-              totalTeamCount,
-              '4강 경기 수:',
-              totalSemiFinalMatches,
-              '왼쪽:',
-              leftSemiFinalMatches,
-              '오른쪽:',
-              rightSemiFinalMatches,
-            );
-
             for (let i = 0; i < leftSemiFinalMatches; i++) {
               const teamA =
                 teamsBySide[2]?.['left']?.[i] || byeTeams[`left_${i}`] || 'TBD';

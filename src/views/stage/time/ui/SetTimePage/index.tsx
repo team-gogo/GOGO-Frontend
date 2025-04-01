@@ -23,6 +23,41 @@ const SetTimePage = () => {
     if (typeof window !== 'undefined' && gameId) {
       const savedMatchesKey = `savedMatches_${gameId}`;
       const savedMatchesData = sessionStorage.getItem(savedMatchesKey);
+
+      const systemParam =
+        new URLSearchParams(window.location.search).get('system') || '';
+      const isFullLeague = systemParam === 'FULL_LEAGUE';
+
+      if (isFullLeague) {
+        if (!savedMatchesData) {
+          setAllMatchesScheduled(false);
+          return;
+        }
+
+        try {
+          const savedMatches = JSON.parse(savedMatchesData);
+
+          const confirmedTeamsKey = `confirmedTeams_${gameId}`;
+          const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+
+          if (confirmedTeamsData) {
+            const teams = JSON.parse(confirmedTeamsData);
+            const totalTeamCount = teams.length;
+            const requiredMatchCount =
+              (totalTeamCount * (totalTeamCount - 1)) / 2;
+
+            setAllMatchesScheduled(savedMatches.length >= requiredMatchCount);
+          } else {
+            setAllMatchesScheduled(savedMatches.length > 0);
+          }
+          return;
+        } catch (error) {
+          console.error(error);
+          setAllMatchesScheduled(false);
+          return;
+        }
+      }
+
       const placedTeamsKey = `placedTeams_${gameId}`;
       const placedTeamsData = sessionStorage.getItem(placedTeamsKey);
 
