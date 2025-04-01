@@ -9,7 +9,8 @@ export const useBettingForm = () => {
 
   const bettingPoint = watch('bettingPoint');
 
-  const isDisabled = !bettingPoint || !selectedTeamId;
+  const isDisabled =
+    !bettingPoint || !selectedTeamId || Number(bettingPoint) < 1;
 
   const onError = (errors: FieldErrors<BettingFormData>) => {
     console.log('제출에러:', errors);

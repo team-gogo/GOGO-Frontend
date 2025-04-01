@@ -53,8 +53,6 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
 
     PostBettingMatch(finalData);
     onClose();
-
-    console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
   };
 
   const { ateam, bteam, category, betting, system } = match;
@@ -72,7 +70,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
   const bTeamPercentage =
     totalBettingPoints === 0
       ? '0.0'
-      : ((ateam?.bettingPoint / totalBettingPoints) * 100).toFixed(2);
+      : ((bteam?.bettingPoint / totalBettingPoints) * 100).toFixed(2);
 
   const getBettingTeamColor = (teamId: number) => {
     if (selectedTeamId === teamId || betting.predictedWinTeamId === teamId) {
@@ -176,7 +174,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
           )}
         >
           <Input
-            {...register('bettingPoint', { required: true, min: 0 })}
+            {...register('bettingPoint', { required: true, min: 1 })}
             type="number"
             placeholder="포인트를 입력해주세요."
             bgColor="bg-gray-600"
