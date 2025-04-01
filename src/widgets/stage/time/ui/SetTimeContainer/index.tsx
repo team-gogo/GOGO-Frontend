@@ -1134,6 +1134,12 @@ const SetTimeContainer = ({
               value={date}
               onChange={handleDateChange}
               showBorder={true}
+              onClick={(e) => {
+                const input = e.target as HTMLInputElement;
+                if (input.showPicker) {
+                  input.showPicker();
+                }
+              }}
             />
           </div>
           <div className="flex-1">
@@ -1143,6 +1149,12 @@ const SetTimeContainer = ({
               value={time}
               onChange={handleTimeChange}
               showBorder={true}
+              onClick={(e) => {
+                const input = e.target as HTMLInputElement;
+                if (input.showPicker) {
+                  input.showPicker();
+                }
+              }}
             />
           </div>
         </div>
