@@ -477,18 +477,47 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
             }
 
             const totalQuarterFinalMatches = quarterFinals.length;
-            const totalSemiFinalMatches = Math.ceil(
-              totalQuarterFinalMatches / 2,
-            );
 
-            const leftSemiFinalMatches = Math.min(
-              Math.ceil(leftActualMatches / 2),
-              1,
-            );
+            const totalTeamCount = leftTeamCount + rightTeamCount;
 
-            const rightSemiFinalMatches = Math.min(
-              Math.ceil(rightActualMatches / 2),
-              Math.max(totalSemiFinalMatches - leftSemiFinalMatches, 0),
+            const shouldHaveTwoSemis = totalTeamCount >= 6;
+
+            let totalSemiFinalMatches = Math.ceil(totalQuarterFinalMatches / 2);
+            if (shouldHaveTwoSemis) {
+              totalSemiFinalMatches = 2;
+            }
+
+            let leftSemiFinalMatches, rightSemiFinalMatches;
+
+            if (totalSemiFinalMatches === 2) {
+              leftSemiFinalMatches = Math.min(
+                Math.max(1, leftTeamCount > 0 ? 1 : 0),
+                1,
+              );
+              rightSemiFinalMatches = Math.min(
+                Math.max(1, rightTeamCount > 0 ? 1 : 0),
+                1,
+              );
+            } else {
+              leftSemiFinalMatches = Math.min(
+                Math.ceil(leftActualMatches / 2),
+                1,
+              );
+              rightSemiFinalMatches = Math.min(
+                Math.ceil(rightActualMatches / 2),
+                Math.max(totalSemiFinalMatches - leftSemiFinalMatches, 0),
+              );
+            }
+
+            console.log(
+              '팀 수:',
+              totalTeamCount,
+              '4강 경기 수:',
+              totalSemiFinalMatches,
+              '왼쪽:',
+              leftSemiFinalMatches,
+              '오른쪽:',
+              rightSemiFinalMatches,
             );
 
             for (let i = 0; i < leftSemiFinalMatches; i++) {
