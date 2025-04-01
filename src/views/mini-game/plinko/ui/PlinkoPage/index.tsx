@@ -26,12 +26,12 @@ const PlinkoPage = () => {
   const { data: myTicket } = useGetMyTicketQuery(String(stageId));
 
   useEffect(() => {
-    if (myPoint) {
-      setPoint(myPoint?.point);
+    if (myPoint !== undefined && myPoint !== null) {
+      setPoint(myPoint.point || 0);
     }
 
-    if (myTicket) {
-      setTicket(myTicket.plinko);
+    if (myTicket !== undefined && myTicket !== null) {
+      setTicket(myTicket.plinko || 0);
     }
   }, [myPoint, myTicket]);
 
@@ -48,7 +48,7 @@ const PlinkoPage = () => {
   const amount = watch('amount');
   const risk = watch('risk');
 
-  const isDisabled = !amount || !risk || ticket === 0 || amount > point;
+  const isDisabled = !!(!amount || !risk || ticket === 0 || amount > point);
 
   const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId));
 
