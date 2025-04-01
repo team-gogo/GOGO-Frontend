@@ -75,6 +75,8 @@ const SetTimeContainer = ({
       match = matches.semiFinals.find((m) => m.index === index);
     } else if (round === '결승') {
       match = matches.finals.find((m) => m.index === index);
+    } else if (round === '리그') {
+      match = matches.finals.find((m) => m.index === index);
     }
 
     return {
@@ -231,6 +233,17 @@ const SetTimeContainer = ({
     if (typeof window !== 'undefined' && savedMatches.length > 0) {
       const savedMatchesKey = `savedMatches_${matchId}`;
       sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
+      if (system === GameSystem.FULL_LEAGUE) {
+        const modifiedSavedMatches = savedMatches.map(({ round, ...rest }) => ({
+          ...rest,
+          leagueTurn: rest.index,
+        }));
+        console.log(savedMatchesKey, modifiedSavedMatches);
+        sessionStorage.setItem(
+          savedMatchesKey,
+          JSON.stringify(modifiedSavedMatches),
+        );
+      }
       formatMatchData(matchId, savedMatches);
     }
   }, [savedMatches, matchId, formatMatchData]);

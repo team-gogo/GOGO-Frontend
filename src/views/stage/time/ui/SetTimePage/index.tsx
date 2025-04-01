@@ -275,7 +275,7 @@ const SetTimePage = () => {
 
         if (confirmedTeamsData) {
           parsedTeams = JSON.parse(confirmedTeamsData);
-          console.log('Confirmed Teams:', parsedTeams);
+          console.log('Confirmed Teams:', parsedTeams); // 됨
 
           // teamName 기준으로 정렬 (순서를 보장)
           parsedTeams.sort((a, b) => a.teamId - b.teamId);
@@ -293,6 +293,8 @@ const SetTimePage = () => {
         );
         return foundTeam ? foundTeam.teamId : null;
       };
+
+      console.log(findTeamId('1'));
 
       if (system === GameSystem.TOURNAMENT) {
         const tournamentGames = savedMatches.map((match) => {
@@ -327,13 +329,18 @@ const SetTimePage = () => {
           tournament: tournamentGames,
         });
       } else if (system === GameSystem.FULL_LEAGUE) {
-        const leagueGames = savedMatches.map((match, index) => ({
-          teamAId: findTeamId(match.teamAName) || 0,
-          teamBId: findTeamId(match.teamBName) || 0,
-          startDate: match.startDate,
-          endDate: match.endDate,
-          leagueTurn: index + 1,
-        }));
+        // 여기서 teamAName과 teamBName이 TBD인 문제
+        console.log(savedMatches);
+
+        const leagueGames = savedMatches.map((match, index) => {
+          return {
+            teamAId: findTeamId(match.teamAName),
+            teamBId: findTeamId(match.teamBName),
+            startDate: match.startDate,
+            endDate: match.endDate,
+            leagueTurn: index + 1,
+          };
+        });
 
         if (leagueGames.length === 0) {
           toast.error('매치 시간을 먼저 설정해주세요.');
