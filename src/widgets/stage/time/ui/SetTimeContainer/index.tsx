@@ -394,102 +394,196 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                 finalTeamB =
                   teamsBySide[finalRound]['right'][rightPositions[0]];
               }
-
-              finals.push({
-                index: 1,
-                teamAName: finalTeamA || 'TBD',
-                teamBName: finalTeamB || 'TBD',
-                round: '결승',
-              });
             }
+
+            finals.push({
+              index: 1,
+              teamAName: finalTeamA || 'TBD',
+              teamBName: finalTeamB || 'TBD',
+              round: '결승',
+            });
           }
 
-          Object.entries(teamsBySide).forEach(([roundStr, sides]) => {
-            const roundNum = Number(roundStr);
-            if (
-              (finalStage === 4 && roundNum === 2) ||
-              (finalStage === 8 && roundNum === 3)
-            ) {
-              return;
+          if (finalStage === 8) {
+            const leftTeamCount = Object.keys(
+              teamsBySide[1]?.['left'] || {},
+            ).length;
+            const rightTeamCount = Object.keys(
+              teamsBySide[1]?.['right'] || {},
+            ).length;
+
+            let leftActualMatches = Math.floor(leftTeamCount / 2);
+            if (leftTeamCount % 2 === 1 && leftTeamCount > 1) {
+              leftActualMatches += 1;
             }
 
-            let roundName: string;
-            if (finalStage === 4) {
-              roundName = roundNum === 1 ? '4강' : '결승';
-            } else {
-              roundName =
-                roundNum === 1 ? '8강' : roundNum === 2 ? '4강' : '결승';
+            let rightActualMatches = Math.floor(rightTeamCount / 2);
+            if (rightTeamCount % 2 === 1 && rightTeamCount > 1) {
+              rightActualMatches += 1;
             }
 
-            ['left', 'right'].forEach((side) => {
-              const positions = Object.keys(sides[side])
-                .map(Number)
-                .sort((a, b) => a - b);
+            const byeTeams: Record<string, string> = {};
 
-              for (let i = 0; i < positions.length; i += 2) {
-                if (i + 1 < positions.length) {
-                  const teamA = sides[side][positions[i]];
-                  const teamB = sides[side][positions[i + 1]];
+            for (let i = 0; i < Math.ceil(leftTeamCount / 2); i++) {
+              const teamAPos = i * 2;
+              const teamBPos = i * 2 + 1;
 
-                  const match: MatchData = {
-                    index: Math.floor(i / 2) + 1,
-                    teamAName: teamA,
-                    teamBName: teamB,
-                    round: roundName,
-                  };
+              const hasBothTeams = teamBPos < leftTeamCount;
 
-                  if (finalStage === 4) {
-                    if (roundNum === 1) {
-                      semiFinals.push(match);
+              const teamA = teamsBySide[1]?.['left']?.[teamAPos] || 'TBD';
+              const teamB = hasBothTeams
+                ? teamsBySide[1]?.['left']?.[teamBPos] || 'TBD'
+                : '부전승';
+
+              if (hasBothTeams || leftTeamCount === 1) {
+                quarterFinals.push({
+                  index: quarterFinals.length + 1,
+                  teamAName: teamA,
+                  teamBName: teamB,
+                  round: '8강',
+                });
+              }
+
+              if (!hasBothTeams && teamA !== 'TBD') {
+                const nextPosition = Math.floor(i / 2);
+                byeTeams[`left_${nextPosition}`] = teamA;
+              }
+            }
+
+            for (let i = 0; i < Math.ceil(rightTeamCount / 2); i++) {
+              const teamAPos = i * 2;
+              const teamBPos = i * 2 + 1;
+
+              const hasBothTeams = teamBPos < rightTeamCount;
+
+              const teamA = teamsBySide[1]?.['right']?.[teamAPos] || 'TBD';
+              const teamB = hasBothTeams
+                ? teamsBySide[1]?.['right']?.[teamBPos] || 'TBD'
+                : '부전승';
+
+              if (hasBothTeams || rightTeamCount === 1) {
+                quarterFinals.push({
+                  index: quarterFinals.length + 1,
+                  teamAName: teamA,
+                  teamBName: teamB,
+                  round: '8강',
+                });
+              }
+
+              if (!hasBothTeams && teamA !== 'TBD') {
+                const nextPosition = Math.floor(i / 2);
+                byeTeams[`right_${nextPosition}`] = teamA;
+              }
+            }
+
+            const totalQuarterFinalMatches = quarterFinals.length;
+            const totalSemiFinalMatches = Math.ceil(
+              totalQuarterFinalMatches / 2,
+            );
+
+            const leftSemiFinalMatches = Math.min(
+              Math.ceil(leftActualMatches / 2),
+              1,
+            );
+
+            const rightSemiFinalMatches = Math.min(
+              Math.ceil(rightActualMatches / 2),
+              Math.max(totalSemiFinalMatches - leftSemiFinalMatches, 0),
+            );
+
+            for (let i = 0; i < leftSemiFinalMatches; i++) {
+              const teamA =
+                teamsBySide[2]?.['left']?.[i] || byeTeams[`left_${i}`] || 'TBD';
+              let teamB = teamsBySide[2]?.['left']?.[i + 1] || 'TBD';
+
+              if (byeTeams[`left_${i + 1}`]) {
+                teamB = byeTeams[`left_${i + 1}`];
+              }
+
+              semiFinals.push({
+                index: i + 1,
+                teamAName: teamA,
+                teamBName: teamB,
+                round: '4강',
+              });
+            }
+
+            for (let i = 0; i < rightSemiFinalMatches; i++) {
+              const teamA =
+                teamsBySide[2]?.['right']?.[i] ||
+                byeTeams[`right_${i}`] ||
+                'TBD';
+              let teamB = teamsBySide[2]?.['right']?.[i + 1] || 'TBD';
+
+              if (byeTeams[`right_${i + 1}`]) {
+                teamB = byeTeams[`right_${i + 1}`];
+              }
+
+              semiFinals.push({
+                index: leftSemiFinalMatches + i + 1,
+                teamAName: teamA,
+                teamBName: teamB,
+                round: '4강',
+              });
+            }
+          } else {
+            Object.entries(teamsBySide).forEach(([roundStr, sides]) => {
+              const roundNum = Number(roundStr);
+              if (roundNum === 2) return;
+
+              const roundName = roundNum === 1 ? '4강' : '결승';
+
+              ['left', 'right'].forEach((side) => {
+                const positions = Object.keys(sides[side])
+                  .map(Number)
+                  .sort((a, b) => a - b);
+
+                for (let i = 0; i < positions.length; i += 2) {
+                  if (i + 1 < positions.length) {
+                    const teamA = sides[side][positions[i]];
+                    const teamB = sides[side][positions[i + 1]];
+
+                    semiFinals.push({
+                      index: Math.floor(i / 2) + 1 + (side === 'right' ? 1 : 0),
+                      teamAName: teamA,
+                      teamBName: teamB,
+                      round: roundName,
+                    });
+                  } else if (positions.length % 2 === 1) {
+                    const teamA = sides[side][positions[i]];
+
+                    const nextRound = roundNum + 1;
+                    const nextPosition = Math.floor(i / 2);
+                    const nextPositionKey = `${nextRound}_${nextPosition}_${side}`;
+
+                    const innerPlacedTeamsKey = `placedTeams_${matchId}`;
+                    const innerPlacedTeamsData =
+                      sessionStorage.getItem(innerPlacedTeamsKey);
+                    let innerAllPlacedTeams: Record<string, string | TeamData> =
+                      {};
+
+                    if (innerPlacedTeamsData) {
+                      innerAllPlacedTeams = JSON.parse(innerPlacedTeamsData);
                     }
-                  } else {
-                    if (roundNum === 1) {
-                      quarterFinals.push(match);
-                    } else if (roundNum === 2) {
-                      semiFinals.push(match);
+
+                    if (teamA && teamA !== 'TBD') {
+                      innerAllPlacedTeams[nextPositionKey] = teamA;
+                      sessionStorage.setItem(
+                        innerPlacedTeamsKey,
+                        JSON.stringify(innerAllPlacedTeams),
+                      );
                     }
-                  }
-                } else if (positions.length % 2 === 1) {
-                  const teamA = sides[side][positions[i]];
-
-                  const nextRound = roundNum + 1;
-                  const nextPosition = Math.floor(i / 2);
-                  const nextPositionKey = `${nextRound}_${nextPosition}_${side}`;
-
-                  const placedTeamsKey = `placedTeams_${matchId}`;
-                  const placedTeamsData =
-                    sessionStorage.getItem(placedTeamsKey);
-                  let allPlacedTeams: Record<string, string> = {};
-
-                  if (placedTeamsData) {
-                    allPlacedTeams = JSON.parse(placedTeamsData);
-                  }
-
-                  if (teamA && teamA !== 'TBD') {
-                    allPlacedTeams[nextPositionKey] = teamA;
-                    sessionStorage.setItem(
-                      placedTeamsKey,
-                      JSON.stringify(allPlacedTeams),
-                    );
                   }
                 }
-              }
+              });
             });
-          });
+          }
 
           const sortAndAdjustIndexes = (matches: MatchData[]) => {
-            matches.sort((a, b) => {
-              if (a.teamAName.includes('left') && !b.teamAName.includes('left'))
-                return -1;
-              if (!a.teamAName.includes('left') && b.teamAName.includes('left'))
-                return 1;
-              return a.index - b.index;
-            });
-
+            matches.sort((a, b) => a.index - b.index);
             matches.forEach((match, idx) => {
               match.index = idx + 1;
             });
-
             return matches;
           };
 
@@ -502,11 +596,34 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
             finals: finals,
           });
         } else {
-          setMatches({
-            quarterFinals: [],
-            semiFinals: [],
-            finals: [],
-          });
+          if (finalStage === 8) {
+            setMatches({
+              quarterFinals: [
+                { index: 1, teamAName: 'TBD', teamBName: 'TBD', round: '8강' },
+                { index: 2, teamAName: 'TBD', teamBName: 'TBD', round: '8강' },
+                { index: 3, teamAName: 'TBD', teamBName: 'TBD', round: '8강' },
+                { index: 4, teamAName: 'TBD', teamBName: 'TBD', round: '8강' },
+              ],
+              semiFinals: [
+                { index: 1, teamAName: 'TBD', teamBName: 'TBD', round: '4강' },
+                { index: 2, teamAName: 'TBD', teamBName: 'TBD', round: '4강' },
+              ],
+              finals: [
+                { index: 1, teamAName: 'TBD', teamBName: 'TBD', round: '결승' },
+              ],
+            });
+          } else {
+            setMatches({
+              quarterFinals: [],
+              semiFinals: [
+                { index: 1, teamAName: 'TBD', teamBName: 'TBD', round: '4강' },
+                { index: 2, teamAName: 'TBD', teamBName: 'TBD', round: '4강' },
+              ],
+              finals: [
+                { index: 1, teamAName: 'TBD', teamBName: 'TBD', round: '결승' },
+              ],
+            });
+          }
         }
       } else if (system === GameSystem.SINGLE) {
         const confirmedTeamsKey = `confirmedTeams_${matchId}`;
@@ -590,11 +707,12 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                 !(
                   (finalStage === 8 &&
                     match.round === '8강' &&
-                    match.teamBName === 'TBD') ||
+                    match.teamBName === 'TBD' &&
+                    match.teamAName === 'TBD') ||
                   (finalStage === 4 &&
                     match.round === '4강' &&
-                    match.teamBName === 'TBD') ||
-                  match.teamBName === '부전승'
+                    match.teamBName === 'TBD' &&
+                    match.teamAName === 'TBD')
                 ),
             )
             .map((match) => (
@@ -602,7 +720,11 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                 <MatchItem
                   index={match.index}
                   teamAName={match.teamAName}
-                  teamBName={match.teamBName}
+                  teamBName={
+                    match.teamBName === '부전승'
+                      ? `${match.teamAName}(부전승)`
+                      : match.teamBName
+                  }
                   selected={isMatchSelected(match.round, match.index)}
                   solved={!isMatchTimeSet(match.round, match.index)}
                   onClick={() => handleMatchSelect(match.round, match.index)}
@@ -627,8 +749,7 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                 matches.semiFinals
                   .filter(
                     (match) =>
-                      !(match.round === '4강' && match.teamBName === 'TBD') &&
-                      match.teamBName !== '부전승',
+                      !(match.teamAName === 'TBD' && match.teamBName === 'TBD'),
                   )
                   .map((match) => (
                     <div
@@ -638,7 +759,11 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                       <MatchItem
                         index={match.index}
                         teamAName={match.teamAName}
-                        teamBName={match.teamBName}
+                        teamBName={
+                          match.teamBName === '부전승'
+                            ? `${match.teamAName}(부전승)`
+                            : match.teamBName
+                        }
                         selected={isMatchSelected(match.round, match.index)}
                         onClick={() =>
                           handleMatchSelect(match.round, match.index)
@@ -658,7 +783,10 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
             <div className="flex flex-col items-center gap-10">
               {matches.finals.length > 0 ? (
                 matches.finals
-                  .filter((match) => match.teamBName !== '부전승')
+                  .filter(
+                    (match) =>
+                      !(match.teamAName === 'TBD' && match.teamBName === 'TBD'),
+                  )
                   .map((match) => (
                     <div
                       key={`${match.round}-${match.index}`}
@@ -667,7 +795,11 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
                       <MatchItem
                         index={match.index}
                         teamAName={match.teamAName}
-                        teamBName={match.teamBName}
+                        teamBName={
+                          match.teamBName === '부전승'
+                            ? `${match.teamAName}(부전승)`
+                            : match.teamBName
+                        }
                         selected={isMatchSelected(match.round, match.index)}
                         solved={!isMatchTimeSet(match.round, match.index)}
                         onClick={() =>
