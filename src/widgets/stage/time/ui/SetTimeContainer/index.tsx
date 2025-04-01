@@ -811,32 +811,27 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
             <h2 className="text-center text-h4s text-white">결승</h2>
             <div className="flex flex-col items-center gap-10">
               {matches.finals.length > 0 ? (
-                matches.finals
-                  .filter(
-                    (match) =>
-                      !(match.teamAName === 'TBD' && match.teamBName === 'TBD'),
-                  )
-                  .map((match) => (
-                    <div
-                      key={`${match.round}-${match.index}`}
-                      className="relative"
-                    >
-                      <MatchItem
-                        index={match.index}
-                        teamAName={match.teamAName}
-                        teamBName={
-                          match.teamBName === '부전승'
-                            ? `${match.teamAName}(부전승)`
-                            : match.teamBName
-                        }
-                        selected={isMatchSelected(match.round, match.index)}
-                        solved={!isMatchTimeSet(match.round, match.index)}
-                        onClick={() =>
-                          handleMatchSelect(match.round, match.index)
-                        }
-                      />
-                    </div>
-                  ))
+                matches.finals.map((match) => (
+                  <div
+                    key={`${match.round}-${match.index}`}
+                    className="relative"
+                  >
+                    <MatchItem
+                      index={match.index}
+                      teamAName={match.teamAName}
+                      teamBName={
+                        match.teamBName === '부전승'
+                          ? `${match.teamAName}(부전승)`
+                          : match.teamBName
+                      }
+                      selected={isMatchSelected(match.round, match.index)}
+                      solved={!isMatchTimeSet(match.round, match.index)}
+                      onClick={() =>
+                        handleMatchSelect(match.round, match.index)
+                      }
+                    />
+                  </div>
+                ))
               ) : (
                 <div className="text-center text-gray-400">경기 없음</div>
               )}
