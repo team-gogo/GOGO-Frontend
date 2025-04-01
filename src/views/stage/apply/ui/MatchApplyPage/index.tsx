@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { postStage } from '@/entities/stage/api/postStage';
 import useSelectSport from '@/shared/model/useSelectSport';
 import useStageNameStore from '@/shared/stores/useStageNameStore';
 import BackPageButton from '@/shared/ui/backPageButton';
@@ -40,6 +41,16 @@ const MatchApplyPage = () => {
   const filteredGames = selectedSport
     ? matchApplyList?.games.filter((game) => game.category === selectedSport)
     : matchApplyList?.games;
+
+  const games = filteredGames?.map((game) => ({
+    gameId: game.gameId,
+  }));
+
+  console.log(games);
+
+  const handleConfirmStage = () => {
+    // postStage(Number(stageId), { games });
+  };
 
   return (
     <div
@@ -82,7 +93,7 @@ const MatchApplyPage = () => {
               selectedSport={selectedSport}
               toggleSportSelection={toggleSportSelection}
             />
-            <ConfirmStage onClick={() => {}} />
+            <ConfirmStage onClick={handleConfirmStage} />
           </div>
           {isPending ? (
             <div

@@ -29,6 +29,7 @@ interface FullLeagueGame {
 
 interface Game {
   gameId: number;
+  system: 'SINGLE' | 'TOURNAMENT' | 'FULL_LEAGUE';
   single?: SingleGame;
   tournament?: TournamentGame[];
   fullLeague?: FullLeagueGame[];
