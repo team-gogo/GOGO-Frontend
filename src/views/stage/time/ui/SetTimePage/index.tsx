@@ -318,13 +318,13 @@ const SetTimePage = () => {
             endDate: match.endDate,
           };
         });
-        console.log(tournamentGames);
+
         if (tournamentGames.length === 0) {
           toast.error('매치 시간을 먼저 설정해주세요.');
           return;
         }
 
-        games.push({
+        console.log({
           gameId: parseInt(gameId || '0', 10),
           system: GameSystem.TOURNAMENT,
           tournament: tournamentGames,
@@ -344,7 +344,7 @@ const SetTimePage = () => {
           return;
         }
 
-        games.push({
+        console.log({
           gameId: parseInt(gameId || '0', 10),
           system: GameSystem.FULL_LEAGUE,
           fullLeague: leagueGames,
@@ -368,7 +368,7 @@ const SetTimePage = () => {
         });
       }
 
-      console.log(games);
+      console.log('저장되는 게임 데이터:', games);
 
       setStageGames(Number(stageId), games as Game[]);
       sessionStorage.setItem(`stageGames_${stageId}`, JSON.stringify(games));
@@ -379,13 +379,13 @@ const SetTimePage = () => {
         sessionStorage.setItem(`isConfirmed_${gameId}`, 'true');
         setTimeout(() => {
           if (stageId) {
-            router.push(`/stage/stageId=${stageId}`);
+            // router.push(`/stage/stageId=${stageId}`);
           } else {
-            router.push(`/stage`);
+            // router.push(`/stage`);
           }
         }, 100);
       } else {
-        router.push(`/stage`);
+        // router.push(`/stage`);
       }
     } catch (error) {
       console.error(error);
