@@ -52,6 +52,7 @@ const Header = () => {
             >
               <div className={cn('laptop:hidden', 'block')}>
                 <item.icon
+                  size={24}
                   color={
                     hoveredItem === item.href ? '#fff' : getColor(item.href)
                   }
