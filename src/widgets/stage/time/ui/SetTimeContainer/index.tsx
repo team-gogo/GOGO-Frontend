@@ -940,11 +940,37 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
   );
 
   const renderSections = () => {
-    if (finalStage === 4) {
+    if (system === GameSystem.FULL_LEAGUE) {
+      return (
+        <div className="flex w-full flex-col gap-20 rounded-lg border border-gray-500 bg-gray-700 p-6">
+          <h2 className="text-center text-h4s text-white">리그</h2>
+          <div className="grid grid-cols-3 gap-10">
+            {matches.finals.length > 0 ? (
+              matches.finals.map((match) => (
+                <div key={`${match.round}-${match.index}`} className="relative">
+                  <MatchItem
+                    index={match.index}
+                    teamAName={match.teamAName}
+                    teamBName={match.teamBName}
+                    selected={isMatchSelected(match.round, match.index)}
+                    solved={!isMatchTimeSet(match.round, match.index)}
+                    onClick={() => handleMatchSelect(match.round, match.index)}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="col-span-3 text-center text-gray-400">
+                경기 없음
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    } else if (finalStage === 4) {
       const confirmedTeamsKey = `confirmedTeams_${matchId}`;
       const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
-      if (confirmedTeamsData) {
+      if (confirmedTeamsData && system === GameSystem.TOURNAMENT) {
         const teams = JSON.parse(confirmedTeamsData) as TeamData[];
         if (teams.length === 3) {
           const byeTeamData = sessionStorage.getItem(`threeTeamBye_${matchId}`);
