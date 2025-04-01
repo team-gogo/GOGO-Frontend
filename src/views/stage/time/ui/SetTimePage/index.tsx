@@ -265,7 +265,6 @@ const SetTimePage = () => {
 
   const handleConfirm = () => {
     try {
-      const currentStageId = parseInt(searchParams.get('stageId') || '0', 10);
       const games = [];
       const teamNameToIdMap = new Map<string, string>();
 
@@ -309,7 +308,7 @@ const SetTimePage = () => {
             endDate: match.endDate,
           };
         });
-
+        console.log(tournamentGames);
         if (tournamentGames.length === 0) {
           toast.error('매치 시간을 먼저 설정해주세요.');
           return;
@@ -330,6 +329,7 @@ const SetTimePage = () => {
         }));
 
         if (leagueGames.length === 0) {
+          console.log(leagueGames);
           toast.error('매치 시간을 먼저 설정해주세요.');
           return;
         }
@@ -364,7 +364,11 @@ const SetTimePage = () => {
         });
       }
 
-      setStageGames(currentStageId, games as Game[]);
+      console.log(games);
+
+      setStageGames(Number(stageId), games as Game[]);
+      sessionStorage.setItem(`stageGames_${stageId}`, JSON.stringify(games));
+
       toast.success('경기 일정이 저장되었습니다.');
 
       if (gameId) {

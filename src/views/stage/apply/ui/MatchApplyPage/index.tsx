@@ -22,7 +22,7 @@ const MatchApplyPage = () => {
   );
   const { selectedSport, toggleSportSelection } = useSelectSport();
   const { stageName } = useStageNameStore();
-  const { getStageGames } = useStageStore();
+  const { getStageGames, setStageGames } = useStageStore();
 
   const [confirmedGames, setConfirmedGames] = useState<Record<string, boolean>>(
     {},
@@ -53,12 +53,26 @@ const MatchApplyPage = () => {
       }
 
       const stageGames = getStageGames(Number(stageId));
-      if (!stageGames || stageGames.length === 0) {
+      let currentStageGames = stageGames;
+
+      if (!currentStageGames || currentStageGames.length === 0) {
+        const savedStageGames = sessionStorage.getItem(`stageGames_${stageId}`);
+        if (savedStageGames) {
+          const parsedGames = JSON.parse(savedStageGames);
+          if (parsedGames && parsedGames.length > 0) {
+            setStageGames(Number(stageId), parsedGames);
+            currentStageGames = parsedGames;
+          }
+        }
+      }
+
+      if (!currentStageGames || currentStageGames.length === 0) {
+        console.log('stageGames:', currentStageGames);
         toast.error('저장된 경기 일정이 없습니다.');
         return;
       }
 
-      const allGamesConfirmed = stageGames.every((game) => {
+      const allGamesConfirmed = currentStageGames.every((game) => {
         const isConfirmed = sessionStorage.getItem(
           `isConfirmed_${game.gameId}`,
         );
@@ -70,7 +84,7 @@ const MatchApplyPage = () => {
         return;
       }
 
-      await postStage(Number(stageId), { games: stageGames });
+      await postStage(Number(stageId), { games: currentStageGames });
       toast.success('스테이지 정보가 성공적으로 저장되었습니다.');
       router.push('/stage');
     } catch (error) {

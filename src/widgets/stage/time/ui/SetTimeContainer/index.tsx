@@ -37,7 +37,7 @@ interface SetTimeContainerProps {
 
 const SetTimeContainer = ({
   onMatchSave,
-  savedMatches,
+  savedMatches: initialSavedMatches,
   system,
   matchId,
 }: SetTimeContainerProps) => {
@@ -48,6 +48,8 @@ const SetTimeContainer = ({
     round: string;
     index: number;
   } | null>(null);
+  const [savedMatches, setSavedMatches] =
+    useState<SavedMatchData[]>(initialSavedMatches);
   const [matches, setMatches] = useState<{
     quarterFinals: MatchData[];
     semiFinals: MatchData[];
@@ -125,7 +127,6 @@ const SetTimeContainer = ({
   ) => {
     try {
       const startDateTime = new Date(`${dateVal}T${timeVal}`);
-
       const endDateTime = new Date(startDateTime);
       endDateTime.setHours(endDateTime.getHours() + 2);
 
@@ -152,6 +153,7 @@ const SetTimeContainer = ({
         updatedSavedMatches.push(newSavedMatch);
       }
 
+      setSavedMatches(updatedSavedMatches);
       sessionStorage.setItem(
         `savedMatches_${matchId}`,
         JSON.stringify(updatedSavedMatches),
