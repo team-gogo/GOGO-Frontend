@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { usePasswordModalStore, useStageStatus } from '@/shared/stores';
+import { usePasswordModalStore } from '@/shared/stores';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import ModalLayout from '@/shared/ui/modalLayout';
