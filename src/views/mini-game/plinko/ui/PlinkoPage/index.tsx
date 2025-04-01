@@ -6,6 +6,8 @@ import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { formatPlinkoData } from '@/views/mini-game/model/formatPlinkoData';
+import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
+import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { usePlinkoForm } from '@/views/mini-game/model/usePlinkoForm';
 import { usePostPlinkoGame } from '@/views/mini-game/model/usePostPlinkoGame';
 import { PlinkoGame, PlinkoInputBox } from '@/widgets/mini-game';
@@ -22,10 +24,22 @@ const PlinkoPage = () => {
   const match = pathname.match(/\/mini-game\/([^/]+)\/plinko/);
   const stageId = match ? match[1] : null;
 
+  const { data: myPoint } = useGetMyPointQuery(String(stageId));
+  const { data: myTicket } = useGetMyTicketQuery(String(stageId));
+
+  useEffect(() => {
+    if (myPoint) {
+      setPoint(myPoint?.point);
+    }
+
+    if (myTicket) {
+      setTicket(myTicket.plinko);
+    }
+  }, [myPoint, myTicket]);
+
   const {
     register,
     handleSubmit,
-    isDisabled,
     watch,
     onError,
     setValue,
@@ -34,6 +48,9 @@ const PlinkoPage = () => {
   } = usePlinkoForm();
 
   const amount = watch('amount');
+  const risk = watch('risk');
+
+  const isDisabled = !amount || !risk || ticket === 0 || amount > point;
 
   const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId));
 
@@ -45,7 +62,7 @@ const PlinkoPage = () => {
 
     const updatedPoint = point - amount;
     setPoint(updatedPoint);
-    setTicket((prev) => prev - 1);
+    setTicket((prev) => Math.max(0, prev - 1));
 
     PostPlinko(formattedData, {
       onSuccess: (response: PlinkoResponse) => {
@@ -58,17 +75,6 @@ const PlinkoPage = () => {
       },
     });
   };
-
-  const storedTicketCount = sessionStorage.getItem('ticketCount');
-  const ticketCount = storedTicketCount ? JSON.parse(storedTicketCount) : null;
-
-  const storeMyPoint = sessionStorage.getItem('myPoint');
-  const myPoint = storeMyPoint ? JSON.parse(storeMyPoint) : null;
-
-  useEffect(() => {
-    setPoint(myPoint.point);
-    setTicket(ticketCount.plinko);
-  }, []);
 
   return (
     <div
