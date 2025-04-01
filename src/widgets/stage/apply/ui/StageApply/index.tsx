@@ -55,6 +55,12 @@ const StageApply = ({
     }
   };
 
+  const handleConfirm = () => {
+    if (isMaintainer) {
+      router.push(`/team/confirm/${gameId}`);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -102,18 +108,26 @@ const StageApply = ({
           <h1 className={cn('text-body1e', 'text-white', 'laptop:text-body2e')}>
             {gameName}
           </h1>
-          <div className={cn('flex', 'w-full', 'justify-center')}>
+          <div className={cn('flex', 'justify-center', 'w-full')}>
             {isConfirmed ? (
               <Button disabled={true} onClick={handleApply}>
                 확정된 경기입니다.
               </Button>
             ) : (
-              <Button
-                disabled={isParticipating && !isMaintainer}
-                onClick={handleApply}
-              >
-                {isMaintainer ? '종료하기' : '신청하기'}
-              </Button>
+              <div className={cn('flex', 'gap-[1rem]', 'w-full')}>
+                <Button
+                  className={cn('mx-10')}
+                  disabled={isParticipating && !isMaintainer}
+                  onClick={handleApply}
+                >
+                  신청하기
+                </Button>
+                {isMaintainer && (
+                  <Button className={cn('mx-10')} onClick={handleConfirm}>
+                    종료하기
+                  </Button>
+                )}
+              </div>
             )}
           </div>
         </div>
