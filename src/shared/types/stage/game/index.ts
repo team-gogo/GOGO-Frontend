@@ -21,7 +21,7 @@ interface FullLeagueGame extends SingleGame {
   leagueTurn: number;
 }
 
-interface Game {
+export interface Game {
   gameId: number;
   system: GameSystem;
   single?: SingleGame;
