@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getStageMaintainer } from '@/entities/stage/api/getStageMaintainer';
+import { useTeamDetailInfoStore } from '@/shared/stores';
 import { MatchGameType } from '@/shared/types/stage/apply';
 import Button from '@/shared/ui/button';
 import MatchTypeLabel from '@/shared/ui/matchTypeLabel';
@@ -21,6 +22,7 @@ const StageApply = ({
   isConfirmed: initialIsConfirmed,
 }: StageApplyProps) => {
   const { gameName, teamCount, category, isParticipating, gameId } = game;
+  const { setCategory } = useTeamDetailInfoStore();
   const router = useRouter();
   const [isMaintainer, setIsMaintainer] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(initialIsConfirmed);
@@ -46,6 +48,7 @@ const StageApply = ({
   }, [gameId]);
 
   const handleApply = () => {
+    setCategory(category);
     if (isMaintainer) {
       router.push(`/team/confirm/${gameId}`);
     } else {

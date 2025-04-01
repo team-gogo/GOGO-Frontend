@@ -169,7 +169,7 @@ const getBoardMock = (): BoardData => {
       },
       {
         boardId: 11,
-        gameCategory: 'etc',
+        gameCategory: 'ETC',
         title: '발로란트',
         likeCount: 17,
         commentCount: 100,

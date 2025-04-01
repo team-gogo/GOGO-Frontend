@@ -1,9 +1,9 @@
-type GameType =
+export type CategoryType =
   | 'SOCCER'
   | 'BASE_BALL'
   | 'BASKET_BALL'
   | 'BADMINTON'
-  | 'etc'
+  | 'ETC'
   | 'LOL'
   | 'VOLLEY_BALL';
 
@@ -18,7 +18,7 @@ interface Author {
 
 interface BoardItem {
   boardId: number;
-  gameCategory: GameType;
+  gameCategory: CategoryType;
   title: string;
   likeCount: number;
   commentCount: number;
@@ -40,7 +40,7 @@ export interface BoardData {
 
 export interface CommunityItemProps {
   boardId: number;
-  gameCategory: GameType;
+  gameCategory: CategoryType;
   title: string;
   author: Author;
   likeCount: number;
@@ -57,7 +57,7 @@ interface Game {
   gameId: number;
   gameName: string;
   teamCount: number;
-  category: GameType;
+  category: CategoryType;
   system: System;
   teamMinCapacity: number;
   teamMaxCapacity: number;

@@ -15,3 +15,5 @@ export { default as useBettingMatchArrStore } from './useBettingMatchArrStore';
 export { default as useAlarmClickStore } from './useAlarmClickStore';
 export { default as useStageStatus } from './useStageStatus';
 export { default as useSelectedGameIdStore } from './useSelectedGameIdStore';
+export { default as useTeamDetailModalStore } from './useTeamDetailModalStore';
+export { default as useTeamDetailInfoStore } from './useTeamDetailInfoStore';
