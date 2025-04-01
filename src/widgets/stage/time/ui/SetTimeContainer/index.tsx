@@ -97,10 +97,10 @@ const SetTimeContainer = ({
       saveMatchTime(
         selectedMatch.round,
         selectedMatch.index,
-        teamAName,
-        teamBName,
         e.target.value,
         time,
+        teamAName,
+        teamBName,
       );
     }
   };
@@ -115,10 +115,10 @@ const SetTimeContainer = ({
       saveMatchTime(
         selectedMatch.round,
         selectedMatch.index,
-        teamAName,
-        teamBName,
         date,
         e.target.value,
+        teamAName,
+        teamBName,
       );
     }
   };
@@ -126,10 +126,10 @@ const SetTimeContainer = ({
   const saveMatchTime = (
     round: string,
     index: number,
-    teamAName: string,
-    teamBName: string,
     dateVal: string,
     timeVal: string,
+    teamAName: string,
+    teamBName: string,
   ) => {
     try {
       const startDateTime = new Date(`${dateVal}T${timeVal}`);
@@ -139,32 +139,71 @@ const SetTimeContainer = ({
       const startDateStr = startDateTime.toISOString();
       const endDateStr = endDateTime.toISOString();
 
-      const newSavedMatch: SavedMatchData = {
-        round: round,
-        index: index,
-        startDate: startDateStr,
-        endDate: endDateStr,
-        teamAName: teamAName,
-        teamBName: teamBName,
-      };
+      const savedMatchesKey = `savedMatches_${matchId}`;
+      let savedMatches: SavedMatchData[] = [];
 
-      const existingMatchIndex = savedMatches.findIndex(
+      const existingData = sessionStorage.getItem(savedMatchesKey);
+      if (existingData) {
+        savedMatches = JSON.parse(existingData);
+      }
+
+      // 3팀일 때 부전승 팀 처리
+      if (system === GameSystem.TOURNAMENT) {
+        const confirmedTeamsData = sessionStorage.getItem(
+          `confirmedTeams_${matchId}`,
+        );
+        const byeTeamData = sessionStorage.getItem(`threeTeamBye_${matchId}`);
+
+        if (confirmedTeamsData && byeTeamData) {
+          const confirmedTeams = JSON.parse(confirmedTeamsData);
+          const byeTeam = JSON.parse(byeTeamData);
+
+          if (confirmedTeams.length === 3 && round === '4강') {
+            // 4강 경기가 저장될 때 자동으로 결승전도 저장
+            const finalsMatch = savedMatches.find(
+              (match) => match.round === '결승',
+            );
+            if (!finalsMatch) {
+              savedMatches.push({
+                round: '결승',
+                index: 0,
+                startDate: startDateStr,
+                endDate: endDateStr,
+                teamAName: teamAName, // 4강 승자가 될 팀
+                teamBName: byeTeam.teamName, // 부전승 팀
+              });
+            }
+          }
+        }
+      }
+
+      // 기존 매치 저장 로직
+      const matchIndex = savedMatches.findIndex(
         (match) => match.round === round && match.index === index,
       );
 
-      const updatedSavedMatches = [...savedMatches];
-      if (existingMatchIndex !== -1) {
-        updatedSavedMatches[existingMatchIndex] = newSavedMatch;
+      if (matchIndex !== -1) {
+        savedMatches[matchIndex] = {
+          round,
+          index,
+          startDate: startDateStr,
+          endDate: endDateStr,
+          teamAName,
+          teamBName,
+        };
       } else {
-        updatedSavedMatches.push(newSavedMatch);
+        savedMatches.push({
+          round,
+          index,
+          startDate: startDateStr,
+          endDate: endDateStr,
+          teamAName,
+          teamBName,
+        });
       }
 
-      setSavedMatches(updatedSavedMatches);
-      sessionStorage.setItem(
-        `savedMatches_${matchId}`,
-        JSON.stringify(updatedSavedMatches),
-      );
-
+      sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
+      setSavedMatches(savedMatches);
       updateMatchDateInfo(round, index, startDateStr, endDateStr);
 
       toast.success('매치 시간이 저장되었습니다.');
