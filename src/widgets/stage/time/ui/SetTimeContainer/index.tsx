@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import MatchItem from '@/entities/stage/time/ui/MatchItem';
 import { GameSystem, isValidGameSystem } from '@/shared/types/stage/game';
 import Input from '@/shared/ui/input';
+import { useMatchStore } from '@/store/matchStore';
 
 interface MatchData {
   index: number;
@@ -33,6 +34,7 @@ interface SetTimeContainerProps {
 }
 
 const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
+  const { formatMatchData } = useMatchStore();
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [selectedMatch, setSelectedMatch] = useState<{
@@ -114,49 +116,51 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     }
   };
 
-  // const getFormattedData = () => {
-  //   const teamNameToIdMap = new Map<string, string>();
+  const getFormattedData = () => {
+    const teamNameToIdMap = new Map<string, string>();
 
-  //   try {
-  //     const confirmedTeamsKey = `confirmedTeams_${matchId}`;
-  //     const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+    try {
+      const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+      const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
-  //     if (confirmedTeamsData) {
-  //       const parsedTeams = JSON.parse(confirmedTeamsData);
-  //       parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
-  //         teamNameToIdMap.set(team.teamName, team.teamId.toString());
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
+      if (confirmedTeamsData) {
+        const parsedTeams = JSON.parse(confirmedTeamsData);
+        parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
+          teamNameToIdMap.set(team.teamName, team.teamId.toString());
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
 
-  //   const tournamentGames = savedMatches.map((match) => {
-  //     let round = '';
+    const tournamentGames = savedMatches.map((match) => {
+      let round = '';
 
-  //     if (match.round === '8강') {
-  //       round = 'QUARTER_FINALS';
-  //     } else if (match.round === '4강') {
-  //       round = 'SEMI_FINALS';
-  //     } else if (match.round === '결승') {
-  //       round = 'FINALS';
-  //     }
+      if (match.round === '8강') {
+        round = 'QUARTER_FINALS';
+      } else if (match.round === '4강') {
+        round = 'SEMI_FINALS';
+      } else if (match.round === '결승') {
+        round = 'FINALS';
+      }
 
-  //     const teamAId = teamNameToIdMap.get(match.teamAName) || 'TBD';
-  //     const teamBId = teamNameToIdMap.get(match.teamBName) || 'TBD';
+      const teamAId = teamNameToIdMap.get(match.teamAName) || 'TBD';
+      const teamBId = teamNameToIdMap.get(match.teamBName) || 'TBD';
 
-  //     return {
-  //       teamAId: teamAId,
-  //       teamBId: teamBId,
-  //       round,
-  //       turn: match.index,
-  //       startDate: match.startDate,
-  //       endDate: match.endDate,
-  //     };
-  //   });
+      return {
+        teamAId: teamAId,
+        teamBId: teamBId,
+        round,
+        turn: match.index,
+        startDate: match.startDate,
+        endDate: match.endDate,
+      };
+    });
 
-  //   return tournamentGames;
-  // };
+    return tournamentGames;
+  };
+
+  console.log(getFormattedData());
 
   const saveMatchTime = (
     round: string,
@@ -266,8 +270,9 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
     if (typeof window !== 'undefined' && savedMatches.length > 0) {
       const savedMatchesKey = `savedMatches_${matchId}`;
       sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
+      formatMatchData(matchId, savedMatches);
     }
-  }, [savedMatches, matchId]);
+  }, [savedMatches, matchId, formatMatchData]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -362,26 +367,34 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
           const semiFinals: MatchData[] = [];
           const finals: MatchData[] = [];
 
-          const finalRound = finalStage === 4 ? 2 : 3;
-          let finalTeamA: string | undefined;
-          let finalTeamB: string | undefined;
+          if (finalStage === 4) {
+            finals.push({
+              index: 1,
+              teamAName: 'TBD',
+              teamBName: 'TBD',
+              round: '결승',
+            });
+          } else {
+            const finalRound = 3;
+            let finalTeamA: string | undefined;
+            let finalTeamB: string | undefined;
 
-          if (teamsBySide[finalRound]) {
-            const leftPositions = Object.keys(
-              teamsBySide[finalRound]['left'],
-            ).map(Number);
-            if (leftPositions.length > 0) {
-              finalTeamA = teamsBySide[finalRound]['left'][leftPositions[0]];
-            }
+            if (teamsBySide[finalRound]) {
+              const leftPositions = Object.keys(
+                teamsBySide[finalRound]['left'],
+              ).map(Number);
+              if (leftPositions.length > 0) {
+                finalTeamA = teamsBySide[finalRound]['left'][leftPositions[0]];
+              }
 
-            const rightPositions = Object.keys(
-              teamsBySide[finalRound]['right'],
-            ).map(Number);
-            if (rightPositions.length > 0) {
-              finalTeamB = teamsBySide[finalRound]['right'][rightPositions[0]];
-            }
+              const rightPositions = Object.keys(
+                teamsBySide[finalRound]['right'],
+              ).map(Number);
+              if (rightPositions.length > 0) {
+                finalTeamB =
+                  teamsBySide[finalRound]['right'][rightPositions[0]];
+              }
 
-            if (finalTeamA || finalTeamB) {
               finals.push({
                 index: 1,
                 teamAName: finalTeamA || 'TBD',
