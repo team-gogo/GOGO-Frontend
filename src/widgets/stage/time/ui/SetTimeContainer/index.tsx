@@ -475,6 +475,28 @@ const SetTimeContainer = ({ onMatchSave }: SetTimeContainerProps) => {
             finals: [],
           });
         }
+      } else if (system === 'SINGLE') {
+        const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+        const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+
+        if (confirmedTeamsData) {
+          const teams = JSON.parse(confirmedTeamsData);
+          if (teams.length === 2) {
+            setMatches({
+              quarterFinals: [],
+              semiFinals: [],
+              finals: [
+                {
+                  index: 1,
+                  teamAName: teams[0].teamName,
+                  teamBName: teams[1].teamName,
+                  round: '단판승부전',
+                },
+              ],
+            });
+          }
+        }
+        return;
       }
     } catch (error) {
       console.error(error);
