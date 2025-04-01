@@ -57,17 +57,18 @@ export async function POST(request: Request) {
           },
         );
 
+        const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+          retryResponse.data;
+
+        setAuthCookies(newAccessToken, newRefreshToken);
+
         return NextResponse.json(retryResponse.data, {
           status: retryResponse.status,
         });
       } else {
         clearAuthCookies();
         return NextResponse.json(
-          {
-            error: 'Token refresh failed',
-            status: 401,
-            isRefreshError: true,
-          },
+          { error: 'Token refresh failed', status: 401, isRefreshError: true },
           { status: 401 },
         );
       }
