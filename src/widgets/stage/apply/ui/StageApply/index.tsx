@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { getStageMaintainer } from '@/entities/stage/api/getStageMaintainer';
 import { MatchGameType } from '@/shared/types/stage/apply';
 import Button from '@/shared/ui/button';
@@ -46,18 +47,16 @@ const StageApply = ({
   }, [gameId]);
 
   const handleApply = () => {
-    if (isMaintainer) {
-      router.push(`/team/confirm/${gameId}`);
-    } else {
-      router.push(
-        `/team/create/${stageId}?gameId=${gameId}&category=${category}`,
-      );
-    }
+    router.push(
+      `/team/create/${stageId}?gameId=${gameId}&category=${category}`,
+    );
   };
 
   const handleConfirm = () => {
     if (isMaintainer) {
       router.push(`/team/confirm/${gameId}`);
+    } else {
+      toast.error('관리자만 접근할 수 있어요.');
     }
   };
 
