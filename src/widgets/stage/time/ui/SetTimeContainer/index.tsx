@@ -63,10 +63,6 @@ const SetTimeContainer = ({
   });
   const [finalStage, setFinalStage] = useState<4 | 8>(8);
 
-  useEffect(() => {
-    console.log('SetTimeContainer teamIds:', teamIds);
-  }, [teamIds]);
-
   const getSelectedMatchTeams = (
     round: string,
     index: number,

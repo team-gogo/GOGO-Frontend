@@ -22,7 +22,7 @@ const MatchApplyPage = () => {
   );
   const { selectedSport, toggleSportSelection } = useSelectSport();
   const { stageName } = useStageNameStore();
-  const { getStageGames, setStageGames } = useStageStore();
+  const { getStageGames } = useStageStore();
 
   const [confirmedGames, setConfirmedGames] = useState<Record<string, boolean>>(
     {},
@@ -53,6 +53,7 @@ const MatchApplyPage = () => {
       }
 
       const stageGames = getStageGames(Number(stageId));
+
       let currentStageGames = stageGames;
 
       if (!currentStageGames || currentStageGames.length === 0) {
@@ -60,29 +61,28 @@ const MatchApplyPage = () => {
         if (savedStageGames) {
           const parsedGames = JSON.parse(savedStageGames);
           if (parsedGames && parsedGames.length > 0) {
-            setStageGames(Number(stageId), parsedGames);
+            console.log(parsedGames);
             currentStageGames = parsedGames;
           }
         }
       }
 
       if (!currentStageGames || currentStageGames.length === 0) {
-        console.log('stageGames:', currentStageGames);
         toast.error('저장된 경기 일정이 없습니다.');
         return;
       }
 
-      const allGamesConfirmed = currentStageGames.every((game) => {
-        const isConfirmed = sessionStorage.getItem(
-          `isConfirmed_${game.gameId}`,
-        );
-        return isConfirmed === 'true';
-      });
+      // const allGamesConfirmed = currentStageGames.every((game) => {
+      //   const isConfirmed = sessionStorage.getItem(
+      //     `isConfirmed_${game.gameId}`,
+      //   );
+      //   return isConfirmed === 'true';
+      // });
 
-      if (!allGamesConfirmed) {
-        toast.error('모든 경기의 시간을 설정해주세요.');
-        return;
-      }
+      // if (!allGamesConfirmed) {
+      //   toast.error('모든 경기의 시간을 설정해주세요.');
+      //   return;
+      // }
 
       await postStage(Number(stageId), { games: currentStageGames });
       toast.success('스테이지 정보가 성공적으로 저장되었습니다.');

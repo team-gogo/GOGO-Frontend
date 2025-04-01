@@ -267,25 +267,32 @@ const SetTimePage = () => {
   const handleConfirm = () => {
     try {
       const games = [];
-      const teamNameToIdMap = new Map<string, number>();
+      let parsedTeams: { teamId: number; teamName: string }[] = [];
 
       try {
         const confirmedTeamsKey = `confirmedTeams_${gameId}`;
         const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
 
         if (confirmedTeamsData) {
-          const parsedTeams = JSON.parse(confirmedTeamsData);
-          console.log('확인된 팀 데이터:', parsedTeams);
-          parsedTeams.forEach((team: { teamId: number; teamName: string }) => {
-            teamNameToIdMap.set(team.teamName, team.teamId);
-          });
-          console.log('팀 이름-ID:', Object.fromEntries(teamNameToIdMap));
+          parsedTeams = JSON.parse(confirmedTeamsData);
+          console.log('Confirmed Teams:', parsedTeams);
+
+          // teamName 기준으로 정렬 (순서를 보장)
+          parsedTeams.sort((a, b) => a.teamId - b.teamId);
         }
       } catch (error) {
         console.error(error);
         toast.error('팀 정보를 불러오는데 실패했습니다.');
         return;
       }
+
+      // 팀 ID를 매칭하는 함수 (순서를 유지)
+      const findTeamId = (teamName: string) => {
+        const foundTeam = parsedTeams.find(
+          (team) => team.teamName === teamName,
+        );
+        return foundTeam ? foundTeam.teamId : null;
+      };
 
       if (system === GameSystem.TOURNAMENT) {
         const tournamentGames = savedMatches.map((match) => {
@@ -299,19 +306,9 @@ const SetTimePage = () => {
             round = 'FINALS';
           }
 
-          const teamAId = teamNameToIdMap.get(match.teamAName) || 0;
-          const teamBId = teamNameToIdMap.get(match.teamBName) || 0;
-
-          console.log('매치 팀 정보:', {
-            teamAName: match.teamAName,
-            teamAId,
-            teamBName: match.teamBName,
-            teamBId,
-          });
-
           return {
-            teamAId,
-            teamBId,
+            teamAId: findTeamId(match.teamAName),
+            teamBId: findTeamId(match.teamBName),
             round,
             turn: match.index,
             startDate: match.startDate,
@@ -324,27 +321,26 @@ const SetTimePage = () => {
           return;
         }
 
-        console.log({
+        games.push({
           gameId: parseInt(gameId || '0', 10),
           system: GameSystem.TOURNAMENT,
           tournament: tournamentGames,
         });
       } else if (system === GameSystem.FULL_LEAGUE) {
         const leagueGames = savedMatches.map((match, index) => ({
-          teamAId: teamNameToIdMap.get(match.teamAName) || 0,
-          teamBId: teamNameToIdMap.get(match.teamBName) || 0,
+          teamAId: findTeamId(match.teamAName) || 0,
+          teamBId: findTeamId(match.teamBName) || 0,
           startDate: match.startDate,
           endDate: match.endDate,
           leagueTurn: index + 1,
         }));
 
         if (leagueGames.length === 0) {
-          console.log(leagueGames);
           toast.error('매치 시간을 먼저 설정해주세요.');
           return;
         }
 
-        console.log({
+        games.push({
           gameId: parseInt(gameId || '0', 10),
           system: GameSystem.FULL_LEAGUE,
           fullLeague: leagueGames,
@@ -360,15 +356,15 @@ const SetTimePage = () => {
           gameId: parseInt(gameId || '0', 10),
           system: GameSystem.SINGLE,
           single: {
-            teamAId: teamNameToIdMap.get(singleMatch.teamAName) || 0,
-            teamBId: teamNameToIdMap.get(singleMatch.teamBName) || 0,
+            teamAId: findTeamId(singleMatch.teamAName) || 0,
+            teamBId: findTeamId(singleMatch.teamBName) || 0,
             startDate: singleMatch.startDate,
             endDate: singleMatch.endDate,
           },
         });
       }
 
-      console.log('저장되는 게임 데이터:', games);
+      // console.log('저장되는 게임 데이터:', games);
 
       setStageGames(Number(stageId), games as Game[]);
       sessionStorage.setItem(`stageGames_${stageId}`, JSON.stringify(games));
@@ -379,13 +375,13 @@ const SetTimePage = () => {
         sessionStorage.setItem(`isConfirmed_${gameId}`, 'true');
         setTimeout(() => {
           if (stageId) {
-            // router.push(`/stage/stageId=${stageId}`);
+            router.push(`/stage/stageId=${stageId}`);
           } else {
-            // router.push(`/stage`);
+            router.push(`/stage`);
           }
         }, 100);
       } else {
-        // router.push(`/stage`);
+        router.push(`/stage`);
       }
     } catch (error) {
       console.error(error);
