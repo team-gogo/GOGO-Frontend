@@ -9,6 +9,7 @@ import {
   RightArrowIcon,
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
+import { getBettingRatio } from '@/shared/model/getBettingRatio';
 import {
   useAlarmClickStore,
   useBettingMatchArrStore,
@@ -149,6 +150,9 @@ const Match = ({ match }: MatchProps) => {
     setMatch(matchData);
   };
 
+  const totalBettingPoint =
+    (ateam?.bettingPoint ?? 0) + (bteam?.bettingPoint ?? 0);
+
   const borderStyle = [
     'border-4',
     'border-solid',
@@ -236,7 +240,7 @@ const Match = ({ match }: MatchProps) => {
             'w-full',
             'flex-col',
             'items-center',
-            isPlaying ? 'gap-[2.5rem]' : 'gap-[2rem]',
+            'gap-[2rem]',
           )}
         >
           <div
@@ -245,7 +249,7 @@ const Match = ({ match }: MatchProps) => {
             <div
               className={cn(
                 'flex',
-                isPlaying && 'hidden',
+                (isPlaying || result === null) && 'hidden',
                 'items-center',
                 'gap-[0.25rem]',
               )}
@@ -255,7 +259,7 @@ const Match = ({ match }: MatchProps) => {
                 {formatPoint(ateam?.bettingPoint + bteam?.bettingPoint)}
               </p>
             </div>
-            {isMatchFinish && result !== null && isExpired ? (
+            {isMatchFinish && result !== null ? (
               <h2 className={cn('text-h2e', 'text-white')}>
                 {winnerTeam}팀 승리
               </h2>
@@ -279,12 +283,15 @@ const Match = ({ match }: MatchProps) => {
                 >
                   <p
                     className={cn(
-                      'text-caption2s',
+                      'text-body3s',
                       'text-white',
-                      !isPlaying && 'hidden',
+                      result !== null && 'hidden',
                     )}
                   >
-                    {formatPoint(ateam?.bettingPoint)}
+                    {getBettingRatio(
+                      ateam?.bettingPoint ?? 0,
+                      totalBettingPoint,
+                    )}
                   </p>
                   <h2
                     className={cn('text-h2e', getTeamClassName(ateam?.teamId))}
@@ -304,12 +311,15 @@ const Match = ({ match }: MatchProps) => {
                 >
                   <p
                     className={cn(
-                      'text-caption2s',
+                      'text-body3s',
                       'text-white',
-                      !isPlaying && 'hidden',
+                      result !== null && 'hidden',
                     )}
                   >
-                    {formatPoint(bteam?.bettingPoint)}
+                    {getBettingRatio(
+                      bteam?.bettingPoint ?? 0,
+                      totalBettingPoint,
+                    )}
                   </p>
                   <h2
                     className={cn('text-h2e', getTeamClassName(bteam?.teamId))}
@@ -320,10 +330,7 @@ const Match = ({ match }: MatchProps) => {
               </div>
             )}
           </div>
-          {isMatchFinish &&
-          betting.isBetting &&
-          result !== null &&
-          isExpired ? (
+          {isMatchFinish && betting.isBetting && result !== null ? (
             <div
               className={cn(
                 'flex',
@@ -351,9 +358,9 @@ const Match = ({ match }: MatchProps) => {
                 )}
               >
                 {isPredictSuccess ? '+' : '-'}{' '}
-                {betting?.bettingPoint !== undefined
-                  ? formatPoint(betting.bettingPoint)
-                  : 0}
+                {isPredictSuccess
+                  ? formatPoint(Number(result.earnedPoint))
+                  : formatPoint(Number(betting.bettingPoint))}
               </p>
             </div>
           ) : isPlaying ? (

@@ -17,3 +17,4 @@ export { default as useStageStatus } from './useStageStatus';
 export { default as useSelectedGameIdStore } from './useSelectedGameIdStore';
 export { default as useTeamDetailModalStore } from './useTeamDetailModalStore';
 export { default as useTeamDetailInfoStore } from './useTeamDetailInfoStore';
+export { default as usePointTicketStore } from './usePointTicketStore';
