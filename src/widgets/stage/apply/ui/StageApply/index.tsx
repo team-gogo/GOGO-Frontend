@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { getStageMaintainer } from '@/entities/stage/api/getStageMaintainer';
 import { useTeamDetailInfoStore } from '@/shared/stores';
 import { MatchGameType } from '@/shared/types/stage/apply';
@@ -51,13 +52,18 @@ const StageApply = ({
   }, [gameId]);
 
   const handleApply = () => {
+    router.push(
+      `/team/create/${stageId}?gameId=${gameId}&category=${category}`,
+    );
+  };
+
+  const handleConfirm = () => {
     setCategory(category);
     if (isMaintainer) {
+      sessionStorage.setItem(`stageId_${gameId}`, String(stageId));
       router.push(`/team/confirm/${gameId}`);
     } else {
-      router.push(
-        `/team/create/${stageId}?matchId=${gameId}&category=${category}`,
-      );
+      toast.error('관리자만 접근할 수 있어요.');
     }
   };
 
@@ -110,18 +116,30 @@ const StageApply = ({
           <h1 className={cn('text-body1e', 'text-white', 'laptop:text-body2e')}>
             {gameName}
           </h1>
-          <div className={cn('flex', 'w-full', 'justify-center')}>
+          <div className={cn('flex', 'justify-center', 'w-full')}>
             {isConfirmed ? (
               <Button disabled={true} onClick={handleApply}>
                 확정된 경기입니다.
               </Button>
             ) : (
-              <Button
-                disabled={isParticipating && !isMaintainer}
-                onClick={handleApply}
-              >
-                {isMaintainer ? '종료하기' : '신청하기'}
-              </Button>
+              <div className={cn('flex', 'gap-[1rem]', 'w-full')}>
+                <Button
+                  className={cn('mx-10')}
+                  disabled={isParticipating && !isMaintainer}
+                  onClick={handleApply}
+                >
+                  신청하기
+                </Button>
+                {isMaintainer && (
+                  <Button
+                    className={cn('mx-10')}
+                    onClick={handleConfirm}
+                    bg="bg-[#FF4646]"
+                  >
+                    종료하기
+                  </Button>
+                )}
+              </div>
             )}
           </div>
         </div>
