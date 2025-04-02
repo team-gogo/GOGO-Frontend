@@ -915,6 +915,9 @@ const SetTimeContainer = ({
   };
 
   const isMatchTimeSet = (round: string, index: number) => {
+    if (system === GameSystem.FULL_LEAGUE) {
+      return savedMatches.some((match) => match.index === index);
+    }
     return savedMatches.some(
       (match) => match.round === round && match.index === index,
     );
