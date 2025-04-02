@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -27,6 +28,8 @@ const StageApply = ({
   const router = useRouter();
   const [isMaintainer, setIsMaintainer] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(initialIsConfirmed);
+
+  console.log(game.gameId);
 
   useEffect(() => {
     const checkMaintainer = async () => {
@@ -92,11 +95,13 @@ const StageApply = ({
         >
           <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
             <SportTypeLabel type={category} />
-            <MatchTypeLabel
-              type={'TEAM'}
-              customText={String(teamCount)}
-              color="#97A9FF"
-            />
+            <Link href={`/stage/${stageId}/teams/registered/${game.gameId}`}>
+              <MatchTypeLabel
+                type={'TEAM'}
+                customText={String(teamCount)}
+                color="#97A9FF"
+              />
+            </Link>
           </div>
         </div>
         <div
