@@ -25,7 +25,13 @@ interface CreateTeamContainerProps {
   };
 }
 
-const SUPPORTED_SPORTS = ['BASKET_BALL', 'BADMINTON', 'SOCCER', 'VOLLEY_BALL'];
+const SUPPORTED_SPORTS = [
+  'BASKET_BALL',
+  'BADMINTON',
+  'SOCCER',
+  'VOLLEY_BALL',
+  'BASE_BALL',
+];
 
 const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
   const [teamName, setTeamName] = useState('');
