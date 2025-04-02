@@ -11,6 +11,7 @@ import Matter, {
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { UseFormWatch } from 'react-hook-form';
 import { PlinkoBottomDiv, PlinkoHistory } from '@/entities/mini-game';
+import { usePointTicketStore } from '@/shared/stores';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 import { cn } from '@/shared/utils/cn';
 import { getButtonValues } from '../../model/getButtonValues';
@@ -19,15 +20,15 @@ interface PlinkoGameProps {
   watch: UseFormWatch<PlinkoFormType>;
   plinkoData: PlinkoResponse | null;
   setGameRunningCount: Dispatch<SetStateAction<number>>;
-  setPoint: Dispatch<SetStateAction<number>>;
 }
 
 const PlinkoGame = ({
   watch,
   plinkoData,
   setGameRunningCount,
-  setPoint,
 }: PlinkoGameProps) => {
+  const { point, setPoint } = usePointTicketStore();
+
   const [gameInitialized, setGameInitialized] = useState<boolean>(false);
   const [engine, setEngine] = useState<Matter.Engine | null>(null);
   const [btnClickIdxs, setBtnClickIdxs] = useState<number[]>([]);
@@ -87,7 +88,7 @@ const PlinkoGame = ({
       bodies.forEach((body) => {
         if (body.position.y > 700) {
           if (plinkoData?.amount) {
-            setPoint((prevPoint) => prevPoint + Number(plinkoData?.amount));
+            setPoint(point + Number(plinkoData?.amount));
           }
           Composite.remove(engine.world, body);
           setGameRunningCount((prev) => prev - 1);
@@ -194,7 +195,7 @@ const PlinkoGame = ({
 
   useCanvasStyleFix();
 
-  const spawnBall = (targetX: number, index: number) => {
+  const spawnBall = (targetX: number, index: number, amount: number) => {
     if (!engine) return;
 
     const ballSize = 9;
@@ -226,7 +227,7 @@ const PlinkoGame = ({
 
     setFallingOrder((prev) => [
       ...prev,
-      { id: newBall.id, index, passed550: false },
+      { id: newBall.id, index, passed550: false, amount },
     ]);
   };
 
@@ -242,7 +243,7 @@ const PlinkoGame = ({
         setBtnClickIdxs((prev) => [...prev, plinkoData.multi]);
 
         setTimeout(() => {
-          spawnBall(targetX, plinkoData.multi);
+          spawnBall(targetX, plinkoData.multi, Number(plinkoData.amount));
         }, 0);
       }
     }
