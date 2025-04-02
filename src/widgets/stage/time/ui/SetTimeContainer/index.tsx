@@ -179,35 +179,6 @@ const SetTimeContainer = ({
         savedMatches = JSON.parse(existingData);
       }
 
-      if (system === GameSystem.TOURNAMENT) {
-        const confirmedTeamsData = sessionStorage.getItem(
-          `confirmedTeams_${matchId}`,
-        );
-        const byeTeamData = sessionStorage.getItem(`threeTeamBye_${matchId}`);
-
-        if (confirmedTeamsData && byeTeamData) {
-          const confirmedTeams = JSON.parse(confirmedTeamsData);
-          const byeTeam = JSON.parse(byeTeamData);
-
-          if (confirmedTeams.length === 3 && round === '4강') {
-            const finalsMatch = savedMatches.find(
-              (match) => match.round === '결승',
-            );
-            if (!finalsMatch) {
-              savedMatches.push({
-                round: '결승',
-                index: 1,
-                startDate: startDateStr,
-                endDate: endDateStr,
-                teamAName: 'TBD',
-                teamBName: byeTeam.teamName,
-              });
-            }
-          }
-        }
-      }
-
-      // 기존 매치 저장 로직
       const matchIndex = savedMatches.findIndex(
         (match) => match.round === round && match.index === index,
       );
