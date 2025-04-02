@@ -372,11 +372,6 @@ const SetTimeContainer = ({
           totalTeamCount = allTeams.length;
         }
 
-        const teamsBySide: Record<
-          number,
-          Record<string, Record<number, string>>
-        > = {};
-
         const quarterFinals: MatchData[] = [];
         const semiFinals: MatchData[] = [];
         const finals: MatchData[] = [];
