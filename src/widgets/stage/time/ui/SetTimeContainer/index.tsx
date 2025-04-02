@@ -158,11 +158,18 @@ const SetTimeContainer = ({
     teamBName: string,
   ) => {
     try {
+      // 한국 시간(UTC+9)으로 변환
       const startDateTime = new Date(`${dateVal}T${startTimeVal}`);
       const endDateTime = new Date(`${dateVal}T${endTimeVal}`);
 
-      const startDateStr = startDateTime.toISOString();
-      const endDateStr = endDateTime.toISOString();
+      // 한국 시간으로 변환 (UTC+9)
+      const koreaTimeOffset = 9 * 60; // 한국은 UTC+9
+      const startDateStr = new Date(
+        startDateTime.getTime() + koreaTimeOffset * 60000,
+      ).toISOString();
+      const endDateStr = new Date(
+        endDateTime.getTime() + koreaTimeOffset * 60000,
+      ).toISOString();
 
       const savedMatchesKey = `savedMatches_${matchId}`;
       let savedMatches: SavedMatchData[] = [];
@@ -948,12 +955,21 @@ const SetTimeContainer = ({
       if (savedMatch) {
         const startDate = new Date(savedMatch.startDate);
         const endDate = new Date(savedMatch.endDate);
-        const formattedDate = startDate.toISOString().split('T')[0];
-        const formattedStartTime = startDate
+
+        const koreaTimeOffset = 9 * 60;
+        const koreaStartDate = new Date(
+          startDate.getTime() - koreaTimeOffset * 60000,
+        );
+        const koreaEndDate = new Date(
+          endDate.getTime() - koreaTimeOffset * 60000,
+        );
+
+        const formattedDate = koreaStartDate.toISOString().split('T')[0];
+        const formattedStartTime = koreaStartDate
           .toTimeString()
           .split(' ')[0]
           .substring(0, 5);
-        const formattedEndTime = endDate
+        const formattedEndTime = koreaEndDate
           .toTimeString()
           .split(' ')[0]
           .substring(0, 5);
