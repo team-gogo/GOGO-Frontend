@@ -34,6 +34,10 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
   const { stageId, gameId, category } = params;
 
   useEffect(() => {
+    sessionStorage.setItem(`stageId_${gameId}`, stageId);
+  }, []);
+
+  useEffect(() => {
     const fetchGameInfo = async () => {
       if (stageId) {
         const response = await getStageGame(stageId);

@@ -426,7 +426,9 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
         participants,
         gameId,
       });
-      router.push('/stage');
+      router.push(
+        `/stage/stageId=${sessionStorage.getItem(`stageId_${gameId}`)}`,
+      );
       toast.success('팀 생성이 완료되었습니다.');
     } catch (error) {
       console.error(error);
