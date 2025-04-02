@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { cn } from '@/shared/utils/cn';
-import { formatPoint } from '@/shared/utils/formatPoint';
 
 interface TemPoraryPoint {
   tempPoint: number;
@@ -62,7 +61,7 @@ const TemporaryPoint = ({ tempPoint, expiredDate }: TemPoraryPoint) => {
       )}
     >
       <p className={cn('text-body2s', 'text-white')}>
-        {formatPoint(tempPoint)}
+        {tempPoint.toLocaleString()}
       </p>
       <p
         className={cn(

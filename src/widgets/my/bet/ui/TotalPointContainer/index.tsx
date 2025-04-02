@@ -2,7 +2,7 @@ import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
 
 interface TotalPointProps {
-  point: number;
+  point: number | undefined;
 }
 
 const TotalPointContainer = ({ point }: TotalPointProps) => {
@@ -12,7 +12,7 @@ const TotalPointContainer = ({ point }: TotalPointProps) => {
       <div className={cn('flex', 'items-center', 'gap-[1rem]')}>
         <h4 className={cn('text-h4s', 'text-gray-500')}>총 포인트</h4>
         <h4 className={cn('text-h4s', 'text-main-500')}>
-          {formatPoint(point)}
+          {formatPoint(Number(point))}
         </h4>
       </div>
     </div>
