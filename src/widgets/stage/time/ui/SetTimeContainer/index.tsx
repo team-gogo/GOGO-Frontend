@@ -293,7 +293,17 @@ const SetTimeContainer = ({
           JSON.stringify(modifiedSavedMatches),
         );
       } else if (system === GameSystem.TOURNAMENT) {
-        console.log('토너먼트 savedMatches', savedMatches);
+        const modifiedSavedMatches = savedMatches.filter(
+          (match) => !(match.round === '결승' && match.index === 0),
+        );
+        console.log(
+          '이상한거 지운 후 modifiedSavedMatches',
+          modifiedSavedMatches,
+        );
+        sessionStorage.setItem(
+          savedMatchesKey,
+          JSON.stringify(modifiedSavedMatches),
+        );
       }
       formatMatchData(matchId, savedMatches);
     }
