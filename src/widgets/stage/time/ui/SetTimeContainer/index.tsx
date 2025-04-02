@@ -609,8 +609,8 @@ const SetTimeContainer = ({
 
               semiFinals.push({
                 index: 2,
-                teamAName: 'TBD',
-                teamBName: team7,
+                teamAName: team7,
+                teamBName: 'TBD',
                 round: '4강',
               });
 
