@@ -34,7 +34,7 @@ export type MatchData = {
     | 'BASE_BALL'
     | 'VOLLEY_BALL'
     | 'BADMINTON'
-    | 'LOL'
+    // | 'LOL'
     | 'ETC';
   system?: System;
   turn?: number;

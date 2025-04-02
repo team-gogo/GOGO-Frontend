@@ -6,7 +6,7 @@ const GameCategoryEnum = z.enum([
   'BASE_BALL',
   'VOLLEY_BALL',
   'BADMINTON',
-  'LOL',
+  // 'LOL',
   'ETC',
 ]);
 const GameSystemEnum = z.enum(['TOURNAMENT', 'FULL_LEAGUE', 'SINGLE']);
