@@ -7,11 +7,6 @@ export const useBettingForm = () => {
     useForm<BettingFormData>();
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
-  const bettingPoint = watch('bettingPoint');
-
-  const isDisabled =
-    !bettingPoint || !selectedTeamId || Number(bettingPoint) < 1;
-
   const onError = (errors: FieldErrors<BettingFormData>) => {
     console.log('제출에러:', errors);
   };
@@ -23,7 +18,6 @@ export const useBettingForm = () => {
     watch,
     selectedTeamId,
     setSelectedTeamId,
-    isDisabled,
     onError,
   };
 };

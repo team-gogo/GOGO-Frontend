@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { PointCircleIcon } from '@/shared/assets/svg';
 import { useMatchStore } from '@/shared/stores';
 import { BettingFormData } from '@/shared/types/main';
@@ -12,6 +13,7 @@ import SystemLabel from '@/shared/ui/systemLabel';
 import { cn } from '@/shared/utils/cn';
 import { formatBettingData } from '../../model/formatBettingData';
 import { useBettingForm } from '../../model/useBettingForm';
+import { useGetMaxMinBetPoint } from '../../model/useGetMaxMinBetPoint';
 import { usePostBettingMatch } from '../../model/usePostBettingMatch';
 import MatchTeam from '../MatchTeam';
 
@@ -22,6 +24,9 @@ interface BettingModalProps {
 const BettingModal = ({ onClose }: BettingModalProps) => {
   const { matchStatus, match } = useMatchStore();
 
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
+
   if (!match) {
     return null;
   }
@@ -29,7 +34,6 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
   const {
     register,
     handleSubmit,
-    isDisabled,
     onError,
     watch,
     setValue,
@@ -43,6 +47,14 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
     match.matchId,
     bettingPoint,
   );
+
+  const { data: maxMinPointData } = useGetMaxMinBetPoint(Number(stageId));
+
+  const isDisabled =
+    !bettingPoint ||
+    !selectedTeamId ||
+    Number(bettingPoint) > Number(maxMinPointData?.maxBettingPoint) ||
+    Number(bettingPoint) < Number(maxMinPointData?.minBettingPoint);
 
   const onSubmit = (data: BettingFormData) => {
     const formattedData = formatBettingData(data, selectedTeamId);

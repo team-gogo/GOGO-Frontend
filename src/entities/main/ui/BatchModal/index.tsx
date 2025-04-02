@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { WarningIcon } from '@/shared/assets/svg';
-import { useMatchBatchArrStore, useMatchTeamStore } from '@/shared/stores';
+import { useMatchTeamStore } from '@/shared/stores';
 import { BatchMatchType } from '@/shared/types/main';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
