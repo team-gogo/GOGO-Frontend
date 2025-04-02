@@ -27,13 +27,18 @@ const PlinkoGame = ({
   plinkoData,
   setGameRunningCount,
 }: PlinkoGameProps) => {
-  const { point, setPoint } = usePointTicketStore();
+  const { setPoint } = usePointTicketStore();
 
   const [gameInitialized, setGameInitialized] = useState<boolean>(false);
   const [engine, setEngine] = useState<Matter.Engine | null>(null);
   const [btnClickIdxs, setBtnClickIdxs] = useState<number[]>([]);
   const [fallingOrder, setFallingOrder] = useState<
-    { id: number; index: number; passed550: boolean }[]
+    {
+      amount: number;
+      id: number;
+      index: number;
+      passed550: boolean;
+    }[]
   >([]);
   const [passed550Indexes, setPassed550Indexes] = useState<number[]>([]);
   const [opacity, setOpacity] = useState(1);
@@ -85,11 +90,16 @@ const PlinkoGame = ({
     const updateBallState = () => {
       const bodies = Composite.allBodies(engine.world);
 
+      let totalAmount = 0;
+
       bodies.forEach((body) => {
         if (body.position.y > 700) {
-          if (plinkoData?.amount) {
-            setPoint(point + Number(plinkoData?.amount));
+          const fallingItem = fallingOrder.find((item) => item.id === body.id);
+
+          if (fallingItem) {
+            totalAmount += fallingItem.amount;
           }
+
           Composite.remove(engine.world, body);
           setGameRunningCount((prev) => prev - 1);
         } else if (body.position.y > 530) {
@@ -118,6 +128,10 @@ const PlinkoGame = ({
           }
         }
       });
+
+      if (totalAmount > 0) {
+        setPoint((prev) => prev + totalAmount);
+      }
     };
 
     Matter.Events.on(engine, 'afterUpdate', updateBallState);
