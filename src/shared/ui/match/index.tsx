@@ -259,7 +259,7 @@ const Match = ({ match }: MatchProps) => {
                 {formatPoint(ateam?.bettingPoint + bteam?.bettingPoint)}
               </p>
             </div>
-            {isMatchFinish && result !== null && isExpired ? (
+            {isMatchFinish && result !== null ? (
               <h2 className={cn('text-h2e', 'text-white')}>
                 {winnerTeam}팀 승리
               </h2>
@@ -330,10 +330,7 @@ const Match = ({ match }: MatchProps) => {
               </div>
             )}
           </div>
-          {isMatchFinish &&
-          betting.isBetting &&
-          result !== null &&
-          isExpired ? (
+          {isMatchFinish && betting.isBetting && result !== null ? (
             <div
               className={cn(
                 'flex',
