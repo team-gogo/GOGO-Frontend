@@ -113,7 +113,7 @@ const Match = ({ match }: MatchProps) => {
     result?.victoryTeamId === ateam?.teamId
       ? ateam?.teamName
       : result?.victoryTeamId === bteam?.teamId
-        ? ateam?.teamName
+        ? bteam?.teamName
         : '없음';
 
   const isPredictSuccess = result?.isPredictionSuccess;
@@ -266,7 +266,7 @@ const Match = ({ match }: MatchProps) => {
             </div>
             {isMatchFinish && result !== null ? (
               <h2 className={cn('text-h2e', 'text-white')}>
-                {winnerTeam}팀 승리
+                {winnerTeam} 승리
               </h2>
             ) : (
               <div
