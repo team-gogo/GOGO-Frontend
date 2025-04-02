@@ -11,9 +11,10 @@ import SportTypeLabel from '../sportTypelabel';
 
 interface TeamDetailModalProps {
   onClose: () => void;
+  isWin?: boolean;
 }
 
-const TeamDetailModal = ({ onClose }: TeamDetailModalProps) => {
+const TeamDetailModal = ({ onClose, isWin = true }: TeamDetailModalProps) => {
   const { teamId, winCount, category } = useTeamDetailInfoStore();
   const { isConfirmUsed } = useTeamDetailModalStore();
 
@@ -35,7 +36,7 @@ const TeamDetailModal = ({ onClose }: TeamDetailModalProps) => {
     >
       <div className={cn('flex', 'flex-col', 'w-full', 'gap-[1.5rem]')}>
         <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
-          {!isConfirmUsed && (
+          {isWin && !isConfirmUsed && (
             <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
               <OfficialIcon isResponsive={false} />
               <p className={cn('text-caption1s', 'text-white')}>{winCount}승</p>
