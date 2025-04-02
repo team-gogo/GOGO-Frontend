@@ -1,5 +1,4 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
-import minutesToMs from '@/shared/utils/minutesToms';
 import {
   getMaxMinBetPoint,
   GetMaxMinBetPointResponse,
@@ -18,8 +17,6 @@ export const useGetMaxMinBetPoint = (
       const [stageId] = queryKey as [number, string, string];
       return getMaxMinBetPoint(stageId);
     },
-    staleTime: minutesToMs(5),
-    gcTime: minutesToMs(5),
     ...options,
   });
 };
