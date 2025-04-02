@@ -67,25 +67,16 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
     );
 
     try {
-      let stageId = 1;
-      let foundGame = null;
-
-      while (stageId <= 1000) {
-        try {
-          const response = await getMatchApplyList(stageId);
-          const game = response.games.find(
-            (g) => g.gameId.toString() === gameId,
-          );
-          if (game) {
-            foundGame = game;
-            break;
-          }
-          stageId++;
-        } catch (error) {
-          stageId++;
-          continue;
-        }
+      const stageId = sessionStorage.getItem(`stageId_${gameId}`);
+      if (!stageId) {
+        toast.error('스테이지 정보를 찾을 수 없습니다.');
+        return;
       }
+
+      const response = await getMatchApplyList(Number(stageId));
+      const foundGame = response.games.find(
+        (g) => g.gameId.toString() === gameId,
+      );
 
       if (!foundGame) {
         toast.error('게임 정보를 찾을 수 없습니다.');

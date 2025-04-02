@@ -57,6 +57,7 @@ const StageApply = ({
   const handleConfirm = () => {
     setCategory(category);
     if (isMaintainer) {
+      sessionStorage.setItem(`stageId_${gameId}`, String(stageId));
       router.push(`/team/confirm/${gameId}`);
     } else {
       toast.error('관리자만 접근할 수 있어요.');
