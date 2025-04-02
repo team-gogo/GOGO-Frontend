@@ -364,8 +364,8 @@ const Match = ({ match }: MatchProps) => {
               >
                 {isPredictSuccess ? '+' : '-'}{' '}
                 {isPredictSuccess
-                  ? formatPoint(Number(result.earnedPoint))
-                  : formatPoint(Number(betting.bettingPoint))}
+                  ? Number(result.earnedPoint).toLocaleString()
+                  : Number(betting.bettingPoint).toLocaleString()}
               </p>
             </div>
           ) : isPlaying ? (

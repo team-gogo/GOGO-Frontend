@@ -33,7 +33,6 @@ const MyBetPage = () => {
   const { setStageId } = useMyStageIdStore();
 
   useEffect(() => {
-    console.log('userPointData:', userPointData);
     if (userPointData?.point !== undefined) {
       setPoint(userPointData.point);
     }
