@@ -45,7 +45,8 @@ const SetTimeContainer = ({
 }: SetTimeContainerProps) => {
   const { formatMatchData } = useMatchStore();
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [selectedMatch, setSelectedMatch] = useState<{
     round: string;
     index: number;
@@ -92,7 +93,7 @@ const SetTimeContainer = ({
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
-    if (selectedMatch && e.target.value && time) {
+    if (selectedMatch && e.target.value && startTime && endTime) {
       const { teamAName, teamBName } = getSelectedMatchTeams(
         selectedMatch.round,
         selectedMatch.index,
@@ -101,16 +102,17 @@ const SetTimeContainer = ({
         selectedMatch.round,
         selectedMatch.index,
         e.target.value,
-        time,
+        startTime,
+        endTime,
         teamAName,
         teamBName,
       );
     }
   };
 
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTime(e.target.value);
-    if (selectedMatch && date && e.target.value) {
+  const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStartTime(e.target.value);
+    if (selectedMatch && date && e.target.value && endTime) {
       const { teamAName, teamBName } = getSelectedMatchTeams(
         selectedMatch.round,
         selectedMatch.index,
@@ -119,6 +121,26 @@ const SetTimeContainer = ({
         selectedMatch.round,
         selectedMatch.index,
         date,
+        e.target.value,
+        endTime,
+        teamAName,
+        teamBName,
+      );
+    }
+  };
+
+  const handleEndTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEndTime(e.target.value);
+    if (selectedMatch && date && startTime && e.target.value) {
+      const { teamAName, teamBName } = getSelectedMatchTeams(
+        selectedMatch.round,
+        selectedMatch.index,
+      );
+      saveMatchTime(
+        selectedMatch.round,
+        selectedMatch.index,
+        date,
+        startTime,
         e.target.value,
         teamAName,
         teamBName,
@@ -130,14 +152,14 @@ const SetTimeContainer = ({
     round: string,
     index: number,
     dateVal: string,
-    timeVal: string,
+    startTimeVal: string,
+    endTimeVal: string,
     teamAName: string,
     teamBName: string,
   ) => {
     try {
-      const startDateTime = new Date(`${dateVal}T${timeVal}`);
-      const endDateTime = new Date(startDateTime);
-      endDateTime.setHours(endDateTime.getHours() + 2);
+      const startDateTime = new Date(`${dateVal}T${startTimeVal}`);
+      const endDateTime = new Date(`${dateVal}T${endTimeVal}`);
 
       const startDateStr = startDateTime.toISOString();
       const endDateStr = endDateTime.toISOString();
@@ -914,7 +936,8 @@ const SetTimeContainer = ({
     ) {
       setSelectedMatch(null);
       setDate('');
-      setTime('');
+      setStartTime('');
+      setEndTime('');
     } else {
       setSelectedMatch({ round, index });
 
@@ -924,17 +947,24 @@ const SetTimeContainer = ({
 
       if (savedMatch) {
         const startDate = new Date(savedMatch.startDate);
+        const endDate = new Date(savedMatch.endDate);
         const formattedDate = startDate.toISOString().split('T')[0];
-        const formattedTime = startDate
+        const formattedStartTime = startDate
+          .toTimeString()
+          .split(' ')[0]
+          .substring(0, 5);
+        const formattedEndTime = endDate
           .toTimeString()
           .split(' ')[0]
           .substring(0, 5);
 
         setDate(formattedDate);
-        setTime(formattedTime);
+        setStartTime(formattedStartTime);
+        setEndTime(formattedEndTime);
       } else {
         setDate('');
-        setTime('');
+        setStartTime('');
+        setEndTime('');
       }
     }
   };
@@ -1273,9 +1303,24 @@ const SetTimeContainer = ({
           <div className="flex-1">
             <Input
               type="time"
-              placeholder="시간을 입력해주세요"
-              value={time}
-              onChange={handleTimeChange}
+              placeholder="시작 시간을 입력해주세요"
+              value={startTime}
+              onChange={handleStartTimeChange}
+              showBorder={true}
+              onClick={(e) => {
+                const input = e.target as HTMLInputElement;
+                if (input.showPicker) {
+                  input.showPicker();
+                }
+              }}
+            />
+          </div>
+          <div className="flex-1">
+            <Input
+              type="time"
+              placeholder="끝나는 시간을 입력해주세요"
+              value={endTime}
+              onChange={handleEndTimeChange}
               showBorder={true}
               onClick={(e) => {
                 const input = e.target as HTMLInputElement;
