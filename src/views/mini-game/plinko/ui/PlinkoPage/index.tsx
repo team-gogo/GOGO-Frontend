@@ -1,31 +1,44 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { usePointTicketStore } from '@/shared/stores';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { formatPlinkoData } from '@/views/mini-game/model/formatPlinkoData';
+import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
+import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { usePlinkoForm } from '@/views/mini-game/model/usePlinkoForm';
 import { usePostPlinkoGame } from '@/views/mini-game/model/usePostPlinkoGame';
 import { PlinkoGame, PlinkoInputBox } from '@/widgets/mini-game';
 
 const PlinkoPage = () => {
+  const params = useParams<{ boardId: string; stageId: string }>();
+  const { stageId } = params;
+
+  const { point, setPoint, ticket, setTicket } = usePointTicketStore();
+
   const [plinkoData, setPlinkoData] = useState<PlinkoResponse | null>(null);
   const [gameRunningCount, setGameRunningCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [point, setPoint] = useState<number>(0);
-  const [ticket, setTicket] = useState<number>(0);
 
-  const pathname = usePathname();
+  const { data: myPoint } = useGetMyPointQuery(String(stageId));
+  const { data: myTicket } = useGetMyTicketQuery(String(stageId));
 
-  const match = pathname.match(/\/mini-game\/([^/]+)\/plinko/);
-  const stageId = match ? match[1] : null;
+  useEffect(() => {
+    if (myPoint !== undefined && myPoint !== null) {
+      setPoint(myPoint.point || 0);
+    }
+
+    if (myTicket !== undefined && myTicket !== null) {
+      setTicket(myTicket.plinko || 0);
+    }
+  }, [myPoint, myTicket]);
 
   const {
     register,
     handleSubmit,
-    isDisabled,
     watch,
     onError,
     setValue,
@@ -34,18 +47,17 @@ const PlinkoPage = () => {
   } = usePlinkoForm();
 
   const amount = watch('amount');
+  const risk = watch('risk');
 
-  const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId));
+  const isDisabled = !!(!amount || !risk || ticket === 0 || amount > point);
+
+  const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId), amount);
 
   const onSubmit = (data: PlinkoFormType) => {
     if (isLoading) return;
 
     setIsLoading(true);
     const formattedData = formatPlinkoData(data, selectedRisk);
-
-    const updatedPoint = point - amount;
-    setPoint(updatedPoint);
-    setTicket((prev) => prev - 1);
 
     PostPlinko(formattedData, {
       onSuccess: (response: PlinkoResponse) => {
@@ -58,17 +70,6 @@ const PlinkoPage = () => {
       },
     });
   };
-
-  const storedTicketCount = sessionStorage.getItem('ticketCount');
-  const ticketCount = storedTicketCount ? JSON.parse(storedTicketCount) : null;
-
-  const storeMyPoint = sessionStorage.getItem('myPoint');
-  const myPoint = storeMyPoint ? JSON.parse(storeMyPoint) : null;
-
-  useEffect(() => {
-    setPoint(myPoint.point);
-    setTicket(ticketCount.plinko);
-  }, []);
 
   return (
     <div
@@ -112,7 +113,6 @@ const PlinkoPage = () => {
             watch={watch}
             plinkoData={plinkoData}
             setGameRunningCount={setGameRunningCount}
-            setPoint={setPoint}
           />
         </div>
       </div>

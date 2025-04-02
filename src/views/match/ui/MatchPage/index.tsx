@@ -1,5 +1,7 @@
 'use client';
 
+import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { DateContainer, BettingModal } from '@/entities/main';
 import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
@@ -8,15 +10,17 @@ import {
   useBatchModalStore,
   useCheckAgainModalStore,
   useMatchModalStore,
+  useSelectDateStore,
 } from '@/shared/stores';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
-import { getMatchInfo } from '@/views/main';
+import { useGetSearchMatch } from '@/views/main/model/useGetSearchMatch';
 import { MatchContainer } from '@/widgets/my';
 import { MatchFilterHeader } from '@/widgets/stage/apply';
 
 const MatchPage = () => {
-  const matchInfo = getMatchInfo();
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
 
   const { selectedSport, toggleSportSelection } = useSelectSport();
 
@@ -24,6 +28,24 @@ const MatchPage = () => {
   const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
   const { isCheckAgainModalOpen, setIsCheckAgainModalOpen } =
     useCheckAgainModalStore();
+  const { selectDate, setSelectDate } = useSelectDateStore();
+
+  useEffect(() => {
+    setSelectDate('');
+  }, [stageId]);
+
+  const today = new Date();
+
+  const [year, month, day] = selectDate
+    ? selectDate.split('-').map(Number)
+    : [today.getFullYear(), today.getMonth() + 1, today.getDate()];
+
+  const { data: searchMatchData } = useGetSearchMatch(
+    Number(stageId),
+    year,
+    month,
+    day,
+  );
 
   return (
     <div
@@ -57,7 +79,10 @@ const MatchPage = () => {
             />
             <DateContainer />
           </div>
-          <MatchContainer matchInfo={matchInfo} selectedSport={selectedSport} />
+          <MatchContainer
+            matchInfo={searchMatchData}
+            selectedSport={selectedSport}
+          />
         </div>
       </div>
       {isMatchModalOpen && (

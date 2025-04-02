@@ -2,24 +2,20 @@ import axios from 'axios';
 import clientInstance from '@/shared/api/clientInstance';
 import { PostStageRequest } from '@/shared/types/stage/game';
 
-export const postStage = async (
-  stageId: number,
-  data: PostStageRequest,
-  system: string,
-) => {
+export const postStage = async (stageId: number, data: PostStageRequest) => {
   try {
     const games = data.games.map((game) => {
-      if (system === 'single') {
+      if (game.system === 'SINGLE') {
         return {
           gameId: game.gameId,
           single: game.single,
         };
-      } else if (system === 'tournament') {
+      } else if (game.system === 'TOURNAMENT') {
         return {
           gameId: game.gameId,
           tournament: game.tournament,
         };
-      } else if (system === 'fullLeague') {
+      } else if (game.system === 'FULL_LEAGUE') {
         return {
           gameId: game.gameId,
           fullLeague: game.fullLeague,

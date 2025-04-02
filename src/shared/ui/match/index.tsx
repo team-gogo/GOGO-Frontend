@@ -9,11 +9,13 @@ import {
   RightArrowIcon,
 } from '@/shared/assets/svg';
 import PointCircleIcon from '@/shared/assets/svg/PointCircleIcon';
+import { getBettingRatio } from '@/shared/model/getBettingRatio';
 import {
   useAlarmClickStore,
   useBettingMatchArrStore,
   useMatchBatchArrStore,
   useMatchModalStore,
+  useMatchNoticeStore,
   useMatchStore,
   useMyStageIdStore,
 } from '@/shared/stores';
@@ -50,6 +52,7 @@ const Match = ({ match }: MatchProps) => {
   const { setMatchStatus, setMatch } = useMatchStore();
   const { stageId } = useMyStageIdStore();
   const { matchBatchArr } = useMatchBatchArrStore();
+  const { matchNoticeArr } = useMatchNoticeStore();
   const { bettingMatchArr } = useBettingMatchArrStore();
   const { isAlarmClicked, setIsAlarmClicked } = useAlarmClickStore();
 
@@ -64,10 +67,14 @@ const Match = ({ match }: MatchProps) => {
   const isStageAdmin = adminIdxArr.includes(stageId);
 
   const matchItem = matchBatchArr.find((item) => item.matchId === matchId);
+  const noticeItem = matchNoticeArr.find((item) => item.matchId === matchId);
+
   const isBatchEnd = matchItem ? matchItem.isEnd : false;
   const bettingMatch = bettingMatchArr.find((item) => item.matchId === matchId);
   const alreadyBetting = bettingMatch !== undefined;
   const bettingPoint = bettingMatch?.bettingPoint ?? 0;
+
+  const isMatchNoticeChecked = noticeItem ? noticeItem?.isNotice : false;
 
   // if (matchItem) {
   //   console.log(`Match ID: ${matchItem.matchId}, isEnd: ${isBatchEnd}`);
@@ -105,7 +112,7 @@ const Match = ({ match }: MatchProps) => {
   const winnerTeam =
     result?.victoryTeamId === ateam?.teamId
       ? ateam?.teamName
-      : result?.victoryTeamId === ateam?.teamId
+      : result?.victoryTeamId === bteam?.teamId
         ? ateam?.teamName
         : '없음';
 
@@ -147,6 +154,9 @@ const Match = ({ match }: MatchProps) => {
     setMatchStatus(matchStatusData);
     setMatch(matchData);
   };
+
+  const totalBettingPoint =
+    (ateam?.bettingPoint ?? 0) + (bteam?.bettingPoint ?? 0);
 
   const borderStyle = [
     'border-4',
@@ -195,7 +205,7 @@ const Match = ({ match }: MatchProps) => {
                 patchNotice({ isNotice: isAlarmClicked });
               }}
             >
-              {isAlarmClicked ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
+              {isMatchNoticeChecked ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
             </button>
             <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
               <SystemLabel
@@ -235,7 +245,7 @@ const Match = ({ match }: MatchProps) => {
             'w-full',
             'flex-col',
             'items-center',
-            isPlaying ? 'gap-[2.5rem]' : 'gap-[2rem]',
+            'gap-[2rem]',
           )}
         >
           <div
@@ -244,7 +254,7 @@ const Match = ({ match }: MatchProps) => {
             <div
               className={cn(
                 'flex',
-                isPlaying && 'hidden',
+                (isPlaying || result === null) && 'hidden',
                 'items-center',
                 'gap-[0.25rem]',
               )}
@@ -254,7 +264,7 @@ const Match = ({ match }: MatchProps) => {
                 {formatPoint(ateam?.bettingPoint + bteam?.bettingPoint)}
               </p>
             </div>
-            {isMatchFinish && isBatchEnd ? (
+            {isMatchFinish && result !== null ? (
               <h2 className={cn('text-h2e', 'text-white')}>
                 {winnerTeam}팀 승리
               </h2>
@@ -278,12 +288,15 @@ const Match = ({ match }: MatchProps) => {
                 >
                   <p
                     className={cn(
-                      'text-caption2s',
+                      'text-body3s',
                       'text-white',
-                      !isPlaying && 'hidden',
+                      result !== null && 'hidden',
                     )}
                   >
-                    {formatPoint(ateam?.bettingPoint)}
+                    {getBettingRatio(
+                      ateam?.bettingPoint ?? 0,
+                      totalBettingPoint,
+                    )}
                   </p>
                   <h2
                     className={cn('text-h2e', getTeamClassName(ateam?.teamId))}
@@ -303,12 +316,15 @@ const Match = ({ match }: MatchProps) => {
                 >
                   <p
                     className={cn(
-                      'text-caption2s',
+                      'text-body3s',
                       'text-white',
-                      !isPlaying && 'hidden',
+                      result !== null && 'hidden',
                     )}
                   >
-                    {formatPoint(bteam?.bettingPoint)}
+                    {getBettingRatio(
+                      bteam?.bettingPoint ?? 0,
+                      totalBettingPoint,
+                    )}
                   </p>
                   <h2
                     className={cn('text-h2e', getTeamClassName(bteam?.teamId))}
@@ -319,7 +335,7 @@ const Match = ({ match }: MatchProps) => {
               </div>
             )}
           </div>
-          {isMatchFinish && isBatchEnd && betting.isBetting ? (
+          {isMatchFinish && betting.isBetting && result !== null ? (
             <div
               className={cn(
                 'flex',
@@ -347,9 +363,9 @@ const Match = ({ match }: MatchProps) => {
                 )}
               >
                 {isPredictSuccess ? '+' : '-'}{' '}
-                {betting?.bettingPoint !== undefined
-                  ? formatPoint(betting.bettingPoint)
-                  : 0}
+                {isPredictSuccess
+                  ? formatPoint(Number(result.earnedPoint))
+                  : formatPoint(Number(betting.bettingPoint))}
               </p>
             </div>
           ) : isPlaying ? (

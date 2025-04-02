@@ -10,7 +10,6 @@ export async function refreshAccessToken(
     });
 
     const { accessToken, refreshToken: newRefreshToken } = response.data;
-
     setAuthCookies(accessToken, newRefreshToken);
 
     return { accessToken, refreshToken: newRefreshToken };

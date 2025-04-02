@@ -1,10 +1,48 @@
+'use client';
+
+import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { useGetStageGameQuery } from '@/entities/community/model/useGetStageGameQuery';
+import {
+  useSelectedGameIdStore,
+  useTeamDetailInfoStore,
+  useTeamDetailModalStore,
+} from '@/shared/stores';
 import BackPageButton from '@/shared/ui/backPageButton';
+import TeamDetailModal from '@/shared/ui/teamDetailModal';
 import { cn } from '@/shared/utils/cn';
+import { useGetTeamInfo } from '@/views/match/model/useGetTeamInfo';
 import { MatchNameContainer, TeamListContainer } from '@/widgets/match';
-import getTeamList from '../Mock/getTeamList';
 
 const MatchTeamPage = () => {
-  const { team } = getTeamList();
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
+
+  const { data: gameData } = useGetStageGameQuery(stageId);
+
+  const { selectedGameId, setSelectedGameId } = useSelectedGameIdStore();
+  const { isTeamDetailModalOpen, setIsTeamDetailModalOpen } =
+    useTeamDetailModalStore();
+  const { setCategory } = useTeamDetailInfoStore();
+
+  useEffect(() => {
+    if (gameData) {
+      setSelectedGameId(gameData.games[0].gameId);
+    }
+  }, [gameData]);
+
+  useEffect(() => {
+    if (!gameData?.games || !selectedGameId) return;
+
+    const selectedGame = gameData.games.find(
+      (game) => game.gameId === Number(selectedGameId),
+    );
+    if (selectedGame) {
+      setCategory(selectedGame.category);
+    }
+  }, [gameData, selectedGameId, setCategory]);
+
+  const { data: teamInfoData } = useGetTeamInfo(Number(selectedGameId));
 
   return (
     <div
@@ -29,11 +67,14 @@ const MatchTeamPage = () => {
       >
         <BackPageButton />
         <div className={cn('flex', 'w-full', 'gap-[1.5rem]', 'flex-col')}>
-          <MatchNameContainer />
+          <MatchNameContainer gameData={gameData} />
 
-          <TeamListContainer teams={team} />
+          <TeamListContainer teams={teamInfoData} />
         </div>
       </div>
+      {isTeamDetailModalOpen && (
+        <TeamDetailModal onClose={() => setIsTeamDetailModalOpen(false)} />
+      )}
     </div>
   );
 };

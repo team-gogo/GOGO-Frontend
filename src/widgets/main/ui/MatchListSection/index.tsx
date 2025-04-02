@@ -1,16 +1,22 @@
+import { useRouter } from 'next/navigation';
 import { RightArrowIcon } from '@/shared/assets/svg';
-import { StageInMatchResponse } from '@/shared/types/main';
+import { useSelectedGameIdStore } from '@/shared/stores';
+import { ResponseStageGame } from '@/shared/types/community';
 import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
 
 interface MatchListSectionProps {
-  stageInMatch: StageInMatchResponse;
+  stageInMatch: ResponseStageGame | undefined;
+  stageId: string;
 }
 
-const MatchListSection = ({ stageInMatch }: MatchListSectionProps) => {
+const MatchListSection = ({ stageInMatch, stageId }: MatchListSectionProps) => {
+  const { setSelectedGameId } = useSelectedGameIdStore();
+  const { push } = useRouter();
+
   return (
     <div className={cn('flex', 'w-full', 'gap-[1rem]', 'flex-col')}>
-      {stageInMatch.games.slice(0, 4).map((game) => (
+      {stageInMatch?.games.slice(0, 4).map((game) => (
         <div
           key={game.gameId}
           className={cn(
@@ -32,7 +38,13 @@ const MatchListSection = ({ stageInMatch }: MatchListSectionProps) => {
               isMainUsed={true}
             />
             <p className={cn('text-body3s', 'text-white')}>{game.gameName}</p>
-            <button className={cn('flex', 'gap-[0.5rem]', 'items-center')}>
+            <button
+              className={cn('flex', 'gap-[0.5rem]', 'items-center')}
+              onClick={() => {
+                setSelectedGameId(game.gameId);
+                push(`/match/team/${stageId}`);
+              }}
+            >
               <p className={cn('text-caption1s', 'text-gray-300')}>
                 자세히보기
               </p>

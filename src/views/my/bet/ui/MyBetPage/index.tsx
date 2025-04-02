@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { BettingModal } from '@/entities/main';
 import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
@@ -9,6 +9,7 @@ import {
   useBatchModalStore,
   useCheckAgainModalStore,
   useMatchModalStore,
+  useMyStageIdStore,
   usePointStore,
 } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
@@ -22,21 +23,25 @@ import {
 } from '@/widgets/my/bet';
 
 const MyBetPage = () => {
-  const searchParams = useSearchParams();
-
-  const stageId = searchParams.get('stageId');
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
 
   const { data: userPointData } = useGetUserStagePoint(Number(stageId));
   const { data: myMatchData } = useGetMyBettingMatch(Number(stageId));
   const { data: myTempPoint } = useGetMyTempPoint(Number(stageId));
 
   const { point, setPoint } = usePointStore();
+  const { setStageId } = useMyStageIdStore();
 
   useEffect(() => {
     if (userPointData?.point) {
       setPoint(userPointData.point);
     }
   }, [userPointData]);
+
+  useEffect(() => {
+    setStageId(Number(stageId));
+  }, []);
 
   const { isMatchModalOpen, setIsMatchModalOpen } = useMatchModalStore();
   const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
@@ -66,7 +71,7 @@ const MyBetPage = () => {
       >
         <div className={cn('w-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
           <TotalPointContainer point={point} />
-          <PointContainer tempPoint={myTempPoint} />
+          <PointContainer tempPoint={myTempPoint} stageId={stageId} />
         </div>
         <MatchContainer matchInfo={myMatchData} isMyBetInfo={true} />
       </div>

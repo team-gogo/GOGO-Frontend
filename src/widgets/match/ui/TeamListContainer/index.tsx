@@ -3,17 +3,24 @@ import {
   RightArrowIcon,
   TeamCountIcon,
 } from '@/shared/assets/svg';
-import { Team } from '@/shared/types/match';
+import {
+  useTeamDetailInfoStore,
+  useTeamDetailModalStore,
+} from '@/shared/stores';
+import { TeamListResponse } from '@/shared/types/match';
 import { cn } from '@/shared/utils/cn';
 
 interface TeamListContainerProps {
-  teams: Team[];
+  teams: TeamListResponse | undefined;
 }
 
 const TeamListContainer = ({ teams }: TeamListContainerProps) => {
+  const { setIsTeamDetailModalOpen } = useTeamDetailModalStore();
+  const { setTeamId, setWinCount } = useTeamDetailInfoStore();
+
   return (
     <div className={cn('flex', 'flex-col', 'w-full', 'gap-[1.25rem]')}>
-      {teams.map((team) => (
+      {teams?.team.map((team) => (
         <div
           key={team.teamId}
           className={cn(
@@ -41,7 +48,14 @@ const TeamListContainer = ({ teams }: TeamListContainerProps) => {
                   {team.participantCount}명
                 </p>
               </div>
-              <button className={cn('flex', 'gap-[0.5rem]', 'items-center')}>
+              <button
+                className={cn('flex', 'gap-[0.5rem]', 'items-center')}
+                onClick={() => {
+                  setTeamId(team.teamId);
+                  setWinCount(team.winCount);
+                  setIsTeamDetailModalOpen(true);
+                }}
+              >
                 <p className={cn('text-caption1s', 'text-gray-300')}>
                   자세히보기
                 </p>

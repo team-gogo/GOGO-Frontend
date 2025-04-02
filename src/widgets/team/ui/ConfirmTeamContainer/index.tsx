@@ -7,32 +7,41 @@ import { getTempTeam } from '@/entities/team/api/getTempTeam';
 import SelectedTeamCounter from '@/entities/team/ui/SelectedTeamCounter';
 import TeamItem from '@/entities/team/ui/TeamItem';
 import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
+import {
+  useTeamDetailInfoStore,
+  useTeamDetailModalStore,
+} from '@/shared/stores';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
+import { getMatchApplyList } from '@/views/stage/apply/api/getMatchApplyList';
 
 interface ConfirmTeamContainerProps {
   params: {
-    matchId: string;
+    gameId: string;
   };
 }
 
 const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
+  const { setTeamId } = useTeamDetailInfoStore();
+  const { setIsTeamDetailModalOpen, setIsConfirmUsed } =
+    useTeamDetailModalStore();
+
   const [selectedTeamIds, setSelectedTeamIds] = useState<number[]>([]);
   const [teams, setTeams] = useState<
     Array<{ teamId: number; teamName: string; participantCount: number }>
   >([]);
-  const { matchId } = params;
+  const { gameId } = params;
   const router = useRouter();
 
   useEffect(() => {
     const fetchTeams = async () => {
-      if (!matchId) {
+      if (!gameId) {
         toast.error('게임 정보가 없습니다.');
         return;
       }
 
       try {
-        const response = await getTempTeam(matchId);
+        const response = await getTempTeam(gameId);
         setTeams(response.team);
       } catch (error) {
         console.error(error);
@@ -40,27 +49,71 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
       }
     };
     fetchTeams();
-  }, [matchId]);
+  }, [gameId]);
 
   const handleViewDetails = useCallback((_teamId: number) => {
-    router.push(`/match/${matchId}`);
+    setTeamId(_teamId);
+    setIsConfirmUsed(true);
+    setIsTeamDetailModalOpen(true);
   }, []);
 
-  const handleConfirmTeam = useCallback(() => {
-    if (selectedTeamIds.length < 3) {
-      toast.error('최소 3개 이상의 팀을 선택해주세요.');
-      return;
-    }
-
+  const handleConfirmTeam = useCallback(async () => {
     const selectedTeams = teams.filter((team) =>
       selectedTeamIds.includes(team.teamId),
     );
     sessionStorage.setItem(
-      `confirmedTeams_${matchId}`,
+      `confirmedTeams_${gameId}`,
       JSON.stringify(selectedTeams),
     );
-    router.push(`/stage/bracket?matchId=${matchId}`);
-  }, [teams, selectedTeamIds, router, matchId]);
+
+    try {
+      const stageId = sessionStorage.getItem(`stageId_${gameId}`);
+      if (!stageId) {
+        toast.error('스테이지 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      const response = await getMatchApplyList(Number(stageId));
+      const foundGame = response.games.find(
+        (g) => g.gameId.toString() === gameId,
+      );
+
+      if (!foundGame) {
+        toast.error('게임 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      if (foundGame.system === 'TOURNAMENT') {
+        if (selectedTeamIds.length < 2 || selectedTeamIds.length > 8) {
+          toast.error('3개 이상 8개 이하의 팀을 선택해주세요.');
+          return;
+        } else {
+          router.push(
+            `/stage/bracket?gameId=${gameId}&system=${foundGame.system}`,
+          );
+        }
+      } else if (
+        foundGame.system === 'FULL_LEAGUE' ||
+        foundGame.system === 'SINGLE'
+      ) {
+        if (selectedTeamIds.length < 2) {
+          toast.error('최소 2개 이상의 팀을 선택해주세요.');
+          return;
+        } else {
+          sessionStorage.setItem(
+            `confirmedTeams_${gameId}`,
+            JSON.stringify(selectedTeams),
+          );
+          router.push(
+            `/stage/time?gameId=${gameId}&system=${foundGame.system}`,
+          );
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('게임 정보를 불러오는데 실패했습니다.');
+    }
+  }, [teams, selectedTeamIds, router, gameId]);
 
   const handleToggleSelect = useCallback((teamId: number) => {
     setSelectedTeamIds((prev) => {

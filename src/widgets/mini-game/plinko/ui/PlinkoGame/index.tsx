@@ -11,6 +11,7 @@ import Matter, {
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { UseFormWatch } from 'react-hook-form';
 import { PlinkoBottomDiv, PlinkoHistory } from '@/entities/mini-game';
+import { usePointTicketStore } from '@/shared/stores';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 import { cn } from '@/shared/utils/cn';
 import { getButtonValues } from '../../model/getButtonValues';
@@ -19,20 +20,25 @@ interface PlinkoGameProps {
   watch: UseFormWatch<PlinkoFormType>;
   plinkoData: PlinkoResponse | null;
   setGameRunningCount: Dispatch<SetStateAction<number>>;
-  setPoint: Dispatch<SetStateAction<number>>;
 }
 
 const PlinkoGame = ({
   watch,
   plinkoData,
   setGameRunningCount,
-  setPoint,
 }: PlinkoGameProps) => {
+  const { setPoint } = usePointTicketStore();
+
   const [gameInitialized, setGameInitialized] = useState<boolean>(false);
   const [engine, setEngine] = useState<Matter.Engine | null>(null);
   const [btnClickIdxs, setBtnClickIdxs] = useState<number[]>([]);
   const [fallingOrder, setFallingOrder] = useState<
-    { id: number; index: number; passed550: boolean }[]
+    {
+      amount: number;
+      id: number;
+      index: number;
+      passed550: boolean;
+    }[]
   >([]);
   const [passed550Indexes, setPassed550Indexes] = useState<number[]>([]);
   const [opacity, setOpacity] = useState(1);
@@ -84,8 +90,16 @@ const PlinkoGame = ({
     const updateBallState = () => {
       const bodies = Composite.allBodies(engine.world);
 
+      let totalAmount = 0;
+
       bodies.forEach((body) => {
         if (body.position.y > 700) {
+          const fallingItem = fallingOrder.find((item) => item.id === body.id);
+
+          if (fallingItem) {
+            totalAmount += fallingItem.amount;
+          }
+
           Composite.remove(engine.world, body);
           setGameRunningCount((prev) => prev - 1);
         } else if (body.position.y > 530) {
@@ -104,16 +118,6 @@ const PlinkoGame = ({
             setFallingOrder((prev) => {
               const updatedFallingOrder = prev.map((item) => {
                 if (item.id === body.id && !item.passed550) {
-                  if (plinkoData?.amount) {
-                    console.log(plinkoData.amount);
-
-                    if (!item.passed550) {
-                      setPoint(
-                        (prevPoint) =>
-                          prevPoint + Number(plinkoData?.amount / 2),
-                      );
-                    }
-                  }
                   return { ...item, passed550: true };
                 }
                 return item;
@@ -124,6 +128,10 @@ const PlinkoGame = ({
           }
         }
       });
+
+      if (totalAmount > 0) {
+        setPoint((prev) => prev + totalAmount);
+      }
     };
 
     Matter.Events.on(engine, 'afterUpdate', updateBallState);
@@ -201,7 +209,7 @@ const PlinkoGame = ({
 
   useCanvasStyleFix();
 
-  const spawnBall = (targetX: number, index: number) => {
+  const spawnBall = (targetX: number, index: number, amount: number) => {
     if (!engine) return;
 
     const ballSize = 9;
@@ -233,7 +241,7 @@ const PlinkoGame = ({
 
     setFallingOrder((prev) => [
       ...prev,
-      { id: newBall.id, index, passed550: false },
+      { id: newBall.id, index, passed550: false, amount },
     ]);
   };
 
@@ -249,7 +257,7 @@ const PlinkoGame = ({
         setBtnClickIdxs((prev) => [...prev, plinkoData.multi]);
 
         setTimeout(() => {
-          spawnBall(targetX, plinkoData.multi);
+          spawnBall(targetX, plinkoData.multi, Number(plinkoData.amount));
         }, 0);
       }
     }

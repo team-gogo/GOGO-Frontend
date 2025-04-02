@@ -19,6 +19,7 @@ interface PassCodeType {
 
 const PasswordModal = ({ onClose }: PasswordModalProps) => {
   const { clickedStageId } = usePasswordModalStore();
+
   const { mutate: PostPassCode } = usePostPassCode(clickedStageId);
   const { register, handleSubmit, watch } = useForm<PassCodeType>();
 

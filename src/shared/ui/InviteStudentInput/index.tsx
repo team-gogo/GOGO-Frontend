@@ -56,6 +56,10 @@ const InviteStudentInput = forwardRef<InviteStudentInputRef, Props>(
     };
 
     const handleCloseModal = () => {
+      setValue(
+        'maintainer',
+        selectedStudents.map((student) => student.studentId),
+      );
       setIsModalOpen(false);
     };
 

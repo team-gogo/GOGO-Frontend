@@ -11,7 +11,7 @@ const PageTitleBar = () => {
 
   return (
     <div className={cn('flex', 'items-center', 'gap-24')}>
-      <button onClick={handleBackClick}>
+      <button type="button" onClick={handleBackClick}>
         <LeftArrow />
       </button>
       <h1 className={cn('text-h4s', 'text-white')}>커뮤니티 생성하기</h1>
