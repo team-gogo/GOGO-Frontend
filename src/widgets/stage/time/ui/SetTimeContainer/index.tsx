@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import MatchItem from '@/entities/stage/time/ui/MatchItem';
+import MatchSection from '@/entities/stage/time/ui/MatchSection';
 import { GameSystem } from '@/shared/types/stage/game';
 import Input from '@/shared/ui/input';
 import { useMatchStore } from '@/store/matchStore';
@@ -923,50 +924,6 @@ const SetTimeContainer = ({
     );
   };
 
-  const renderMatchSection = (title: string, matchList: MatchData[]) => (
-    <div className="flex w-1/3 flex-col gap-20 rounded-lg border border-gray-500 bg-gray-700 p-6">
-      <h2 className="text-center text-h4s text-white">{title}</h2>
-      <div className="flex flex-col items-center gap-10">
-        {matchList.length > 0 ? (
-          matchList
-            .filter(
-              (match) =>
-                !(
-                  (finalStage === 8 &&
-                    match.round === '8강' &&
-                    match.teamBName === 'TBD' &&
-                    match.teamAName === 'TBD') ||
-                  (finalStage === 4 &&
-                    match.round === '4강' &&
-                    match.teamBName === 'TBD' &&
-                    match.teamAName === 'TBD')
-                ),
-            )
-            .map((match) => (
-              <div key={`${match.round}-${match.index}`} className="relative">
-                <MatchItem
-                  index={match.index}
-                  teamAName={match.teamAName}
-                  teamBName={
-                    match.teamBName === '부전승'
-                      ? `${match.teamAName}(부전승)`
-                      : match.teamBName
-                  }
-                  teamAId={teamIds[match.teamAName]}
-                  teamBId={teamIds[match.teamBName]}
-                  selected={isMatchSelected(match.round, match.index)}
-                  solved={!isMatchTimeSet(match.round, match.index)}
-                  onClick={() => handleMatchSelect(match.round, match.index)}
-                />
-              </div>
-            ))
-        ) : (
-          <div className="text-center text-gray-400">경기 없음</div>
-        )}
-      </div>
-    </div>
-  );
-
   const renderSections = () => {
     if (system === GameSystem.SINGLE) {
       return (
@@ -1203,9 +1160,33 @@ const SetTimeContainer = ({
     } else {
       return (
         <>
-          {renderMatchSection('8강', matches.quarterFinals)}
-          {renderMatchSection('4강', matches.semiFinals)}
-          {renderMatchSection('결승', matches.finals)}
+          <MatchSection
+            title="8강"
+            matchList={matches.quarterFinals}
+            finalStage={finalStage}
+            teamIds={teamIds}
+            onMatchSelect={handleMatchSelect}
+            isMatchSelected={isMatchSelected}
+            isMatchTimeSet={isMatchTimeSet}
+          />
+          <MatchSection
+            title="4강"
+            matchList={matches.semiFinals}
+            finalStage={finalStage}
+            teamIds={teamIds}
+            onMatchSelect={handleMatchSelect}
+            isMatchSelected={isMatchSelected}
+            isMatchTimeSet={isMatchTimeSet}
+          />
+          <MatchSection
+            title="결승"
+            matchList={matches.finals}
+            finalStage={finalStage}
+            teamIds={teamIds}
+            onMatchSelect={handleMatchSelect}
+            isMatchSelected={isMatchSelected}
+            isMatchTimeSet={isMatchTimeSet}
+          />
         </>
       );
     }
