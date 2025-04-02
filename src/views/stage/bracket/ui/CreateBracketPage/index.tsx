@@ -11,24 +11,24 @@ import { Bracket } from '@/widgets/stage/bracket';
 const CreateBracketPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const matchId = parseInt(searchParams.get('matchId') || '0', 10);
+  const gameId = parseInt(searchParams.get('gameId') || '0', 10);
   const isConfirmNavigationRef = useRef(false);
 
   useEffect(() => {
     return () => {
       if (!isConfirmNavigationRef.current) {
-        sessionStorage.removeItem(`placedTeams_${matchId}`);
+        sessionStorage.removeItem(`placedTeams_${gameId}`);
       }
     };
-  }, [matchId]);
+  }, [gameId]);
 
   const handleConfirmClick = () => {
     isConfirmNavigationRef.current = true;
-    router.push(`/stage/time?matchId=${matchId}`);
+    router.push(`/stage/time?gameId=${gameId}&system=TOURNAMENT`);
   };
 
   const handleBackClick = () => {
-    sessionStorage.removeItem(`placedTeams_${matchId}`);
+    sessionStorage.removeItem(`placedTeams_${gameId}`);
     router.back();
   };
 
@@ -53,7 +53,7 @@ const CreateBracketPage = () => {
           />
         </div>
 
-        <Bracket matchId={matchId} />
+        <Bracket />
         <div className={cn('p-30', 'mt-28')}>
           <Button onClick={handleConfirmClick}>확인</Button>
         </div>

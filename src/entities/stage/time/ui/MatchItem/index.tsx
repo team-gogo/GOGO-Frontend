@@ -4,6 +4,8 @@ interface MatchItemProps {
   index: number;
   teamAName: string;
   teamBName: string;
+  teamAId: number;
+  teamBId: number;
   selected: boolean;
   solved: boolean;
   onClick?: () => void;

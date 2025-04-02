@@ -5,7 +5,7 @@ interface SingleGame {
   endDate: string;
 }
 
-interface TournamentGame {
+interface TournamentGame extends Omit<SingleGame, 'teamAId' | 'teamBId'> {
   teamAId?: number;
   teamBId?: number;
   round:
@@ -15,27 +15,34 @@ interface TournamentGame {
     | 'SEMI_FINALS'
     | 'FINALS';
   turn: number;
-  startDate: string;
-  endDate: string;
 }
 
-interface FullLeagueGame {
-  teamAId: number;
-  teamBId: number;
+interface FullLeagueGame extends SingleGame {
   leagueTurn: number;
-  startDate: string;
-  endDate: string;
 }
 
-interface Game {
+export interface Game {
   gameId: number;
+  system: GameSystem;
   single?: SingleGame;
   tournament?: TournamentGame[];
   fullLeague?: FullLeagueGame[];
 }
 
-interface PostStageRequest {
+export interface PostStageRequest {
   games: Game[];
 }
 
-export type { Game, PostStageRequest };
+export const GameSystem = {
+  TOURNAMENT: 'TOURNAMENT',
+  FULL_LEAGUE: 'FULL_LEAGUE',
+  SINGLE: 'SINGLE',
+} as const;
+
+export type GameSystem = (typeof GameSystem)[keyof typeof GameSystem];
+
+export const GAME_SYSTEM_VALUES = Object.values(GameSystem);
+
+export const isValidGameSystem = (value: string): value is GameSystem => {
+  return GAME_SYSTEM_VALUES.includes(value as GameSystem);
+};
