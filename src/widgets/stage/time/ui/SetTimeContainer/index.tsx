@@ -542,6 +542,46 @@ const SetTimeContainer = ({
 
               byeTeams['left_0'] = team3;
               byeTeams['right_0'] = team4;
+            } else if (totalTeams === 8) {
+              const team1 = teamsBySide[1]?.['left']?.[0] || 'TBD';
+              const team2 = teamsBySide[1]?.['left']?.[1] || 'TBD';
+              const team3 = teamsBySide[1]?.['left']?.[2] || 'TBD';
+              const team4 = teamsBySide[1]?.['left']?.[3] || 'TBD';
+              const team5 = teamsBySide[1]?.['right']?.[0] || 'TBD';
+              const team6 = teamsBySide[1]?.['right']?.[1] || 'TBD';
+              const team7 = teamsBySide[1]?.['right']?.[2] || 'TBD';
+              const team8 = teamsBySide[1]?.['right']?.[3] || 'TBD';
+
+              quarterFinals.push({
+                index: 1,
+                teamAName: team1,
+                teamBName: team2,
+                round: '8강',
+              });
+
+              quarterFinals.push({
+                index: 2,
+                teamAName: team3,
+                teamBName: team4,
+                round: '8강',
+              });
+
+              quarterFinals.push({
+                index: 3,
+                teamAName: team7,
+                teamBName: team8,
+                round: '8강',
+              });
+
+              quarterFinals.push({
+                index: 4,
+                teamAName: team5,
+                teamBName: team6,
+                round: '8강',
+              });
+
+              byeTeams['left_0'] = team3;
+              byeTeams['right_0'] = team4;
             } else {
               for (let i = 0; i < Math.ceil(leftTeamCount / 2); i++) {
                 const teamAPos = i * 2;
