@@ -580,6 +580,13 @@ const SetTimeContainer = ({
                 round: '8강',
               });
 
+              finals.push({
+                index: 1,
+                teamAName: 'TBD',
+                teamBName: 'TBD',
+                round: '결승',
+              });
+
               byeTeams['left_0'] = team3;
               byeTeams['right_0'] = team4;
             } else {
@@ -608,6 +615,13 @@ const SetTimeContainer = ({
                   byeTeams[`left_${nextPosition}`] = teamA;
                 }
               }
+
+              finals.push({
+                index: 1,
+                teamAName: 'TBD',
+                teamBName: 'TBD',
+                round: '결승',
+              });
 
               for (let i = 0; i < Math.ceil(rightTeamCount / 2); i++) {
                 const teamAPos = i * 2;
