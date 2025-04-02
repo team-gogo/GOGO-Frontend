@@ -1,3 +1,4 @@
+import axios from 'axios';
 import clientInstance from '@/shared/api/clientInstance';
 
 export interface GetMaxMinBetPointResponse {
@@ -14,7 +15,11 @@ export const getMaxMinBetPoint = async (
     );
     return response.data;
   } catch (error) {
-    console.error(error);
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(
+        error.response.data.error || '게시물 댓글 작성을 실패 했습니다.',
+      );
+    }
     throw error;
   }
 };
