@@ -119,13 +119,17 @@ const MatchApplyPage = () => {
           <div className="flex flex-row items-center space-x-4">
             <h1 className={cn('text-h4e', 'text-white')}>{stageName}</h1>
             <div className="flex-grow" />
-            {JSON.parse(localStorage.getItem('stageAdminArr') || '[]').includes(
-              Number(stageId),
-            ) && <ConfirmStage onClick={handleConfirmStage} />}
-            <MatchFilterHeader
-              selectedSport={selectedSport}
-              toggleSportSelection={toggleSportSelection}
-            />
+            <div className="flex flex-row gap-2">
+              {JSON.parse(
+                localStorage.getItem('stageAdminArr') || '[]',
+              ).includes(Number(stageId)) && (
+                <ConfirmStage onClick={handleConfirmStage} />
+              )}
+              <MatchFilterHeader
+                selectedSport={selectedSport}
+                toggleSportSelection={toggleSportSelection}
+              />
+            </div>
           </div>
           {isPending ? (
             <div
