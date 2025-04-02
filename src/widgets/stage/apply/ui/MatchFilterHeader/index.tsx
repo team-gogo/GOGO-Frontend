@@ -4,16 +4,13 @@ import { useState } from 'react';
 import { FilterButton } from '@/entities/community';
 import { SportType } from '@/shared/model/sportTypes';
 import CategoryTypeModal from '@/shared/ui/CategoryTypeModal';
-import { cn } from '@/shared/utils/cn';
 
 interface MatchFilterHeaderProps {
-  stageName?: string;
   selectedSport: SportType | null;
   toggleSportSelection: (sport: SportType) => void;
 }
 
 const MatchFilterHeader = ({
-  stageName,
   selectedSport,
   toggleSportSelection,
 }: MatchFilterHeaderProps) => {
@@ -31,10 +28,7 @@ const MatchFilterHeader = ({
 
   return (
     <>
-      <div className={cn('flex', 'w-full', 'justify-between', 'items-center')}>
-        {stageName && (
-          <h1 className={cn('text-h4e', 'text-white')}>{stageName}</h1>
-        )}
+      <div>
         <FilterButton onClick={() => setIsModalOpen(true)} />
       </div>
       {isModalOpen && (
