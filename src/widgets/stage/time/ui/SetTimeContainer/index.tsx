@@ -374,121 +374,121 @@ const SetTimeContainer = ({
           totalTeamCount = allTeams.length;
         }
 
-        if (totalTeamCount === 3 && finalStage === 4) {
-          const semiFinals: MatchData[] = [];
-          const finals: MatchData[] = [];
+        // if (totalTeamCount === 3) {
+        //   const semiFinals: MatchData[] = [];
+        //   const finals: MatchData[] = [];
 
-          if (placedTeamsData) {
-            const placedTeams = JSON.parse(placedTeamsData) as Record<
-              string,
-              TeamData | string
-            >;
-            const seededTeamsIn4Round: string[] = [];
-            const seededTeamPositions: {
-              teamName: string;
-              position: string;
-            }[] = [];
+        //   if (placedTeamsData) {
+        //     const placedTeams = JSON.parse(placedTeamsData) as Record<
+        //       string,
+        //       TeamData | string
+        //     >;
+        //     const seededTeamsIn4Round: string[] = [];
+        //     const seededTeamPositions: {
+        //       teamName: string;
+        //       position: string;
+        //     }[] = [];
 
-            Object.entries(placedTeams).forEach(([positionKey, teamData]) => {
-              const [round, position, side] = positionKey.split('_');
-              if (Number(round) === 1) {
-                let teamName = '';
-                if (
-                  teamData &&
-                  typeof teamData === 'object' &&
-                  'teamName' in teamData
-                ) {
-                  teamName = teamData.teamName;
-                  if (teamName && teamName !== 'TBD') {
-                    seededTeamsIn4Round.push(teamName);
-                    seededTeamPositions.push({
-                      teamName,
-                      position: `${position}_${side}`,
-                    });
-                  }
-                } else if (
-                  teamData &&
-                  typeof teamData === 'string' &&
-                  teamData !== 'TBD'
-                ) {
-                  teamName = teamData;
-                  if (teamName) {
-                    seededTeamsIn4Round.push(teamName);
-                    seededTeamPositions.push({
-                      teamName,
-                      position: `${position}_${side}`,
-                    });
-                  }
-                }
-              }
-            });
+        //     Object.entries(placedTeams).forEach(([positionKey, teamData]) => {
+        //       const [round, position, side] = positionKey.split('_');
+        //       if (Number(round) === 1) {
+        //         let teamName = '';
+        //         if (
+        //           teamData &&
+        //           typeof teamData === 'object' &&
+        //           'teamName' in teamData
+        //         ) {
+        //           teamName = teamData.teamName;
+        //           if (teamName && teamName !== 'TBD') {
+        //             seededTeamsIn4Round.push(teamName);
+        //             seededTeamPositions.push({
+        //               teamName,
+        //               position: `${position}_${side}`,
+        //             });
+        //           }
+        //         } else if (
+        //           teamData &&
+        //           typeof teamData === 'string' &&
+        //           teamData !== 'TBD'
+        //         ) {
+        //           teamName = teamData;
+        //           if (teamName) {
+        //             seededTeamsIn4Round.push(teamName);
+        //             seededTeamPositions.push({
+        //               teamName,
+        //               position: `${position}_${side}`,
+        //             });
+        //           }
+        //         }
+        //       }
+        //     });
 
-            const allTeamNames = allTeams.map((team) => team.teamName);
-            const byeTeam = allTeamNames.find(
-              (teamName) => !seededTeamsIn4Round.includes(teamName),
-            );
+        //     const allTeamNames = allTeams.map((team) => team.teamName);
+        //     const byeTeam = allTeamNames.find(
+        //       (teamName) => !seededTeamsIn4Round.includes(teamName),
+        //     );
 
-            if (seededTeamPositions.length <= 2) {
-              if (seededTeamPositions.length === 2) {
-                semiFinals.push({
-                  index: 1,
-                  teamAName: seededTeamPositions[0].teamName,
-                  teamBName: seededTeamPositions[1].teamName,
-                  round: '4강',
-                });
-              } else if (seededTeamPositions.length === 1) {
-                semiFinals.push({
-                  index: 1,
-                  teamAName: seededTeamPositions[0].teamName,
-                  teamBName: 'TBD',
-                  round: '4강',
-                });
-              } else {
-                semiFinals.push({
-                  index: 1,
-                  teamAName: 'TBD',
-                  teamBName: 'TBD',
-                  round: '4강',
-                });
-              }
+        //     if (seededTeamPositions.length <= 2) {
+        //       if (seededTeamPositions.length === 2) {
+        //         semiFinals.push({
+        //           index: 1,
+        //           teamAName: seededTeamPositions[0].teamName,
+        //           teamBName: seededTeamPositions[1].teamName,
+        //           round: '4강',
+        //         });
+        //       } else if (seededTeamPositions.length === 1) {
+        //         semiFinals.push({
+        //           index: 1,
+        //           teamAName: seededTeamPositions[0].teamName,
+        //           teamBName: 'TBD',
+        //           round: '4강',
+        //         });
+        //       } else {
+        //         semiFinals.push({
+        //           index: 1,
+        //           teamAName: 'TBD',
+        //           teamBName: 'TBD',
+        //           round: '4강',
+        //         });
+        //       }
 
-              finals.push({
-                index: 1,
-                teamAName: 'TBD',
-                teamBName: byeTeam || 'TBD',
-                round: '결승',
-              });
+        //       finals.push({
+        //         index: 1,
+        //         teamAName: 'TBD',
+        //         teamBName: byeTeam || 'TBD',
+        //         round: '결승',
+        //       });
 
-              setMatches({
-                quarterFinals: [],
-                semiFinals,
-                finals,
-              });
-              return;
-            }
-          } else {
-            semiFinals.push({
-              index: 1,
-              teamAName: 'TBD',
-              teamBName: 'TBD',
-              round: '4강',
-            });
+        //       setMatches({
+        //         quarterFinals: [],
+        //         semiFinals,
+        //         finals,
+        //       });
+        //       return;
+        //     }
+        //   } else {
+        //     semiFinals.push({
+        //       index: 1,
+        //       teamAName: 'TBD',
+        //       teamBName: 'TBD',
+        //       round: '4강',
+        //     });
 
-            finals.push({
-              index: 1,
-              teamAName: 'TBD',
-              teamBName: 'TBD',
-              round: '결승',
-            });
+        //     finals.push({
+        //       index: 1,
+        //       teamAName: 'TBD',
+        //       teamBName: 'TBD',
+        //       round: '결승',
+        //     });
 
-            setMatches({
-              quarterFinals: [],
-              semiFinals,
-              finals,
-            });
-            return;
-          }
-        }
+        //     setMatches({
+        //       quarterFinals: [],
+        //       semiFinals,
+        //       finals,
+        //     });
+        //     return;
+        //   }
+        // }
 
         if (placedTeamsData) {
           const placedTeams = JSON.parse(placedTeamsData) as Record<
@@ -537,44 +537,44 @@ const SetTimeContainer = ({
             const confirmedTeamsData =
               sessionStorage.getItem(confirmedTeamsKey);
 
-            if (confirmedTeamsData) {
-              const teams = JSON.parse(confirmedTeamsData) as TeamData[];
-              if (teams.length === 3) {
-                const seededTeams: string[] = [];
+            // if (confirmedTeamsData) {
+            //   const teams = JSON.parse(confirmedTeamsData) as TeamData[];
+            //   if (teams.length === 3) {
+            //     const seededTeams: string[] = [];
 
-                Object.entries(placedTeams).forEach(
-                  ([positionKey, teamData]) => {
-                    const [round, _position, _side] = positionKey.split('_');
-                    const roundNum = Number(round);
+            //     Object.entries(placedTeams).forEach(
+            //       ([positionKey, teamData]) => {
+            //         const [round, _position, _side] = positionKey.split('_');
+            //         const roundNum = Number(round);
 
-                    if (roundNum === 1) {
-                      if (
-                        typeof teamData === 'object' &&
-                        'teamName' in teamData
-                      ) {
-                        seededTeams.push(teamData.teamName);
-                      } else if (
-                        typeof teamData === 'string' &&
-                        teamData !== 'TBD'
-                      ) {
-                        seededTeams.push(teamData);
-                      }
-                    }
-                  },
-                );
+            //         if (roundNum === 1) {
+            //           if (
+            //             typeof teamData === 'object' &&
+            //             'teamName' in teamData
+            //           ) {
+            //             seededTeams.push(teamData.teamName);
+            //           } else if (
+            //             typeof teamData === 'string' &&
+            //             teamData !== 'TBD'
+            //           ) {
+            //             seededTeams.push(teamData);
+            //           }
+            //         }
+            //       },
+            //     );
 
-                const allTeamNames = teams.map(
-                  (team: TeamData) => team.teamName,
-                );
-                const byeTeam = allTeamNames.find(
-                  (teamName: string) => !seededTeams.includes(teamName),
-                );
+            //     const allTeamNames = teams.map(
+            //       (team: TeamData) => team.teamName,
+            //     );
+            //     const byeTeam = allTeamNames.find(
+            //       (teamName: string) => !seededTeams.includes(teamName),
+            //     );
 
-                if (byeTeam) {
-                  finalTeamB = byeTeam;
-                }
-              }
-            }
+            //     if (byeTeam) {
+            //       finalTeamB = byeTeam;
+            //     }
+            //   }
+            // }
 
             finals.push({
               index: 1,
