@@ -43,14 +43,14 @@ const getMatchListInfo = (): MatchGamesResponse => {
         system: 'SINGLE',
         isParticipating: false,
       },
-      {
-        gameId: 6,
-        gameName: 'League of Legends Worlds',
-        teamCount: 24,
-        category: 'LOL',
-        system: 'TOURNAMENT',
-        isParticipating: true,
-      },
+      // {
+      //   gameId: 6,
+      //   gameName: 'League of Legends Worlds',
+      //   teamCount: 24,
+      //   category: 'LOL',
+      //   system: 'TOURNAMENT',
+      //   isParticipating: true,
+      // },
       {
         gameId: 7,
         gameName: 'Miscellaneous Tournament',
