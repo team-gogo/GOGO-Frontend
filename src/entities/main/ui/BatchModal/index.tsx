@@ -28,9 +28,11 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
 
   useEffect(() => {
     if (aTeamScore !== undefined && bTeamScore !== undefined) {
-      const newWinTeamId =
-        aTeamScore > bTeamScore ? aTeam?.teamId : bTeam?.teamId;
-      setTeamId(newWinTeamId);
+      if (aTeamScore > bTeamScore) {
+        setTeamId(aTeam?.teamId);
+      } else if (bTeamScore > aTeamScore) {
+        setTeamId(bTeam?.teamId);
+      }
     }
   }, [aTeamScore, bTeamScore, aTeam?.teamId, bTeam?.teamId]);
 
