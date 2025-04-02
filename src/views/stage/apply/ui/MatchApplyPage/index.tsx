@@ -72,18 +72,6 @@ const MatchApplyPage = () => {
         return;
       }
 
-      // const allGamesConfirmed = currentStageGames.every((game) => {
-      //   const isConfirmed = sessionStorage.getItem(
-      //     `isConfirmed_${game.gameId}`,
-      //   );
-      //   return isConfirmed === 'true';
-      // });
-
-      // if (!allGamesConfirmed) {
-      //   toast.error('모든 경기의 시간을 설정해주세요.');
-      //   return;
-      // }
-
       await postStage(Number(stageId), { games: currentStageGames });
       toast.success('스테이지 정보가 성공적으로 저장되었습니다.');
       router.push('/stage');
@@ -134,7 +122,9 @@ const MatchApplyPage = () => {
               selectedSport={selectedSport}
               toggleSportSelection={toggleSportSelection}
             />
-            <ConfirmStage onClick={handleConfirmStage} />
+            {JSON.parse(localStorage.getItem('stageAdminArr') || '[]').includes(
+              Number(stageId),
+            ) && <ConfirmStage onClick={handleConfirmStage} />}
           </div>
           {isPending ? (
             <div
