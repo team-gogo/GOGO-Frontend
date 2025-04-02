@@ -374,121 +374,14 @@ const SetTimeContainer = ({
           totalTeamCount = allTeams.length;
         }
 
-        // if (totalTeamCount === 3) {
-        //   const semiFinals: MatchData[] = [];
-        //   const finals: MatchData[] = [];
+        const teamsBySide: Record<
+          number,
+          Record<string, Record<number, string>>
+        > = {};
 
-        //   if (placedTeamsData) {
-        //     const placedTeams = JSON.parse(placedTeamsData) as Record<
-        //       string,
-        //       TeamData | string
-        //     >;
-        //     const seededTeamsIn4Round: string[] = [];
-        //     const seededTeamPositions: {
-        //       teamName: string;
-        //       position: string;
-        //     }[] = [];
-
-        //     Object.entries(placedTeams).forEach(([positionKey, teamData]) => {
-        //       const [round, position, side] = positionKey.split('_');
-        //       if (Number(round) === 1) {
-        //         let teamName = '';
-        //         if (
-        //           teamData &&
-        //           typeof teamData === 'object' &&
-        //           'teamName' in teamData
-        //         ) {
-        //           teamName = teamData.teamName;
-        //           if (teamName && teamName !== 'TBD') {
-        //             seededTeamsIn4Round.push(teamName);
-        //             seededTeamPositions.push({
-        //               teamName,
-        //               position: `${position}_${side}`,
-        //             });
-        //           }
-        //         } else if (
-        //           teamData &&
-        //           typeof teamData === 'string' &&
-        //           teamData !== 'TBD'
-        //         ) {
-        //           teamName = teamData;
-        //           if (teamName) {
-        //             seededTeamsIn4Round.push(teamName);
-        //             seededTeamPositions.push({
-        //               teamName,
-        //               position: `${position}_${side}`,
-        //             });
-        //           }
-        //         }
-        //       }
-        //     });
-
-        //     const allTeamNames = allTeams.map((team) => team.teamName);
-        //     const byeTeam = allTeamNames.find(
-        //       (teamName) => !seededTeamsIn4Round.includes(teamName),
-        //     );
-
-        //     if (seededTeamPositions.length <= 2) {
-        //       if (seededTeamPositions.length === 2) {
-        //         semiFinals.push({
-        //           index: 1,
-        //           teamAName: seededTeamPositions[0].teamName,
-        //           teamBName: seededTeamPositions[1].teamName,
-        //           round: '4강',
-        //         });
-        //       } else if (seededTeamPositions.length === 1) {
-        //         semiFinals.push({
-        //           index: 1,
-        //           teamAName: seededTeamPositions[0].teamName,
-        //           teamBName: 'TBD',
-        //           round: '4강',
-        //         });
-        //       } else {
-        //         semiFinals.push({
-        //           index: 1,
-        //           teamAName: 'TBD',
-        //           teamBName: 'TBD',
-        //           round: '4강',
-        //         });
-        //       }
-
-        //       finals.push({
-        //         index: 1,
-        //         teamAName: 'TBD',
-        //         teamBName: byeTeam || 'TBD',
-        //         round: '결승',
-        //       });
-
-        //       setMatches({
-        //         quarterFinals: [],
-        //         semiFinals,
-        //         finals,
-        //       });
-        //       return;
-        //     }
-        //   } else {
-        //     semiFinals.push({
-        //       index: 1,
-        //       teamAName: 'TBD',
-        //       teamBName: 'TBD',
-        //       round: '4강',
-        //     });
-
-        //     finals.push({
-        //       index: 1,
-        //       teamAName: 'TBD',
-        //       teamBName: 'TBD',
-        //       round: '결승',
-        //     });
-
-        //     setMatches({
-        //       quarterFinals: [],
-        //       semiFinals,
-        //       finals,
-        //     });
-        //     return;
-        //   }
-        // }
+        const quarterFinals: MatchData[] = [];
+        const semiFinals: MatchData[] = [];
+        const finals: MatchData[] = [];
 
         if (placedTeamsData) {
           const placedTeams = JSON.parse(placedTeamsData) as Record<
@@ -525,11 +418,47 @@ const SetTimeContainer = ({
             }
           });
 
-          const quarterFinals: MatchData[] = [];
-          const semiFinals: MatchData[] = [];
-          const finals: MatchData[] = [];
+          const leftTeamCount = Object.keys(
+            teamsBySide[1]?.['left'] || {},
+          ).length;
+          const rightTeamCount = Object.keys(
+            teamsBySide[1]?.['right'] || {},
+          ).length;
 
-          if (finalStage === 4) {
+          let leftActualMatches = Math.floor(leftTeamCount / 2);
+          if (leftTeamCount % 2 === 1 && leftTeamCount > 1) {
+            leftActualMatches += 1;
+          }
+
+          let rightActualMatches = Math.floor(rightTeamCount / 2);
+          if (rightTeamCount % 2 === 1 && rightTeamCount > 1) {
+            rightActualMatches += 1;
+          }
+
+          const totalTeams = leftTeamCount + rightTeamCount;
+
+          if (totalTeams === 3) {
+            const team1 = teamsBySide[1]?.['left']?.[0] || 'TBD';
+            const team2 = teamsBySide[1]?.['left']?.[1] || 'TBD';
+            const team4 = teamsBySide[1]?.['right']?.[0] || 'TBD';
+            const team5 = teamsBySide[1]?.['right']?.[1] || 'TBD';
+
+            semiFinals.push({
+              index: 1,
+              teamAName: team1,
+              teamBName: team2,
+              round: '4강',
+            });
+
+            finals.push({
+              index: 1,
+              teamAName: 'TBD',
+              teamBName: team4,
+              round: '결승',
+            });
+          }
+
+          if (totalTeams === 4) {
             const finalTeamA = 'TBD';
             let finalTeamB = 'TBD';
 
@@ -537,77 +466,10 @@ const SetTimeContainer = ({
             const confirmedTeamsData =
               sessionStorage.getItem(confirmedTeamsKey);
 
-            // if (confirmedTeamsData) {
-            //   const teams = JSON.parse(confirmedTeamsData) as TeamData[];
-            //   if (teams.length === 3) {
-            //     const seededTeams: string[] = [];
-
-            //     Object.entries(placedTeams).forEach(
-            //       ([positionKey, teamData]) => {
-            //         const [round, _position, _side] = positionKey.split('_');
-            //         const roundNum = Number(round);
-
-            //         if (roundNum === 1) {
-            //           if (
-            //             typeof teamData === 'object' &&
-            //             'teamName' in teamData
-            //           ) {
-            //             seededTeams.push(teamData.teamName);
-            //           } else if (
-            //             typeof teamData === 'string' &&
-            //             teamData !== 'TBD'
-            //           ) {
-            //             seededTeams.push(teamData);
-            //           }
-            //         }
-            //       },
-            //     );
-
-            //     const allTeamNames = teams.map(
-            //       (team: TeamData) => team.teamName,
-            //     );
-            //     const byeTeam = allTeamNames.find(
-            //       (teamName: string) => !seededTeams.includes(teamName),
-            //     );
-
-            //     if (byeTeam) {
-            //       finalTeamB = byeTeam;
-            //     }
-            //   }
-            // }
-
             finals.push({
               index: 1,
               teamAName: finalTeamA,
               teamBName: finalTeamB,
-              round: '결승',
-            });
-          } else {
-            const finalRound = 3;
-            let finalTeamA: string | undefined;
-            let finalTeamB: string | undefined;
-
-            if (teamsBySide[finalRound]) {
-              const leftPositions = Object.keys(
-                teamsBySide[finalRound]['left'],
-              ).map(Number);
-              if (leftPositions.length > 0) {
-                finalTeamA = teamsBySide[finalRound]['left'][leftPositions[0]];
-              }
-
-              const rightPositions = Object.keys(
-                teamsBySide[finalRound]['right'],
-              ).map(Number);
-              if (rightPositions.length > 0) {
-                finalTeamB =
-                  teamsBySide[finalRound]['right'][rightPositions[0]];
-              }
-            }
-
-            finals.push({
-              index: 1,
-              teamAName: finalTeamA || 'TBD',
-              teamBName: finalTeamB || 'TBD',
               round: '결승',
             });
           }
@@ -633,7 +495,30 @@ const SetTimeContainer = ({
             const byeTeams: Record<string, string> = {};
 
             const totalTeams = leftTeamCount + rightTeamCount;
-            if (totalTeams === 6) {
+            if (totalTeams === 5) {
+              const team1 = teamsBySide[1]?.['left']?.[0] || 'TBD';
+              const team2 = teamsBySide[1]?.['left']?.[1] || 'TBD';
+              const team3 = teamsBySide[1]?.['left']?.[2] || 'TBD';
+              const team4 = teamsBySide[1]?.['right']?.[0] || 'TBD';
+              const team5 = teamsBySide[1]?.['right']?.[1] || 'TBD';
+
+              quarterFinals.push({
+                index: 1,
+                teamAName: team1,
+                teamBName: team2,
+                round: '8강',
+              });
+
+              semiFinals.push({
+                index: 2,
+                teamAName: team4,
+                teamBName: team5,
+                round: '4강',
+              });
+
+              byeTeams['left_0'] = team3;
+              byeTeams['right_0'] = team4;
+            } else if (totalTeams === 6) {
               const team1 = teamsBySide[1]?.['left']?.[0] || 'TBD';
               const team2 = teamsBySide[1]?.['left']?.[1] || 'TBD';
               const team3 = teamsBySide[1]?.['left']?.[2] || 'TBD';
@@ -842,12 +727,12 @@ const SetTimeContainer = ({
 
           const sortedQuarterFinals = sortAndAdjustIndexes([...quarterFinals]);
           const sortedSemiFinals = sortAndAdjustIndexes([...semiFinals]);
-
           setMatches({
             quarterFinals: sortedQuarterFinals,
             semiFinals: sortedSemiFinals,
             finals: finals,
           });
+          console.log(matches);
         } else {
           if (finalStage === 8) {
             setMatches({
