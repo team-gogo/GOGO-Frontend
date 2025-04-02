@@ -18,3 +18,4 @@ export { default as useSelectedGameIdStore } from './useSelectedGameIdStore';
 export { default as useTeamDetailModalStore } from './useTeamDetailModalStore';
 export { default as useTeamDetailInfoStore } from './useTeamDetailInfoStore';
 export { default as usePointTicketStore } from './usePointTicketStore';
+export { default as useMatchNoticeStore } from './useMatchNoticeStore';

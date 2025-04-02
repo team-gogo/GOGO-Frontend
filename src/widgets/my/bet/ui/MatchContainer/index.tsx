@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { SportType } from '@/shared/model/sportTypes';
-import { useMatchBatchArrStore } from '@/shared/stores';
+import { useMatchBatchArrStore, useMatchNoticeStore } from '@/shared/stores';
 import { MatchResponse } from '@/shared/types/my/bet';
 import Match from '@/shared/ui/match';
 import { cn } from '@/shared/utils/cn';
@@ -17,6 +17,7 @@ const MatchContainer = ({
   selectedSport,
 }: MatchContainerProps) => {
   const { setMatchBatchArr } = useMatchBatchArrStore();
+  const { setMatchNoticeArr } = useMatchNoticeStore();
 
   const filteredMatches = selectedSport
     ? matchInfo?.matches.filter((match) =>
@@ -28,6 +29,12 @@ const MatchContainer = ({
     if (matchInfo?.matches) {
       setMatchBatchArr(
         matchInfo.matches.map(({ matchId, isEnd }) => ({ matchId, isEnd })),
+      );
+      setMatchNoticeArr(
+        matchInfo.matches.map(({ matchId, isNotice }) => ({
+          matchId,
+          isNotice,
+        })),
       );
     }
   }, [matchInfo]);
