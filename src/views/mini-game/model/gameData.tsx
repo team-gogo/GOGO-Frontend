@@ -37,7 +37,7 @@ export const createMiniGameItems = (
         className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
       />
     ),
-    name: '플링코',
+    name: '플린코',
     type: 'game',
     action: () => router.push(`/mini-game/${stageId}/plinko`),
   },

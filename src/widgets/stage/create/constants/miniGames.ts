@@ -13,7 +13,7 @@ export const MINI_GAMES = [
   },
   {
     type: 'plinko' as const,
-    name: '플링코',
+    name: '플린코',
     icon: PlinkoIcon,
   },
 ] as const;
