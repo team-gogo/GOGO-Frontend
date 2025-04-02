@@ -15,6 +15,7 @@ import {
   useBettingMatchArrStore,
   useMatchBatchArrStore,
   useMatchModalStore,
+  useMatchNoticeStore,
   useMatchStore,
   useMyStageIdStore,
 } from '@/shared/stores';
@@ -51,6 +52,7 @@ const Match = ({ match }: MatchProps) => {
   const { setMatchStatus, setMatch } = useMatchStore();
   const { stageId } = useMyStageIdStore();
   const { matchBatchArr } = useMatchBatchArrStore();
+  const { matchNoticeArr } = useMatchNoticeStore();
   const { bettingMatchArr } = useBettingMatchArrStore();
   const { isAlarmClicked, setIsAlarmClicked } = useAlarmClickStore();
 
@@ -65,11 +67,14 @@ const Match = ({ match }: MatchProps) => {
   const isStageAdmin = adminIdxArr.includes(stageId);
 
   const matchItem = matchBatchArr.find((item) => item.matchId === matchId);
+  const noticeItem = matchNoticeArr.find((item) => item.matchId === matchId);
 
   const isBatchEnd = matchItem ? matchItem.isEnd : false;
   const bettingMatch = bettingMatchArr.find((item) => item.matchId === matchId);
   const alreadyBetting = bettingMatch !== undefined;
   const bettingPoint = bettingMatch?.bettingPoint ?? 0;
+
+  const isMatchNoticeChecked = noticeItem ? noticeItem?.isNotice : false;
 
   // if (matchItem) {
   //   console.log(`Match ID: ${matchItem.matchId}, isEnd: ${isBatchEnd}`);
@@ -200,7 +205,7 @@ const Match = ({ match }: MatchProps) => {
                 patchNotice({ isNotice: isAlarmClicked });
               }}
             >
-              {isAlarmClicked ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
+              {isMatchNoticeChecked ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
             </button>
             <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
               <SystemLabel
