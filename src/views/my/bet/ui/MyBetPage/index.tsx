@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BettingModal } from '@/entities/main';
 import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
@@ -10,7 +10,6 @@ import {
   useCheckAgainModalStore,
   useMatchModalStore,
   useMyStageIdStore,
-  usePointStore,
 } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 import { useGetUserStagePoint } from '@/views/main/model/useGetUserStagePoint';
@@ -29,12 +28,13 @@ const MyBetPage = () => {
   const { data: userPointData } = useGetUserStagePoint(Number(stageId));
   const { data: myMatchData } = useGetMyBettingMatch(Number(stageId));
   const { data: myTempPoint } = useGetMyTempPoint(Number(stageId));
+  const [point, setPoint] = useState<number>();
 
-  const { point, setPoint } = usePointStore();
   const { setStageId } = useMyStageIdStore();
 
   useEffect(() => {
-    if (userPointData?.point) {
+    console.log('userPointData:', userPointData);
+    if (userPointData?.point !== undefined) {
       setPoint(userPointData.point);
     }
   }, [userPointData]);
