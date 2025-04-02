@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { usePostPassCode } from '@/entities/stage/ui/model/usePostPassCode';
 import KebabMenuIcon from '@/shared/assets/icons/KebabMenuIcon';
 import {
@@ -52,7 +53,12 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
   const handleClick = () => {
     if (isMyStage) {
       setStageId(stageId);
-      push(`/my/bet/${stageId}`);
+      if (status === 'CONFIRMED') {
+        setIsStatusConfirmed(true);
+        push(`/my/bet/${stageId}`);
+      } else {
+        toast.error('스테이지가 아직 확정되지 않았습니다.');
+      }
     } else if (status === 'CONFIRMED') {
       setIsStatusConfirmed(true);
       if (!isParticipating) {
