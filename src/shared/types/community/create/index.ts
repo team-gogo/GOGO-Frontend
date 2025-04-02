@@ -7,6 +7,6 @@ export interface CommunityCreateFormData {
     | 'BASE_BALL'
     | 'VOLLEY_BALL'
     | 'BADMINTON'
-    | 'LOL'
+    // | 'LOL'
     | 'ETC';
 }

@@ -4,7 +4,7 @@ export type CategoryType =
   | 'BASKET_BALL'
   | 'BADMINTON'
   | 'ETC'
-  | 'LOL'
+  // | 'LOL'
   | 'VOLLEY_BALL';
 
 type StageType = 's' | 'EASY' | 'MEDIUM' | 'HARD';

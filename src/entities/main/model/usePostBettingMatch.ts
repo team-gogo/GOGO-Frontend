@@ -12,7 +12,7 @@ export const usePostBettingMatch = (matchId: number, bettingPoint: number) => {
     mutationFn: (data: BettingFormData) => postBettingMatch(matchId, data),
     onSuccess: () => {
       toast.success('베팅이 완료되었습니다.');
-      setBettingMatchArr([{ matchId, bettingPoint: bettingPoint }]);
+      setBettingMatchArr((prev) => [...prev, { matchId, bettingPoint }]);
       setPoint(point - bettingPoint);
     },
     onError: (error: Error) => {

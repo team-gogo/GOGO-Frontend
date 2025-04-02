@@ -55,6 +55,7 @@ const Match = ({ match }: MatchProps) => {
   const { matchNoticeArr } = useMatchNoticeStore();
   const { bettingMatchArr } = useBettingMatchArrStore();
   const { isAlarmClicked, setIsAlarmClicked } = useAlarmClickStore();
+  const [isBettingPossible, setIsBettingPossible] = useState(false);
 
   const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
 
@@ -93,6 +94,30 @@ const Match = ({ match }: MatchProps) => {
 
   const isPlaying = currentTime >= start && currentTime <= end;
   const isMatchFinish = currentTime > end;
+
+  useEffect(() => {
+    const bettingStart = new Date(start);
+    bettingStart.setHours(start.getHours() - 24);
+
+    const bettingEnd = new Date(start);
+    bettingEnd.setMinutes(start.getMinutes() - 5);
+
+    const checkBettingPossible = () => {
+      const currentTime = new Date();
+
+      const hasTBD =
+        ateam?.teamName.includes('TBD') || bteam?.teamName.includes('TBD');
+
+      setIsBettingPossible(
+        !hasTBD && currentTime >= bettingStart && currentTime <= bettingEnd,
+      );
+    };
+
+    checkBettingPossible();
+    const interval = setInterval(checkBettingPossible, 60000);
+
+    return () => clearInterval(interval);
+  }, [startDate, ateam?.teamName, bteam?.teamName]);
 
   const tempPointExpiredDate = result?.tempPointExpiredDate
     ? new Date(result.tempPointExpiredDate)
@@ -392,7 +417,8 @@ const Match = ({ match }: MatchProps) => {
                 betting.isBetting ||
                 isBatchEnd ||
                 isPlayer ||
-                alreadyBetting
+                alreadyBetting ||
+                !isBettingPossible
               }
               onClick={() => {
                 updateStatus();
