@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { usePointTicketStore } from '@/shared/stores';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
@@ -16,11 +17,11 @@ const PlinkoPage = () => {
   const params = useParams<{ boardId: string; stageId: string }>();
   const { stageId } = params;
 
+  const { point, setPoint, ticket, setTicket } = usePointTicketStore();
+
   const [plinkoData, setPlinkoData] = useState<PlinkoResponse | null>(null);
   const [gameRunningCount, setGameRunningCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [point, setPoint] = useState<number>(0);
-  const [ticket, setTicket] = useState<number>(0);
 
   const { data: myPoint } = useGetMyPointQuery(String(stageId));
   const { data: myTicket } = useGetMyTicketQuery(String(stageId));
@@ -50,17 +51,13 @@ const PlinkoPage = () => {
 
   const isDisabled = !!(!amount || !risk || ticket === 0 || amount > point);
 
-  const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId));
+  const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId), amount);
 
   const onSubmit = (data: PlinkoFormType) => {
     if (isLoading) return;
 
     setIsLoading(true);
     const formattedData = formatPlinkoData(data, selectedRisk);
-
-    const updatedPoint = point - amount;
-    setPoint(updatedPoint);
-    setTicket((prev) => Math.max(0, prev - 1));
 
     PostPlinko(formattedData, {
       onSuccess: (response: PlinkoResponse) => {
@@ -116,7 +113,6 @@ const PlinkoPage = () => {
             watch={watch}
             plinkoData={plinkoData}
             setGameRunningCount={setGameRunningCount}
-            setPoint={setPoint}
           />
         </div>
       </div>

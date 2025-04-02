@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { PointCircleIcon } from '@/shared/assets/svg';
 import { useMatchStore } from '@/shared/stores';
 import { BettingFormData } from '@/shared/types/main';
@@ -12,6 +13,7 @@ import SystemLabel from '@/shared/ui/systemLabel';
 import { cn } from '@/shared/utils/cn';
 import { formatBettingData } from '../../model/formatBettingData';
 import { useBettingForm } from '../../model/useBettingForm';
+import { useGetMaxMinBetPoint } from '../../model/useGetMaxMinBetPoint';
 import { usePostBettingMatch } from '../../model/usePostBettingMatch';
 import MatchTeam from '../MatchTeam';
 
@@ -22,6 +24,9 @@ interface BettingModalProps {
 const BettingModal = ({ onClose }: BettingModalProps) => {
   const { matchStatus, match } = useMatchStore();
 
+  const params = useParams<{ stageId: string }>();
+  const { stageId } = params;
+
   if (!match) {
     return null;
   }
@@ -29,7 +34,6 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
   const {
     register,
     handleSubmit,
-    isDisabled,
     onError,
     watch,
     setValue,
@@ -44,6 +48,14 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
     bettingPoint,
   );
 
+  const { data: maxMinPointData } = useGetMaxMinBetPoint(Number(stageId));
+
+  const isDisabled =
+    !bettingPoint ||
+    !selectedTeamId ||
+    Number(bettingPoint) > Number(maxMinPointData?.maxBettingPoint) ||
+    Number(bettingPoint) < Number(maxMinPointData?.minBettingPoint);
+
   const onSubmit = (data: BettingFormData) => {
     const formattedData = formatBettingData(data, selectedTeamId);
     const finalData = {
@@ -53,8 +65,6 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
 
     PostBettingMatch(finalData);
     onClose();
-
-    console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
   };
 
   const { ateam, bteam, category, betting, system } = match;
@@ -72,7 +82,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
   const bTeamPercentage =
     totalBettingPoints === 0
       ? '0.0'
-      : ((ateam?.bettingPoint / totalBettingPoints) * 100).toFixed(2);
+      : ((bteam?.bettingPoint / totalBettingPoints) * 100).toFixed(2);
 
   const getBettingTeamColor = (teamId: number) => {
     if (selectedTeamId === teamId || betting.predictedWinTeamId === teamId) {
@@ -176,7 +186,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
           )}
         >
           <Input
-            {...register('bettingPoint', { required: true, min: 0 })}
+            {...register('bettingPoint', { required: true, min: 1 })}
             type="number"
             placeholder="포인트를 입력해주세요."
             bgColor="bg-gray-600"
