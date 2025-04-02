@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import clientInstance from '@/shared/api/clientInstance';
 
 interface Participant {
@@ -21,6 +22,9 @@ export const postTeam = async (data: CreateTeamRequest) => {
     return response.data;
   } catch (error) {
     console.error(error);
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.error);
+    }
     throw error;
   }
 };
