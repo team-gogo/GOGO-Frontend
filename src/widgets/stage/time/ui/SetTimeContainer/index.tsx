@@ -147,7 +147,6 @@ const SetTimeContainer = ({
         savedMatches = JSON.parse(existingData);
       }
 
-      // 3팀일 때 부전승 팀 처리
       if (system === GameSystem.TOURNAMENT) {
         const confirmedTeamsData = sessionStorage.getItem(
           `confirmedTeams_${matchId}`,
@@ -159,7 +158,6 @@ const SetTimeContainer = ({
           const byeTeam = JSON.parse(byeTeamData);
 
           if (confirmedTeams.length === 3 && round === '4강') {
-            // 4강 경기가 저장될 때 자동으로 결승전도 저장
             const finalsMatch = savedMatches.find(
               (match) => match.round === '결승',
             );
@@ -618,55 +616,82 @@ const SetTimeContainer = ({
 
             const byeTeams: Record<string, string> = {};
 
-            for (let i = 0; i < Math.ceil(leftTeamCount / 2); i++) {
-              const teamAPos = i * 2;
-              const teamBPos = i * 2 + 1;
+            const totalTeams = leftTeamCount + rightTeamCount;
+            if (totalTeams === 6) {
+              const team1 = teamsBySide[1]?.['left']?.[0] || 'TBD';
+              const team2 = teamsBySide[1]?.['left']?.[1] || 'TBD';
+              const team3 = teamsBySide[1]?.['left']?.[2] || 'TBD';
+              const team4 = teamsBySide[1]?.['right']?.[0] || 'TBD';
+              const team5 = teamsBySide[1]?.['right']?.[1] || 'TBD';
+              const team6 = teamsBySide[1]?.['right']?.[2] || 'TBD';
 
-              const hasBothTeams = teamBPos < leftTeamCount;
+              quarterFinals.push({
+                index: 1,
+                teamAName: team1,
+                teamBName: team2,
+                round: '8강',
+              });
 
-              const teamA = teamsBySide[1]?.['left']?.[teamAPos] || 'TBD';
-              const teamB = hasBothTeams
-                ? teamsBySide[1]?.['left']?.[teamBPos] || 'TBD'
-                : '부전승';
+              quarterFinals.push({
+                index: 2,
+                teamAName: team5,
+                teamBName: team6,
+                round: '8강',
+              });
 
-              if (hasBothTeams || leftTeamCount === 1) {
-                quarterFinals.push({
-                  index: quarterFinals.length + 1,
-                  teamAName: teamA,
-                  teamBName: teamB,
-                  round: '8강',
-                });
+              byeTeams['left_0'] = team3;
+              byeTeams['right_0'] = team4;
+            } else {
+              for (let i = 0; i < Math.ceil(leftTeamCount / 2); i++) {
+                const teamAPos = i * 2;
+                const teamBPos = i * 2 + 1;
+
+                const hasBothTeams = teamBPos < leftTeamCount;
+
+                const teamA = teamsBySide[1]?.['left']?.[teamAPos] || 'TBD';
+                const teamB = hasBothTeams
+                  ? teamsBySide[1]?.['left']?.[teamBPos] || 'TBD'
+                  : '부전승';
+
+                if (hasBothTeams || leftTeamCount === 1) {
+                  quarterFinals.push({
+                    index: quarterFinals.length + 1,
+                    teamAName: teamA,
+                    teamBName: teamB,
+                    round: '8강',
+                  });
+                }
+
+                if (!hasBothTeams && teamA !== 'TBD') {
+                  const nextPosition = Math.floor(i / 2);
+                  byeTeams[`left_${nextPosition}`] = teamA;
+                }
               }
 
-              if (!hasBothTeams && teamA !== 'TBD') {
-                const nextPosition = Math.floor(i / 2);
-                byeTeams[`left_${nextPosition}`] = teamA;
-              }
-            }
+              for (let i = 0; i < Math.ceil(rightTeamCount / 2); i++) {
+                const teamAPos = i * 2;
+                const teamBPos = i * 2 + 1;
 
-            for (let i = 0; i < Math.ceil(rightTeamCount / 2); i++) {
-              const teamAPos = i * 2;
-              const teamBPos = i * 2 + 1;
+                const hasBothTeams = teamBPos < rightTeamCount;
 
-              const hasBothTeams = teamBPos < rightTeamCount;
+                const teamA = teamsBySide[1]?.['right']?.[teamAPos] || 'TBD';
+                const teamB = hasBothTeams
+                  ? teamsBySide[1]?.['right']?.[teamBPos] || 'TBD'
+                  : '부전승';
 
-              const teamA = teamsBySide[1]?.['right']?.[teamAPos] || 'TBD';
-              const teamB = hasBothTeams
-                ? teamsBySide[1]?.['right']?.[teamBPos] || 'TBD'
-                : '부전승';
+                if (hasBothTeams || rightTeamCount === 1) {
+                  quarterFinals.push({
+                    index: quarterFinals.length + 1,
+                    teamAName: teamA,
+                    teamBName: teamB,
+                    round: '8강',
+                  });
+                }
 
-              if (hasBothTeams || rightTeamCount === 1) {
-                quarterFinals.push({
-                  index: quarterFinals.length + 1,
-                  teamAName: teamA,
-                  teamBName: teamB,
-                  round: '8강',
-                });
-              }
-
-              if (!hasBothTeams && teamA !== 'TBD') {
-                const nextPosition = Math.floor(i / 2);
-                byeTeams[`right_${nextPosition}`] = teamA;
+                if (!hasBothTeams && teamA !== 'TBD') {
+                  const nextPosition = Math.floor(i / 2);
+                  byeTeams[`right_${nextPosition}`] = teamA;
+                }
               }
             }
 
