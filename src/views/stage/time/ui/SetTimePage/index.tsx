@@ -263,7 +263,7 @@ const SetTimePage = () => {
                   if (foundGame) {
                     setStageId(stage.stageId);
                     sessionStorage.setItem(
-                      `gameStageId_${gameId}`,
+                      `stageId_${gameId}`,
                       String(stage.stageId),
                     );
                     break;
@@ -281,7 +281,7 @@ const SetTimePage = () => {
     };
 
     if (gameId) {
-      const savedStageId = sessionStorage.getItem(`gameStageId_${gameId}`);
+      const savedStageId = sessionStorage.getItem(`stageId_${gameId}`);
       if (savedStageId) {
         setStageId(parseInt(savedStageId));
       } else {
