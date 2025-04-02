@@ -50,8 +50,11 @@ const SetTimeContainer = ({
     round: string;
     index: number;
   } | null>(null);
-  const [savedMatches, setSavedMatches] =
-    useState<SavedMatchData[]>(initialSavedMatches);
+  const [savedMatches, setSavedMatches] = useState<SavedMatchData[]>(
+    initialSavedMatches.filter(
+      (match) => !(match.round === '결승' && match.index === 0),
+    ),
+  );
   const [matches, setMatches] = useState<{
     quarterFinals: MatchData[];
     semiFinals: MatchData[];
@@ -289,6 +292,8 @@ const SetTimeContainer = ({
           savedMatchesKey,
           JSON.stringify(modifiedSavedMatches),
         );
+      } else if (system === GameSystem.TOURNAMENT) {
+        console.log('토너먼트 savedMatches', savedMatches);
       }
       formatMatchData(matchId, savedMatches);
     }
