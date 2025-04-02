@@ -220,6 +220,14 @@ const SetTimePage = () => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === `savedMatches_${gameId}`) {
         checkMatchesScheduled();
+        if (e.newValue) {
+          try {
+            const parsedSavedMatches = JSON.parse(e.newValue);
+            setSavedMatches(parsedSavedMatches);
+          } catch (error) {
+            console.error(error);
+          }
+        }
       }
     };
 
@@ -438,10 +446,6 @@ const SetTimePage = () => {
   };
 
   const handleMatchSave = useCallback(() => {
-    checkMatchesScheduled();
-  }, [checkMatchesScheduled]);
-
-  useEffect(() => {
     if (typeof window !== 'undefined' && gameId) {
       const savedMatchesKey = `savedMatches_${gameId}`;
       const savedMatchesData = sessionStorage.getItem(savedMatchesKey);
@@ -455,7 +459,8 @@ const SetTimePage = () => {
         }
       }
     }
-  }, [gameId]);
+    checkMatchesScheduled();
+  }, [checkMatchesScheduled, gameId]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && gameId) {
