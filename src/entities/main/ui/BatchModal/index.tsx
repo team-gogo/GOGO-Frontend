@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { WarningIcon } from '@/shared/assets/svg';
 import { useMatchTeamStore } from '@/shared/stores';
@@ -19,6 +19,7 @@ interface BatchModalProps {
 const BatchModal = ({ onClose }: BatchModalProps) => {
   const { aTeam, bTeam, matchId } = useMatchTeamStore();
   const { mutate: PostBatch } = usePostBatchMatch(matchId);
+  const [winTeamId, setTeamId] = useState<number>();
 
   const { register, handleSubmit, reset, watch, setValue } =
     useForm<BatchMatchType>();
@@ -26,13 +27,18 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
   const { aTeamScore, bTeamScore } = watch();
 
   useEffect(() => {
-    if (aTeamScore && bTeamScore) {
-      setValue(
-        'winTeamId',
-        Number(aTeamScore > bTeamScore ? aTeam?.teamId : bTeam?.teamId),
-      );
+    if (aTeamScore !== undefined && bTeamScore !== undefined) {
+      const newWinTeamId =
+        aTeamScore > bTeamScore ? aTeam?.teamId : bTeam?.teamId;
+      setTeamId(newWinTeamId);
     }
-  }, [aTeamScore, bTeamScore, aTeam?.teamId, bTeam?.teamId, setValue]);
+  }, [aTeamScore, bTeamScore, aTeam?.teamId, bTeam?.teamId]);
+
+  useEffect(() => {
+    if (winTeamId !== undefined) {
+      setValue('winTeamId', winTeamId);
+    }
+  }, [winTeamId, setValue]);
 
   const isDisabled = !aTeamScore || !bTeamScore;
 
