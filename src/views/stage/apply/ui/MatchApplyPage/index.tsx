@@ -64,10 +64,15 @@ const MatchApplyPage = () => {
         if (savedGameData) {
           const parsedGame = JSON.parse(savedGameData);
           if (parsedGame && Object.keys(parsedGame).length > 0) {
-            allGames.push(parsedGame);
+            if (!Array.isArray(parsedGame)) {
+              allGames.push(parsedGame);
+            } else {
+              allGames.push(...parsedGame);
+            }
           }
         }
       }
+      console.log('a', allGames);
 
       if (allGames.length === 0) {
         toast.error('저장된 경기 일정이 없습니다.');
