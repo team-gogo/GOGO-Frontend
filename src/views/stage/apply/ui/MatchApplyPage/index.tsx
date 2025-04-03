@@ -8,7 +8,6 @@ import useSelectSport from '@/shared/model/useSelectSport';
 import useStageNameStore from '@/shared/stores/useStageNameStore';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
-import { useStageStore } from '@/store/stageStore';
 import { MatchFilterHeader, StageApply } from '@/widgets/stage/apply';
 import ConfirmStage from '@/widgets/stage/apply/ui/ConfirmStage';
 import { useGetMatchApplyList } from '../../model/useGetMatchApplyList';
@@ -22,7 +21,6 @@ const MatchApplyPage = () => {
   );
   const { selectedSport, toggleSportSelection } = useSelectSport();
   const { stageName } = useStageNameStore();
-  const { getStageGames } = useStageStore();
 
   const [confirmedGames, setConfirmedGames] = useState<Record<string, boolean>>(
     {},
@@ -52,39 +50,36 @@ const MatchApplyPage = () => {
         return;
       }
 
-      const stageGames = getStageGames(Number(stageId));
+      if (!matchApplyList?.games || matchApplyList.games.length === 0) {
+        toast.error('저장된 경기가 없습니다.');
+        return;
+      }
 
-      let currentStageGames = stageGames;
+      const allGames = [];
 
-      if (!currentStageGames || currentStageGames.length === 0) {
-        const savedStageGames = sessionStorage.getItem(`stageGames_${stageId}`);
-        if (savedStageGames) {
-          const parsedGames = JSON.parse(savedStageGames);
-          if (parsedGames && parsedGames.length > 0) {
-            console.log(parsedGames);
-            currentStageGames = parsedGames;
+      for (const game of matchApplyList.games) {
+        const savedGameData = sessionStorage.getItem(
+          `stageGames_${stageId}_${game.gameId}`,
+        );
+        if (savedGameData) {
+          const parsedGame = JSON.parse(savedGameData);
+          if (parsedGame && Object.keys(parsedGame).length > 0) {
+            if (!Array.isArray(parsedGame)) {
+              allGames.push(parsedGame);
+            } else {
+              allGames.push(...parsedGame);
+            }
           }
         }
       }
+      console.log('a', allGames);
 
-      if (!currentStageGames || currentStageGames.length === 0) {
+      if (allGames.length === 0) {
         toast.error('저장된 경기 일정이 없습니다.');
         return;
       }
 
-      // const allGamesConfirmed = currentStageGames.every((game) => {
-      //   const isConfirmed = sessionStorage.getItem(
-      //     `isConfirmed_${game.gameId}`,
-      //   );
-      //   return isConfirmed === 'true';
-      // });
-
-      // if (!allGamesConfirmed) {
-      //   toast.error('모든 경기의 시간을 설정해주세요.');
-      //   return;
-      // }
-
-      await postStage(Number(stageId), { games: currentStageGames });
+      await postStage(Number(stageId), { games: allGames });
       toast.success('스테이지 정보가 성공적으로 저장되었습니다.');
       router.push('/stage');
     } catch (error) {
