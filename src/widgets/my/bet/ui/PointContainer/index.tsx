@@ -34,7 +34,7 @@ const PointContainer = ({ tempPoint, stageId }: PointContainerProps) => {
             </h4>
             <button
               className={cn('flex', 'items-center', 'gap-[1rem]')}
-              onClick={() => push(`/${stageId}`)}
+              onClick={() => push(`/main/${stageId}`)}
             >
               <p className={cn('text-body2s', 'text-main-500')}>
                 베팅하러 가기

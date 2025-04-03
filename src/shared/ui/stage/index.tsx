@@ -70,14 +70,14 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
           setStageName(stageName);
         }
       } else if (isParticipating && isStagePage) {
-        push(`/${stageId}`);
+        push(`/main/${stageId}`);
       }
     } else if (isParticipating) {
       push(`/stage/stageId=${stage.stageId}`);
     } else if (Participate) {
       setStageId(stageId);
       if (isStagePage) {
-        push(`/${stageId}`);
+        push(`/main/${stageId}`);
       } else {
         setStageId(stageId);
         push(`/my/bet/${stageId}`);
