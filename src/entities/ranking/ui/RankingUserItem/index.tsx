@@ -49,7 +49,7 @@ const RankingUserItem = ({ rank, isMainUsed }: RankingUserItemProps) => {
           'mobile:text-body3s',
         )}
       >
-        {rank.point || 0}P
+        {rank.point.toLocaleString() || 0}P
       </p>
     </div>
   );
