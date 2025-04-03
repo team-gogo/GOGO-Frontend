@@ -423,7 +423,10 @@ const SetTimePage = () => {
       // console.log('저장되는 게임 데이터:', games);
 
       setStageGames(Number(stageId), games as Game[]);
-      sessionStorage.setItem(`stageGames_${stageId}`, JSON.stringify(games));
+      sessionStorage.setItem(
+        `stageGames_${stageId}_${gameId}`,
+        JSON.stringify(games),
+      );
 
       toast.success('경기 일정이 저장되었습니다.');
 

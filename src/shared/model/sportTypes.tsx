@@ -6,7 +6,7 @@ import {
   BasketballIcon,
   CoinTossIcon,
   EtcIcon,
-  LoLIcon,
+  // LoLIcon,
   SoccerIcon,
   VolleyballIcon,
   YavarweeIcon,
@@ -17,7 +17,7 @@ export type SportType =
   | 'BASE_BALL'
   | 'BASKET_BALL'
   | 'VOLLEY_BALL'
-  | 'LOL'
+  // | 'LOL'
   | 'BADMINTON'
   | 'ETC';
 
@@ -39,7 +39,7 @@ export const SPORT_TYPES: Record<
     icon: (color) => <VolleyballIcon color={color} />,
     text: '배구',
   },
-  LOL: { icon: (color) => <LoLIcon color={color} />, text: 'LoL' },
+  // LOL: { icon: (color) => <LoLIcon color={color} />, text: 'LoL' },
   BADMINTON: {
     icon: (color) => <BadmintonIcon color={color} />,
     text: '배드민턴',
