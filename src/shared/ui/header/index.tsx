@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useNavigation } from '@/shared/model/useNavigation';
-import { useUserNameStore } from '@/shared/stores';
+import { useUserStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 import { useGetMyInfo } from '@/views/my/model/useGetMyInfo';
 import GOGOIcon from '../GOGOIcon';
@@ -13,11 +13,12 @@ const Header = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const { data: userData } = useGetMyInfo();
 
-  const { setUserName } = useUserNameStore();
+  const { setUserName, setStudentId } = useUserStore();
 
   useEffect(() => {
-    if (userData?.name) {
+    if (userData) {
       setUserName(userData.name);
+      setStudentId(userData.studentId);
     }
   }, [userData]);
 

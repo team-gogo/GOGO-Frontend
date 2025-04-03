@@ -1,11 +1,11 @@
 'use client';
 import { usePathname } from 'next/navigation';
-import { useUserNameStore } from '@/shared/stores';
 import { FaqIcon, HelpIcon, HumanIcon, NoticeIcon } from '../assets/svg';
+import { useUserStore } from '../stores';
 
 export const useNavigation = () => {
   const pathname = usePathname();
-  const { userName } = useUserNameStore();
+  const { userName } = useUserStore();
 
   const isActive = (path: string): boolean => pathname === path;
 

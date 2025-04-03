@@ -506,6 +506,7 @@ const SetTimePage = () => {
             label="팀들 날짜와 시간 설정하기"
             onClick={() => {
               sessionStorage.removeItem(`placedTeams_${gameId}`);
+              sessionStorage.removeItem(`savedMatches_${gameId}`);
               router.back();
               setTimeout(() => {
                 window.location.reload();

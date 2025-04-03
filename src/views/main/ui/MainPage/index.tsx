@@ -117,6 +117,9 @@ const MainPage = () => {
             <h2 className={cn('text-h3e', 'text-white')}>
               {formatPoint(point)}
             </h2>
+            <h3 className={cn('text-body1s', 'text-gray-200')}>
+              ({point.toLocaleString()})
+            </h3>
           </div>
           <DateContainer />
         </div>
