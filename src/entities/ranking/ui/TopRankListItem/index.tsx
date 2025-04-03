@@ -35,7 +35,7 @@ const TopRankListItem = ({ rank }: TopRankListItemProps) => {
       case 3:
         return { primary: '#692814', secondary: '#B35933' };
       default:
-        return { primary: '#4D4D4D', secondary: '#4D4D4D' }; // Changed default color
+        return { primary: '#4D4D4D', secondary: '#4D4D4D' };
     }
   };
 
@@ -45,7 +45,7 @@ const TopRankListItem = ({ rank }: TopRankListItemProps) => {
     <div className={cn('flex', 'flex-col', 'items-center', 'space-y-4')}>
       <div className={cn('flex', 'items-center', 'justify-center', 'gap-4')}>
         <p className={cn('text-caption1s', 'text-main-400')}>
-          {rank.point || 0}
+          {rank.point.toLocaleString() || 0}
         </p>
         <PointIcon size={16} fill="#748CFE" />
       </div>

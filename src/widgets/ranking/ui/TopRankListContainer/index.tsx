@@ -18,7 +18,6 @@ const TopRankListContainer = ({ topRanks }: TopRankListContainerProps) => {
         'py-[2.25rem]',
         'tablet:px-0',
         'tablet:py-0',
-        'tablet:',
         'relative',
         'flex',
         'items-center',

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useUserNameStore } from '@/shared/stores';
 import { RankItem } from '@/shared/types/ranking';
 import { cn } from '@/shared/utils/cn';
 
@@ -8,6 +9,11 @@ interface RankingUserItemProps {
 }
 
 const RankingUserItem = ({ rank, isMainUsed }: RankingUserItemProps) => {
+  const { studentId } = useUserNameStore();
+
+  console.log('🍒' + studentId);
+
+  console.log(rank.studentId);
   return (
     <div
       className={cn(
@@ -49,7 +55,7 @@ const RankingUserItem = ({ rank, isMainUsed }: RankingUserItemProps) => {
           'mobile:text-body3s',
         )}
       >
-        {rank.point || 0}P
+        {rank.point.toLocaleString() || 0}P
       </p>
     </div>
   );
