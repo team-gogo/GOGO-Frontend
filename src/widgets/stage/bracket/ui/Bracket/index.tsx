@@ -909,7 +909,19 @@ const Bracket = () => {
         const updatedTree = cloneTree(bracketTree);
         setBracketTree(updatedTree);
       }
-
+      if (allTeams.length === 3) {
+        const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
+        if (placedTeamsData) {
+          const placedTeamsObj = JSON.parse(placedTeamsData);
+          const byeTeam = placedTeamsObj['1_0_right'];
+          if (byeTeam) {
+            sessionStorage.setItem(
+              `threeTeamBye_${gameId}`,
+              JSON.stringify(byeTeam),
+            );
+          }
+        }
+      }
       toast.success(`${maxPositions}개 팀이 랜덤으로 배치되었습니다.`);
     } catch (error) {
       console.error(error);

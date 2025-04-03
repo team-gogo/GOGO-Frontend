@@ -27,6 +27,7 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
     useTeamDetailModalStore();
 
   const [selectedTeamIds, setSelectedTeamIds] = useState<number[]>([]);
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
   const [teams, setTeams] = useState<
     Array<{ teamId: number; teamName: string; participantCount: number }>
   >([]);
@@ -50,6 +51,37 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
     };
     fetchTeams();
   }, [gameId]);
+
+  useEffect(() => {
+    const updateButtonState = async () => {
+      try {
+        const stageId = sessionStorage.getItem(`stageId_${gameId}`);
+        if (!stageId) return;
+
+        const response = await getMatchApplyList(Number(stageId));
+        const foundGame = response.games.find(
+          (g) => g.gameId.toString() === gameId,
+        );
+
+        if (!foundGame) return;
+
+        if (foundGame.system === 'TOURNAMENT') {
+          setIsButtonEnabled(
+            selectedTeamIds.length >= 3 && selectedTeamIds.length <= 8,
+          );
+        } else if (
+          foundGame.system === 'FULL_LEAGUE' ||
+          foundGame.system === 'SINGLE'
+        ) {
+          setIsButtonEnabled(selectedTeamIds.length >= 2);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    updateButtonState();
+  }, [selectedTeamIds, gameId]);
 
   const handleViewDetails = useCallback((_teamId: number) => {
     setTeamId(_teamId);
@@ -84,34 +116,33 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
       }
 
       if (foundGame.system === 'TOURNAMENT') {
-        if (selectedTeamIds.length < 2 || selectedTeamIds.length > 8) {
+        if (selectedTeamIds.length < 3 || selectedTeamIds.length > 8) {
           toast.error('3개 이상 8개 이하의 팀을 선택해주세요.');
+          setIsButtonEnabled(false);
           return;
-        } else {
-          router.push(
-            `/stage/bracket?gameId=${gameId}&system=${foundGame.system}`,
-          );
         }
+        router.push(
+          `/stage/bracket?gameId=${gameId}&system=${foundGame.system}`,
+        );
       } else if (
         foundGame.system === 'FULL_LEAGUE' ||
         foundGame.system === 'SINGLE'
       ) {
         if (selectedTeamIds.length < 2) {
           toast.error('최소 2개 이상의 팀을 선택해주세요.');
+          setIsButtonEnabled(false);
           return;
-        } else {
-          sessionStorage.setItem(
-            `confirmedTeams_${gameId}`,
-            JSON.stringify(selectedTeams),
-          );
-          router.push(
-            `/stage/time?gameId=${gameId}&system=${foundGame.system}`,
-          );
         }
+        sessionStorage.setItem(
+          `confirmedTeams_${gameId}`,
+          JSON.stringify(selectedTeams),
+        );
+        router.push(`/stage/time?gameId=${gameId}&system=${foundGame.system}`);
       }
     } catch (error) {
       console.error(error);
       toast.error('게임 정보를 불러오는데 실패했습니다.');
+      setIsButtonEnabled(false);
     }
   }, [teams, selectedTeamIds, router, gameId]);
 
@@ -165,15 +196,13 @@ const ConfirmTeamContainer = ({ params }: ConfirmTeamContainerProps) => {
                 'justify-center',
                 'px-24',
                 'text-body3s',
-                selectedTeamIds.length < 3
-                  ? 'border-[2px] border-solid border-[#526FFE] text-[#526FFE]'
-                  : 'bg-[#526FFE] text-white',
+                !isButtonEnabled
+                  ? 'cursor-not-allowed border-[2px] border-solid border-[#526FFE] text-[#526FFE]'
+                  : 'cursor-pointer bg-[#526FFE] text-white',
               )}
             >
               <span className="mr-10">팀 확정하기</span>
-              <ButtonCheckIcon
-                color={selectedTeamIds.length < 3 ? '#526FFE' : 'white'}
-              />
+              <ButtonCheckIcon color={!isButtonEnabled ? '#526FFE' : 'white'} />
             </button>
           </div>
         </div>

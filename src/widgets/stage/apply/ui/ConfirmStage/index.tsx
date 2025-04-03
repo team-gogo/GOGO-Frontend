@@ -11,16 +11,17 @@ const ConfirmStage = ({ onClick }: ConfirmStageProps) => {
       type="button"
       onClick={onClick}
       className={cn(
-        'w-36',
+        'w-32',
         'flex',
         'gap-8',
-        'py-8',
-        'px-16',
+        'p-8',
+        'mx-20',
         'border-1',
         'border-solid',
         'border-gray-400',
         'items-center',
         'rounded-lg',
+        'justify-center',
       )}
     >
       <ButtonCheckIcon color="#898989" />
