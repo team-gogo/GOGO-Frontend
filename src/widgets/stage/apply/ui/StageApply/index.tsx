@@ -29,8 +29,6 @@ const StageApply = ({
   const [isMaintainer, setIsMaintainer] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(initialIsConfirmed);
 
-  console.log(game.gameId);
-
   useEffect(() => {
     const checkMaintainer = async () => {
       try {

@@ -301,7 +301,6 @@ const SetTimePage = () => {
 
         if (confirmedTeamsData) {
           parsedTeams = JSON.parse(confirmedTeamsData);
-          console.log('Confirmed Teams:', parsedTeams); // 됨
 
           parsedTeams.sort((a, b) => a.teamId - b.teamId);
         }
@@ -317,8 +316,6 @@ const SetTimePage = () => {
         );
         return foundTeam ? foundTeam.teamId : null;
       };
-
-      console.log(findTeamId('1'));
 
       if (system === GameSystem.TOURNAMENT) {
         const tournamentGames = savedMatches.map((match) => {
@@ -378,9 +375,6 @@ const SetTimePage = () => {
           tournament: uniqueTournamentGames,
         });
       } else if (system === GameSystem.FULL_LEAGUE) {
-        // 여기서 teamAName과 teamBName이 TBD인 문제
-        console.log(savedMatches);
-
         const leagueGames = savedMatches.map((match, index) => {
           return {
             teamAId: findTeamId(match.teamAName),
@@ -419,8 +413,6 @@ const SetTimePage = () => {
           },
         });
       }
-
-      // console.log('저장되는 게임 데이터:', games);
 
       setStageGames(Number(stageId), games as Game[]);
       sessionStorage.setItem(
