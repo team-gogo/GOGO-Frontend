@@ -661,6 +661,20 @@ const SetTimeContainer = ({
                 round: '8강',
               });
 
+              semiFinals.push({
+                index: 1,
+                teamAName: 'TBD',
+                teamBName: 'TBD',
+                round: '4강',
+              });
+
+              semiFinals.push({
+                index: 2,
+                teamAName: 'TBD',
+                teamBName: 'TBD',
+                round: '4강',
+              });
+
               finals.push({
                 index: 1,
                 teamAName: 'TBD',
@@ -797,6 +811,7 @@ const SetTimeContainer = ({
 
           const sortedQuarterFinals = sortAndAdjustIndexes([...quarterFinals]);
           const sortedSemiFinals = sortAndAdjustIndexes([...semiFinals]);
+
           setMatches({
             quarterFinals: sortedQuarterFinals,
             semiFinals: sortedSemiFinals,

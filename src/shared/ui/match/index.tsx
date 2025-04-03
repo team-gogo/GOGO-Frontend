@@ -212,7 +212,14 @@ const Match = ({ match }: MatchProps) => {
           matchId={matchId}
         />
       )}
-      <div className={cn('flex', 'flex-col', 'justify-center', 'gap-[2rem]')}>
+      <div
+        className={cn(
+          'flex',
+          'flex-col',
+          'justify-center',
+          isPlaying ? 'gap-[2.5rem]' : 'gap-[2rem]',
+        )}
+      >
         <div
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
@@ -386,6 +393,23 @@ const Match = ({ match }: MatchProps) => {
                   : Number(betting.bettingPoint).toLocaleString()}
               </p>
             </div>
+          ) : isPlaying ? (
+            <button
+              className={cn(
+                'w-full',
+                'flex',
+                'p-[0.75rem]',
+                'px-[1rem]',
+                'justify-between',
+                'items-center',
+                'rounded-lg',
+                'bg-main-600',
+              )}
+              onClick={() => push('/live')}
+            >
+              <p className={cn('text-body3s', 'text-white')}>경기 보러가기</p>
+              <RightArrowIcon color="white" />
+            </button>
           ) : (
             <Button
               disabled={
