@@ -19,7 +19,7 @@ const MatchFilterHeader = ({
   const categoryTypes: SportType[] = [
     'VOLLEY_BALL',
     'SOCCER',
-    'LOL',
+    // 'LOL',
     'BASE_BALL',
     'BASKET_BALL',
     'BADMINTON',

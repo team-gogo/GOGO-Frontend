@@ -9,7 +9,7 @@ type Category =
   | 'BASE_BALL'
   | 'VOLLEY_BALL'
   | 'BADMINTON'
-  | 'LOL'
+  // | 'LOL'
   | 'ETC';
 type System = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';
 
