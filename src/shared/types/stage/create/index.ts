@@ -4,7 +4,7 @@ export type GameCategory =
   | 'BASE_BALL'
   | 'VOLLEY_BALL'
   | 'BADMINTON'
-  | 'LOL'
+  // | 'LOL'
   | 'ETC';
 
 export type GameSystem = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';

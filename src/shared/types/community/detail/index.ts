@@ -4,7 +4,7 @@ export enum Category {
   BASE_BALL = 'BASE_BALL',
   VOLLEY_BALL = 'VOLLEY_BALL',
   BADMINTON = 'BADMINTON',
-  LOL = 'LOL',
+  // LOL = 'LOL',
   ETC = 'ETC',
 }
 
