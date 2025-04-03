@@ -6,10 +6,10 @@ import { useForm, SubmitHandler, FieldErrors } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { AnimationDisplayContainer } from '@/entities/mini-game';
 import { CoinTossAnimation } from '@/entities/mini-game/coin-toss';
+import CoinTossButton from '@/entities/mini-game/coin-toss/ui/CoinTossButton';
 import { handleFormErrors } from '@/shared/model/formErrorUtils';
 import { CoinTossForm } from '@/shared/types/mini-game/conin-toss';
 import BackPageButton from '@/shared/ui/backPageButton';
-import Button from '@/shared/ui/button';
 import { cn } from '@/shared/utils/cn';
 import { ControlForm } from '@/widgets/mini-game';
 
@@ -20,7 +20,7 @@ const CoinTossPage = () => {
   const [videoSource, setVideoSource] = useState<string>('/BackCoin.mp4');
   const { register, handleSubmit, watch, setValue } = useForm<CoinTossForm>();
 
-  register('side', { required: '동전 면을 선택해주세요' });
+  register('bet', { required: '동전 면을 선택해주세요' });
 
   const handlePlay = () => {
     const randomSource =
@@ -35,15 +35,18 @@ const CoinTossPage = () => {
   };
 
   const onSubmit: SubmitHandler<CoinTossForm> = (data) => {
-    console.log('Submitted Points:', data.amount);
-    console.log('Selected Side:', data.side);
+    const formatData = {
+      amount: data.amount,
+      bet: data.bet,
+    };
+    console.log(formatData);
     handlePlay();
   };
 
   const onError = (errors: FieldErrors<CoinTossForm>) => {
     handleFormErrors(errors, toast.error);
   };
-  const selectedSide = watch('side');
+  const selectedSide = watch('bet');
 
   return (
     <form
@@ -69,21 +72,16 @@ const CoinTossPage = () => {
             'mobile:gap-[40px]',
           )}
         >
-          <Button
-            onClick={() => setValue('side', 'front')}
-            bg={selectedSide !== 'front' ? 'bg-black-800' : undefined}
-            border={selectedSide === 'front' ? undefined : 'border-white'}
-          >
-            앞면
-          </Button>
-
-          <Button
-            onClick={() => setValue('side', 'back')}
-            bg={selectedSide !== 'back' ? 'bg-black-800' : undefined}
-            border={selectedSide === 'back' ? undefined : 'border-white'}
-          >
-            뒷면
-          </Button>
+          <CoinTossButton
+            side="FRONT"
+            selectedSide={selectedSide}
+            setValue={setValue}
+          />
+          <CoinTossButton
+            side="BACK"
+            selectedSide={selectedSide}
+            setValue={setValue}
+          />
         </div>
       </div>
 
