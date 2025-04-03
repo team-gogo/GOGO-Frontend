@@ -134,7 +134,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
               placeholder="팀 이름을 입력해주세요."
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
-              maxLength={10}
+              maxLength={6}
             />
           </div>
         </div>
