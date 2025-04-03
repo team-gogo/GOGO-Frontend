@@ -11,9 +11,6 @@ interface RankingUserItemProps {
 const RankingUserItem = ({ rank, isMainUsed }: RankingUserItemProps) => {
   const { studentId } = useUserNameStore();
 
-  console.log('🍒' + studentId);
-
-  console.log(rank.studentId);
   return (
     <div
       className={cn(
@@ -40,7 +37,7 @@ const RankingUserItem = ({ rank, isMainUsed }: RankingUserItemProps) => {
         </p>
         <p
           className={cn(
-            'text-gray-300',
+            rank.studentId === studentId ? 'text-white' : 'text-gray-300',
             isMainUsed ? 'text-caption1s' : 'text-body2s',
             'mobile:text-caption1s',
           )}
