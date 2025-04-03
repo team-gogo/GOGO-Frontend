@@ -50,8 +50,11 @@ const SetTimeContainer = ({
     round: string;
     index: number;
   } | null>(null);
-  const [savedMatches, setSavedMatches] =
-    useState<SavedMatchData[]>(initialSavedMatches);
+  const [savedMatches, setSavedMatches] = useState<SavedMatchData[]>(
+    initialSavedMatches.filter(
+      (match) => !(match.round === '결승' && match.index === 0),
+    ),
+  );
   const [matches, setMatches] = useState<{
     quarterFinals: MatchData[];
     semiFinals: MatchData[];
@@ -164,11 +167,11 @@ const SetTimeContainer = ({
             if (!finalsMatch) {
               savedMatches.push({
                 round: '결승',
-                index: 0,
+                index: 1,
                 startDate: startDateStr,
                 endDate: endDateStr,
-                teamAName: teamAName, // 4강 승자가 될 팀
-                teamBName: byeTeam.teamName, // 부전승 팀
+                teamAName: 'TBD',
+                teamBName: byeTeam.teamName,
               });
             }
           }
@@ -285,6 +288,19 @@ const SetTimeContainer = ({
           ...rest,
           leagueTurn: rest.index,
         }));
+        sessionStorage.setItem(
+          savedMatchesKey,
+          JSON.stringify(modifiedSavedMatches),
+        );
+      } else if (system === GameSystem.TOURNAMENT) {
+        const modifiedSavedMatches = savedMatches.filter(
+          (match) => !(match.round === '결승' && match.index === 0),
+        );
+
+        console.log(
+          '부전승',
+          sessionStorage.getItem(`threeTeamBye_${matchId}`),
+        );
         sessionStorage.setItem(
           savedMatchesKey,
           JSON.stringify(modifiedSavedMatches),

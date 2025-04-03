@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { PointCircleIcon } from '@/shared/assets/svg';
-import { useMatchStore } from '@/shared/stores';
+import { useMatchStore, usePointStore } from '@/shared/stores';
 import { BettingFormData } from '@/shared/types/main';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
@@ -23,6 +23,7 @@ interface BettingModalProps {
 
 const BettingModal = ({ onClose }: BettingModalProps) => {
   const { matchStatus, match } = useMatchStore();
+  const { point } = usePointStore();
 
   const params = useParams<{ stageId: string }>();
   const { stageId } = params;
@@ -54,7 +55,8 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
     !bettingPoint ||
     !selectedTeamId ||
     Number(bettingPoint) > Number(maxMinPointData?.maxBettingPoint) ||
-    Number(bettingPoint) < Number(maxMinPointData?.minBettingPoint);
+    Number(bettingPoint) < Number(maxMinPointData?.minBettingPoint) ||
+    bettingPoint > point;
 
   const onSubmit = (data: BettingFormData) => {
     const formattedData = formatBettingData(data, selectedTeamId);

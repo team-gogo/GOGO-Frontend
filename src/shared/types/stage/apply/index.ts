@@ -4,7 +4,7 @@ type MatchCategory =
   | 'BASE_BALL'
   | 'VOLLEY_BALL'
   | 'BADMINTON'
-  | 'LOL'
+  // | 'LOL'
   | 'ETC';
 
 type SystemCategory = 'TOURNAMENT' | 'FULL_LEAGUE' | 'SINGLE';

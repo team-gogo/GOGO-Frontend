@@ -16,7 +16,7 @@ interface DetailFormationProps {
     | 'BASE_BALL'
     | 'VOLLEY_BALL'
     | 'BADMINTON'
-    | 'LOL'
+    // | 'LOL'
     | 'ETC';
   team1DetailData?: TeamDetailType;
   team2DetailData?: TeamDetailType;
