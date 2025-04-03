@@ -432,7 +432,9 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       toast.success('팀 생성이 완료되었습니다.');
     } catch (error) {
       console.error(error);
-      toast.error('팀 생성에 실패했습니다.');
+      const errorMessage =
+        error instanceof Error ? error.message : '팀 생성에 실패했습니다.';
+      toast.error(errorMessage);
     }
   }, [players, membersList, teamName, router, gameId]);
 
