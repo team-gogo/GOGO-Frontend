@@ -45,7 +45,7 @@ const CommunityPage = () => {
             'gap-[2rem]',
           )}
         >
-          <BackPageButton type="push" path={`/${stageId}`} />
+          <BackPageButton type="push" path={`/main/${stageId}`} />
           <CommunityToolbar
             selectedSport={selectedSport}
             selectedSort={selectedSort}

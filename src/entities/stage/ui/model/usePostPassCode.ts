@@ -16,7 +16,7 @@ export const usePostPassCode = (stageId: number) => {
       setIsPasswordModalOpen(false);
       toast.success('스테이지 참여가 완료되었습니다.');
       if (isStatusConfirmed === true) {
-        push(`/${stageId}`);
+        push(`/main/${stageId}`);
         setIsStatusConfirmed(false);
       } else if (isStatusConfirmed === false) {
         push(`/stage/stageId=${stageId}`);
