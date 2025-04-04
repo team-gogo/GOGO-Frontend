@@ -23,14 +23,14 @@ const StageMatchSection = ({
   matches,
   isPending,
 }: StageSectionProps) => {
-  const [visibleCount, setVisibleCount] = useState(
-    window.innerWidth <= 768 ? 1 : 2,
-  );
+  const [visibleCount, setVisibleCount] = useState(2);
 
   useEffect(() => {
     const handleResize = () => {
       setVisibleCount(window.innerWidth <= 768 ? 1 : 2);
     };
+
+    handleResize();
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
