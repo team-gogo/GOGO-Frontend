@@ -37,7 +37,6 @@ export const useEditForm = ({ defaultValues }: UseEditFormProps = {}) => {
         queryClient.invalidateQueries({ queryKey: ['my', 'info', 'get'] });
       },
     });
-    console.log('전송 데이터:', JSON.stringify(formattedData, null, 2));
   };
 
   const onError = (errors: FieldErrors<PatchStudentInfo>) => {

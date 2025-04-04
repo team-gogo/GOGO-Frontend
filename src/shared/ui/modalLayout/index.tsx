@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import React from 'react';
 import { XIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
@@ -34,7 +35,11 @@ const ModalLayout = ({
         'justify-center',
         'bg-black',
         'bg-opacity-50',
+        'mt-0!',
+        'space-y-0!',
+        'overflow-visible',
       )}
+      style={{ margin: 0 } as React.CSSProperties}
       onClick={onClose}
     >
       <div className={containerClassName} onClick={(e) => e.stopPropagation()}>

@@ -72,7 +72,6 @@ const MatchApplyPage = () => {
           }
         }
       }
-      console.log('a', allGames);
 
       if (allGames.length === 0) {
         toast.error('저장된 경기 일정이 없습니다.');
