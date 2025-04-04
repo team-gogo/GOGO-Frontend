@@ -36,6 +36,7 @@ const SUPPORTED_SPORTS = [
 const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
   const [teamName, setTeamName] = useState('');
   const [teamCapacity, setTeamCapacity] = useState({ min: 0, max: 0 });
+  const [gameName, setGameName] = useState<string>('');
   const router = useRouter();
   const { stageId, gameId, category } = params;
 
@@ -45,16 +46,22 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
 
   useEffect(() => {
     const fetchGameInfo = async () => {
-      if (stageId) {
+      if (stageId && gameId) {
         const response = await getStageGame(stageId);
-        if (response.games && response.games.length > 0) {
-          const { teamMinCapacity, teamMaxCapacity } = response.games[0];
+
+        const matchedGame = response.games.find(
+          (game) => String(game.gameId) === String(gameId),
+        );
+
+        if (matchedGame) {
+          const { teamMinCapacity, teamMaxCapacity, gameName } = matchedGame;
           setTeamCapacity({ min: teamMinCapacity, max: teamMaxCapacity });
+          setGameName(gameName);
         }
       }
     };
     fetchGameInfo();
-  }, [stageId]);
+  }, [gameId, stageId]);
 
   const inviteStudentRef = useRef<InviteStudentInputRef>(null);
   const {
@@ -126,7 +133,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
         onSubmit={handleFormSubmit(onSubmit)}
         className={cn('flex-1', 'flex', 'flex-col', 'mt-28', 'gap-28')}
       >
-        <h1 className={cn('text-h3e', 'text-white', 'mb-28')}>경기 이름</h1>
+        <h1 className={cn('text-h3e', 'text-white', 'mb-28')}>{gameName}</h1>
         <div>
           <h2 className={cn('text-body2e', 'text-white', 'mt-24')}>팀 이름</h2>
           <div className={cn('mt-24')}>
@@ -134,7 +141,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
               placeholder="팀 이름을 입력해주세요."
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
-              maxLength={10}
+              maxLength={6}
             />
           </div>
         </div>
@@ -163,6 +170,8 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
               setValue={setValue}
               title=" "
               description=" "
+              minSelectableStudents={teamCapacity.min}
+              maxSelectableStudents={teamCapacity.max}
             />
           </div>
         </div>
