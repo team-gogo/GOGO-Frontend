@@ -16,7 +16,7 @@ clientInstance.interceptors.response.use(
       error.response?.status === 401 &&
       error.response.data.isRefreshError
     ) {
-      // window.location.href = '/signin';
+      window.location.href = '/signin';
     }
 
     return Promise.reject(error);

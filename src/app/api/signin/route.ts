@@ -51,6 +51,6 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL('/stage', request.url));
   } catch (error) {
     console.error('❌ Login Failed:', error);
-    // return NextResponse.redirect(new URL('/signin', request.url));
+    return NextResponse.redirect(new URL('/signin', request.url));
   }
 }
