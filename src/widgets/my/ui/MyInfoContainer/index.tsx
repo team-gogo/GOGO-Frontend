@@ -44,12 +44,23 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
   return (
     <div
       className={cn(
-        'relative flex w-full items-center justify-between rounded-xl bg-gray-700 p-[2rem] px-[1.625rem]',
+        'relative',
+        'flex',
+        'w-full',
+        'items-center',
+        'justify-between',
+        'rounded-xl',
+        'bg-gray-700',
+        'px-[1.625rem]',
+        'py-[2rem]',
+        'tablet:py-[1.5rem]',
       )}
     >
       <div className={cn('flex items-center gap-[2.25rem]')}>
         {isPending ? (
-          <div className={cn('text-body1s text-white')}>
+          <div
+            className={cn('text-body1s', 'tablet:text-body2s', 'text-white')}
+          >
             내 정보를 불러오는 중...
           </div>
         ) : (
@@ -58,8 +69,24 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
               key={info.label}
               className={cn('flex items-center gap-[1rem]')}
             >
-              <p className={cn('text-body2s text-gray-500')}>{info.label}</p>
-              <p className={cn('text-body1s text-white')}>{info.value}</p>
+              <p
+                className={cn(
+                  'text-body2s',
+                  'tablet:text-body3s',
+                  'text-gray-500',
+                )}
+              >
+                {info.label}
+              </p>
+              <p
+                className={cn(
+                  'text-body1s',
+                  'tablet:text-body3s',
+                  'text-white',
+                )}
+              >
+                {info.value}
+              </p>
             </div>
           ))
         )}
@@ -80,6 +107,7 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
           <p
             className={cn(
               'text-body1s',
+              'tablet:text-body2s',
               iconClicked ? 'text-white' : 'text-gray-500',
             )}
           >
@@ -90,19 +118,39 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
         {iconClicked && (
           <div
             className={cn(
-              'absolute right-0 top-0 translate-y-[35%] items-center rounded-xl bg-gray-700 px-[2.25rem] py-[2.5rem] shadow-[0px_0px_18px_0px_rgba(0,0,0,0.25)]',
+              'absolute',
+              'right-0',
+              'top-0',
+              'translate-y-[35%]',
+              'items-center',
+              'rounded-xl',
+              'bg-gray-700',
+              'px-[2.25rem]',
+              'tablet:px-[1.5rem]',
+              'py-[2.5rem]',
+              'shadow-[0px_0px_18px_0px_rgba(0,0,0,0.25)]',
             )}
           >
             <div
               className={cn(
-                'flex flex-col items-center justify-center gap-[4.1875rem]',
+                'flex',
+                'flex-col',
+                'items-center',
+                'justify-center',
+                'gap-[4.1875rem]',
+                'tablet:gap-[3rem]',
               )}
             >
               {menuItems.map((item) => (
                 <button
                   key={item.label}
                   onClick={item.action}
-                  className={cn('text-body2s text-gray-400', item.hoverClass)}
+                  className={cn(
+                    'text-body2s',
+                    'tablet:text-bod3s',
+                    'text-gray-400',
+                    item.hoverClass,
+                  )}
                 >
                   {item.label}
                 </button>
