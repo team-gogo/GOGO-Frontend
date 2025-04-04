@@ -13,7 +13,7 @@ type GameState =
   | 'result';
 type Result = 'correct' | 'wrong' | null;
 
-const ShellGame = () => {
+const ShellGame: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [ballPosition, setBallPosition] = useState<number | null>(null);
   const [cupPositions, setCupPositions] = useState<number[]>([0, 1, 2]);
@@ -80,30 +80,32 @@ const ShellGame = () => {
     }, delay);
   };
 
-  const selectCup = (index: number) => {
+  const selectCup = (selectedPosition: number) => {
     if (gameState !== 'selecting') return;
 
-    setUserSelection(index);
+    setUserSelection(selectedPosition);
 
-    const isCorrect = ballPosition === cupPositions[index];
+    const selectedOriginalCupId = cupPositions[selectedPosition];
+
+    const isCorrect = selectedOriginalCupId === ballPosition;
 
     setResult(isCorrect ? 'correct' : 'wrong');
     setGameState('result');
   };
 
-  const isCupRevealed = (index: number): boolean => {
-    const currentPosition = cupPositions.indexOf(index);
+  const isCupRevealed = (originalCupId: number): boolean => {
+    const currentCupPosition = cupPositions.indexOf(originalCupId);
 
-    if (gameState === 'showing' && currentPosition === ballPosition) {
-      return true;
+    if (gameState === 'showing') {
+      return currentCupPosition === ballPosition;
     }
 
     if (gameState === 'result') {
-      if (result === 'correct' && index === userSelection) {
-        return true;
+      if (result === 'correct') {
+        return currentCupPosition === userSelection;
       }
-      if (result === 'wrong' && currentPosition === ballPosition) {
-        return true;
+      if (result === 'wrong') {
+        return originalCupId === ballPosition;
       }
     }
 
@@ -113,25 +115,28 @@ const ShellGame = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-900 p-4">
       <div className="relative mb-12 flex h-60 w-full max-w-[600px] items-center justify-center">
-        {[0, 1, 2].map((index) => (
+        {[0, 1, 2].map((originalCupId) => (
           <motion.div
-            key={index}
+            key={originalCupId}
             className="absolute w-32 cursor-pointer"
             style={{ top: '50%' }}
             animate={{
-              x: cupCoordinates[cupPositions.indexOf(index)].x,
-              y: isCupRevealed(index) ? -50 : 0,
-              zIndex: isCupRevealed(index) ? 10 : 1,
+              x: cupCoordinates[
+                cupPositions.findIndex((v) => v === originalCupId)
+              ].x,
+              y: isCupRevealed(originalCupId) ? -50 : 0,
+              zIndex: isCupRevealed(originalCupId) ? 10 : 1,
               transition: { duration: gameState === 'shuffling' ? 0.5 : 0.3 },
             }}
-            onClick={() => selectCup(index)}
+            onClick={() => selectCup(cupPositions.indexOf(originalCupId))}
           >
             <Image
               src="/cup.png"
-              alt={`컵 ${index + 1}`}
+              alt={`컵 ${originalCupId + 1}`}
               width={128}
               height={128}
-              className="h-auto w-full"
+              className="pointer-events-none h-auto w-full select-none"
+              draggable="false"
             />
           </motion.div>
         ))}
@@ -141,7 +146,9 @@ const ShellGame = () => {
             className="absolute"
             style={{
               bottom: '0px',
-              left: `calc(50% + ${cupCoordinates[ballPosition].x}px - 32px)`,
+              left: `calc(50% + ${
+                cupCoordinates[cupPositions.indexOf(ballPosition)]?.x || 0
+              }px - 32px)`,
             }}
             initial={{ opacity: gameState === 'showing' ? 1 : 0 }}
             animate={{
@@ -154,7 +161,14 @@ const ShellGame = () => {
             }}
             transition={{ duration: gameState === 'showing' ? 0.3 : 0.5 }}
           >
-            <Image src="/ball.png" alt="공" width={64} height={64} />
+            <Image
+              src="/ball.png"
+              alt="공"
+              width={64}
+              height={64}
+              className="pointer-events-none select-none"
+              draggable="false"
+            />
           </motion.div>
         )}
       </div>
