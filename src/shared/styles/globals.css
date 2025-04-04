@@ -109,6 +109,7 @@ button {
 
 html {
   font-family: var(--font-suit);
+  scrollbar-gutter: stable;
 }
 body {
   background-color: #121212;
