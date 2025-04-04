@@ -14,6 +14,7 @@ import { useSearchStudentQuery } from '@/widgets/stage/create/model/useSearchStu
 interface Props {
   register: UseFormRegister<StageData>;
   setValue: UseFormSetValue<StageData>;
+  maxSelectableStudents?: number;
   title?: string;
   description?: string;
 }
@@ -33,6 +34,7 @@ const InviteStudentInput = forwardRef<InviteStudentInputRef, Props>(
       setValue,
       title = '관리할 학생 (최대 5명)',
       description = '관리할 학생은 선택사항입니다.',
+      maxSelectableStudents = 5,
     },
     ref,
   ) => {
@@ -64,8 +66,8 @@ const InviteStudentInput = forwardRef<InviteStudentInputRef, Props>(
     };
 
     const handleStudentSelect = (students: Student[]) => {
-      if (students.length > 5) {
-        toast.error('최대 5명까지 선택 가능합니다.');
+      if (students.length > maxSelectableStudents) {
+        toast.error(`최대 ${maxSelectableStudents}명까지 선택 가능합니다.`);
         return;
       }
       setSelectedStudents(students);

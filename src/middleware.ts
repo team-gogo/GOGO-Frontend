@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
   const refreshToken = request.cookies.get('refreshToken')?.value;
 
   if (!isPublicPath && !accessToken && !refreshToken) {
-    return NextResponse.redirect(new URL('/signin', request.url));
+    // return NextResponse.redirect(new URL('/signin', request.url));
   }
 
   if (isPublicPath && accessToken && refreshToken) {
