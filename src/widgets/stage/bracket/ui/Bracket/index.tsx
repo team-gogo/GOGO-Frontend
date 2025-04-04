@@ -13,8 +13,8 @@ import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
-import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import { cn } from '@/shared/utils/cn';
+import BracketConnectionLayer from '@/widgets/stage/bracket/ui/BracketConnectionLayer';
 
 interface GroupDistribution {
   top: number;
