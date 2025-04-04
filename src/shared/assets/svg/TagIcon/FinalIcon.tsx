@@ -1,8 +1,7 @@
 const FinalIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="1.25rem"
-    height="1.25rem"
+    className="h-[1.25rem] w-[1.25rem] tablet:h-[0.75rem] tablet:w-[0.75rem]"
     viewBox="0 0 20 20"
     fill="none"
   >

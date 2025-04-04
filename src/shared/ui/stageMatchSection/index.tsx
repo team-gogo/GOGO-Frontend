@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import PasswordModal from '@/entities/stage/ui/PasswordModal';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
 import useStageNavigation from '@/shared/model/useStageNavigation';
@@ -22,7 +23,18 @@ const StageMatchSection = ({
   matches,
   isPending,
 }: StageSectionProps) => {
-  const visibleCount = 2;
+  const [visibleCount, setVisibleCount] = useState(2);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setVisibleCount(window.innerWidth <= 768 ? 1 : 2);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const { isPasswordModalOpen, setIsPasswordModalOpen } =
     usePasswordModalStore();
