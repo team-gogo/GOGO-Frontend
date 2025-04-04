@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/shared/libs/GoogleAnalytics';
 import TanstackProviders from '@/shared/libs/TanstackProviders';
 import ToastProvider from '@/shared/libs/ToastProvider';
 import '../shared/styles/globals.css';
@@ -18,6 +19,9 @@ export default function RootLayout({
   return (
     <html lang="ko" className={suit.variable}>
       <body className={cn('min-h-screen')}>
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+        ) : null}
         <TanstackProviders>
           <ToastProvider>{children}</ToastProvider>
         </TanstackProviders>
