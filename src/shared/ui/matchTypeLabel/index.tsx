@@ -7,6 +7,7 @@ interface MatchTypeLabel {
   customText?: string;
   color?: string;
   isHaveBorder?: boolean;
+  pointer?: boolean;
 }
 
 const MatchTypeLabel = ({
@@ -14,6 +15,7 @@ const MatchTypeLabel = ({
   customText,
   color,
   isHaveBorder = false,
+  pointer = false,
 }: MatchTypeLabel) => {
   const { icon, text: defaultText } = MATCH_TYPES[type] || {
     icon: (color) => <EtcIcon color={color} />,
@@ -49,7 +51,9 @@ const MatchTypeLabel = ({
 
   const content = (
     <>
-      {icon && <label>{icon(color)}</label>}
+      {icon && (
+        <label className={cn(pointer && 'cursor-pointer')}>{icon(color)}</label>
+      )}
       <p
         className={cn(
           'text-body3s',
