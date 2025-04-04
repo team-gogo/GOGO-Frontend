@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useMatchBatchArrStore, useMatchNoticeStore } from '@/shared/stores';
 import { MyStageResponse } from '@/shared/types/my';
 import { MatchResponse } from '@/shared/types/my/bet';
@@ -20,7 +20,18 @@ const StageMatchContainer = ({
   matches,
   startIndex,
 }: StageContainerProps) => {
-  const visibleCount = 2;
+  const [visibleCount, setVisibleCount] = useState(
+    window.innerWidth <= 768 ? 1 : 2,
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setVisibleCount(window.innerWidth <= 768 ? 1 : 2);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const { setMatchBatchArr } = useMatchBatchArrStore();
   const { setMatchNoticeArr } = useMatchNoticeStore();
@@ -56,14 +67,20 @@ const StageMatchContainer = ({
           )}
           style={{
             transform: `translateX(calc(-${startIndex * (100 / visibleCount)}% - ${
-              startIndex * 20
+              visibleCount === 1 ? startIndex * 40 : startIndex * 20
             }px))`,
           }}
         >
           {stageInfo.stages?.map((stage) => (
             <div
               key={stage.stageId}
-              className="w-[calc(50%-20px)] flex-shrink-0"
+              className={cn(
+                'flex',
+                'w-[calc(50%-20px)]',
+                'pad:w-full',
+                'shrink-0',
+                'justify-center',
+              )}
             >
               <Stage stage={stage} />
             </div>
