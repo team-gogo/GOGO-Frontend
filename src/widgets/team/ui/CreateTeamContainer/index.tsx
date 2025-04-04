@@ -170,6 +170,7 @@ const CreateTeamContainer = ({ params }: CreateTeamContainerProps) => {
               setValue={setValue}
               title=" "
               description=" "
+              minSelectableStudents={teamCapacity.min}
               maxSelectableStudents={teamCapacity.max}
             />
           </div>
