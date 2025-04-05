@@ -1,8 +1,8 @@
-// import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
+import BracketTeamDisplay from '@/shared/ui/BracketTeamDisplay';
 import ModalLayout from '@/shared/ui/modalLayout';
 import { cn } from '@/shared/utils/cn';
-// import { getTeamInfo } from '@/views/match/api/getTeamInfo';
 import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
 
 interface BracketModalProps {
@@ -10,12 +10,12 @@ interface BracketModalProps {
   _gameId: number;
 }
 
-const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
-  // const { data: gameInfo } = useQuery({
-  //   queryKey: ['gameInfo', gameId],
-  //   queryFn: () => getTeamInfo(gameId),
-  // });
+interface GroupDistribution {
+  top: number;
+  bottom: number;
+}
 
+const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
   const bracketMockData = getBracketMock();
 
   const teamCount = bracketMockData.reduce((count, match) => {
@@ -24,6 +24,46 @@ const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
     if (match.teamBId !== null) matchTeams++;
     return count + matchTeams;
   }, 0);
+
+  const finalStage = teamCount <= 4 ? 4 : 8;
+  const distribution = useMemo((): [GroupDistribution, GroupDistribution] => {
+    if (teamCount === 6) {
+      return [
+        { top: 2, bottom: 1 },
+        { top: 1, bottom: 2 },
+      ];
+    }
+
+    if (teamCount === 5) {
+      return [
+        { top: 2, bottom: 1 },
+        { top: 2, bottom: 0 },
+      ];
+    }
+
+    if (teamCount <= 4) {
+      const leftTotal = Math.ceil(teamCount / 2);
+      const rightTotal = Math.floor(teamCount / 2);
+      return [
+        { top: leftTotal, bottom: 0 },
+        { top: rightTotal, bottom: 0 },
+      ];
+    }
+
+    const leftTotal = Math.ceil(teamCount / 2);
+    const rightTotal = Math.floor(teamCount / 2);
+
+    return [
+      {
+        top: Math.ceil(leftTotal / 2),
+        bottom: Math.floor(leftTotal / 2),
+      },
+      {
+        top: Math.ceil(rightTotal / 2),
+        bottom: Math.floor(rightTotal / 2),
+      },
+    ];
+  }, [teamCount]);
 
   return (
     <ModalLayout
@@ -40,15 +80,13 @@ const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
     >
       <div className={cn('flex flex-col gap-12')}>
         <hr className={cn('border-gray-600')} />
-        <div className={cn('relative flex h-[400px] flex-col')}>
+        <div className={cn('relative flex h-[380px] flex-col')}>
           <BracketConnectionLayer
-            finalStage={1}
+            finalStage={finalStage}
             teamCount={teamCount}
-            firstRoundDistribution={[
-              { top: 1, bottom: 1 },
-              { top: 1, bottom: 1 },
-            ]}
+            firstRoundDistribution={distribution}
           />
+          <BracketTeamDisplay teamCount={teamCount} />
         </div>
       </div>
     </ModalLayout>
