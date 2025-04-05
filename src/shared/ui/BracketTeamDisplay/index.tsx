@@ -219,10 +219,12 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
             'QUARTER_FINALS',
           )}
           {renderBracketColumn(2, false, undefined, 'left', 'SEMI_FINALS')}
-          {renderBracketColumn(1, false, undefined, 'left', 'FINALS')}
+          <div className={cn('relative', 'right-[50px]')}>
+            {renderBracketColumn(1, false, undefined, 'left', 'FINALS')}
+          </div>
         </div>
 
-        <div className="w-[50px]" />
+        <div className={cn('mx-20 w-[50px]')} />
 
         <div className={cn('flex', 'flex-1', 'justify-start', 'gap-4')}>
           {renderBracketColumn(1, false, undefined, 'right', 'FINALS')}
