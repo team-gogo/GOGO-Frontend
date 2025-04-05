@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
+import calculateTeamDistribution from '@/shared/model/calculateTeamDistribution';
 import { cn } from '@/shared/utils/cn';
 import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
 
@@ -13,31 +14,6 @@ interface GroupDistribution {
 }
 
 const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
-  const calculateTeamDistribution = (
-    totalTeamCount: number,
-  ): [GroupDistribution, GroupDistribution] => {
-    if (totalTeamCount === 6) {
-      return [
-        { top: 2, bottom: 1 },
-        { top: 1, bottom: 2 },
-      ];
-    }
-
-    const leftTotal = Math.ceil(totalTeamCount / 2);
-    const rightTotal = Math.floor(totalTeamCount / 2);
-
-    return [
-      {
-        top: Math.ceil(leftTotal / 2),
-        bottom: Math.floor(leftTotal / 2),
-      },
-      {
-        top: Math.ceil(rightTotal / 2),
-        bottom: Math.floor(rightTotal / 2),
-      },
-    ];
-  };
-
   const { distribution, bracketData } = useMemo(() => {
     return {
       distribution: calculateTeamDistribution(teamCount),
