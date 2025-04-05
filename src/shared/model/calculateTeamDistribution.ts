@@ -1,4 +1,4 @@
-interface GroupDistribution {
+export interface GroupDistribution {
   top: number;
   bottom: number;
 }
