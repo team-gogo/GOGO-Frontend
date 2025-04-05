@@ -16,7 +16,7 @@ interface GroupDistribution {
 }
 
 const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
-  const bracketMockData = getBracketMock();
+  const bracketMockData = getBracketMock(5);
 
   const teamCount = bracketMockData.reduce((count, match) => {
     let matchTeams = 0;
@@ -27,29 +27,6 @@ const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
 
   const finalStage = teamCount <= 4 ? 4 : 8;
   const distribution = useMemo((): [GroupDistribution, GroupDistribution] => {
-    if (teamCount === 6) {
-      return [
-        { top: 2, bottom: 1 },
-        { top: 1, bottom: 2 },
-      ];
-    }
-
-    if (teamCount === 5) {
-      return [
-        { top: 2, bottom: 1 },
-        { top: 2, bottom: 0 },
-      ];
-    }
-
-    if (teamCount <= 4) {
-      const leftTotal = Math.ceil(teamCount / 2);
-      const rightTotal = Math.floor(teamCount / 2);
-      return [
-        { top: leftTotal, bottom: 0 },
-        { top: rightTotal, bottom: 0 },
-      ];
-    }
-
     const leftTotal = Math.ceil(teamCount / 2);
     const rightTotal = Math.floor(teamCount / 2);
 
