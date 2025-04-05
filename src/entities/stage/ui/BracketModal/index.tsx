@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import BracketTeamDisplay from '@/shared/ui/BracketTeamDisplay';
 import ModalLayout from '@/shared/ui/modalLayout';
 import { cn } from '@/shared/utils/cn';
-import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
+// import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
+import { getGameFormat } from '../api/getGameFormat';
 
 interface BracketModalProps {
   onClose: () => void;
@@ -15,20 +16,57 @@ interface GroupDistribution {
   bottom: number;
 }
 
-const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
-  const bracketMockData = getBracketMock(7);
+interface BracketData {
+  round:
+    | 'ROUND_OF_32'
+    | 'ROUND_OF_16'
+    | 'QUARTER_FINALS'
+    | 'SEMI_FINALS'
+    | 'FINALS';
+  match: {
+    matchId: number;
+    turn: number;
+    aTeamId: number | null;
+    aTeamName: string | null;
+    bTeamId: number | null;
+    bTeamName: string | null;
+    isEnd: boolean;
+    winTeamId: number | null;
+  }[];
+}
 
-  const teamCount = bracketMockData.reduce((count, roundData) => {
-    return (
-      count +
-      roundData.match.reduce((matchCount, match) => {
-        let matchTeams = 0;
-        if (match.aTeamId !== null) matchTeams++;
-        if (match.bTeamId !== null) matchTeams++;
-        return matchCount + matchTeams;
-      }, 0)
-    );
-  }, 0);
+const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
+  const [bracketData, setBracketData] = useState<BracketData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getGameFormat(_gameId);
+        setBracketData(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [_gameId]);
+
+  const teamCount = useMemo(() => {
+    return bracketData.reduce((count: number, roundData: BracketData) => {
+      return (
+        count +
+        roundData.match.reduce((matchCount: number, match) => {
+          let matchTeams = 0;
+          if (match.aTeamId !== null) matchTeams++;
+          if (match.bTeamId !== null) matchTeams++;
+          return matchCount + matchTeams;
+        }, 0)
+      );
+    }, 0);
+  }, [bracketData]);
 
   const finalStage = teamCount <= 4 ? 4 : 8;
   const distribution = useMemo((): [GroupDistribution, GroupDistribution] => {
@@ -46,6 +84,27 @@ const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
       },
     ];
   }, [teamCount]);
+
+  if (isLoading) {
+    return (
+      <ModalLayout
+        title={'대진표'}
+        onClose={onClose}
+        containerClassName={cn(
+          'rounded-lg',
+          'bg-gray-700',
+          'p-[40px]',
+          'max-w-[70rem]',
+          'w-full',
+          'space-y-24',
+        )}
+      >
+        <div className={cn('flex h-[300px] items-center justify-center')}>
+          로딩 중...
+        </div>
+      </ModalLayout>
+    );
+  }
 
   return (
     <ModalLayout
