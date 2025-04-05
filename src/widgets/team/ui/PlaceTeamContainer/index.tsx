@@ -536,7 +536,7 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <div className="pointer-events-none fixed inset-0 z-[9999]" />
       <div
-        className={`relative flex flex-col bg-black p-30 ${!isLargeScreen ? 'min-h-screen' : 'h-screen'}`}
+        className={`relative flex flex-col p-30 ${!isLargeScreen ? 'min-h-screen' : 'h-screen'}`}
       >
         <header className="mb-30">
           <BackPageButton type="back" label="팀 배치하기" />
@@ -568,7 +568,7 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="relative h-full overflow-visible rounded-lg"
+                      className="relative h-full overflow-visible rounded-lg bg-transparent"
                       id="court-droppable"
                     >
                       <div className="relative h-full">
