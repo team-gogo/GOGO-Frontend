@@ -1,23 +1,6 @@
-interface BracketData {
-  round:
-    | 'ROUND_OF_32'
-    | 'ROUND_OF_16'
-    | 'QUARTER_FINALS'
-    | 'SEMI_FINALS'
-    | 'FINALS';
-  match: {
-    matchId: number;
-    turn: number;
-    aTeamId: number | null;
-    aTeamName: string | null;
-    bTeamId: number | null;
-    bTeamName: string | null;
-    isEnd: boolean;
-    winTeamId: number | null;
-  }[];
-}
+import { GameFormatData } from '@/shared/types/stage/game';
 
-const getBracketMock = (teamCount: number = 8): BracketData[] => {
+const getBracketMock = (teamCount: number = 8): GameFormatData[] => {
   if (teamCount === 8) {
     return [
       {

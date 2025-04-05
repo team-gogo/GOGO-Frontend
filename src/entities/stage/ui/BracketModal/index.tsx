@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { GameFormatData } from '@/shared/types/stage/game';
 import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import BracketTeamDisplay from '@/shared/ui/BracketTeamDisplay';
 import ModalLayout from '@/shared/ui/modalLayout';
@@ -16,27 +17,8 @@ interface GroupDistribution {
   bottom: number;
 }
 
-interface BracketData {
-  round:
-    | 'ROUND_OF_32'
-    | 'ROUND_OF_16'
-    | 'QUARTER_FINALS'
-    | 'SEMI_FINALS'
-    | 'FINALS';
-  match: {
-    matchId: number;
-    turn: number;
-    aTeamId: number | null;
-    aTeamName: string | null;
-    bTeamId: number | null;
-    bTeamName: string | null;
-    isEnd: boolean;
-    winTeamId: number | null;
-  }[];
-}
-
 const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
-  const [bracketData, setBracketData] = useState<BracketData[]>([]);
+  const [bracketData, setBracketData] = useState<GameFormatData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -55,7 +37,7 @@ const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
   }, [_gameId]);
 
   const teamCount = useMemo(() => {
-    return bracketData.reduce((count: number, roundData: BracketData) => {
+    return bracketData.reduce((count: number, roundData: GameFormatData) => {
       return (
         count +
         roundData.match.reduce((matchCount: number, match) => {
