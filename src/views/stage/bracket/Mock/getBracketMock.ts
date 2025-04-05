@@ -195,8 +195,8 @@ const getBracketMock = (teamCount: number = 8): BracketData[] => {
         turn: 1,
       },
       {
-        teamAId: 3,
-        teamBId: null,
+        teamAId: null,
+        teamBId: 3,
         round: 'SEMI_FINALS',
         turn: 2,
       },
