@@ -26,10 +26,23 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
     turn: number,
     AorB: 'A' | 'B',
   ) => {
-    const match = bracketData.find(
-      (match) => match.round === round && match.turn === turn,
-    );
-    return AorB == 'A' ? match?.teamAId : match?.teamBId;
+    const roundData = bracketData.find((data) => data.round === round);
+    if (!roundData) return null;
+
+    const match = roundData.match.find((match) => match.turn === turn);
+    return AorB === 'A' ? match?.aTeamId : match?.bTeamId;
+  };
+
+  const getTeamNameByRoundAndTurn = (
+    round: string,
+    turn: number,
+    AorB: 'A' | 'B',
+  ) => {
+    const roundData = bracketData.find((data) => data.round === round);
+    if (!roundData) return null;
+
+    const match = roundData.match.find((match) => match.turn === turn);
+    return AorB === 'A' ? match?.aTeamName : match?.bTeamName;
   };
 
   const findBuyTeam = () => {
@@ -69,39 +82,63 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
             const actualIndex = startIndex + idx;
 
             let teamId = null;
+            let teamName = null;
             const buyTeam = findBuyTeam();
 
             if (side === 'left') {
               if (actualIndex === 0) {
-                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 1, 'A'); // turn 1의 A팀(위쪽)
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 1, 'A');
+                teamName = getTeamNameByRoundAndTurn('QUARTER_FINALS', 1, 'A');
               } else if (actualIndex === 1) {
-                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 1, 'B'); // turn 1의 B팀(아래쪽)
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 1, 'B');
+                teamName = getTeamNameByRoundAndTurn('QUARTER_FINALS', 1, 'B');
               } else if (actualIndex === 2) {
                 if ((teamCount === 5 || 6) && buyTeam) {
                   teamId = getTeamByRoundAndTurn('SEMI_FINALS', 1, 'B');
+                  teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 1, 'B');
                 } else {
-                  teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 2, 'A'); // turn 2의 A팀(위쪽)
+                  teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 2, 'A');
+                  teamName = getTeamNameByRoundAndTurn(
+                    'QUARTER_FINALS',
+                    2,
+                    'A',
+                  );
                 }
               } else if (actualIndex === 3) {
-                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 2, 'B'); // turn 2의 B팀(아래쪽)
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 2, 'B');
+                teamName = getTeamNameByRoundAndTurn('QUARTER_FINALS', 2, 'B');
               }
             } else if (side === 'right') {
               if (actualIndex === 0) {
                 if (teamCount === 6 && buyTeam) {
                   teamId = getTeamByRoundAndTurn('SEMI_FINALS', 2, 'B');
+                  teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 2, 'B');
                 } else {
-                  teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 4, 'B'); // turn 4의 B팀(위쪽)
+                  teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 4, 'B');
+                  teamName = getTeamNameByRoundAndTurn(
+                    'QUARTER_FINALS',
+                    4,
+                    'B',
+                  );
                 }
               } else if (actualIndex === 1) {
-                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 4, 'A'); // turn 4의 A팀(아래쪽)
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 4, 'A');
+                teamName = getTeamNameByRoundAndTurn('QUARTER_FINALS', 4, 'A');
               } else if (actualIndex === 2) {
                 if (teamCount === 7 && buyTeam) {
                   teamId = getTeamByRoundAndTurn('SEMI_FINALS', 2, 'A');
+                  teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 2, 'A');
                 } else {
-                  teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 3, 'B'); // turn 3의 B팀(위쪽)
+                  teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 3, 'B');
+                  teamName = getTeamNameByRoundAndTurn(
+                    'QUARTER_FINALS',
+                    3,
+                    'B',
+                  );
                 }
               } else if (actualIndex === 3) {
-                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 3, 'A'); // turn 3의 A팀(아래쪽)
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 3, 'A');
+                teamName = getTeamNameByRoundAndTurn('QUARTER_FINALS', 3, 'A');
               }
             }
 
@@ -117,7 +154,7 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
                   )}
                 >
                   <TeamItem
-                    teamName={teamId ? `${teamId}` : 'TBD'}
+                    teamName={teamName || (teamId ? `${teamId}` : 'TBD')}
                     className="w-[160px]"
                   />
                 </div>
@@ -170,30 +207,40 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
           .fill(null)
           .map((_, idx) => {
             let teamId = null;
+            let teamName = null;
 
             if (round === 'SEMI_FINALS') {
               if (side === 'left') {
-                teamId =
-                  idx === 0
-                    ? getTeamByRoundAndTurn('SEMI_FINALS', 1, 'A') // turn 1의 A팀(위쪽)
-                    : getTeamByRoundAndTurn('SEMI_FINALS', 1, 'B'); // turn 1의 B팀(아래쪽)
+                if (idx === 0) {
+                  teamId = getTeamByRoundAndTurn('SEMI_FINALS', 1, 'A');
+                  teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 1, 'A');
+                } else {
+                  teamId = getTeamByRoundAndTurn('SEMI_FINALS', 1, 'B');
+                  teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 1, 'B');
+                }
               } else {
-                teamId =
-                  idx === 0
-                    ? getTeamByRoundAndTurn('SEMI_FINALS', 2, 'B') // turn 2의 B팀(위쪽)
-                    : getTeamByRoundAndTurn('SEMI_FINALS', 2, 'A'); // turn 2의 A팀(아래쪽)
+                if (idx === 0) {
+                  teamId = getTeamByRoundAndTurn('SEMI_FINALS', 2, 'B');
+                  teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 2, 'B');
+                } else {
+                  teamId = getTeamByRoundAndTurn('SEMI_FINALS', 2, 'A');
+                  teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 2, 'A');
+                }
               }
             } else if (round === 'FINALS') {
-              teamId =
-                side === 'left'
-                  ? getTeamByRoundAndTurn('FINALS', 1, 'A') // FINALS A팀(왼쪽)
-                  : getTeamByRoundAndTurn('FINALS', 1, 'B'); // FINALS B팀(오른쪽)
+              if (side === 'left') {
+                teamId = getTeamByRoundAndTurn('FINALS', 1, 'A');
+                teamName = getTeamNameByRoundAndTurn('FINALS', 1, 'A');
+              } else {
+                teamId = getTeamByRoundAndTurn('FINALS', 1, 'B');
+                teamName = getTeamNameByRoundAndTurn('FINALS', 1, 'B');
+              }
             }
 
             return (
               <div key={`${side}_${idx}`} className="relative">
                 <TeamItem
-                  teamName={teamId ? `${teamId}` : 'TBD'}
+                  teamName={teamName || (teamId ? `${teamId}` : 'TBD')}
                   className="w-[160px]"
                 />
               </div>

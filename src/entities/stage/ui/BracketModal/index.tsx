@@ -18,11 +18,16 @@ interface GroupDistribution {
 const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
   const bracketMockData = getBracketMock(7);
 
-  const teamCount = bracketMockData.reduce((count, match) => {
-    let matchTeams = 0;
-    if (match.teamAId !== null) matchTeams++;
-    if (match.teamBId !== null) matchTeams++;
-    return count + matchTeams;
+  const teamCount = bracketMockData.reduce((count, roundData) => {
+    return (
+      count +
+      roundData.match.reduce((matchCount, match) => {
+        let matchTeams = 0;
+        if (match.aTeamId !== null) matchTeams++;
+        if (match.bTeamId !== null) matchTeams++;
+        return matchCount + matchTeams;
+      }, 0)
+    );
   }, 0);
 
   const finalStage = teamCount <= 4 ? 4 : 8;
