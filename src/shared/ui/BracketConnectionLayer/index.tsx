@@ -18,6 +18,8 @@ interface BracketConnectionLayerProps {
   finalStage: number;
   teamCount: number;
   firstRoundDistribution: [GroupDistribution, GroupDistribution];
+  smallViewBox?: string;
+  largeViewBox?: string;
 }
 
 interface BracketSvgProps {
@@ -63,6 +65,8 @@ const BracketConnectionLayer = ({
   finalStage,
   teamCount,
   firstRoundDistribution,
+  smallViewBox = '0 0 992 220',
+  largeViewBox = '0 0 1184 364',
 }: BracketConnectionLayerProps) => {
   const cssVars = {
     '--bracket-final-stage': finalStage,
@@ -76,9 +80,6 @@ const BracketConnectionLayer = ({
       firstRoundDistribution[1].top +
       firstRoundDistribution[1].bottom,
   } as React.CSSProperties;
-
-  const smallViewBox = '0 0 992 220';
-  const largeViewBox = '0 0 1184 364';
 
   const smallSvgStyle = {
     maxWidth: '80%',
