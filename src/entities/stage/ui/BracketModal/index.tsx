@@ -1,21 +1,29 @@
-import { useQuery } from '@tanstack/react-query';
+// import { useQuery } from '@tanstack/react-query';
 import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import ModalLayout from '@/shared/ui/modalLayout';
 import { cn } from '@/shared/utils/cn';
-import { getTeamInfo } from '@/views/match/api/getTeamInfo';
+// import { getTeamInfo } from '@/views/match/api/getTeamInfo';
+import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
 
 interface BracketModalProps {
   onClose: () => void;
-  gameId: number;
+  _gameId: number;
 }
 
-const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
-  const { data: gameInfo } = useQuery({
-    queryKey: ['gameInfo', gameId],
-    queryFn: () => getTeamInfo(gameId),
-  });
+const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
+  // const { data: gameInfo } = useQuery({
+  //   queryKey: ['gameInfo', gameId],
+  //   queryFn: () => getTeamInfo(gameId),
+  // });
 
-  const teamCount = gameInfo?.count || 7;
+  const bracketMockData = getBracketMock();
+
+  const teamCount = bracketMockData.reduce((count, match) => {
+    let matchTeams = 0;
+    if (match.teamAId !== null) matchTeams++;
+    if (match.teamBId !== null) matchTeams++;
+    return count + matchTeams;
+  }, 0);
 
   return (
     <ModalLayout
