@@ -16,7 +16,6 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
   const calculateTeamDistribution = (
     totalTeamCount: number,
   ): [GroupDistribution, GroupDistribution] => {
-    console.log(totalTeamCount);
     if (totalTeamCount === 6) {
       return [
         { top: 2, bottom: 1 },
