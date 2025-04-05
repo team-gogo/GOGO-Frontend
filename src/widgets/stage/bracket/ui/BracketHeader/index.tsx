@@ -1,5 +1,8 @@
+import {
+  DeleteButton,
+  handleRemoveTeam,
+} from '@/entities/stage/bracket/ui/DeleteButton';
 import RandomAddButton from '@/entities/stage/bracket/ui/RandomAddButton';
-import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import { cn } from '@/shared/utils/cn';
 
 interface TeamData {
@@ -56,30 +59,10 @@ const BracketHeader = ({
           finalStage={finalStage}
           firstRoundDistribution={firstRoundDistribution}
         />
-        <button
-          type="button"
-          onClick={() => setDeleteMode(!deleteMode)}
-          className={cn(
-            'flex',
-            'items-center',
-            'gap-10',
-            deleteMode && 'text-red-500',
-          )}
-        >
-          <MinusButtonIcon isActive={deleteMode} />
-          <h2
-            className={cn(
-              'text-gray-500',
-              'text-body1s',
-              deleteMode && 'text-red-500',
-            )}
-          >
-            빼기
-          </h2>
-        </button>
+        <DeleteButton deleteMode={deleteMode} setDeleteMode={setDeleteMode} />
       </div>
     </header>
   );
 };
 
-export default BracketHeader;
+export { BracketHeader, handleRemoveTeam };

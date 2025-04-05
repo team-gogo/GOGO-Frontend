@@ -8,7 +8,10 @@ import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import calculateTeamDistribution from '@/shared/model/calculateTeamDistribution';
 import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import { cn } from '@/shared/utils/cn';
-import BracketHeader from '@/widgets/stage/bracket/ui/BracketHeader';
+import {
+  BracketHeader,
+  handleRemoveTeam,
+} from '@/widgets/stage/bracket/ui/BracketHeader';
 import TeamArray from '@/widgets/stage/bracket/ui/TeamArray';
 
 interface GroupDistribution {
@@ -421,7 +424,16 @@ const Bracket = () => {
                           className="w-[160px]"
                           deleteMode={deleteMode}
                           onDelete={() =>
-                            handleRemoveTeam(round, node.position, side)
+                            handleRemoveTeam(
+                              round,
+                              node.position,
+                              side,
+                              gameId,
+                              savedTeamPlacements,
+                              setSavedTeamPlacements,
+                              bracketTree,
+                              setBracketTree,
+                            )
                           }
                         />
                       )}
@@ -558,7 +570,16 @@ const Bracket = () => {
                               className="w-[160px]"
                               deleteMode={deleteMode}
                               onDelete={() =>
-                                handleRemoveTeam(round, node.position, side)
+                                handleRemoveTeam(
+                                  round,
+                                  node.position,
+                                  side,
+                                  gameId,
+                                  savedTeamPlacements,
+                                  setSavedTeamPlacements,
+                                  bracketTree,
+                                  setBracketTree,
+                                )
                               }
                             />
                           )}
@@ -695,44 +716,6 @@ const Bracket = () => {
   const handleDragStart = () => {
     setIsDragging(true);
     document.body.classList.add('dnd-dragging');
-  };
-
-  const handleRemoveTeam = (
-    round: number,
-    position: number,
-    side: 'left' | 'right',
-  ) => {
-    try {
-      const placedTeams: Record<string, TeamData> = { ...savedTeamPlacements };
-      const positionKey = `${round}_${position}_${side}`;
-
-      delete placedTeams[positionKey];
-      sessionStorage.setItem(
-        `placedTeams_${gameId}`,
-        JSON.stringify(placedTeams),
-      );
-      setSavedTeamPlacements(placedTeams);
-
-      const customEvent = new CustomEvent('bracketStorage', {
-        detail: { gameId },
-      });
-      window.dispatchEvent(customEvent);
-
-      if (bracketTree) {
-        const cloneTree = (node: BracketNode): BracketNode => {
-          return {
-            ...node,
-            left: node.left ? cloneTree(node.left) : null,
-            right: node.right ? cloneTree(node.right) : null,
-          };
-        };
-
-        const updatedTree = cloneTree(bracketTree);
-        setBracketTree(updatedTree);
-      }
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   return (
