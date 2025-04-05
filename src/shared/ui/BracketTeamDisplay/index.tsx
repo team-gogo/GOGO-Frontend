@@ -1,16 +1,12 @@
 import { useMemo } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import calculateTeamDistribution from '@/shared/model/calculateTeamDistribution';
+import { GroupDistribution } from '@/shared/model/calculateTeamDistribution';
 import { cn } from '@/shared/utils/cn';
 import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
 
 interface BracketTeamDisplayProps {
   teamCount: number;
-}
-
-interface GroupDistribution {
-  top: number;
-  bottom: number;
 }
 
 const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {

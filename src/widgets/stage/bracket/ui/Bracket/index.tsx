@@ -6,6 +6,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import calculateTeamDistribution from '@/shared/model/calculateTeamDistribution';
+import { GroupDistribution } from '@/shared/model/calculateTeamDistribution';
 import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import { cn } from '@/shared/utils/cn';
 import {
@@ -13,11 +14,6 @@ import {
   handleRemoveTeam,
 } from '@/widgets/stage/bracket/ui/BracketHeader';
 import TeamArray from '@/widgets/stage/bracket/ui/TeamArray';
-
-interface GroupDistribution {
-  top: number;
-  bottom: number;
-}
 
 interface TeamData {
   teamId: number;
