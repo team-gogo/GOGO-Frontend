@@ -23,13 +23,14 @@ const TeamArray = ({
   const ITEM_WIDTH = 160;
   const ITEM_GAP = 8;
   const CONTAINER_PADDING = 16;
-  const VISIBLE_ITEMS = 8;
+  const VISIBLE_ITEMS = 5;
   const FIXED_CONTAINER_WIDTH =
     ITEM_WIDTH * VISIBLE_ITEMS + ITEM_GAP * (VISIBLE_ITEMS - 1);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const canScrollPrev = currentIndex > 0;
+
   const canScrollNext = currentIndex + VISIBLE_ITEMS < availableTeams.length;
 
   const innerContainerWidth = Math.max(
