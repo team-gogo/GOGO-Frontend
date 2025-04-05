@@ -53,13 +53,9 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
     ];
   };
 
-  const { finalStage, distribution, isTeamCountIsFive } = useMemo(() => {
-    const stage = teamCount <= 4 ? 4 : 8;
-
+  const { distribution } = useMemo(() => {
     return {
-      finalStage: stage,
       distribution: calculateTeamDistribution(teamCount),
-      isTeamCountIsFive: teamCount === 5,
     };
   }, [teamCount]);
 
@@ -165,7 +161,7 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
     );
   };
 
-  if (isTeamCountIsFive) {
+  if (teamCount == 5) {
     return (
       <div
         className={cn(
@@ -211,7 +207,7 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
         } as React.CSSProperties
       }
     >
-      {finalStage === 4 ? (
+      {teamCount <= 4 ? (
         <>
           {renderBracketColumn(1, false, undefined, 'left')}
           {renderBracketColumn(1, false, undefined, 'left')}
