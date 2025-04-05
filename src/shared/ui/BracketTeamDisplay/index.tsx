@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import { cn } from '@/shared/utils/cn';
+import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
 
 interface BracketTeamDisplayProps {
   teamCount: number;
@@ -38,11 +39,23 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
     ];
   };
 
-  const { distribution } = useMemo(() => {
+  const { distribution, bracketData } = useMemo(() => {
     return {
       distribution: calculateTeamDistribution(teamCount),
+      bracketData: getBracketMock(teamCount),
     };
   }, [teamCount]);
+
+  const getTeamByRoundAndTurn = (
+    round: string,
+    turn: number,
+    isTeamA: boolean,
+  ) => {
+    const match = bracketData.find(
+      (match) => match.round === round && match.turn === turn,
+    );
+    return isTeamA ? match?.teamAId : match?.teamBId;
+  };
 
   const renderFirstRoundGroup = (
     count: number,
@@ -62,15 +75,31 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
         {Array(count)
           .fill(null)
           .map((_, idx) => {
-            const actualIndex = startIndex + idx + 1;
-            const teamId =
-              side === 'left'
-                ? actualIndex <= 4
-                  ? actualIndex
-                  : null
-                : actualIndex <= 4
-                  ? actualIndex + 4
-                  : null;
+            const actualIndex = startIndex + idx;
+
+            let teamId = null;
+
+            if (side === 'left') {
+              if (actualIndex === 0) {
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 1, true); // turn 1의 A팀(위쪽)
+              } else if (actualIndex === 1) {
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 1, false); // turn 1의 B팀(아래쪽)
+              } else if (actualIndex === 2) {
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 2, true); // turn 2의 A팀(위쪽)
+              } else if (actualIndex === 3) {
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 2, false); // turn 2의 B팀(아래쪽)
+              }
+            } else if (side === 'right') {
+              if (actualIndex === 0) {
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 4, false); // turn 4의 B팀(위쪽)
+              } else if (actualIndex === 1) {
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 4, true); // turn 4의 A팀(아래쪽)
+              } else if (actualIndex === 2) {
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 3, false); // turn 3의 B팀(위쪽)
+              } else if (actualIndex === 3) {
+                teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 3, true); // turn 3의 A팀(아래쪽)
+              }
+            }
 
             return (
               <div key={`${side}_${idx}`} className="relative">
@@ -84,8 +113,7 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
                   )}
                 >
                   <TeamItem
-                    teamName={teamId ? `${teamId}` : ''}
-                    isEmpty={teamId === null}
+                    teamName={teamId ? `${teamId}` : 'TBD'}
                     className="w-[160px]"
                   />
                 </div>
@@ -101,6 +129,7 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
     isFirstRound: boolean = false,
     distribution?: GroupDistribution,
     side: 'left' | 'right' = 'left',
+    round?: string,
   ) => {
     if (isFirstRound && distribution) {
       return (
@@ -136,9 +165,33 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
         {Array(position)
           .fill(null)
           .map((_, idx) => {
+            let teamId = null;
+
+            if (round === 'SEMI_FINALS') {
+              if (side === 'left') {
+                teamId =
+                  idx === 0
+                    ? getTeamByRoundAndTurn('SEMI_FINALS', 1, true) // turn 1의 A팀(위쪽)
+                    : getTeamByRoundAndTurn('SEMI_FINALS', 1, false); // turn 1의 B팀(아래쪽)
+              } else {
+                teamId =
+                  idx === 0
+                    ? getTeamByRoundAndTurn('SEMI_FINALS', 2, false) // turn 2의 B팀(위쪽)
+                    : getTeamByRoundAndTurn('SEMI_FINALS', 2, true); // turn 2의 A팀(아래쪽)
+              }
+            } else if (round === 'FINALS') {
+              teamId =
+                side === 'left'
+                  ? getTeamByRoundAndTurn('FINALS', 1, true) // FINALS A팀(왼쪽)
+                  : getTeamByRoundAndTurn('FINALS', 1, false); // FINALS B팀(오른쪽)
+            }
+
             return (
               <div key={`${side}_${idx}`} className="relative">
-                <TeamItem teamName="TBD" className="w-[160px]" />
+                <TeamItem
+                  teamName={teamId ? `${teamId}` : 'TBD'}
+                  className="w-[160px]"
+                />
               </div>
             );
           })}
@@ -159,16 +212,22 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
         )}
       >
         <div className={cn('flex', 'flex-1', 'justify-end', 'gap-4')}>
-          {renderBracketColumn(2, true, distribution[0], 'left')}
-          {renderBracketColumn(2, false, undefined, 'left')}
-          {renderBracketColumn(1, false, undefined, 'left')}
+          {renderBracketColumn(
+            2,
+            true,
+            distribution[0],
+            'left',
+            'QUARTER_FINALS',
+          )}
+          {renderBracketColumn(2, false, undefined, 'left', 'SEMI_FINALS')}
+          {renderBracketColumn(1, false, undefined, 'left', 'FINALS')}
         </div>
 
         <div className="w-[50px]" />
 
         <div className={cn('flex', 'flex-1', 'justify-start', 'gap-4')}>
-          {renderBracketColumn(1, false, undefined, 'right')}
-          {renderBracketColumn(2, false, undefined, 'right')}
+          {renderBracketColumn(1, false, undefined, 'right', 'FINALS')}
+          {renderBracketColumn(2, false, undefined, 'right', 'SEMI_FINALS')}
         </div>
       </div>
     );
@@ -194,24 +253,37 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
     >
       {teamCount <= 4 ? (
         <>
-          {renderBracketColumn(2, false, undefined, 'left')}
-          {renderBracketColumn(1, false, undefined, 'left')}
-          {renderBracketColumn(1, false, undefined, 'right')}
+          {renderBracketColumn(2, false, undefined, 'left', 'SEMI_FINALS')}
+          {renderBracketColumn(1, false, undefined, 'left', 'FINALS')}
+          {renderBracketColumn(1, false, undefined, 'right', 'FINALS')}
           {renderBracketColumn(
             teamCount == 3 ? 1 : 2,
             false,
             undefined,
             'right',
+            'SEMI_FINALS',
           )}
         </>
       ) : (
         <>
-          {renderBracketColumn(2, true, distribution[0], 'left')}
-          {renderBracketColumn(2, false, undefined, 'left')}
-          {renderBracketColumn(1, false, undefined, 'left')}
-          {renderBracketColumn(1, false, undefined, 'right')}
-          {renderBracketColumn(2, false, undefined, 'right')}
-          {renderBracketColumn(2, true, distribution[1], 'right')}
+          {renderBracketColumn(
+            2,
+            true,
+            distribution[0],
+            'left',
+            'QUARTER_FINALS',
+          )}
+          {renderBracketColumn(2, false, undefined, 'left', 'SEMI_FINALS')}
+          {renderBracketColumn(1, false, undefined, 'left', 'FINALS')}
+          {renderBracketColumn(1, false, undefined, 'right', 'FINALS')}
+          {renderBracketColumn(2, false, undefined, 'right', 'SEMI_FINALS')}
+          {renderBracketColumn(
+            2,
+            true,
+            distribution[1],
+            'right',
+            'QUARTER_FINALS',
+          )}
         </>
       )}
     </div>

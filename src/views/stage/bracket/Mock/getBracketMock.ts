@@ -76,13 +76,13 @@ const getBracketMock = (teamCount: number = 8): BracketData[] => {
         teamAId: 5,
         teamBId: 6,
         round: 'QUARTER_FINALS',
-        turn: 3,
+        turn: 4,
       },
       {
-        teamAId: null,
-        teamBId: 7,
+        teamAId: 7,
+        teamBId: null,
         round: 'SEMI_FINALS',
-        turn: 1,
+        turn: 2,
       },
       {
         teamAId: null,

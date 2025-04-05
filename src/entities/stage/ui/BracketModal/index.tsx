@@ -16,7 +16,7 @@ interface GroupDistribution {
 }
 
 const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
-  const bracketMockData = getBracketMock(4);
+  const bracketMockData = getBracketMock(8);
 
   const teamCount = bracketMockData.reduce((count, match) => {
     let matchTeams = 0;
