@@ -2,7 +2,7 @@
 
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import calculateTeamDistribution from '@/shared/model/calculateTeamDistribution';
@@ -46,7 +46,6 @@ const Bracket = () => {
   const [deleteMode, setDeleteMode] = useState(false);
 
   const [teams, setTeams] = useState<TeamData[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [placedTeams, setPlacedTeams] = useState<{ [key: number]: boolean }>(
     {},
   );
@@ -111,32 +110,7 @@ const Bracket = () => {
     };
   }, [gameId]);
 
-  const VISIBLE_ITEMS = 8;
-  const ITEM_WIDTH = 160;
-  const ITEM_GAP = 8;
-
   const availableTeams = teams.filter((team) => !placedTeams[team.teamId]);
-
-  const canScrollPrev = currentIndex > 0;
-  const canScrollNext = currentIndex + VISIBLE_ITEMS < availableTeams.length;
-  const FIXED_CONTAINER_WIDTH =
-    ITEM_WIDTH * VISIBLE_ITEMS + ITEM_GAP * (VISIBLE_ITEMS - 1);
-  const innerContainerWidth = Math.max(
-    FIXED_CONTAINER_WIDTH,
-    availableTeams.length * ITEM_WIDTH +
-      Math.max(0, availableTeams.length - 1) * ITEM_GAP,
-  );
-  const translateX = -(currentIndex * (ITEM_WIDTH + ITEM_GAP));
-
-  const scrollToNext = useCallback(() => {
-    if (!canScrollNext) return;
-    setCurrentIndex((prev) => prev + 1);
-  }, [canScrollNext]);
-
-  const scrollToPrev = useCallback(() => {
-    if (!canScrollPrev) return;
-    setCurrentIndex((prev) => prev - 1);
-  }, [canScrollPrev]);
 
   const createBracketTree = (teamCount: number): BracketNode | null => {
     if (teamCount < 2) return null;
@@ -857,15 +831,8 @@ const Bracket = () => {
         </div>
         <TeamArray
           availableTeams={availableTeams}
-          currentIndex={currentIndex}
-          canScrollPrev={canScrollPrev}
-          canScrollNext={canScrollNext}
-          scrollToPrev={scrollToPrev}
-          scrollToNext={scrollToNext}
           isDragging={isDragging}
           portalRef={portalRef}
-          translateX={translateX}
-          innerContainerWidth={innerContainerWidth}
         />
       </div>
     </DragDropContext>

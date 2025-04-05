@@ -1,4 +1,5 @@
 import { Droppable, Draggable } from '@hello-pangea/dnd';
+import { useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import { cn } from '@/shared/utils/cn';
@@ -10,27 +11,14 @@ interface TeamData {
 
 interface TeamArrayProps {
   availableTeams: TeamData[];
-  currentIndex: number;
-  canScrollPrev: boolean;
-  canScrollNext: boolean;
-  scrollToPrev: () => void;
-  scrollToNext: () => void;
   isDragging: boolean;
   portalRef: React.RefObject<HTMLDivElement>;
-  translateX: number;
-  innerContainerWidth: number;
 }
 
 const TeamArray = ({
   availableTeams,
-  canScrollPrev,
-  canScrollNext,
-  scrollToPrev,
-  scrollToNext,
   isDragging,
   portalRef,
-  translateX,
-  innerContainerWidth,
 }: TeamArrayProps) => {
   const ITEM_WIDTH = 160;
   const ITEM_GAP = 8;
@@ -38,6 +26,33 @@ const TeamArray = ({
   const VISIBLE_ITEMS = 8;
   const FIXED_CONTAINER_WIDTH =
     ITEM_WIDTH * VISIBLE_ITEMS + ITEM_GAP * (VISIBLE_ITEMS - 1);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const canScrollPrev = currentIndex > 0;
+  const canScrollNext = currentIndex + VISIBLE_ITEMS < availableTeams.length;
+
+  const innerContainerWidth = Math.max(
+    FIXED_CONTAINER_WIDTH,
+    availableTeams.length * ITEM_WIDTH +
+      Math.max(0, availableTeams.length - 1) * ITEM_GAP,
+  );
+
+  const translateX = -(currentIndex * (ITEM_WIDTH + ITEM_GAP));
+
+  const scrollToNext = useCallback(() => {
+    if (!canScrollNext) return;
+    setCurrentIndex((prev) => prev + 1);
+  }, [canScrollNext]);
+
+  const scrollToPrev = useCallback(() => {
+    if (!canScrollPrev) return;
+    setCurrentIndex((prev) => prev - 1);
+  }, [canScrollPrev]);
+
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [availableTeams.length]);
 
   const renderDraggable = (team: TeamData, index: number) => {
     return (
