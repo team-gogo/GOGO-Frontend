@@ -16,25 +16,10 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
     totalTeamCount: number,
   ): [GroupDistribution, GroupDistribution] => {
     console.log(totalTeamCount);
-    if (totalTeamCount === 5) {
-      return [
-        { top: 2, bottom: 1 },
-        { top: 1, bottom: 1 },
-      ];
-    } else if (totalTeamCount === 6) {
+    if (totalTeamCount === 6) {
       return [
         { top: 2, bottom: 1 },
         { top: 1, bottom: 2 },
-      ];
-    } else if (totalTeamCount === 7) {
-      return [
-        { top: 2, bottom: 2 },
-        { top: 2, bottom: 1 },
-      ];
-    } else if (totalTeamCount === 8) {
-      return [
-        { top: 2, bottom: 2 },
-        { top: 2, bottom: 2 },
       ];
     }
 
@@ -209,10 +194,15 @@ const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
     >
       {teamCount <= 4 ? (
         <>
-          {renderBracketColumn(1, false, undefined, 'left')}
+          {renderBracketColumn(2, false, undefined, 'left')}
           {renderBracketColumn(1, false, undefined, 'left')}
           {renderBracketColumn(1, false, undefined, 'right')}
-          {renderBracketColumn(1, false, undefined, 'right')}
+          {renderBracketColumn(
+            teamCount == 3 ? 1 : 2,
+            false,
+            undefined,
+            'right',
+          )}
         </>
       ) : (
         <>

@@ -58,6 +58,82 @@ const getBracketMock = (teamCount: number = 8): BracketData[] => {
     ];
   }
 
+  if (teamCount === 7) {
+    return [
+      {
+        teamAId: 1,
+        teamBId: 2,
+        round: 'QUARTER_FINALS',
+        turn: 1,
+      },
+      {
+        teamAId: 3,
+        teamBId: 4,
+        round: 'QUARTER_FINALS',
+        turn: 2,
+      },
+      {
+        teamAId: 5,
+        teamBId: 6,
+        round: 'QUARTER_FINALS',
+        turn: 3,
+      },
+      {
+        teamAId: null,
+        teamBId: 7,
+        round: 'SEMI_FINALS',
+        turn: 1,
+      },
+      {
+        teamAId: null,
+        teamBId: null,
+        round: 'SEMI_FINALS',
+        turn: 2,
+      },
+      {
+        teamAId: null,
+        teamBId: null,
+        round: 'FINALS',
+        turn: 1,
+      },
+    ];
+  }
+
+  if (teamCount === 6) {
+    return [
+      {
+        teamAId: 1,
+        teamBId: 2,
+        round: 'QUARTER_FINALS',
+        turn: 1,
+      },
+      {
+        teamAId: 3,
+        teamBId: 4,
+        round: 'QUARTER_FINALS',
+        turn: 3,
+      },
+      {
+        teamAId: null,
+        teamBId: 5,
+        round: 'SEMI_FINALS',
+        turn: 1,
+      },
+      {
+        teamAId: null,
+        teamBId: 6,
+        round: 'SEMI_FINALS',
+        turn: 2,
+      },
+      {
+        teamAId: null,
+        teamBId: null,
+        round: 'FINALS',
+        turn: 1,
+      },
+    ];
+  }
+
   if (teamCount === 5) {
     return [
       {
