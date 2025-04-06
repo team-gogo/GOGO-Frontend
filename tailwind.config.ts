@@ -101,6 +101,7 @@ const config: Config = {
       },
     },
     screens: {
+      phone: { max: '375px' },
       mobile: { max: '639px' },
       pad: { max: '768px' },
       tablet: { max: '1023px' },
