@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
 import { useSelectDateStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
@@ -8,10 +8,30 @@ import { cn } from '@/shared/utils/cn';
 const DateContainer = () => {
   const today = new Date();
   const totalDays = 100;
-  const visibleCount = 5;
+  const [visibleCount, setVisibleCount] = useState(5);
   const pastDays = Math.floor(totalDays / 2);
 
   const { setSelectDate } = useSelectDateStore();
+
+  useEffect(() => {
+    const updateVisibleCount = () => {
+      if (window.matchMedia('(max-width: 639px)').matches) {
+        setVisibleCount(3);
+      } else if (window.matchMedia('(max-width: 767px)').matches) {
+        setVisibleCount(4);
+      } else {
+        setVisibleCount(5);
+      }
+    };
+
+    updateVisibleCount();
+
+    window.addEventListener('resize', updateVisibleCount);
+
+    return () => {
+      window.removeEventListener('resize', updateVisibleCount);
+    };
+  }, []);
 
   const dates = Array.from({ length: totalDays }, (_, index) => {
     const date = new Date(today);
