@@ -60,7 +60,7 @@ const StageMatchContainer = ({
     }
   }, [matches]);
 
-  const itemWidthCn = visibleCount === 1 ? 'w-full, ' : 'w-[calc(50%-20px)]';
+  const itemWidthCn = visibleCount === 1 ? 'w-full' : 'w-[calc(50%-20px)]';
 
   return (
     <div
