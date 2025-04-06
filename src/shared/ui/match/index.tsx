@@ -283,7 +283,7 @@ const Match = ({ match }: MatchProps) => {
               </p>
             </div>
             {isMatchFinish && result !== null ? (
-              <h2 className={cn('text-h2e', 'text-white')}>
+              <h2 className={cn('text-h4e', 'text-white')}>
                 {winnerTeam} 승리
               </h2>
             ) : (
@@ -317,7 +317,7 @@ const Match = ({ match }: MatchProps) => {
                     )}
                   </p>
                   <h2
-                    className={cn('text-h2e', getTeamClassName(ateam?.teamId))}
+                    className={cn('text-h4e', getTeamClassName(ateam?.teamId))}
                   >
                     {ateam?.teamName}
                   </h2>
@@ -345,7 +345,7 @@ const Match = ({ match }: MatchProps) => {
                     )}
                   </p>
                   <h2
-                    className={cn('text-h2e', getTeamClassName(bteam?.teamId))}
+                    className={cn('text-h4e', getTeamClassName(bteam?.teamId))}
                   >
                     {bteam?.teamName}
                   </h2>
