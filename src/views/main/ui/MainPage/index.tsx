@@ -111,7 +111,15 @@ const MainPage = () => {
           'gap-[2.5rem]',
         )}
       >
-        <div className={cn('w-full', 'flex', 'justify-between')}>
+        <div
+          className={cn(
+            'w-full',
+            'flex',
+            'tablet:flex-col',
+            'tablet:gap-[1rem]',
+            'justify-between',
+          )}
+        >
           <div className={cn('flex', 'items-center', 'gap-[1rem]', 'w-full')}>
             <h2 className={cn('text-title4s', 'text-gray-500')}>포인트</h2>
             <h2 className={cn('text-h3e', 'text-white')}>
