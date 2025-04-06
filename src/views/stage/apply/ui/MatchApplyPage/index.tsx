@@ -146,6 +146,7 @@ const MatchApplyPage = () => {
                 'flex-grow',
                 'text-body1e',
                 'text-white',
+                'mobile:text-body3e',
               )}
             >
               정보를 불러오는중...
