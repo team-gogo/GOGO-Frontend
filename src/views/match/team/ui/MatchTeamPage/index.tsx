@@ -83,7 +83,7 @@ const MatchTeamPage = () => {
       {isBracketModalOpen && (
         <BracketModal
           onClose={() => setIsBracketModalOpen(false)}
-          _gameId={gameData?.games[0].gameId || 0}
+          gameId={Number(selectedGameId)}
         />
       )}
     </div>
