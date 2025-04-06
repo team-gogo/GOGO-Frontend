@@ -38,7 +38,7 @@ const Header = () => {
     >
       <div className={cn('flex', 'justify-between', 'w-full', 'w-[1320px]')}>
         <Link href="/stage">
-          <div className={cn('flex', 'max-w-[11.75rem]')}>
+          <div className={cn('flex', 'max-w-[11.75rem]', 'mobile:w-[7rem]')}>
             <GOGOIcon className="h-auto w-full" />
           </div>
         </Link>

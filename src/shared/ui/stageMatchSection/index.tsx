@@ -58,7 +58,13 @@ const StageMatchSection = ({
     <div className={cn('flex', 'h-full', 'flex-col', 'w-[95%]')}>
       {title && (
         <h2
-          className={cn('h-full', 'text-body1e', 'text-white', 'pb-[2.5rem]')}
+          className={cn(
+            'h-full',
+            'text-body1e',
+            'text-white',
+            'pb-[2.5rem]',
+            'mobile:text-body3e',
+          )}
         >
           {title}
         </h2>
@@ -86,6 +92,7 @@ const StageMatchSection = ({
             'items-center',
             'text-body1e',
             'text-white',
+            'mobile:text-body3e',
           )}
         >
           해당하는 스테이지가 없습니다.
