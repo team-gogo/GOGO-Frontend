@@ -16,12 +16,12 @@ import TeamDetailModal from '@/shared/ui/teamDetailModal';
 import { cn } from '@/shared/utils/cn';
 import { useGetTeamInfo } from '@/views/match/model/useGetTeamInfo';
 import { MatchNameContainer, TeamListContainer } from '@/widgets/match';
+
 const MatchTeamPage = () => {
   const params = useParams<{ stageId: string }>();
   const { stageId } = params;
 
   const { data: gameData } = useGetStageGameQuery(stageId);
-
   const { isBracketModalOpen, setIsBracketModalOpen } = useBracketModalStore();
   const { selectedGameId, setSelectedGameId } = useSelectedGameIdStore();
   const { isTeamDetailModalOpen, setIsTeamDetailModalOpen } =
@@ -83,7 +83,7 @@ const MatchTeamPage = () => {
       {isBracketModalOpen && (
         <BracketModal
           onClose={() => setIsBracketModalOpen(false)}
-          _gameId={1}
+          _gameId={gameData?.games[0].gameId || 0}
         />
       )}
     </div>

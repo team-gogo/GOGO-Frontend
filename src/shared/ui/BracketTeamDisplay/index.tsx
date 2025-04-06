@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import calculateTeamDistribution from '@/shared/model/calculateTeamDistribution';
+import { GameFormatData } from '@/shared/types/stage/game';
 import { cn } from '@/shared/utils/cn';
-import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
 
 interface BracketTeamDisplayProps {
   teamCount: number;
+  bracketData: GameFormatData[];
 }
 
 interface GroupDistribution {
@@ -13,11 +14,13 @@ interface GroupDistribution {
   bottom: number;
 }
 
-const BracketTeamDisplay = ({ teamCount }: BracketTeamDisplayProps) => {
-  const { distribution, bracketData } = useMemo(() => {
+const BracketTeamDisplay = ({
+  teamCount,
+  bracketData,
+}: BracketTeamDisplayProps) => {
+  const { distribution } = useMemo(() => {
     return {
       distribution: calculateTeamDistribution(teamCount),
-      bracketData: getBracketMock(teamCount),
     };
   }, [teamCount]);
 
