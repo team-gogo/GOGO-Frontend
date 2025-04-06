@@ -23,14 +23,27 @@ const StageMatchContainer = ({
   const [visibleCount, setVisibleCount] = useState(2);
 
   useEffect(() => {
+    const width = window.innerWidth;
+    console.log(width);
     const handleResize = () => {
-      setVisibleCount(window.innerWidth <= 768 ? 1 : 2);
+      const width = window.innerWidth;
+      console.log(width);
+
+      if (width <= 1023) {
+        setVisibleCount(1);
+        console.log(1);
+      } else {
+        setVisibleCount(2);
+      }
     };
 
     handleResize();
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const { setMatchBatchArr } = useMatchBatchArrStore();
@@ -46,6 +59,8 @@ const StageMatchContainer = ({
       );
     }
   }, [matches]);
+
+  const itemWidthCn = visibleCount === 1 ? 'w-full, ' : 'w-[calc(50%-20px)]';
 
   return (
     <div
@@ -74,13 +89,7 @@ const StageMatchContainer = ({
           {stageInfo.stages?.map((stage) => (
             <div
               key={stage.stageId}
-              className={cn(
-                'flex',
-                'w-[calc(50%-20px)]',
-                'pad:w-full',
-                'shrink-0',
-                'justify-center',
-              )}
+              className={cn('flex', itemWidthCn, 'shrink-0', 'justify-center')}
             >
               <Stage stage={stage} />
             </div>
@@ -89,7 +98,7 @@ const StageMatchContainer = ({
           {matches?.matches.map((match) => (
             <div
               key={match.matchId}
-              className="w-[calc(50%-20px)] flex-shrink-0"
+              className={cn(itemWidthCn, 'flex-shrink-0')}
             >
               <Match match={match} />
             </div>
