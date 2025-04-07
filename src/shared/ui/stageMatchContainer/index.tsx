@@ -76,10 +76,11 @@ const StageMatchContainer = ({
               key={stage.stageId}
               className={cn(
                 'flex',
-                'w-[calc(50%-20px)]',
-                'pad:w-full',
+                'midpad:w-[calc(50%-20px)]',
+                'w-full',
                 'shrink-0',
                 'justify-center',
+                'items-center',
               )}
             >
               <Stage stage={stage} />

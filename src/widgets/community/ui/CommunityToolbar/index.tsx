@@ -37,8 +37,8 @@ const CommunityToolbar = ({
         <p
           className={cn(
             'text-white',
-            'text-body1e',
-            'mobile:text-body3e',
+            'mobile:text-body1e',
+            'text-body3e',
             'text-nowrap',
           )}
         >

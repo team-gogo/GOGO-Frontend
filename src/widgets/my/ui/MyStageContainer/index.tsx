@@ -73,12 +73,12 @@ const MyStageContainer = ({
         <div
           className={cn(
             'grid',
-            'grid-cols-2',
-            'gap-x-[2.5rem]',
-            'tablet:gap-x-[1rem]',
-            'gap-y-[2rem]',
-            'tablet:gap-y-[1rem]',
-            'mobile:grid-cols-1',
+            'pad:grid-cols-2',
+            'tablet:gap-x-[2.5rem]',
+            'gap-x-[1rem]',
+            'tablet:gap-y-[2rem]',
+            'gap-y-[1rem]',
+            'grid-cols-1',
           )}
         >
           {myStageInfo?.stages.map((stage) => (

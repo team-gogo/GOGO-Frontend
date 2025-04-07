@@ -29,8 +29,8 @@ const RankingUserItem = ({ rank, isMainUsed }: RankingUserItemProps) => {
         <p
           className={cn(
             'text-white',
-            isMainUsed ? 'text-caption1e' : 'text-body1e',
-            'mobile:text-body3e',
+            isMainUsed ? 'mobile:text-caption1e' : 'mobile:text-body1e',
+            'text-body3e',
           )}
         >
           {rank.rank}등
@@ -38,8 +38,8 @@ const RankingUserItem = ({ rank, isMainUsed }: RankingUserItemProps) => {
         <p
           className={cn(
             rank.studentId === studentId ? 'text-white' : 'text-gray-300',
-            isMainUsed ? 'text-caption1s' : 'text-body2s',
-            'mobile:text-caption1s',
+            isMainUsed ? 'mobile:text-caption1s' : 'mobile:text-body2s',
+            'text-caption1s',
           )}
         >
           {rank.name}
@@ -47,9 +47,9 @@ const RankingUserItem = ({ rank, isMainUsed }: RankingUserItemProps) => {
       </div>
       <p
         className={cn(
-          isMainUsed ? 'text-caption1s' : 'text-body1s',
+          isMainUsed ? 'mobile:text-caption1s' : 'mobile:text-body1s',
           isMainUsed ? 'text-white' : 'text-main-400',
-          'mobile:text-body3s',
+          'text-body3s',
         )}
       >
         {rank.point.toLocaleString() || 0}P

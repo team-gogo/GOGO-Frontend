@@ -23,8 +23,8 @@ const WriteButton = ({ stageId }: { stageId: string }) => {
         className={cn(
           'text-white',
           'text-nowrap',
-          'text-body3s',
-          'mobile:text-caption3s',
+          'mobile:text-body3s',
+          'text-caption3s',
         )}
       >
         글 쓰기
