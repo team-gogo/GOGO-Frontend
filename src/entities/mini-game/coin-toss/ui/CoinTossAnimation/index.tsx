@@ -107,7 +107,13 @@ const CoinTossAnimation = ({
     <div className={cn('relative', 'rounded-lg')}>
       <canvas
         ref={canvasRef}
-        className="aspect-video h-auto w-full rounded-lg object-cover"
+        className={cn(
+          'aspect-video',
+          'h-auto',
+          'w-full',
+          'rounded-lg',
+          'object-cover',
+        )}
         width={1980}
         height={1080}
       />

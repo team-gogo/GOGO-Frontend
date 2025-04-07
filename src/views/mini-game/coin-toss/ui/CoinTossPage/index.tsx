@@ -148,10 +148,9 @@ const CoinTossPage = () => {
             className={cn(
               'flex',
               'justify-between',
-              'gap-[80px]',
+              'mobile:gap-[80px]',
               'w-[444px]',
-              'mobile:gap-[40px]',
-              'mobile:gap-20',
+              'gap-20',
             )}
           >
             <CoinTossButton

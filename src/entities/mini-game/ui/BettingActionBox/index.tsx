@@ -28,15 +28,7 @@ const BettingActionBox = ({
     isPending ||
     isPlaying;
   return (
-    <div
-      className={cn(
-        'flex',
-        'items-center',
-        'gap-24',
-        'mobile:flex-col',
-        'mobile:gap-20',
-      )}
-    >
+    <div className={cn('flex', 'items-center', 'mobile:gap-24', 'gap-20')}>
       <Input
         type="number"
         placeholder="포인트 입력해주세요"
