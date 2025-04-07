@@ -71,7 +71,7 @@ const DateContainer = () => {
             <button
               key={index}
               className={cn(
-                'flex w-[5.25rem] items-center justify-center gap-[0.5rem] rounded-lg border-[0.0625rem] border-solid border-gray-500 px-[1rem] py-[0.75rem] text-gray-500 laptop:px-[0.5rem] laptop:py-[0.25rem]',
+                'flex w-[5.25rem] items-center justify-center gap-[0.5rem] rounded-lg border-[0.0625rem] border-solid border-gray-500 px-[0.5rem] py-[0.25rem] text-gray-500 laptop:px-[1rem] laptop:py-[0.75rem]',
                 selectedDate === date.short &&
                   'border-main-600 bg-main-600 text-white',
               )}

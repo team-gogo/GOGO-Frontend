@@ -51,7 +51,7 @@ const Header = () => {
               onMouseEnter={() => setHoveredItem(item.href)}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              <div className={cn('laptop:hidden', 'block')}>
+              <div className={cn('hidden', 'laptop:block')}>
                 <item.icon
                   size={24}
                   color={
