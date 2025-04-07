@@ -154,10 +154,10 @@ const MatchApplyPage = () => {
             <div
               className={cn(
                 'grid',
-                'grid-cols-3',
+                'tablet:grid-cols-3',
                 'gap-x-[1.125rem]',
                 'gap-y-[1.5rem]',
-                'tablet:grid-cols-1',
+                'grid-cols-1',
                 'w-full',
               )}
             >

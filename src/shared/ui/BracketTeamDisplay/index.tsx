@@ -1,17 +1,14 @@
 import { useMemo } from 'react';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
-import calculateTeamDistribution from '@/shared/model/calculateTeamDistribution';
+import calculateTeamDistribution, {
+  GroupDistribution,
+} from '@/shared/model/calculateTeamDistribution';
 import { GameFormatData } from '@/shared/types/stage/game';
 import { cn } from '@/shared/utils/cn';
 
 interface BracketTeamDisplayProps {
   teamCount: number;
   bracketData: GameFormatData;
-}
-
-interface GroupDistribution {
-  top: number;
-  bottom: number;
 }
 
 const BracketTeamDisplay = ({

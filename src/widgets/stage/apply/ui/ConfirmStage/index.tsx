@@ -28,9 +28,9 @@ const ConfirmStage = ({ onClick }: ConfirmStageProps) => {
       <p
         className={cn(
           'text-gray-400',
-          'text-body3s',
+          'mobile:text-body3s',
           'text-nowrap',
-          'mobile:text-caption3s',
+          'text-caption3s',
         )}
       >
         확정하기

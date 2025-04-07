@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
+import { GroupDistribution } from '@/shared/model/calculateTeamDistribution';
 import { GameFormatData } from '@/shared/types/stage/game';
 import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import BracketTeamDisplay from '@/shared/ui/BracketTeamDisplay';
@@ -10,11 +11,6 @@ import { getGameFormat } from '../api/getGameFormat';
 interface BracketModalProps {
   onClose: () => void;
   gameId: number;
-}
-
-interface GroupDistribution {
-  top: number;
-  bottom: number;
 }
 
 const BracketModal = ({ onClose, gameId }: BracketModalProps) => {

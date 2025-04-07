@@ -212,7 +212,7 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
               'gap-[3rem]',
             )}
           >
-            <h1 className={cn('text-h2e', 'text-white', 'laptop:text-body2e')}>
+            <h1 className={cn('laptop:text-h2e', 'text-white', 'text-body2e')}>
               {stageName}
             </h1>
             <Button

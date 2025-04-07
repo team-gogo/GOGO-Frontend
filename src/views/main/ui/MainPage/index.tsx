@@ -123,15 +123,7 @@ const MainPage = () => {
           </div>
           <DateContainer />
         </div>
-        <div
-          className={cn(
-            'flex',
-            'w-full',
-            'flex-wrap',
-            'gap-[1.75rem]',
-            'md:flex-col',
-          )}
-        >
+        <div className={cn('flex', 'w-full', 'flex-wrap', 'gap-[1.75rem]')}>
           <SectionWrapper
             text={isToday ? '오늘 최신 매치' : `${selectDate.slice(5)} 매치`}
             icon={<MatchClockIcon />}
@@ -147,7 +139,8 @@ const MainPage = () => {
               'flex',
               'w-full',
               'gap-[1.75rem]',
-              'tablet:flex-wrap',
+              'flex-wrap',
+              'tablet:flex-nowrap',
               'min-h-[15.5rem]',
             )}
           >
@@ -182,7 +175,8 @@ const MainPage = () => {
               'w-full',
               'flex',
               'gap-[1.75rem]',
-              'tablet:flex-wrap',
+              'flex-wrap',
+              'tablet:flex-nowrap',
             )}
           >
             <SectionWrapper

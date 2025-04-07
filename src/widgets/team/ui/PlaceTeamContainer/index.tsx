@@ -17,6 +17,7 @@ import { SportType } from '@/shared/model/sportTypes';
 import { Student } from '@/shared/types/stage/create';
 import BackPageButton from '@/shared/ui/backPageButton';
 import Button from '@/shared/ui/button';
+import { useGetMatchApplyList } from '@/views/stage/apply/model/useGetMatchApplyList';
 
 interface PlaceTeamContainerProps {
   params: {
@@ -59,6 +60,12 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
   const [isLargeScreen, setIsLargeScreen] = useState(true);
 
   const { gameId, category } = params;
+
+  const stageId = sessionStorage.getItem(`stageId_${gameId}`);
+  const { data: matchApplyList } = useGetMatchApplyList(Number(stageId));
+  const game = matchApplyList?.games.find(
+    (game) => game.gameId === Number(gameId),
+  );
 
   const getSportType = (): SportType | null => {
     if (
@@ -426,9 +433,7 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
         participants,
         gameId,
       });
-      router.push(
-        `/stage/stageId=${sessionStorage.getItem(`stageId_${gameId}`)}`,
-      );
+      router.push(`/stage/stageId=${stageId}`);
       toast.success('팀 생성이 완료되었습니다.');
     } catch (error) {
       console.error(error);
@@ -543,7 +548,7 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
         </header>
         <div className="mt-28 flex flex-1 flex-col">
           <div className="flex flex-row items-center justify-between">
-            <h1 className="mb-28 text-h3e text-white">경기 이름</h1>
+            <h1 className="mb-28 text-h3e text-white">{game?.gameName}</h1>
             <div className="flex flex-row items-center justify-center gap-10">
               <FingerIcon />
               <h2 className="text-h3 text-white">인원을 배치 하세요</h2>

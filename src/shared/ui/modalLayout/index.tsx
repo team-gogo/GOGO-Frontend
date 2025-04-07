@@ -48,7 +48,7 @@ const ModalLayout = ({
             className={cn('mb-4', 'flex', 'items-center', 'justify-between')}
           >
             <p
-              className={cn('text-white', 'text-body1s', 'mobile:text-body2s')}
+              className={cn('text-white', 'mobile:text-body1s', 'text-body2s')}
             >
               {title}
             </p>
