@@ -246,7 +246,10 @@ const BracketTeamDisplay = ({
                   teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 1, 'B');
                 }
               } else {
-                if (idx === 0) {
+                if (teamCount === 3 && idx === 0) {
+                  teamId = getTeamByRoundAndTurn('FINALS', 1, 'B');
+                  teamName = getTeamNameByRoundAndTurn('FINALS', 1, 'B');
+                } else if (idx === 0) {
                   teamId = getTeamByRoundAndTurn('SEMI_FINALS', 2, 'B');
                   teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 2, 'B');
                 } else {
