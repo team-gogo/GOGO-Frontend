@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
 import { useSelectDateStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
@@ -8,7 +8,23 @@ import { cn } from '@/shared/utils/cn';
 const DateContainer = () => {
   const today = new Date();
   const totalDays = 100;
-  const visibleCount = 5;
+  const [visibleCount, setVisibleCount] = useState(5);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 650) {
+        setVisibleCount(1);
+      } else if (window.innerWidth < 880) {
+        setVisibleCount(3);
+      } else {
+        setVisibleCount(5);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const pastDays = Math.floor(totalDays / 2);
 
   const { setSelectDate } = useSelectDateStore();
@@ -60,18 +76,49 @@ const DateContainer = () => {
   };
 
   return (
-    <div className={cn('flex w-full items-center justify-end gap-[1rem]')}>
-      <button onClick={handlePrev}>
-        <LeftArrow color="#6B6B6B" />
-      </button>
-      <div className={cn('flex items-center gap-[1rem]')}>
+    <div
+      className={cn(
+        'flex',
+        'items-center',
+        'mobile:w-[15rem]',
+        'pad:w-[30rem]',
+        'tablet:w-[40rem]',
+        'w-[12.5rem]',
+        'justify-end',
+      )}
+    >
+      <div
+        className={cn(
+          'flex',
+          'w-full',
+          'justify-end',
+          'items-center',
+          'gap-[1rem]',
+        )}
+      >
+        <button onClick={handlePrev}>
+          <LeftArrow color="#6B6B6B" />
+        </button>
         {dates
           .slice(startIndex, startIndex + visibleCount)
           .map((date, index) => (
             <button
               key={index}
               className={cn(
-                'flex w-[5.25rem] items-center justify-center gap-[0.5rem] rounded-lg border-[0.0625rem] border-solid border-gray-500 px-[0.5rem] py-[0.25rem] text-gray-500 laptop:px-[1rem] laptop:py-[0.75rem]',
+                'flex',
+                'w-full',
+                'max-w-[5.25rem]',
+                'items-center',
+                'justify-center',
+                'gap-[0.5rem]',
+                'rounded-lg',
+                'border-[0.0625rem]',
+                'border-solid',
+                'border-gray-500',
+                'px-[1rem]',
+                'tablet:px-[0.75rem]',
+                'py-[0.75rem]',
+                'text-gray-500',
                 selectedDate === date.short &&
                   'border-main-600 bg-main-600 text-white',
               )}
@@ -80,10 +127,10 @@ const DateContainer = () => {
               <p className={cn('text-body3s')}>{date.short}</p>
             </button>
           ))}
+        <button onClick={handleNext}>
+          <RightArrowIcon size="2.5rem" />
+        </button>
       </div>
-      <button onClick={handleNext}>
-        <RightArrowIcon size="2.5rem" />
-      </button>
     </div>
   );
 };

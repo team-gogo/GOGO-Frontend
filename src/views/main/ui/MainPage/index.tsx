@@ -107,6 +107,8 @@ const MainPage = () => {
   //   toast.error('파산 조회를 실패했습니다');
   // }
 
+  const iconStyle = 'h-[1.5rem] w-[1.5rem] pad:h-[1.75rem] pad:w-[1.75rem]';
+
   return (
     <div
       className={cn(
@@ -128,13 +130,28 @@ const MainPage = () => {
           'gap-[2.5rem]',
         )}
       >
-        <div className={cn('w-full', 'flex', 'justify-between')}>
-          <div className={cn('flex', 'items-center', 'gap-[1rem]', 'w-full')}>
-            <h2 className={cn('text-title4s', 'text-gray-500')}>포인트</h2>
-            <h2 className={cn('text-h3e', 'text-white')}>
+        <div className={cn('flex', 'justify-between')}>
+          <div className={cn('flex', 'items-center', 'gap-[1rem]')}>
+            <h2
+              className={cn(
+                'laptop:text-title4s',
+                'text-body2e',
+                'text-gray-500',
+              )}
+            >
+              포인트
+            </h2>
+            <h2 className={cn('laptop:text-h3e', 'text-body1e', 'text-white')}>
               {formatPoint(point)}
             </h2>
-            <h3 className={cn('text-body1s', 'text-gray-200')}>
+            <h3
+              className={cn(
+                'text-body1s',
+                'text-gray-200',
+                'laptop:block',
+                'hidden',
+              )}
+            >
               ({point.toLocaleString()})
             </h3>
           </div>
@@ -163,7 +180,7 @@ const MainPage = () => {
           >
             <SectionWrapper
               text={'미니게임'}
-              icon={<MiniGameIcon />}
+              icon={<MiniGameIcon className={iconStyle} />}
               path={`/mini-game/${stageId}`}
             >
               <MiniGameSection
@@ -173,7 +190,7 @@ const MainPage = () => {
             </SectionWrapper>
             <SectionWrapper
               text={'포인트 랭킹'}
-              icon={<PriceIcon />}
+              icon={<PriceIcon className={iconStyle} />}
               path={`/ranking/${stageId}`}
             >
               <div
@@ -198,7 +215,7 @@ const MainPage = () => {
           >
             <SectionWrapper
               text={'커뮤니티'}
-              icon={<CommunityIcon />}
+              icon={<CommunityIcon className={iconStyle} />}
               path={`/community/${stageId}`}
             >
               <CommunityItemContainer
@@ -210,7 +227,7 @@ const MainPage = () => {
 
             <SectionWrapper
               text={'경기'}
-              icon={<RankingIcon />}
+              icon={<RankingIcon className={iconStyle} />}
               path={`/match/team/${stageId}`}
             >
               <MatchListSection stageInMatch={gameData} stageId={stageId} />

@@ -9,8 +9,17 @@ interface PlinkoInputHeader {
 
 const PlinkoInputHeader = ({ money, ticket }: PlinkoInputHeader) => {
   return (
-    <div className={cn('flex', 'justify-between', 'items-center')}>
-      <h2 className={cn('text-body2e', 'text-white')}>보유 코인</h2>
+    <div
+      className={cn(
+        'flex',
+        'midpad:gap-[2rem]',
+        'justify-between',
+        'items-center',
+      )}
+    >
+      <h2 className={cn('midpad:text-body2e', 'text-caption1e', 'text-white')}>
+        보유 코인
+      </h2>
       <div className={cn('flex', 'items-center', 'gap-[0.75rem]')}>
         <div className={cn('flex', 'items-center', 'gap-[0.75rem]')}>
           <MoneyIcon />

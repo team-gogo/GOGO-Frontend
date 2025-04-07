@@ -98,8 +98,10 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
         className={cn(
           'flex',
           'flex-col',
-          'p-[1.5rem]',
+          'py-[1.5rem]',
           'px-[2rem]',
+          'phone:px-[1.25rem]',
+          'phone:py-[1.25rem]',
           'rounded-xl',
           'bg-gray-700',
           'max-w-[40rem]',

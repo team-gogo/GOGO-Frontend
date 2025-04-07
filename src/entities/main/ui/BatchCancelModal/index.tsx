@@ -69,8 +69,8 @@ const BatchCancelModal = ({ onClose }: BatchCancelModalProps) => {
       containerClassName={cn(
         'rounded-lg',
         'bg-gray-700',
-        'px-[40px]',
-        'py-[36px]',
+        'px-[2.5rem]',
+        'py-[2.25rem]',
         'max-w-[38.75rem]',
         'w-full',
         'space-y-24',

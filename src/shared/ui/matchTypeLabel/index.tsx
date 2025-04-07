@@ -58,7 +58,7 @@ const MatchTypeLabel = ({
         className={cn(
           'laptop:text-body3s',
           'leading-[1.3125rem]',
-          'text-caption3s',
+          'text-caption2s',
           !isHex && color ? `text-${color}` : '',
         )}
         style={isHex ? { color } : {}}
