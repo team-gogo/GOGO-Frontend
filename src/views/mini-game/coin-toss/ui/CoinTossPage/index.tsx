@@ -9,7 +9,7 @@ import { AnimationDisplayContainer } from '@/entities/mini-game';
 import { CoinTossAnimation } from '@/entities/mini-game/coin-toss';
 import CoinTossButton from '@/entities/mini-game/coin-toss/ui/CoinTossButton';
 import { handleFormErrors } from '@/shared/model/formErrorUtils';
-import { CoinTossForm } from '@/shared/types/mini-game/conin-toss';
+import { CoinTossForm } from '@/shared/types/mini-game/coin-toss';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';

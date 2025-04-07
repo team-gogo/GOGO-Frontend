@@ -1,5 +1,5 @@
 import { UseFormSetValue } from 'react-hook-form';
-import { CoinTossForm } from '@/shared/types/mini-game/conin-toss';
+import { CoinTossForm } from '@/shared/types/mini-game/coin-toss';
 import Button from '@/shared/ui/button';
 
 interface CoinTossButtonProps {

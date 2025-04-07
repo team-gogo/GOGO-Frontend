@@ -1,6 +1,6 @@
 import axios from 'axios';
 import clientInstance from '@/shared/api/clientInstance';
-import { CoinTossForm } from '@/shared/types/mini-game/conin-toss';
+import { CoinTossForm } from '@/shared/types/mini-game/coin-toss';
 
 export const postCoinToss = async (stageId: string, data: CoinTossForm) => {
   try {

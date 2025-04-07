@@ -1,6 +1,6 @@
 import { UseFormRegister, UseFormWatch } from 'react-hook-form';
 import { BettingActionBox, PlayerResources } from '@/entities/mini-game';
-import { CoinTossForm } from '@/shared/types/mini-game/conin-toss';
+import { CoinTossForm } from '@/shared/types/mini-game/coin-toss';
 import { cn } from '@/shared/utils/cn';
 
 interface ControlFormProps {

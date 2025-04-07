@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { CoinTossForm } from '@/shared/types/mini-game/conin-toss';
+import { CoinTossForm } from '@/shared/types/mini-game/coin-toss';
 import { postCoinToss } from '../api/postCoinToss';
 
 export const usePostCoinToss = (stageId: string) => {

@@ -1,6 +1,6 @@
 import { UseFormRegister, UseFormWatch } from 'react-hook-form';
 import { PointIcon } from '@/shared/assets/svg';
-import { CoinTossForm } from '@/shared/types/mini-game/conin-toss';
+import { CoinTossForm } from '@/shared/types/mini-game/coin-toss';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
