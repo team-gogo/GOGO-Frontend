@@ -92,10 +92,27 @@ const PlinkoPage = () => {
         )}
       >
         <BackPageButton label="플린코" />
-        <div className={cn('w-full', 'flex', 'justify-between')}>
+        <div
+          className={cn(
+            'w-full',
+            'flex',
+            'desktop:items-start',
+            'items-center',
+            'desktop:flex-row',
+            'flex-col-reverse',
+            'justify-between',
+            'gap-[2rem]',
+          )}
+        >
           <form
             onSubmit={handleSubmit(onSubmit, onError)}
-            className={cn('flex', 'gap-[2.5rem]', 'flex-col')}
+            className={cn(
+              'flex',
+              'gap-[2.5rem]',
+              'flex-col',
+              'desktop:w-fit',
+              'w-full',
+            )}
           >
             <PlinkoInputBox
               money={point}
