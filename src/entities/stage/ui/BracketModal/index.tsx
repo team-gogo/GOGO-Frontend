@@ -18,7 +18,7 @@ interface GroupDistribution {
 }
 
 const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
-  const [bracketData, setBracketData] = useState<GameFormatData[]>([]);
+  const [bracketData, setBracketData] = useState<GameFormatData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -38,17 +38,31 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
   }, [gameId]);
 
   const teamCount = useMemo(() => {
-    return bracketData.reduce((count: number, roundData: GameFormatData) => {
-      return (
-        count +
-        roundData.match.reduce((matchCount: number, match) => {
-          let matchTeams = 0;
-          if (match.aTeamId !== null) matchTeams++;
-          if (match.bTeamId !== null) matchTeams++;
-          return matchCount + matchTeams;
-        }, 0)
-      );
-    }, 0);
+    let count = 0;
+    if (!bracketData) return 0;
+
+    if (typeof bracketData === 'object' && !Array.isArray(bracketData)) {
+      if (bracketData.format && Array.isArray(bracketData.format)) {
+        bracketData.format.forEach((formatItem) => {
+          if (
+            formatItem &&
+            formatItem.match &&
+            Array.isArray(formatItem.match)
+          ) {
+            formatItem.match.forEach((match) => {
+              if (match.ateamId !== null && match.ateamId !== undefined) {
+                count++;
+              }
+              if (match.bteamId !== null && match.bteamId !== undefined) {
+                count++;
+              }
+            });
+          }
+        });
+      }
+      return count;
+    }
+    return 0;
   }, [bracketData]);
 
   const finalStage = teamCount <= 4 ? 4 : 8;
@@ -93,7 +107,7 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
     );
   }
 
-  if (bracketData.length === 0) {
+  if (!bracketData) {
     return (
       <ModalLayout
         title={'대진표'}

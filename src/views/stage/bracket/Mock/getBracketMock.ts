@@ -1,328 +1,28 @@
 import { GameFormatData } from '@/shared/types/stage/game';
 
-const getBracketMock = (teamCount: number = 8): GameFormatData[] => {
-  if (teamCount === 8) {
-    return [
-      {
-        round: 'QUARTER_FINALS',
-        match: [
-          {
-            matchId: 1,
-            turn: 1,
-            aTeamId: 1,
-            aTeamName: '1',
-            bTeamId: 2,
-            bTeamName: '2',
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 2,
-            turn: 2,
-            aTeamId: 3,
-            aTeamName: '3',
-            bTeamId: 4,
-            bTeamName: '4',
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 3,
-            turn: 3,
-            aTeamId: 5,
-            aTeamName: '5',
-            bTeamId: 6,
-            bTeamName: '6',
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 4,
-            turn: 4,
-            aTeamId: 7,
-            aTeamName: '7',
-            bTeamId: 8,
-            bTeamName: '8',
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-      {
-        round: 'SEMI_FINALS',
-        match: [
-          {
-            matchId: 5,
-            turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: null,
-            bTeamName: null,
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 6,
-            turn: 2,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: null,
-            bTeamName: null,
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-      {
-        round: 'FINALS',
-        match: [
-          {
-            matchId: 7,
-            turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: null,
-            bTeamName: null,
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-    ];
-  }
-
-  if (teamCount === 7) {
-    return [
-      {
-        round: 'QUARTER_FINALS',
-        match: [
-          {
-            matchId: 1,
-            turn: 1,
-            aTeamId: 1,
-            aTeamName: '1',
-            bTeamId: 2,
-            bTeamName: '2',
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 2,
-            turn: 2,
-            aTeamId: 30,
-            aTeamName: '30',
-            bTeamId: 4,
-            bTeamName: '4',
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 3,
-            turn: 4,
-            aTeamId: 5,
-            aTeamName: '5',
-            bTeamId: 6,
-            bTeamName: '6',
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-      {
-        round: 'SEMI_FINALS',
-        match: [
-          {
-            matchId: 4,
-            turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: null,
-            bTeamName: null,
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 5,
-            turn: 2,
-            aTeamId: 7,
-            aTeamName: '7',
-            bTeamId: null,
-            bTeamName: null,
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-      {
-        round: 'FINALS',
-        match: [
-          {
-            matchId: 6,
-            turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: null,
-            bTeamName: null,
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-    ];
-  }
-
-  if (teamCount === 6) {
-    return [
-      {
-        round: 'QUARTER_FINALS',
-        match: [
-          {
-            matchId: 1,
-            turn: 1,
-            aTeamId: 1,
-            aTeamName: '1',
-            bTeamId: 2,
-            bTeamName: '2',
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 2,
-            turn: 3,
-            aTeamId: 3,
-            aTeamName: '3',
-            bTeamId: 4,
-            bTeamName: '4',
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-      {
-        round: 'SEMI_FINALS',
-        match: [
-          {
-            matchId: 3,
-            turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: 5,
-            bTeamName: '5',
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 4,
-            turn: 2,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: 6,
-            bTeamName: '6',
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-      {
-        round: 'FINALS',
-        match: [
-          {
-            matchId: 5,
-            turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: null,
-            bTeamName: null,
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-    ];
-  }
-
-  if (teamCount === 5) {
-    return [
-      {
-        round: 'QUARTER_FINALS',
-        match: [
-          {
-            matchId: 1,
-            turn: 1,
-            aTeamId: 1,
-            aTeamName: '1',
-            bTeamId: 2,
-            bTeamName: '2',
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-      {
-        round: 'SEMI_FINALS',
-        match: [
-          {
-            matchId: 2,
-            turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: 3,
-            bTeamName: '3',
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 3,
-            turn: 2,
-            aTeamId: 4,
-            aTeamName: '4',
-            bTeamId: 5,
-            bTeamName: '5',
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-      {
-        round: 'FINALS',
-        match: [
-          {
-            matchId: 4,
-            turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: null,
-            bTeamName: null,
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-    ];
-  }
-
-  if (teamCount === 4) {
-    return [
+const getBracketMock = (): GameFormatData => {
+  return {
+    format: [
       {
         round: 'SEMI_FINALS',
         match: [
           {
             matchId: 1,
             turn: 1,
-            aTeamId: 1,
-            aTeamName: '1',
-            bTeamId: 2,
-            bTeamName: '2',
+            ateamId: 1,
+            ateamName: '1',
+            bteamId: 2,
+            bteamName: '2',
             isEnd: false,
             winTeamId: null,
           },
           {
             matchId: 2,
             turn: 2,
-            aTeamId: 3,
-            aTeamName: '3',
-            bTeamId: 4,
-            bTeamName: '4',
+            ateamId: null,
+            ateamName: null,
+            bteamId: 3,
+            bteamName: '3',
             isEnd: false,
             winTeamId: null,
           },
@@ -334,64 +34,17 @@ const getBracketMock = (teamCount: number = 8): GameFormatData[] => {
           {
             matchId: 3,
             turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: null,
-            bTeamName: null,
+            ateamId: null,
+            ateamName: null,
+            bteamId: null,
+            bteamName: null,
             isEnd: false,
             winTeamId: null,
           },
         ],
       },
-    ];
-  }
-
-  if (teamCount === 3) {
-    return [
-      {
-        round: 'SEMI_FINALS',
-        match: [
-          {
-            matchId: 1,
-            turn: 1,
-            aTeamId: 1,
-            aTeamName: '1',
-            bTeamId: 2,
-            bTeamName: '2',
-            isEnd: false,
-            winTeamId: null,
-          },
-          {
-            matchId: 2,
-            turn: 2,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: 3,
-            bTeamName: '3',
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-      {
-        round: 'FINALS',
-        match: [
-          {
-            matchId: 3,
-            turn: 1,
-            aTeamId: null,
-            aTeamName: null,
-            bTeamId: null,
-            bTeamName: null,
-            isEnd: false,
-            winTeamId: null,
-          },
-        ],
-      },
-    ];
-  }
-
-  return [];
+    ],
+  };
 };
 
 export default getBracketMock;

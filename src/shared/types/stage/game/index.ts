@@ -48,20 +48,22 @@ export const isValidGameSystem = (value: string): value is GameSystem => {
 };
 
 export interface GameFormatData {
-  round:
-    | 'ROUND_OF_32'
-    | 'ROUND_OF_16'
-    | 'QUARTER_FINALS'
-    | 'SEMI_FINALS'
-    | 'FINALS';
-  match: {
-    matchId: number;
-    turn: number;
-    aTeamId: number | null;
-    aTeamName: string | null;
-    bTeamId: number | null;
-    bTeamName: string | null;
-    isEnd: boolean;
-    winTeamId: number | null;
+  format: {
+    round:
+      | 'ROUND_OF_32'
+      | 'ROUND_OF_16'
+      | 'QUARTER_FINALS'
+      | 'SEMI_FINALS'
+      | 'FINALS';
+    match: {
+      matchId: number;
+      turn: number;
+      ateamId: number | null;
+      ateamName: string | null;
+      bteamId: number | null;
+      bteamName: string | null;
+      isEnd: boolean;
+      winTeamId: number | null;
+    }[];
   }[];
 }

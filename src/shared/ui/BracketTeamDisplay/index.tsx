@@ -6,7 +6,7 @@ import { cn } from '@/shared/utils/cn';
 
 interface BracketTeamDisplayProps {
   teamCount: number;
-  bracketData: GameFormatData[];
+  bracketData: GameFormatData;
 }
 
 interface GroupDistribution {
@@ -24,16 +24,30 @@ const BracketTeamDisplay = ({
     };
   }, [teamCount]);
 
+  const getFormatData = () => {
+    if (!bracketData || !bracketData.format) return null;
+    return bracketData.format;
+  };
+
   const getTeamByRoundAndTurn = (
     round: string,
     turn: number,
     AorB: 'A' | 'B',
   ) => {
-    const roundData = bracketData.find((data) => data.round === round);
-    if (!roundData) return null;
+    try {
+      const formatData = getFormatData();
+      if (!formatData) return null;
 
-    const match = roundData.match.find((match) => match.turn === turn);
-    return AorB === 'A' ? match?.aTeamId : match?.bTeamId;
+      const formatItem = formatData.find((item) => item.round === round);
+      if (!formatItem) return null;
+
+      const match = formatItem.match.find((m) => m.turn === turn);
+      if (!match) return null;
+
+      return AorB === 'A' ? match.ateamId : match.bteamId;
+    } catch (error) {
+      return null;
+    }
   };
 
   const getTeamNameByRoundAndTurn = (
@@ -41,11 +55,21 @@ const BracketTeamDisplay = ({
     turn: number,
     AorB: 'A' | 'B',
   ) => {
-    const roundData = bracketData.find((data) => data.round === round);
-    if (!roundData) return null;
+    try {
+      const formatData = getFormatData();
+      if (!formatData) return null;
 
-    const match = roundData.match.find((match) => match.turn === turn);
-    return AorB === 'A' ? match?.aTeamName : match?.bTeamName;
+      const formatItem = formatData.find((item) => item.round === round);
+      if (!formatItem) return null;
+
+      const match = formatItem.match.find((m) => m.turn === turn);
+      if (!match) return null;
+
+      return AorB === 'A' ? match.ateamName : match.bteamName;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   };
 
   const findBuyTeam = () => {
