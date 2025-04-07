@@ -112,12 +112,20 @@ const MainPage = () => {
         )}
       >
         <div className={cn('w-full', 'flex', 'justify-between')}>
-          <div className={cn('flex', 'items-center', 'gap-[1rem]', 'w-full')}>
-            <h2 className={cn('text-title4s', 'text-gray-500')}>포인트</h2>
-            <h2 className={cn('text-h3e', 'text-white')}>
+          <div className={cn('flex', 'items-center', 'gap-[1rem]')}>
+            <h2
+              className={cn(
+                'text-title4s',
+                'tablet:text-body2e',
+                'text-gray-500',
+              )}
+            >
+              포인트
+            </h2>
+            <h2 className={cn('text-h3e', 'tablet:text-body1e', 'text-white')}>
               {formatPoint(point)}
             </h2>
-            <h3 className={cn('text-body1s', 'text-gray-200')}>
+            <h3 className={cn('text-body1s', 'text-gray-200', 'tablet:hidden')}>
               ({point.toLocaleString()})
             </h3>
           </div>

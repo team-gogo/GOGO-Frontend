@@ -89,7 +89,13 @@ const StageMatchContainer = ({
           {matches?.matches.map((match) => (
             <div
               key={match.matchId}
-              className="w-[calc(50%-20px)] flex-shrink-0"
+              className={cn(
+                'flex',
+                'w-[calc(50%-20px)]',
+                'pad:w-full',
+                'shrink-0',
+                'justify-center',
+              )}
             >
               <Match match={match} />
             </div>

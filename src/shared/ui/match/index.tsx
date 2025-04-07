@@ -200,6 +200,9 @@ const Match = ({ match }: MatchProps) => {
         'rounded-xl',
         'bg-gray-700',
         'relative',
+        'w-full',
+        'tablet:px-[1rem]',
+        'tablet:py-[0.75rem]',
         isFinal && borderStyle,
       )}
     >
@@ -216,7 +219,14 @@ const Match = ({ match }: MatchProps) => {
         <div
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
-          <div className={cn('flex', 'items-center', 'gap-[1.25rem]')}>
+          <div
+            className={cn(
+              'flex',
+              'items-center',
+              'gap-[1.25rem]',
+              'tablet:gap-[0.5rem]',
+            )}
+          >
             <button
               onClick={() => {
                 setIsAlarmClicked(!isAlarmClicked);
@@ -225,7 +235,14 @@ const Match = ({ match }: MatchProps) => {
             >
               {isMatchNoticeChecked ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
             </button>
-            <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
+            <div
+              className={cn(
+                'flex',
+                'items-center',
+                'gap-[1.5rem]',
+                'tablet:gap-[1rem]',
+              )}
+            >
               <SystemLabel
                 system={system}
                 roundText={roundText}
@@ -253,8 +270,18 @@ const Match = ({ match }: MatchProps) => {
               push(`/match/${matchId}`);
             }}
           >
-            <p className={cn('text-body3s', 'text-gray-500')}>자세히 보기</p>
-            <RightArrowIcon />
+            <p
+              className={cn(
+                'text-body3s',
+                'laptop:text-caption2s',
+                'text-gray-500',
+              )}
+            >
+              자세히 보기
+            </p>
+            <button className={cn('midpad:hidden')}>
+              <RightArrowIcon />
+            </button>
           </button>
         </div>
         <div
@@ -317,7 +344,11 @@ const Match = ({ match }: MatchProps) => {
                     )}
                   </p>
                   <h2
-                    className={cn('text-h4e', getTeamClassName(ateam?.teamId))}
+                    className={cn(
+                      'text-h4e',
+                      'laptop:text-body1s',
+                      getTeamClassName(ateam?.teamId),
+                    )}
                   >
                     {ateam?.teamName}
                   </h2>
@@ -345,7 +376,11 @@ const Match = ({ match }: MatchProps) => {
                     )}
                   </p>
                   <h2
-                    className={cn('text-h4e', getTeamClassName(bteam?.teamId))}
+                    className={cn(
+                      'text-h4e',
+                      'laptop:text-body1s',
+                      getTeamClassName(bteam?.teamId),
+                    )}
                   >
                     {bteam?.teamName}
                   </h2>

@@ -1,8 +1,7 @@
-const BlueAlarmIcon = ({ size = '2.5rem' }: { size?: string }) => (
+const BlueAlarmIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
+    className="h-[2rem] w-[2rem] tablet:h-[1.75rem] tablet:w-[1.75rem]"
     viewBox="0 0 40 41"
     fill="none"
   >

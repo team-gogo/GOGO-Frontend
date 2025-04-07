@@ -29,7 +29,9 @@ const MatchTeam = ({ team, percentage, bgColor, onClick }: MatchTeamProps) => {
         <p className={cn('text-body2s', 'text-gray-300')}>
           {team?.bettingPoint}P
         </p>
-        <h1 className={cn('text-h1e', 'text-white')}>{team?.teamName}</h1>
+        <h1 className={cn('text-h4e', 'laptop:text-body1s', 'text-white')}>
+          {team?.teamName}
+        </h1>
       </div>
       <button
         onClick={onClick}
