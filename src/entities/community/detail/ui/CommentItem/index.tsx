@@ -51,8 +51,8 @@ const CommentItem = ({
         <p
           className={cn(
             'text-body3s',
-            'text-gray-300',
-            'mobile:text-caption1s',
+            'mobile:text-gray-300',
+            'text-caption1s',
           )}
         >
           {authorName}
@@ -60,10 +60,10 @@ const CommentItem = ({
       </div>
       <p
         className={cn(
-          'text-body3s',
+          'mobile:text-body3s',
           'text-white',
           'px-24',
-          'mobile:text-caption1s',
+          'text-caption1s',
           'break-words',
           'whitespace-normal',
           'overflow-hidden',

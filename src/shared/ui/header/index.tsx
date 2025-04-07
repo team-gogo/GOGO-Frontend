@@ -26,8 +26,8 @@ const Header = () => {
     <header
       className={cn(
         'w-full',
-        'py-[32px]',
-        'tablet:py-[24px]',
+        'tablet:py-[32px]',
+        'py-[24px]',
         'flex',
         'border-b-1',
         'border-solid',
@@ -42,7 +42,7 @@ const Header = () => {
             <GOGOIcon className="h-auto w-full" />
           </div>
         </Link>
-        <nav className={cn('flex', 'gap-28', 'tablet:gap-16')}>
+        <nav className={cn('flex', 'tablet:gap-28', 'gap-16')}>
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -63,8 +63,8 @@ const Header = () => {
               <span
                 className={cn(
                   'text-gray-500',
-                  'text-body2s',
-                  'tablet:text-body3s',
+                  'tablet:text-body2s',
+                  'text-body3s',
                 )}
                 style={{
                   color:
