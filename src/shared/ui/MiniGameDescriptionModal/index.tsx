@@ -52,6 +52,7 @@ const MiniGameDescriptionModal = ({
         'space-y-24',
         'px-[20px]',
         'py-[18px]',
+        'm-20',
       )}
     >
       <div className={cn('flex', 'flex-wrap', 'gap-y-12', 'gap-x-16')}>

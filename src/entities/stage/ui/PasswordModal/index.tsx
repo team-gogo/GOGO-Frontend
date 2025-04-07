@@ -43,6 +43,7 @@ const PasswordModal = ({ onClose }: PasswordModalProps) => {
         'max-w-[795px]',
         'w-full',
         'space-y-24',
+        'm-20',
       )}
     >
       <form

@@ -38,6 +38,7 @@ const CategoryTypeModal = ({
         'max-w-[52.5rem]',
         'w-full',
         'space-y-24',
+        'm-20',
       )}
     >
       <div className={cn('flex', 'flex-wrap', 'gap-y-12', 'gap-x-16')}>

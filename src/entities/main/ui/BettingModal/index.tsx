@@ -112,8 +112,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
         'max-w-[38.75rem]',
         'w-full',
         'space-y-24',
-        'mx-20',
-        'my-20',
+        'm-20',
       )}
     >
       <form
