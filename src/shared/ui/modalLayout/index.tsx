@@ -53,7 +53,7 @@ const ModalLayout = ({
               {title}
             </p>
             <button onClick={onClose}>
-              <XIcon className="mobile:h-24 mobile:w-24" />
+              <XIcon className="h-24 w-24" />
             </button>
           </div>
         )}

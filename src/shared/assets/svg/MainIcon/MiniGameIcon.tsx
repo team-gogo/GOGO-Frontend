@@ -1,8 +1,9 @@
-const MiniGameIcon = () => (
+const MiniGameIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="1.75rem"
     height="1.75rem"
+    className={className}
     viewBox="0 0 28 30"
     fill="none"
   >
