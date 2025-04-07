@@ -1,7 +1,7 @@
 const CreateIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className="pad:h-[1.5rem] pad:w-[1.5rem] h-[0.75rem] w-[0.75rem]"
+    className="h-[0.75rem] w-[0.75rem] pad:h-[1.5rem] pad:w-[1.5rem]"
     viewBox="0 0 36 36"
     fill="none"
   >
