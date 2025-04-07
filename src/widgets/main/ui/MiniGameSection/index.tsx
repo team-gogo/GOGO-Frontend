@@ -23,7 +23,7 @@ const MiniGameSection = ({ stageId, activeGameList }: MiniGameSectionProps) => {
     {
       Icon: CoinIcon,
       label: '코인',
-      path: 'coin',
+      path: 'coin-toss',
       isActive: activeGameList?.isCoinTossActive,
     },
     {
