@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { GroupDistribution } from '@/shared/model/calculateTeamDistribution';
 import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import BracketTeamDisplay from '@/shared/ui/BracketTeamDisplay';
 import ModalLayout from '@/shared/ui/modalLayout';
@@ -8,11 +9,6 @@ import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
 interface BracketModalProps {
   onClose: () => void;
   _gameId: number;
-}
-
-interface GroupDistribution {
-  top: number;
-  bottom: number;
 }
 
 const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
