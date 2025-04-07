@@ -46,7 +46,15 @@ const FastCreatePage = () => {
         setValue={setValue}
         isFastMode={true}
       />
-      <div className={cn('flex', 'w-full', 'gap-24', 'tablet:flex-wrap')}>
+      <div
+        className={cn(
+          'flex',
+          'w-full',
+          'gap-24',
+          'flex-wrap',
+          'tablet:flex-nowrap',
+        )}
+      >
         <div className="w-full">
           <EntryNumberInput register={register} />
         </div>

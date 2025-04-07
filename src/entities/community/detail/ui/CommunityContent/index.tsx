@@ -61,7 +61,7 @@ const CommunityContent = ({
         <div className={cn('flex', 'items-center', 'gap-24')}>
           <SportTypeLabel isHaveBorder={true} type={stageCategory} />
           <p
-            className={cn('text-body1e', 'text-gray-300', 'mobile:text-body2e')}
+            className={cn('mobile:text-body1e', 'text-gray-300', 'text-body2e')}
           >
             {stageName}
           </p>
@@ -69,9 +69,9 @@ const CommunityContent = ({
             <PersonIcon />
             <p
               className={cn(
-                'text-body3s',
+                'mobile:text-body3s',
                 'text-gray-300',
-                'mobile:text-caption1s',
+                'text-caption1s',
               )}
             >
               {authorName}
@@ -79,7 +79,7 @@ const CommunityContent = ({
           </div>
         </div>
         <div className={cn('flex', 'flex-col', 'gap-16')}>
-          <h1 className={cn('text-body2e', 'text-white', 'mobile:text-body3e')}>
+          <h1 className={cn('mobile:text-body2e', 'text-white', 'text-body3e')}>
             {title}
           </h1>
           <p className={cn('text-body3s', 'text-gray-300')}>{content}</p>
@@ -91,9 +91,9 @@ const CommunityContent = ({
             <CommentIcon />
             <p
               className={cn(
-                'text-gray-300',
+                'mobile:text-gray-300',
                 'text-body3s',
-                'mobile:text-caption1s',
+                'text-caption1s',
               )}
             >
               {commentCount}

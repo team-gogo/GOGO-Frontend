@@ -30,8 +30,8 @@ const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
         'rounded-lg',
         'grid',
         'w-full',
-        'grid-cols-[1fr_3fr_1fr_1fr]',
-        'tablet:grid-cols-[1fr_3fr]',
+        'tablet:grid-cols-[1fr_3fr_1fr_1fr]',
+        'grid-cols-[1fr_3fr]',
         'items-center',
       )}
     >
@@ -60,7 +60,8 @@ const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
           'text-gray-300',
           'text-body2s',
           'text-center',
-          'tablet:hidden',
+          'hidden',
+          'tablet:block',
         )}
       >
         {author.name}
@@ -71,7 +72,8 @@ const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
           'justify-center',
           'items-center',
           'gap-16',
-          'tablet:hidden',
+          'hidden',
+          'tablet:flex',
         )}
       >
         <div className={cn('flex', 'items-center', 'gap-8')}>

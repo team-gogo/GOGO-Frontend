@@ -36,7 +36,6 @@ const PlinkoInputBox = ({
         'items-center',
         'rounded-xl',
         'bg-gray-700',
-        'min-w-[24.5rem]',
       )}
     >
       <div className={cn('flex', 'w-full', 'flex-col', 'gap-[6.25rem]')}>

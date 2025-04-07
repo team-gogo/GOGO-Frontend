@@ -45,13 +45,13 @@ const MiniGameDescriptionModal = ({
       containerClassName={cn(
         'rounded-lg',
         'bg-gray-700',
-        'px-[40px]',
-        'py-[36px]',
+        'mobile:px-[40px]',
+        'mobile:py-[36px]',
         'max-w-[40.9375rem]',
         'w-full',
         'space-y-24',
-        'mobile:px-[20px]',
-        'mobile:py-[18px]',
+        'px-[20px]',
+        'py-[18px]',
       )}
     >
       <div className={cn('flex', 'flex-wrap', 'gap-y-12', 'gap-x-16')}>
@@ -77,7 +77,7 @@ const MiniGameDescriptionModal = ({
           'min-h-[7.5rem]',
         )}
       >
-        <p className={cn('text-body1s', 'text-white', 'mobile:text-caption1s')}>
+        <p className={cn('mobile:text-body1s', 'text-white', 'text-caption1s')}>
           {selectedGame ? gameDescription[selectedGame] : '게임을 선택하세요.'}
         </p>
       </div>

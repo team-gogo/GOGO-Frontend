@@ -109,6 +109,7 @@ button {
 
 html {
   font-family: var(--font-suit);
+  scrollbar-gutter: stable;
 }
 body {
   background-color: #121212;
@@ -137,6 +138,41 @@ body {
 
 .dnd-dragging {
   cursor: grabbing;
+}
+
+@keyframes bounce-once {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-25%);
+  }
+  50% {
+    transform: translateY(10%);
+  }
+  65% {
+    transform: translateY(-12%);
+  }
+  80% {
+    transform: translateY(5%);
+  }
+  90% {
+    transform: translateY(-6%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-bounce-once {
+  animation: bounce-once 0.7s ease-out forwards;
+}
+
+.delay-0 {
+  animation-delay: 0s;
+}
+.delay-500 {
+  animation-delay: 0.5s;
 }
 
 body > div[style*='position: fixed'][style*='z-index: 9999'] {

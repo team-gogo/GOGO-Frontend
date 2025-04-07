@@ -47,10 +47,10 @@ const MatchContainer = ({
       <div
         className={cn(
           'grid',
-          'grid-cols-2',
+          'tablet:grid-cols-2',
           'gap-x-[2rem]',
           'gap-y-[2.5rem]',
-          'tablet:grid-cols-1',
+          'grid-cols-1',
         )}
       >
         {filteredMatches?.map((match) => (

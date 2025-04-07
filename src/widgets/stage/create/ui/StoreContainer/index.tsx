@@ -39,7 +39,15 @@ const StoreContainer = ({ register, watch, setValue }: Props) => {
   return (
     <div className={cn('space-y-16')}>
       <p className={cn('text-body2e', 'text-white')}>상점</p>
-      <div className={cn('flex', 'items-center', 'gap-24', 'tablet:flex-wrap')}>
+      <div
+        className={cn(
+          'flex',
+          'items-center',
+          'gap-24',
+          'flex-wrap',
+          'tablet:flex-nowrap',
+        )}
+      >
         {STORE_ITEMS.map((item) => {
           const storeType = item.type as StoreItemType;
           const storeName = item.name;

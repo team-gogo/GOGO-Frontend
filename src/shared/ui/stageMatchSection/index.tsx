@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import PasswordModal from '@/entities/stage/ui/PasswordModal';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
 import useStageNavigation from '@/shared/model/useStageNavigation';
@@ -22,7 +23,18 @@ const StageMatchSection = ({
   matches,
   isPending,
 }: StageSectionProps) => {
-  const visibleCount = 2;
+  const [visibleCount, setVisibleCount] = useState(2);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setVisibleCount(window.innerWidth <= 768 ? 1 : 2);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const { isPasswordModalOpen, setIsPasswordModalOpen } =
     usePasswordModalStore();
@@ -46,7 +58,13 @@ const StageMatchSection = ({
     <div className={cn('flex', 'h-full', 'flex-col', 'w-[95%]')}>
       {title && (
         <h2
-          className={cn('h-full', 'text-body1e', 'text-white', 'pb-[2.5rem]')}
+          className={cn(
+            'h-full',
+            'midpad:text-body1e',
+            'text-white',
+            'pb-[2.5rem]',
+            'text-body3e',
+          )}
         >
           {title}
         </h2>
@@ -58,8 +76,9 @@ const StageMatchSection = ({
             'min-h-[18.25rem]',
             'justify-center',
             'items-center',
-            'text-body1e',
+            'pad:text-body1e',
             'text-white',
+            'text-body3e',
           )}
         >
           정보를 불러오는중...
@@ -72,8 +91,9 @@ const StageMatchSection = ({
             'min-h-[18.25rem]',
             'justify-center',
             'items-center',
-            'text-body1e',
+            'pad:text-body1e',
             'text-white',
+            'text-body3e',
           )}
         >
           해당하는 스테이지가 없습니다.
@@ -86,8 +106,9 @@ const StageMatchSection = ({
             'min-h-[18.25rem]',
             'justify-center',
             'items-center',
-            'text-body1e',
+            'pad:text-body1e',
             'text-white',
+            'text-body3e',
           )}
         >
           해당하는 매치가 없습니다.
@@ -105,11 +126,14 @@ const StageMatchSection = ({
           {stageStartIndex > 0 && (
             <button
               className={cn(
-                'absolute left-[-4%] top-1/2 z-10 -translate-y-1/2',
+                'absolute left-[-5%] top-1/2 z-10 -translate-y-1/2 pad:left-[-4%]',
               )}
               onClick={handlePrevStage}
             >
-              <LeftArrow color="#6B6B6B" />
+              <LeftArrow
+                color="#6B6B6B"
+                size={visibleCount === 1 ? '1.5rem' : '2.5rem'}
+              />
             </button>
           )}
 
@@ -122,11 +146,11 @@ const StageMatchSection = ({
           {stageStartIndex < totalStages - visibleCount && (
             <button
               className={cn(
-                'absolute right-[-4%] top-1/2 z-10 -translate-y-1/2',
+                'absolute right-[-5%] top-1/2 z-10 -translate-y-1/2 pad:right-[-4%]',
               )}
               onClick={handleNextStage}
             >
-              <RightArrowIcon size="2.5rem" />
+              <RightArrowIcon size={visibleCount === 1 ? '1.5rem' : '2.5rem'} />
             </button>
           )}
         </div>
@@ -135,10 +159,15 @@ const StageMatchSection = ({
       <div className={cn('relative flex w-full')}>
         {matchStartIndex > 0 && (
           <button
-            className={cn('absolute left-[-4%] top-1/2 z-10 -translate-y-1/2')}
+            className={cn(
+              'absolute left-[-5%] top-1/2 z-10 -translate-y-1/2 pad:left-[-4%]',
+            )}
             onClick={handlePrevMatch}
           >
-            <LeftArrow color="#6B6B6B" />
+            <LeftArrow
+              color="#6B6B6B"
+              size={visibleCount === 1 ? '1.5rem' : '2.5rem'}
+            />
           </button>
         )}
 
@@ -152,10 +181,12 @@ const StageMatchSection = ({
 
         {matchStartIndex < totalMatches - visibleCount && (
           <button
-            className={cn('absolute right-[-4%] top-1/2 z-10 -translate-y-1/2')}
+            className={cn(
+              'absolute right-[-5%] top-1/2 z-10 -translate-y-1/2 pad:right-[-4%]',
+            )}
             onClick={handleNextMatch}
           >
-            <RightArrowIcon size="2.5rem" />
+            <RightArrowIcon size={visibleCount === 1 ? '1.5rem' : '2.5rem'} />
           </button>
         )}
       </div>
