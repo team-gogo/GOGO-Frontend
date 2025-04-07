@@ -14,13 +14,15 @@ const WastedModal = ({ onClose }: WastedModalProps) => {
       containerClassName={cn(
         'rounded-lg',
         'bg-gray-700',
-        'mobile:px-[40px]',
-        'mobile:py-[36px]',
-        'max-w-[50rem]',
+        'laptop:px-[40px]',
+        'laptop:py-[36px]',
+        'laptop:max-w-[50rem]',
         'w-full',
         'space-y-24',
         'px-[20px]',
         'py-[18px]',
+        'max-w-[30rem]',
+        'mobile:max-w-[20rem]',
       )}
     >
       <div className={cn('w-full', 'h-full', 'text-gray-400')}>
