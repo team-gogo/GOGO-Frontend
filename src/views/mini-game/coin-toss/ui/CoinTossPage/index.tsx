@@ -62,22 +62,22 @@ const CoinTossPage = () => {
       onSuccess: (response) => {
         const { result, amount } = response;
 
-        if (data.bet === 'FRONT') {
-          setVideoSource(result ? '/FrontCoin.mp4' : '/BackCoin.mp4');
-        } else {
-          setVideoSource(result ? '/BackCoin.mp4' : '/FrontCoin.mp4');
-        }
+        const didWin = result;
+        const appearedSide = result
+          ? data.bet
+          : data.bet === 'FRONT'
+            ? 'BACK'
+            : 'FRONT';
 
+        setVideoSource(
+          appearedSide === 'FRONT' ? '/FrontCoin.mp4' : '/BackCoin.mp4',
+        );
         setIsPlaying(true);
 
         const video = videoRef.current;
         if (video) {
           video.onended = () => {
             setIsPlaying(false);
-
-            const didWin =
-              (data.bet === 'FRONT' && result) ||
-              (data.bet === 'BACK' && !result);
 
             if (didWin) {
               toast.success(
@@ -95,6 +95,7 @@ const CoinTossPage = () => {
           };
         }
       },
+
       onError: (error) => {
         setLocalPoint((prev) => prev + formatData.amount);
         toast.error(error.message || '코인토스 요청 중 오류가 발생했습니다.');
