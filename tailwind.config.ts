@@ -103,7 +103,7 @@ const config: Config = {
     screens: {
       phone: '0px',
       mobile: '376px',
-      pad: '640px',
+      pad: '649px',
       midpad: '769px',
       tablet: '876px',
       laptop: '1024px',

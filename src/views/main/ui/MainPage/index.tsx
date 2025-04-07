@@ -90,6 +90,8 @@ const MainPage = () => {
   const { isCheckAgainModalOpen, setIsCheckAgainModalOpen } =
     useCheckAgainModalStore();
 
+  const iconStyle = 'h-[1.5rem] w-[1.5rem] pad:h-[1.75rem] pad:w-[1.75rem]';
+
   return (
     <div
       className={cn(
@@ -161,7 +163,7 @@ const MainPage = () => {
           >
             <SectionWrapper
               text={'미니게임'}
-              icon={<MiniGameIcon />}
+              icon={<MiniGameIcon className={iconStyle} />}
               path={`/mini-game/${stageId}`}
             >
               <MiniGameSection
@@ -171,7 +173,7 @@ const MainPage = () => {
             </SectionWrapper>
             <SectionWrapper
               text={'포인트 랭킹'}
-              icon={<PriceIcon />}
+              icon={<PriceIcon className={iconStyle} />}
               path={`/ranking/${stageId}`}
             >
               <div
@@ -196,7 +198,7 @@ const MainPage = () => {
           >
             <SectionWrapper
               text={'커뮤니티'}
-              icon={<CommunityIcon />}
+              icon={<CommunityIcon className={iconStyle} />}
               path={`/community/${stageId}`}
             >
               <CommunityItemContainer
@@ -208,7 +210,7 @@ const MainPage = () => {
 
             <SectionWrapper
               text={'경기'}
-              icon={<RankingIcon />}
+              icon={<RankingIcon className={iconStyle} />}
               path={`/match/team/${stageId}`}
             >
               <MatchListSection stageInMatch={gameData} stageId={stageId} />

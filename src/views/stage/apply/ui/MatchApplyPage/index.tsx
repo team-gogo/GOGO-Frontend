@@ -155,7 +155,7 @@ const MatchApplyPage = () => {
             <div
               className={cn(
                 'grid',
-                'tablet:grid-cols-3',
+                'midpad:grid-cols-3',
                 'gap-x-[1.125rem]',
                 'gap-y-[1.5rem]',
                 'grid-cols-1',

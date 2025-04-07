@@ -16,7 +16,8 @@ const MatchTeam = ({ team, percentage, bgColor, onClick }: MatchTeamProps) => {
   return (
     <div
       className={cn(
-        'h-[21.75rem]',
+        'tablet:h-[21.75rem]',
+        'h-[16.75rem]',
         'flex',
         'flex-col',
         'justify-end',
@@ -29,7 +30,7 @@ const MatchTeam = ({ team, percentage, bgColor, onClick }: MatchTeamProps) => {
         <p className={cn('text-body2s', 'text-gray-300')}>
           {team?.bettingPoint}P
         </p>
-        <h1 className={cn('text-h4e', 'laptop:text-body1s', 'text-white')}>
+        <h1 className={cn('tablet:text-h4e', 'text-body1s', 'text-white')}>
           {team?.teamName}
         </h1>
       </div>
@@ -39,7 +40,8 @@ const MatchTeam = ({ team, percentage, bgColor, onClick }: MatchTeamProps) => {
         className={cn(
           'flex',
           'min-h-[2.5rem]',
-          'max-h-[15rem]',
+          'tablet:max-h-[15rem]',
+          'max-h-[10rem]',
           'max-w-[7.5rem]',
           'w-full',
           'flex-col',

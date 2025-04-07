@@ -60,10 +60,10 @@ const StageMatchSection = ({
         <h2
           className={cn(
             'h-full',
-            'text-body1e',
+            'midpad:text-body1e',
             'text-white',
             'pb-[2.5rem]',
-            'mobile:text-body3e',
+            'text-body3e',
           )}
         >
           {title}
@@ -76,9 +76,9 @@ const StageMatchSection = ({
             'min-h-[18.25rem]',
             'justify-center',
             'items-center',
-            'text-body1e',
+            'pad:text-body1e',
             'text-white',
-            'mobile:text-body3e',
+            'text-body3e',
           )}
         >
           정보를 불러오는중...
@@ -91,9 +91,9 @@ const StageMatchSection = ({
             'min-h-[18.25rem]',
             'justify-center',
             'items-center',
-            'text-body1e',
+            'pad:text-body1e',
             'text-white',
-            'mobile:text-body3e',
+            'text-body3e',
           )}
         >
           해당하는 스테이지가 없습니다.
@@ -106,8 +106,9 @@ const StageMatchSection = ({
             'min-h-[18.25rem]',
             'justify-center',
             'items-center',
-            'text-body1e',
+            'pad:text-body1e',
             'text-white',
+            'text-body3e',
           )}
         >
           해당하는 매치가 없습니다.
@@ -125,7 +126,7 @@ const StageMatchSection = ({
           {stageStartIndex > 0 && (
             <button
               className={cn(
-                'absolute left-[-4%] top-1/2 z-10 -translate-y-1/2',
+                'absolute left-[-5%] top-1/2 z-10 -translate-y-1/2 pad:left-[-4%]',
               )}
               onClick={handlePrevStage}
             >
@@ -145,7 +146,7 @@ const StageMatchSection = ({
           {stageStartIndex < totalStages - visibleCount && (
             <button
               className={cn(
-                'absolute right-[-4%] top-1/2 z-10 -translate-y-1/2',
+                'absolute right-[-5%] top-1/2 z-10 -translate-y-1/2 pad:right-[-4%]',
               )}
               onClick={handleNextStage}
             >
@@ -158,7 +159,9 @@ const StageMatchSection = ({
       <div className={cn('relative flex w-full')}>
         {matchStartIndex > 0 && (
           <button
-            className={cn('absolute left-[-4%] top-1/2 z-10 -translate-y-1/2')}
+            className={cn(
+              'absolute left-[-5%] top-1/2 z-10 -translate-y-1/2 pad:left-[-4%]',
+            )}
             onClick={handlePrevMatch}
           >
             <LeftArrow
@@ -178,7 +181,9 @@ const StageMatchSection = ({
 
         {matchStartIndex < totalMatches - visibleCount && (
           <button
-            className={cn('absolute right-[-4%] top-1/2 z-10 -translate-y-1/2')}
+            className={cn(
+              'absolute right-[-5%] top-1/2 z-10 -translate-y-1/2 pad:right-[-4%]',
+            )}
             onClick={handleNextMatch}
           >
             <RightArrowIcon size={visibleCount === 1 ? '1.5rem' : '2.5rem'} />

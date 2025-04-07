@@ -187,7 +187,8 @@ const Match = ({ match }: MatchProps) => {
     'border-4',
     'border-solid',
     'border-main-300',
-    'py-[1.25rem]',
+    'laptop:py-[1.25rem]',
+    'py-[0.75rem]',
   ];
 
   return (

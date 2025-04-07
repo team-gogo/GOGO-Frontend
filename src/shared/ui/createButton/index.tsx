@@ -17,10 +17,10 @@ const CreateButton = ({ children, ...attributes }: CreateButtonProps) => {
         'border-solid',
         'border-1',
         'border-main-400',
-        'px-[1rem]',
-        'py-[0.75rem]',
-        'mobile:px-[0.75rem]',
-        'mobile:py-[0.5rem]',
+        'pad:px-[1rem]',
+        'pad:py-[0.75rem]',
+        'px-[0.75rem]',
+        'py-[0.5rem]',
       )}
     >
       <div
@@ -29,11 +29,11 @@ const CreateButton = ({ children, ...attributes }: CreateButtonProps) => {
           'w-full',
           'items-center',
           'justify-center',
-          'gap-[0.75rem]',
-          'mobile:gap-[0.5rem]',
+          'pad:gap-[0.75rem]',
+          'gap-[0.5rem]',
           'text-main-400',
-          'text-body3s',
-          'mobile:text-caption3s',
+          'pad:text-body3s',
+          'text-caption3s',
         )}
       >
         <CreateIcon />
