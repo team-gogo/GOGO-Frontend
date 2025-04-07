@@ -32,13 +32,15 @@ const CoinTossPage = () => {
   const { mutate: coinToss, isPending } = usePostCoinToss(stageId);
 
   const [localPoint, setLocalPoint] = useState<number>(0);
+  const [localCoinTossTicket, setLocalCoinTossTicket] = useState<number>(0);
 
   const serverPoint = myPointData?.point || 0;
   const coinTossTicket = myTicketData?.coinToss || 0;
 
   useEffect(() => {
     setLocalPoint(serverPoint);
-  }, [serverPoint]);
+    setLocalCoinTossTicket(coinTossTicket);
+  }, [serverPoint, coinTossTicket]);
 
   register('bet', { required: '동전 면을 선택해주세요' });
 
@@ -57,11 +59,11 @@ const CoinTossPage = () => {
     };
 
     setLocalPoint((prev) => prev - formatData.amount);
+    setLocalCoinTossTicket((prev) => prev - 1);
 
     coinToss(formatData, {
       onSuccess: (response) => {
         const { result, amount } = response;
-
         const didWin = result;
         const appearedSide = result
           ? data.bet
@@ -92,12 +94,15 @@ const CoinTossPage = () => {
             queryClient.invalidateQueries({
               queryKey: ['getMyPoint', stageId],
             });
+            queryClient.invalidateQueries({
+              queryKey: ['getMyTicket', stageId],
+            });
           };
         }
       },
-
       onError: (error) => {
         setLocalPoint((prev) => prev + formatData.amount);
+        setLocalCoinTossTicket((prev) => prev + 1);
         toast.error(error.message || '코인토스 요청 중 오류가 발생했습니다.');
       },
     });
@@ -151,7 +156,7 @@ const CoinTossPage = () => {
 
       <ControlForm
         point={localPoint}
-        coinTossTicket={coinTossTicket}
+        coinTossTicket={localCoinTossTicket}
         register={register}
         watch={watch}
         isPending={isPending}
