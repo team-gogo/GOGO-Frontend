@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
+import { CheckingBoxIcon } from '@/shared/assets/svg';
 import Button from '@/shared/ui/button';
 import ModalLayout from '@/shared/ui/modalLayout';
 import { cn } from '@/shared/utils/cn';
 
 interface WastedModalProps {
   onClose: () => void;
+  stageId: number;
 }
 
-const WastedModal = ({ onClose }: WastedModalProps) => {
+const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = () => {
@@ -32,6 +35,16 @@ const WastedModal = ({ onClose }: WastedModalProps) => {
       }
     };
   }, []);
+
+  const handleConfirm = () => {
+    if (isChecked) {
+      const now = new Date().toISOString();
+      localStorage.setItem(`not_show_wasted_${stageId}`, now);
+    } else {
+      localStorage.removeItem(`not_show_wasted_${stageId}`);
+    }
+    onClose();
+  };
 
   return (
     <ModalLayout
@@ -95,10 +108,26 @@ const WastedModal = ({ onClose }: WastedModalProps) => {
           반복하지 마세요.
         </p>
       </div>
+      <div
+        className={cn('flex', 'items-center', 'gap-2', 'cursor-pointer')}
+        onClick={() => setIsChecked(!isChecked)}
+      >
+        <CheckingBoxIcon size={32} isChecked={isChecked} />
+        <p
+          className={cn(
+            'text-body2s',
+            'text-gray-400',
+            'mobile:text-body3s',
+            'p-[0.5rem]',
+          )}
+        >
+          오늘 다시 보지 않기
+        </p>
+      </div>
       <Button
         className={cn('w-full', 'mt-6')}
         disabled={!isButtonEnabled}
-        onClick={onClose}
+        onClick={handleConfirm}
       >
         확인
       </Button>
