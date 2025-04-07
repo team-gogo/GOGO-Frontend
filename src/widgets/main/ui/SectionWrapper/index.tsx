@@ -32,7 +32,9 @@ const SectionWrapper = ({
       <div className={cn('flex', 'w-full', 'justify-between', 'items-center')}>
         <div className={cn('flex', 'items-center', 'gap-[0.75rem]')}>
           {icon}
-          <h2 className={cn('text-body1e', 'text-white')}>{text}</h2>
+          <h2 className={cn('pad:text-body1e', 'text-body3e', 'text-white')}>
+            {text}
+          </h2>
         </div>
         <button
           className={cn('flex', 'items-center', 'gap-[0.5rem]')}
