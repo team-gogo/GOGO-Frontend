@@ -100,8 +100,8 @@ const GameSelectionCard = ({
           {icon(!buttonDisabled)}
           <p
             className={cn(
-              'text-h4s',
-              'mobile: text-body2s',
+              'mobile:text-h4s',
+              'text-body2s',
               !buttonDisabled ? 'text-white' : 'text-gray-400',
             )}
           >
@@ -111,10 +111,10 @@ const GameSelectionCard = ({
             type="button"
             className={cn(
               'absolute',
-              'top-24',
-              'right-12',
-              'mobile:top-12',
-              'mobile:right-6',
+              'mobile:top-24',
+              'mobile:right-12',
+              'top-12',
+              'right-6',
             )}
             onClick={() => setIsModalOpen(true)}
           >
@@ -130,9 +130,9 @@ const GameSelectionCard = ({
           <div className={cn('flex', 'items-center', 'justify-center')}>
             <p
               className={cn(
-                'text-body3s',
+                'mobile:text-body3s',
                 'text-gray-500',
-                'mobile:text-caption3s',
+                'text-caption3s',
               )}
             >
               구매가능한 티켓 양 : {shopTicket?.ticketQuantity || 0}

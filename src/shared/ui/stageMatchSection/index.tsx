@@ -121,7 +121,10 @@ const StageMatchSection = ({
               )}
               onClick={handlePrevStage}
             >
-              <LeftArrow color="#6B6B6B" />
+              <LeftArrow
+                color="#6B6B6B"
+                size={visibleCount === 1 ? '1.5rem' : '2.5rem'}
+              />
             </button>
           )}
 
@@ -138,7 +141,7 @@ const StageMatchSection = ({
               )}
               onClick={handleNextStage}
             >
-              <RightArrowIcon size="2.5rem" />
+              <RightArrowIcon size={visibleCount === 1 ? '1.5rem' : '2.5rem'} />
             </button>
           )}
         </div>
@@ -150,7 +153,10 @@ const StageMatchSection = ({
             className={cn('absolute left-[-4%] top-1/2 z-10 -translate-y-1/2')}
             onClick={handlePrevMatch}
           >
-            <LeftArrow color="#6B6B6B" />
+            <LeftArrow
+              color="#6B6B6B"
+              size={visibleCount === 1 ? '1.5rem' : '2.5rem'}
+            />
           </button>
         )}
 
@@ -167,7 +173,7 @@ const StageMatchSection = ({
             className={cn('absolute right-[-4%] top-1/2 z-10 -translate-y-1/2')}
             onClick={handleNextMatch}
           >
-            <RightArrowIcon size="2.5rem" />
+            <RightArrowIcon size={visibleCount === 1 ? '1.5rem' : '2.5rem'} />
           </button>
         )}
       </div>

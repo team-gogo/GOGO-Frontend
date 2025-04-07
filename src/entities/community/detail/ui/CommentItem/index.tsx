@@ -50,8 +50,8 @@ const CommentItem = ({
         <PersonIcon />
         <p
           className={cn(
-            'text-body3s',
-            'mobile:text-gray-300',
+            'mobile:text-body3s',
+            'text-gray-300',
             'text-caption1s',
           )}
         >
