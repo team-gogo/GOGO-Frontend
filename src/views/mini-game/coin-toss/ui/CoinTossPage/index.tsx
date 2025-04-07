@@ -23,14 +23,22 @@ const CoinTossPage = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [videoSource, setVideoSource] = useState<string>('/BackCoin.mp4');
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
   const { register, handleSubmit, watch, setValue } = useForm<CoinTossForm>();
   const queryClient = useQueryClient();
+
   const { data: myPointData } = useGetMyPointQuery(stageId);
   const { data: myTicketData } = useGetMyTicketQuery(stageId);
   const { mutate: coinToss, isPending } = usePostCoinToss(stageId);
 
-  const point = myPointData?.point || 0;
+  const [localPoint, setLocalPoint] = useState<number>(0);
+
+  const serverPoint = myPointData?.point || 0;
   const coinTossTicket = myTicketData?.coinToss || 0;
+
+  useEffect(() => {
+    setLocalPoint(serverPoint);
+  }, [serverPoint]);
 
   register('bet', { required: '동전 면을 선택해주세요' });
 
@@ -47,6 +55,8 @@ const CoinTossPage = () => {
       amount: Number(data.amount),
       bet: data.bet,
     };
+
+    setLocalPoint((prev) => prev - formatData.amount);
 
     coinToss(formatData, {
       onSuccess: (response) => {
@@ -86,6 +96,7 @@ const CoinTossPage = () => {
         }
       },
       onError: (error) => {
+        setLocalPoint((prev) => prev + formatData.amount);
         toast.error(error.message || '코인토스 요청 중 오류가 발생했습니다.');
       },
     });
@@ -126,17 +137,19 @@ const CoinTossPage = () => {
             side="FRONT"
             selectedSide={selectedSide}
             setValue={setValue}
+            isPlaying={isPlaying}
           />
           <CoinTossButton
             side="BACK"
             selectedSide={selectedSide}
             setValue={setValue}
+            isPlaying={isPlaying}
           />
         </div>
       </div>
 
       <ControlForm
-        point={point}
+        point={localPoint}
         coinTossTicket={coinTossTicket}
         register={register}
         watch={watch}
