@@ -1,25 +1,65 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 import { GroupDistribution } from '@/shared/model/calculateTeamDistribution';
+import { GameFormatData } from '@/shared/types/stage/game';
 import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import BracketTeamDisplay from '@/shared/ui/BracketTeamDisplay';
 import ModalLayout from '@/shared/ui/modalLayout';
 import { cn } from '@/shared/utils/cn';
-import getBracketMock from '@/views/stage/bracket/Mock/getBracketMock';
+import { getGameFormat } from '../api/getGameFormat';
 
 interface BracketModalProps {
   onClose: () => void;
-  _gameId: number;
+  gameId: number;
 }
 
-const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
-  const bracketMockData = getBracketMock(7);
+const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
+  const [bracketData, setBracketData] = useState<GameFormatData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const teamCount = bracketMockData.reduce((count, match) => {
-    let matchTeams = 0;
-    if (match.teamAId !== null) matchTeams++;
-    if (match.teamBId !== null) matchTeams++;
-    return count + matchTeams;
-  }, 0);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getGameFormat(gameId);
+        setBracketData(data);
+      } catch (error) {
+        toast.error(String(error) || '대진표를 불러오는데 실패했습니다.');
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [gameId]);
+
+  const teamCount = useMemo(() => {
+    let count = 0;
+    if (!bracketData) return 0;
+
+    if (typeof bracketData === 'object' && !Array.isArray(bracketData)) {
+      if (bracketData.format && Array.isArray(bracketData.format)) {
+        bracketData.format.forEach((formatItem) => {
+          if (
+            formatItem &&
+            formatItem.match &&
+            Array.isArray(formatItem.match)
+          ) {
+            formatItem.match.forEach((match) => {
+              if (match.ateamId !== null && match.ateamId !== undefined) {
+                count++;
+              }
+              if (match.bteamId !== null && match.bteamId !== undefined) {
+                count++;
+              }
+            });
+          }
+        });
+      }
+      return count;
+    }
+    return 0;
+  }, [bracketData]);
 
   const finalStage = teamCount <= 4 ? 4 : 8;
   const distribution = useMemo((): [GroupDistribution, GroupDistribution] => {
@@ -37,6 +77,56 @@ const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
       },
     ];
   }, [teamCount]);
+
+  if (isLoading) {
+    return (
+      <ModalLayout
+        title={'대진표'}
+        onClose={onClose}
+        containerClassName={cn(
+          'rounded-lg',
+          'bg-gray-700',
+          'p-[40px]',
+          'max-w-[70rem]',
+          'w-full',
+          'space-y-24',
+        )}
+      >
+        <div
+          className={cn(
+            'flex h-[300px] items-center justify-center text-white',
+          )}
+        >
+          로딩 중...
+        </div>
+      </ModalLayout>
+    );
+  }
+
+  if (!bracketData) {
+    return (
+      <ModalLayout
+        title={'대진표'}
+        onClose={onClose}
+        containerClassName={cn(
+          'rounded-lg',
+          'bg-gray-700',
+          'p-[40px]',
+          'max-w-[70rem]',
+          'w-full',
+          'space-y-24',
+        )}
+      >
+        <div
+          className={cn(
+            'flex h-[300px] items-center justify-center text-white',
+          )}
+        >
+          대진표를 불러오는데 실패했습니다.
+        </div>
+      </ModalLayout>
+    );
+  }
 
   return (
     <ModalLayout
@@ -59,7 +149,7 @@ const BracketModal = ({ onClose, _gameId }: BracketModalProps) => {
             teamCount={teamCount}
             firstRoundDistribution={distribution}
           />
-          <BracketTeamDisplay teamCount={teamCount} />
+          <BracketTeamDisplay teamCount={teamCount} bracketData={bracketData} />
         </div>
       </div>
     </ModalLayout>
