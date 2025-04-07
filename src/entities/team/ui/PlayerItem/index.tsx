@@ -30,6 +30,7 @@ const PlayerItem = ({
       style={{
         ...style,
         zIndex: isDragging ? 99999 : 'auto',
+        backgroundColor: 'transparent',
       }}
       className={cn(
         'relative flex h-[100px] w-[100px] flex-col items-center justify-center rounded-full p-10 text-center text-white transition-all duration-200',

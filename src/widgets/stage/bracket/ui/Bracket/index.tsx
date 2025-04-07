@@ -1,25 +1,19 @@
 'use client';
 
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from '@hello-pangea/dnd';
+import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
-import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
-import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
+import calculateTeamDistribution from '@/shared/model/calculateTeamDistribution';
+import { GroupDistribution } from '@/shared/model/calculateTeamDistribution';
+import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import { cn } from '@/shared/utils/cn';
-import BracketConnectionLayer from '@/widgets/stage/bracket/ui/BracketConnectionLayer';
-
-interface GroupDistribution {
-  top: number;
-  bottom: number;
-}
+import {
+  BracketHeader,
+  handleRemoveTeam,
+} from '@/widgets/stage/bracket/ui/BracketHeader';
+import TeamArray from '@/widgets/stage/bracket/ui/TeamArray';
 
 interface TeamData {
   teamId: number;
@@ -52,7 +46,6 @@ const Bracket = () => {
   const [deleteMode, setDeleteMode] = useState(false);
 
   const [teams, setTeams] = useState<TeamData[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [placedTeams, setPlacedTeams] = useState<{ [key: number]: boolean }>(
     {},
   );
@@ -117,33 +110,7 @@ const Bracket = () => {
     };
   }, [gameId]);
 
-  const VISIBLE_ITEMS = 8;
-  const ITEM_WIDTH = 160;
-  const ITEM_GAP = 8;
-  const CONTAINER_PADDING = 16;
-
   const availableTeams = teams.filter((team) => !placedTeams[team.teamId]);
-
-  const canScrollPrev = currentIndex > 0;
-  const canScrollNext = currentIndex + VISIBLE_ITEMS < availableTeams.length;
-  const FIXED_CONTAINER_WIDTH =
-    ITEM_WIDTH * VISIBLE_ITEMS + ITEM_GAP * (VISIBLE_ITEMS - 1);
-  const innerContainerWidth = Math.max(
-    FIXED_CONTAINER_WIDTH,
-    availableTeams.length * ITEM_WIDTH +
-      Math.max(0, availableTeams.length - 1) * ITEM_GAP,
-  );
-  const translateX = -(currentIndex * (ITEM_WIDTH + ITEM_GAP));
-
-  const scrollToNext = useCallback(() => {
-    if (!canScrollNext) return;
-    setCurrentIndex((prev) => prev + 1);
-  }, [canScrollNext]);
-
-  const scrollToPrev = useCallback(() => {
-    if (!canScrollPrev) return;
-    setCurrentIndex((prev) => prev - 1);
-  }, [canScrollPrev]);
 
   const createBracketTree = (teamCount: number): BracketNode | null => {
     if (teamCount < 2) return null;
@@ -182,40 +149,6 @@ const Bracket = () => {
     }
 
     return nodes[rounds - 1][0];
-  };
-
-  const calculateTeamDistribution = (
-    teamCount: number,
-  ): [GroupDistribution, GroupDistribution] => {
-    if (teamCount === 6) {
-      return [
-        { top: 2, bottom: 1 },
-        { top: 1, bottom: 2 },
-      ];
-    }
-
-    if (teamCount <= 4) {
-      const leftTotal = Math.ceil(teamCount / 2);
-      const rightTotal = Math.floor(teamCount / 2);
-      return [
-        { top: leftTotal, bottom: 0 },
-        { top: rightTotal, bottom: 0 },
-      ];
-    }
-
-    const leftTotal = Math.ceil(teamCount / 2);
-    const rightTotal = Math.floor(teamCount / 2);
-
-    return [
-      {
-        top: Math.ceil(leftTotal / 2),
-        bottom: Math.floor(leftTotal / 2),
-      },
-      {
-        top: Math.ceil(rightTotal / 2),
-        bottom: Math.floor(rightTotal / 2),
-      },
-    ];
   };
 
   const createBracket = (teamCount: number): void => {
@@ -461,7 +394,16 @@ const Bracket = () => {
                           className="w-[160px]"
                           deleteMode={deleteMode}
                           onDelete={() =>
-                            handleRemoveTeam(round, node.position, side)
+                            handleRemoveTeam(
+                              round,
+                              node.position,
+                              side,
+                              gameId,
+                              savedTeamPlacements,
+                              setSavedTeamPlacements,
+                              bracketTree,
+                              setBracketTree,
+                            )
                           }
                         />
                       )}
@@ -598,7 +540,16 @@ const Bracket = () => {
                               className="w-[160px]"
                               deleteMode={deleteMode}
                               onDelete={() =>
-                                handleRemoveTeam(round, node.position, side)
+                                handleRemoveTeam(
+                                  round,
+                                  node.position,
+                                  side,
+                                  gameId,
+                                  savedTeamPlacements,
+                                  setSavedTeamPlacements,
+                                  bracketTree,
+                                  setBracketTree,
+                                )
                               }
                             />
                           )}
@@ -737,257 +688,6 @@ const Bracket = () => {
     document.body.classList.add('dnd-dragging');
   };
 
-  const handleRemoveTeam = (
-    round: number,
-    position: number,
-    side: 'left' | 'right',
-  ) => {
-    try {
-      const placedTeams: Record<string, TeamData> = { ...savedTeamPlacements };
-      const positionKey = `${round}_${position}_${side}`;
-
-      delete placedTeams[positionKey];
-      sessionStorage.setItem(
-        `placedTeams_${gameId}`,
-        JSON.stringify(placedTeams),
-      );
-      setSavedTeamPlacements(placedTeams);
-
-      const customEvent = new CustomEvent('bracketStorage', {
-        detail: { gameId },
-      });
-      window.dispatchEvent(customEvent);
-
-      if (bracketTree) {
-        const cloneTree = (node: BracketNode): BracketNode => {
-          return {
-            ...node,
-            left: node.left ? cloneTree(node.left) : null,
-            right: node.right ? cloneTree(node.right) : null,
-          };
-        };
-
-        const updatedTree = cloneTree(bracketTree);
-        setBracketTree(updatedTree);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleRandomPlacement = () => {
-    try {
-      const placedTeams: Record<string, TeamData> = { ...savedTeamPlacements };
-      const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
-      if (placedTeamsData) {
-        Object.assign(placedTeams, JSON.parse(placedTeamsData));
-      }
-
-      const confirmedTeamsData = sessionStorage.getItem(
-        `confirmedTeams_${gameId}`,
-      );
-      if (!confirmedTeamsData) {
-        toast.error('배치할 팀이 없습니다.');
-        return;
-      }
-
-      const parsedTeams = JSON.parse(confirmedTeamsData);
-      const allTeams = parsedTeams as TeamData[];
-
-      const placedTeamIds = Object.values(placedTeams).map((t) => t.teamId);
-      const availableTeams = allTeams.filter(
-        (team) => !placedTeamIds.includes(team.teamId),
-      );
-
-      if (availableTeams.length === 0) {
-        toast.error('모든 팀이 이미 배치되었습니다.');
-        return;
-      }
-
-      const emptyPositions: Array<{
-        round: number;
-        position: number;
-        side: 'left' | 'right';
-      }> = [];
-
-      if (finalStage === 4) {
-        const round = 1;
-        const leftCount =
-          firstRoundDistribution[0].top + firstRoundDistribution[0].bottom;
-        const rightCount =
-          firstRoundDistribution[1].top + firstRoundDistribution[1].bottom;
-
-        for (let i = 0; i < leftCount; i++) {
-          const positionKey = `${round}_${i}_left`;
-          if (!placedTeams[positionKey]) {
-            emptyPositions.push({ round, position: i, side: 'left' });
-          }
-        }
-
-        for (let i = 0; i < rightCount; i++) {
-          const positionKey = `${round}_${i}_right`;
-          if (!placedTeams[positionKey]) {
-            emptyPositions.push({ round, position: i, side: 'right' });
-          }
-        }
-      } else {
-        const round = 1;
-
-        for (let i = 0; i < firstRoundDistribution[0].top; i++) {
-          const positionKey = `${round}_${i}_left`;
-          if (!placedTeams[positionKey]) {
-            emptyPositions.push({ round, position: i, side: 'left' });
-          }
-        }
-
-        for (let i = 0; i < firstRoundDistribution[0].bottom; i++) {
-          const position = firstRoundDistribution[0].top + i;
-          const positionKey = `${round}_${position}_left`;
-          if (!placedTeams[positionKey]) {
-            emptyPositions.push({ round, position, side: 'left' });
-          }
-        }
-
-        for (let i = 0; i < firstRoundDistribution[1].top; i++) {
-          const positionKey = `${round}_${i}_right`;
-          if (!placedTeams[positionKey]) {
-            emptyPositions.push({ round, position: i, side: 'right' });
-          }
-        }
-
-        for (let i = 0; i < firstRoundDistribution[1].bottom; i++) {
-          const position = firstRoundDistribution[1].top + i;
-          const positionKey = `${round}_${position}_right`;
-          if (!placedTeams[positionKey]) {
-            emptyPositions.push({ round, position, side: 'right' });
-          }
-        }
-      }
-
-      if (emptyPositions.length === 0) {
-        toast.error('비어있는 위치가 없습니다.');
-        return;
-      }
-
-      const maxPositions = Math.min(
-        availableTeams.length,
-        emptyPositions.length,
-      );
-
-      const shuffledTeams = [...availableTeams].sort(() => Math.random() - 0.5);
-      const shuffledPositions = [...emptyPositions].sort(
-        () => Math.random() - 0.5,
-      );
-
-      for (let i = 0; i < maxPositions; i++) {
-        const team = shuffledTeams[i];
-        const { round, position, side } = shuffledPositions[i];
-        const positionKey = `${round}_${position}_${side}`;
-        placedTeams[positionKey] = team;
-      }
-
-      sessionStorage.setItem(
-        `placedTeams_${gameId}`,
-        JSON.stringify(placedTeams),
-      );
-      setSavedTeamPlacements(placedTeams);
-
-      const customEvent = new CustomEvent('bracketStorage', {
-        detail: { gameId },
-      });
-      window.dispatchEvent(customEvent);
-
-      if (bracketTree) {
-        const cloneTree = (node: BracketNode): BracketNode => {
-          return {
-            ...node,
-            left: node.left ? cloneTree(node.left) : null,
-            right: node.right ? cloneTree(node.right) : null,
-          };
-        };
-
-        const updatedTree = cloneTree(bracketTree);
-        setBracketTree(updatedTree);
-      }
-      if (allTeams.length === 3) {
-        const placedTeamsData = sessionStorage.getItem(`placedTeams_${gameId}`);
-        if (placedTeamsData) {
-          const placedTeamsObj = JSON.parse(placedTeamsData);
-          const byeTeam = placedTeamsObj['1_0_right'];
-          if (byeTeam) {
-            sessionStorage.setItem(
-              `threeTeamBye_${gameId}`,
-              JSON.stringify(byeTeam),
-            );
-          }
-        }
-      }
-      toast.success(`${maxPositions}개 팀이 랜덤으로 배치되었습니다.`);
-    } catch (error) {
-      console.error(error);
-      toast.error('팀 랜덤 배치 중 오류가 발생했습니다.');
-    }
-  };
-
-  const renderDraggable = (team: TeamData, index: number) => {
-    return (
-      <Draggable
-        key={team.teamId}
-        draggableId={team.teamId.toString()}
-        index={index}
-      >
-        {(provided, snapshot) => {
-          const draggableContent = (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={{
-                ...provided.draggableProps.style,
-                width: `${ITEM_WIDTH}px`,
-                zIndex: snapshot.isDragging ? 999 : 1,
-                boxShadow: snapshot.isDragging
-                  ? '0 5px 15px rgba(0, 0, 0, 0.3)'
-                  : 'none',
-                opacity: 1,
-                position: snapshot.isDragging ? 'absolute' : 'static',
-                transformOrigin: 'center center',
-                pointerEvents: 'auto',
-              }}
-              className={cn(
-                'select-none',
-                'cursor-grab',
-                snapshot.isDragging && 'cursor-grabbing',
-                snapshot.isDragging && 'z-[999]',
-              )}
-            >
-              <TeamItem
-                teamName={team.teamName}
-                className={cn(
-                  'flex-shrink-0',
-                  'w-[160px]',
-                  'pointer-events-auto',
-                  'visible',
-                  'opacity-100',
-                )}
-              />
-            </div>
-          );
-
-          return (
-            <>
-              {snapshot.isDragging && portalRef.current
-                ? createPortal(draggableContent, portalRef.current)
-                : draggableContent}
-              {/* @ts-expect-error - DraggableProvided*/}
-              {provided.placeholder}
-            </>
-          );
-        }}
-      </Draggable>
-    );
-  };
-
   return (
     <DragDropContext
       onDragEnd={handleDragEnd}
@@ -1007,40 +707,17 @@ const Bracket = () => {
           WebkitTransform: 'translateZ(0)',
         }}
       >
-        <header className={cn('mb-30', 'flex', 'justify-between')}>
-          <h1 className={cn('text-h3e', 'text-white')}>{finalStage}강</h1>
-          <div className={cn('flex', 'gap-24')}>
-            <button
-              type="button"
-              className={cn('flex', 'items-center', 'gap-10')}
-              onClick={handleRandomPlacement}
-            >
-              <PlusButtonIcon color="#6B6B6B" />
-              <h2 className={cn('text-gray-500', 'text-body1s')}>랜덤 추가</h2>
-            </button>
-            <button
-              type="button"
-              onClick={() => setDeleteMode(!deleteMode)}
-              className={cn(
-                'flex',
-                'items-center',
-                'gap-10',
-                deleteMode && 'text-red-500',
-              )}
-            >
-              <MinusButtonIcon isActive={deleteMode} />
-              <h2
-                className={cn(
-                  'text-gray-500',
-                  'text-body1s',
-                  deleteMode && 'text-red-500',
-                )}
-              >
-                빼기
-              </h2>
-            </button>
-          </div>
-        </header>
+        <BracketHeader
+          finalStage={finalStage}
+          deleteMode={deleteMode}
+          setDeleteMode={setDeleteMode}
+          gameId={gameId}
+          savedTeamPlacements={savedTeamPlacements}
+          setSavedTeamPlacements={setSavedTeamPlacements}
+          bracketTree={bracketTree}
+          setBracketTree={setBracketTree}
+          firstRoundDistribution={firstRoundDistribution}
+        />
         <div
           className={cn(
             'flex-1',
@@ -1152,111 +829,11 @@ const Bracket = () => {
             </div>
           )}
         </div>
-        <div
-          className={cn('w-full', 'flex', 'justify-center', 'mb-30', 'mt-20')}
-        >
-          <div className={cn('relative', 'w-[75%]', 'flex', 'justify-center')}>
-            <button
-              onClick={scrollToPrev}
-              className={cn(
-                'absolute',
-                'left-[-40px]',
-                'top-1/2',
-                '-translate-y-1/2',
-                'z-10',
-                'w-[30px]',
-                'h-[30px]',
-                'flex',
-                'items-center',
-                'justify-center',
-                'rounded-full',
-                'text-white',
-                'text-2xl',
-                !canScrollPrev && 'opacity-50',
-                !canScrollPrev && 'cursor-not-allowed',
-              )}
-              disabled={!canScrollPrev}
-            >
-              {'<'}
-            </button>
-
-            <div
-              className={cn(
-                'bg-gray-700',
-                'rounded-lg',
-                'py-16',
-                'overflow-hidden',
-                'relative',
-                isDragging && 'z-0',
-              )}
-              style={{
-                width: `${FIXED_CONTAINER_WIDTH + CONTAINER_PADDING * 2}px`,
-                minHeight: '80px',
-              }}
-            >
-              <Droppable droppableId="teams" direction="horizontal">
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={cn('flex', 'gap-8')}
-                    style={{
-                      width:
-                        availableTeams.length === 0
-                          ? '100%'
-                          : innerContainerWidth || CONTAINER_PADDING * 2,
-                      padding: `0 ${CONTAINER_PADDING}px`,
-                      minHeight: '48px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent:
-                        availableTeams.length === 0 ? 'center' : 'flex-start',
-                      transformStyle: 'preserve-3d',
-                      transform: 'none',
-                      position: 'relative',
-                      left: `${translateX}px`,
-                      transition: 'left 0.3s ease-in-out',
-                    }}
-                  >
-                    {availableTeams.length === 0 ? (
-                      <div className="w-full text-center text-gray-400">
-                        모든 팀이 배치되었습니다
-                      </div>
-                    ) : (
-                      availableTeams.map((team, index) =>
-                        renderDraggable(team, index),
-                      )
-                    )}
-                  </div>
-                )}
-              </Droppable>
-            </div>
-
-            <button
-              onClick={scrollToNext}
-              className={cn(
-                'absolute',
-                'right-[-40px]',
-                'top-1/2',
-                '-translate-y-1/2',
-                'z-10',
-                'w-[30px]',
-                'h-[30px]',
-                'flex',
-                'items-center',
-                'justify-center',
-                'rounded-full',
-                'text-white',
-                'text-2xl',
-                !canScrollNext && 'opacity-50',
-                !canScrollNext && 'cursor-not-allowed',
-              )}
-              disabled={!canScrollNext}
-            >
-              {'>'}
-            </button>
-          </div>
-        </div>
+        <TeamArray
+          availableTeams={availableTeams}
+          isDragging={isDragging}
+          portalRef={portalRef}
+        />
       </div>
     </DragDropContext>
   );

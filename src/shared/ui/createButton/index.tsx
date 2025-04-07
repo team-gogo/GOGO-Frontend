@@ -12,13 +12,15 @@ const CreateButton = ({ children, ...attributes }: CreateButtonProps) => {
       type="button"
       {...attributes}
       className={cn(
-        'h-[3.75rem]',
         'rounded-lg',
         'text-body2s',
         'border-solid',
         'border-1',
         'border-main-400',
-        'px-[1rem]',
+        'pad:px-[1rem]',
+        'pad:py-[0.75rem]',
+        'px-[0.75rem]',
+        'py-[0.5rem]',
       )}
     >
       <div
@@ -27,8 +29,11 @@ const CreateButton = ({ children, ...attributes }: CreateButtonProps) => {
           'w-full',
           'items-center',
           'justify-center',
-          'gap-[0.75rem]',
+          'pad:gap-[0.75rem]',
+          'gap-[0.5rem]',
           'text-main-400',
+          'pad:text-body3s',
+          'text-caption3s',
         )}
       >
         <CreateIcon />

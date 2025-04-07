@@ -1,7 +1,7 @@
 const RecruitIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className="h-[1.25rem] w-[1.25rem] laptop:h-[0.75rem] laptop:w-[0.75rem]"
+    className="h-[0.75rem] w-[0.75rem] tablet:h-[1.25rem] tablet:w-[1.25rem]"
     viewBox="0 0 10 8"
     fill="none"
   >

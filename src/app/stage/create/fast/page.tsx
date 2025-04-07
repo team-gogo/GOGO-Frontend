@@ -11,8 +11,8 @@ const page = () => {
         'items-center',
         'justify-center',
         'px-16',
-        'py-[5rem]',
-        'mobile:py-[2.5rem]',
+        'mobile:py-[5rem]',
+        'py-[2.5rem]',
       )}
     >
       <FastCreatePage />

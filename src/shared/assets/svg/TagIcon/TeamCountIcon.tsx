@@ -9,7 +9,7 @@ const TeamCountIcon = ({
     xmlns="http://www.w3.org/2000/svg"
     className={
       isResponsive
-        ? 'h-[1.25rem] w-[1.25rem] laptop:h-[0.75rem] laptop:w-[0.75rem]'
+        ? 'h-[0.75rem] w-[0.75rem] tablet:h-[1.25rem] tablet:w-[1.25rem]'
         : 'h-[1.25rem] w-[1.25rem]'
     }
     viewBox="0 0 20 21"

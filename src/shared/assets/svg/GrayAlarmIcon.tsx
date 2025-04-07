@@ -1,8 +1,7 @@
-const GrayAlarmIcon = ({ size = '2.5rem' }: { size?: string }) => (
+const GrayAlarmIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
+    className="h-[1.75rem] w-[1.75rem] laptop:h-[2rem] laptop:w-[2rem]"
     viewBox="0 0 40 41"
     fill="none"
   >

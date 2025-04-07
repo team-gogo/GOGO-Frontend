@@ -39,7 +39,15 @@ const MiniGameContainer = ({
   return (
     <div className={cn('space-y-16')}>
       <p className={cn('text-body2e', 'text-white')}>미니게임</p>
-      <div className={cn('flex', 'items-center', 'gap-24', 'tablet:flex-wrap')}>
+      <div
+        className={cn(
+          'flex',
+          'items-center',
+          'gap-24',
+          'flex-wrap',
+          'tablet:flex-nowrap',
+        )}
+      >
         {displayedGames.map((game) => {
           const isActive = !!selectedGames[game.type]?.isActive;
           const iconColor = getIconColor(isActive);
@@ -47,7 +55,7 @@ const MiniGameContainer = ({
           return (
             <div
               key={game.type}
-              className={cn('space-y-16', 'tablet:w-full', 'w-1/3')}
+              className={cn('space-y-16', 'w-full', 'tablet:w-1/3')}
             >
               <SelectStageType
                 icon={cloneElement(<game.icon size={60} />, {

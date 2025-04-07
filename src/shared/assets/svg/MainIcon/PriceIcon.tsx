@@ -1,8 +1,9 @@
-const PriceIcon = () => (
+const PriceIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="2.25rem"
-    height="2.25rem"
+    width="1.75rem"
+    height="1.75rem"
+    className={className}
     viewBox="0 0 36 36"
     fill="none"
   >

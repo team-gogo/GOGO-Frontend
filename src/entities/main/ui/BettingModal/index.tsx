@@ -105,11 +105,15 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
       containerClassName={cn(
         'rounded-lg',
         'bg-gray-700',
-        'px-[40px]',
-        'py-[36px]',
+        'tablet:px-[2.5rem]',
+        'tablet:py-[2.25rem]',
+        'px-[1.5rem]',
+        'py-[1.25rem]',
         'max-w-[38.75rem]',
         'w-full',
         'space-y-24',
+        'mx-20',
+        'my-20',
       )}
     >
       <form
@@ -133,14 +137,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
             type={category && category.length > 0 ? category : ''}
           />
         </div>
-        <div
-          className={cn(
-            'flex',
-            'justify-center',
-            'items-center',
-            'gap-[3.75rem]',
-          )}
-        >
+        <div className={cn('flex', 'justify-center', 'items-center')}>
           <MatchTeam
             team={ateam}
             percentage={Number(aTeamPercentage)}

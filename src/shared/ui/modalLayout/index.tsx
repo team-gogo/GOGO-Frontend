@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import React from 'react';
 import { XIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
@@ -34,7 +35,11 @@ const ModalLayout = ({
         'justify-center',
         'bg-black',
         'bg-opacity-50',
+        'mt-0!',
+        'space-y-0!',
+        'overflow-visible',
       )}
+      style={{ margin: 0 } as React.CSSProperties}
       onClick={onClose}
     >
       <div className={containerClassName} onClick={(e) => e.stopPropagation()}>
@@ -43,12 +48,12 @@ const ModalLayout = ({
             className={cn('mb-4', 'flex', 'items-center', 'justify-between')}
           >
             <p
-              className={cn('text-white', 'text-body1s', 'mobile:text-body2s')}
+              className={cn('text-white', 'mobile:text-body1s', 'text-body2s')}
             >
               {title}
             </p>
             <button onClick={onClose}>
-              <XIcon className="mobile:h-24 mobile:w-24" />
+              <XIcon className="h-24 w-24" />
             </button>
           </div>
         )}
