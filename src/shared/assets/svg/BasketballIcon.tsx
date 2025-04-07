@@ -5,7 +5,7 @@ interface Props {
 const BasketballIcon = ({ color = '#526FFE' }: Props) => {
   return (
     <svg
-      className="h-[1.25rem] w-[1.25rem] tablet:h-[0.75rem] tablet:w-[0.75rem]"
+      className="h-[0.75rem] w-[0.75rem] laptop:h-[1.25rem] laptop:w-[1.25rem]"
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

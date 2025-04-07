@@ -26,10 +26,10 @@ const SportTypeLabel = ({
   };
 
   const borderStyle = [
-    'px-[1rem]',
-    'py-[0.75rem]',
-    'laptop:p-[0.25rem]',
-    'laptop:px-[0.5rem]',
+    'laptop:px-[1rem]',
+    'laptop:py-[0.75rem]',
+    'p-[0.25rem]',
+    'px-[0.5rem]',
     'rounded-lg',
     'border-1',
     'border-solid',
@@ -42,8 +42,8 @@ const SportTypeLabel = ({
     'gap-8',
     'text-nowrap',
     'items-center',
-    isMainUsed ? 'h-[2.3125rem]' : 'h-[2.8125rem]',
-    'laptop:h-[1.875rem]',
+    isMainUsed ? 'laptop:h-[2.3125rem]' : 'laptop:h-[2.8125rem]',
+    'h-[1.875rem]',
     {
       'bg-main-500 text-white': asButton && isSelected,
       'cursor-pointer': asButton,
@@ -59,9 +59,9 @@ const SportTypeLabel = ({
       {icon && <label>{icon(iconColor)}</label>}
       <p
         className={cn(
-          'text-body3s',
+          'laptop:text-body3s',
           'leading-[1.3125rem]',
-          'laptop:text-caption2s',
+          'text-caption2s',
           textColor,
         )}
       >

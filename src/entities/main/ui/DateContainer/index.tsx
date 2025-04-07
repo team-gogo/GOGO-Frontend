@@ -12,7 +12,7 @@ const DateContainer = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 550) {
+      if (window.innerWidth < 650) {
         setVisibleCount(1);
       } else if (window.innerWidth < 880) {
         setVisibleCount(3);
@@ -80,9 +80,10 @@ const DateContainer = () => {
       className={cn(
         'flex',
         'items-center',
-        'w-[40rem]',
-        'midpad:w-[23.75rem]',
-        'mobile:w-[10rem]',
+        'mobile:w-[15rem]',
+        'pad:w-[30rem]',
+        'tablet:w-[40rem]',
+        'w-[12.5rem]',
         'justify-end',
       )}
     >

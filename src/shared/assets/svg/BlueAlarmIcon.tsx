@@ -1,7 +1,7 @@
 const BlueAlarmIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className="h-[2rem] w-[2rem] tablet:h-[1.75rem] tablet:w-[1.75rem]"
+    className="h-[1.75rem] w-[1.75rem] laptop:h-[2rem] laptop:w-[2rem]"
     viewBox="0 0 40 41"
     fill="none"
   >

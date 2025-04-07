@@ -1,42 +1,40 @@
-import ButtonCheckIcon from '@/shared/assets/svg/ButtonCheckIcon';
+import BracketIcon from '@/shared/assets/icons/BracketIcon';
 import { cn } from '@/shared/utils/cn';
 
-interface ConfirmStageProps {
+interface ShowBracketButtonProps {
   onClick: () => void;
 }
 
-const ConfirmStage = ({ onClick }: ConfirmStageProps) => {
+const ShowBracketButton = ({ onClick }: ShowBracketButtonProps) => {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'w-32',
         'flex',
         'gap-8',
-        'p-8',
-        'mx-20',
+        'py-8',
+        'px-24',
         'border-1',
         'border-solid',
-        'border-gray-400',
+        'border-main-500',
         'items-center',
         'rounded-lg',
-        'justify-center',
       )}
     >
-      <ButtonCheckIcon color="#898989" />
+      <BracketIcon />
       <p
         className={cn(
-          'text-gray-400',
+          'text-main-500',
           'mobile:text-body3s',
           'text-nowrap',
           'text-caption3s',
         )}
       >
-        확정하기
+        대진표 보기
       </p>
     </button>
   );
 };
 
-export default ConfirmStage;
+export default ShowBracketButton;

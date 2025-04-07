@@ -111,35 +111,34 @@ const MainPage = () => {
           'gap-[2.5rem]',
         )}
       >
-        <div className={cn('w-full', 'flex', 'justify-between')}>
+        <div className={cn('flex', 'justify-between')}>
           <div className={cn('flex', 'items-center', 'gap-[1rem]')}>
             <h2
               className={cn(
-                'text-title4s',
-                'tablet:text-body2e',
+                'laptop:text-title4s',
+                'text-body2e',
                 'text-gray-500',
               )}
             >
               포인트
             </h2>
-            <h2 className={cn('text-h3e', 'tablet:text-body1e', 'text-white')}>
+            <h2 className={cn('laptop:text-h3e', 'text-body1e', 'text-white')}>
               {formatPoint(point)}
             </h2>
-            <h3 className={cn('text-body1s', 'text-gray-200', 'tablet:hidden')}>
+            <h3
+              className={cn(
+                'text-body1s',
+                'text-gray-200',
+                'laptop:block',
+                'hidden',
+              )}
+            >
               ({point.toLocaleString()})
             </h3>
           </div>
           <DateContainer />
         </div>
-        <div
-          className={cn(
-            'flex',
-            'w-full',
-            'flex-wrap',
-            'gap-[1.75rem]',
-            'md:flex-col',
-          )}
-        >
+        <div className={cn('flex', 'w-full', 'flex-wrap', 'gap-[1.75rem]')}>
           <SectionWrapper
             text={isToday ? '오늘 최신 매치' : `${selectDate.slice(5)} 매치`}
             icon={<MatchClockIcon />}
@@ -155,7 +154,8 @@ const MainPage = () => {
               'flex',
               'w-full',
               'gap-[1.75rem]',
-              'tablet:flex-wrap',
+              'flex-wrap',
+              'tablet:flex-nowrap',
               'min-h-[15.5rem]',
             )}
           >
@@ -190,7 +190,8 @@ const MainPage = () => {
               'w-full',
               'flex',
               'gap-[1.75rem]',
-              'tablet:flex-wrap',
+              'flex-wrap',
+              'tablet:flex-nowrap',
             )}
           >
             <SectionWrapper

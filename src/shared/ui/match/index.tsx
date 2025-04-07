@@ -195,14 +195,14 @@ const Match = ({ match }: MatchProps) => {
       className={cn(
         'flex',
         'flex-col',
-        'py-[1.5rem]',
-        'px-[2rem]',
+        'laptop:py-[1.5rem]',
+        'laptop:px-[2rem]',
         'rounded-xl',
         'bg-gray-700',
         'relative',
         'w-full',
-        'tablet:px-[1rem]',
-        'tablet:py-[0.75rem]',
+        'px-[1rem]',
+        'py-[0.75rem]',
         isFinal && borderStyle,
       )}
     >
@@ -215,7 +215,15 @@ const Match = ({ match }: MatchProps) => {
           matchId={matchId}
         />
       )}
-      <div className={cn('flex', 'flex-col', 'justify-center', 'gap-[2rem]')}>
+      <div
+        className={cn(
+          'flex',
+          'flex-col',
+          'justify-center',
+          'gap-[2rem]',
+          'h-full',
+        )}
+      >
         <div
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
@@ -223,8 +231,8 @@ const Match = ({ match }: MatchProps) => {
             className={cn(
               'flex',
               'items-center',
-              'gap-[1.25rem]',
-              'tablet:gap-[0.5rem]',
+              'laptop:gap-[1.25rem]',
+              'gap-[0.5rem]',
             )}
           >
             <button
@@ -239,8 +247,8 @@ const Match = ({ match }: MatchProps) => {
               className={cn(
                 'flex',
                 'items-center',
-                'gap-[1.5rem]',
-                'tablet:gap-[1rem]',
+                'laptop:gap-[1.5rem]',
+                'gap-[1rem]',
               )}
             >
               <SystemLabel
@@ -272,16 +280,16 @@ const Match = ({ match }: MatchProps) => {
           >
             <p
               className={cn(
-                'text-body3s',
-                'laptop:text-caption2s',
+                'desktop:text-body3s',
+                'text-caption2s',
                 'text-gray-500',
               )}
             >
               자세히 보기
             </p>
-            <button className={cn('midpad:hidden')}>
+            <div className={cn('hidden', 'desktop:block')}>
               <RightArrowIcon />
-            </button>
+            </div>
           </button>
         </div>
         <div

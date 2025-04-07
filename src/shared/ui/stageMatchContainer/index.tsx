@@ -54,7 +54,7 @@ const StageMatchContainer = ({
         'h-full',
         'flex',
         'justify-center',
-        'itmes-center',
+        'items-center',
       )}
     >
       <div className={cn('relative', 'w-full', 'overflow-hidden')}>
@@ -76,10 +76,11 @@ const StageMatchContainer = ({
               key={stage.stageId}
               className={cn(
                 'flex',
-                'w-[calc(50%-20px)]',
-                'pad:w-full',
+                'midpad:w-[calc(50%-20px)]',
+                'w-full',
                 'shrink-0',
                 'justify-center',
+                'items-center',
               )}
             >
               <Stage stage={stage} />
@@ -91,8 +92,8 @@ const StageMatchContainer = ({
               key={match.matchId}
               className={cn(
                 'flex',
-                'w-[calc(50%-20px)]',
-                'pad:w-full',
+                'midpad:w-[calc(50%-20px)]',
+                'w-full',
                 'shrink-0',
                 'justify-center',
               )}

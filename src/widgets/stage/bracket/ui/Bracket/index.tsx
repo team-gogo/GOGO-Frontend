@@ -13,8 +13,9 @@ import { toast } from 'react-toastify';
 import TeamItem from '@/entities/stage/bracket/ui/TeamItem';
 import MinusButtonIcon from '@/shared/assets/svg/MinusButtonIcon';
 import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
+import calculateTeamDistribution from '@/shared/model/calculateTeamDistribution';
+import BracketConnectionLayer from '@/shared/ui/BracketConnectionLayer';
 import { cn } from '@/shared/utils/cn';
-import BracketConnectionLayer from '@/widgets/stage/bracket/ui/BracketConnectionLayer';
 
 interface GroupDistribution {
   top: number;
@@ -182,40 +183,6 @@ const Bracket = () => {
     }
 
     return nodes[rounds - 1][0];
-  };
-
-  const calculateTeamDistribution = (
-    teamCount: number,
-  ): [GroupDistribution, GroupDistribution] => {
-    if (teamCount === 6) {
-      return [
-        { top: 2, bottom: 1 },
-        { top: 1, bottom: 2 },
-      ];
-    }
-
-    if (teamCount <= 4) {
-      const leftTotal = Math.ceil(teamCount / 2);
-      const rightTotal = Math.floor(teamCount / 2);
-      return [
-        { top: leftTotal, bottom: 0 },
-        { top: rightTotal, bottom: 0 },
-      ];
-    }
-
-    const leftTotal = Math.ceil(teamCount / 2);
-    const rightTotal = Math.floor(teamCount / 2);
-
-    return [
-      {
-        top: Math.ceil(leftTotal / 2),
-        bottom: Math.floor(leftTotal / 2),
-      },
-      {
-        top: Math.ceil(rightTotal / 2),
-        bottom: Math.floor(rightTotal / 2),
-      },
-    ];
   };
 
   const createBracket = (teamCount: number): void => {

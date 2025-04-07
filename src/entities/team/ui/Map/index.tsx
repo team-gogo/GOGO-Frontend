@@ -45,7 +45,7 @@ const MapComponent = ({
   return (
     <div
       ref={mapRef}
-      className={`absolute inset-0 flex w-[200%] justify-end overflow-hidden rounded-lg ${!isModalUsed ? 'bg-[#1e1e1e]' : ''}`}
+      className={`absolute inset-0 flex w-[200%] justify-end overflow-hidden rounded-lg`}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => {
         if (isMapDragging && onPositionChange) {

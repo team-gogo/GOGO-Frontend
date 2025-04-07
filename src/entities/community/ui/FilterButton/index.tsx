@@ -26,9 +26,9 @@ const FilterButton = ({ onClick }: FilterButtonProps) => {
       <p
         className={cn(
           'text-main-500',
-          'text-body3s',
+          'mobile:text-body3s',
           'text-nowrap',
-          'mobile:text-caption3s',
+          'text-caption3s',
         )}
       >
         필터
