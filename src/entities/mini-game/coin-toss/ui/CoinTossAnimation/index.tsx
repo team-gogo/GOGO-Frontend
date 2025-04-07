@@ -75,7 +75,9 @@ const CoinTossAnimation = ({
     };
 
     const handleEnded = () => {
-      cancelAnimationFrame(animationFrameId.current!);
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
       onAnimationEnd?.();
     };
 

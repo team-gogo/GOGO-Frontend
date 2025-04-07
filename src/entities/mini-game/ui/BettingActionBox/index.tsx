@@ -41,7 +41,19 @@ const BettingActionBox = ({
         type="number"
         placeholder="포인트 입력해주세요"
         icon={<PointIcon />}
-        {...register('amount', { required: '베팅 포인트를 입력해주세요' })}
+        min={1}
+        step={1}
+        {...register('amount', {
+          required: '베팅 포인트를 입력해주세요',
+          min: {
+            value: 1,
+            message: '1 이상의 값을 입력해주세요',
+          },
+          validate: {
+            isInteger: (v) =>
+              Number.isInteger(Number(v)) || '정수만 입력 가능합니다',
+          },
+        })}
       />
       <Button type="submit" disabled={isDisabled}>
         뒤집기
