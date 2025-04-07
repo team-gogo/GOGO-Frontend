@@ -106,7 +106,6 @@ const Stage = ({ stage, isMyStage = false }: StageProps) => {
           'bg-gray-700',
           'max-w-[40rem]',
           'w-full',
-          'pad:w-[90%]',
         )}
       >
         <div className={cn('flex', 'flex-col', 'justify-center', 'gap-[3rem]')}>
