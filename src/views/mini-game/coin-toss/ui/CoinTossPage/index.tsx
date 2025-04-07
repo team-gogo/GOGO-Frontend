@@ -2,7 +2,7 @@
 
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, FieldErrors } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { AnimationDisplayContainer } from '@/entities/mini-game';
@@ -20,7 +20,6 @@ import { usePostCoinToss } from '../../model/usePostCoinToss';
 const CoinTossPage = () => {
   const params = useParams<{ stageId: string }>();
   const { stageId } = params;
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [videoSource, setVideoSource] = useState<string>('/BackCoin.mp4');
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -34,6 +33,8 @@ const CoinTossPage = () => {
   const [localPoint, setLocalPoint] = useState<number>(0);
   const [localCoinTossTicket, setLocalCoinTossTicket] = useState<number>(0);
 
+  const [responseAmount, setResponseAmount] = useState<number>(0);
+
   const serverPoint = myPointData?.point || 0;
   const coinTossTicket = myTicketData?.coinToss || 0;
 
@@ -43,14 +44,6 @@ const CoinTossPage = () => {
   }, [serverPoint, coinTossTicket]);
 
   register('bet', { required: '동전 면을 선택해주세요' });
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video && isPlaying) {
-      video.load();
-      video.play();
-    }
-  }, [videoSource, isPlaying]);
 
   const onSubmit: SubmitHandler<CoinTossForm> = (data) => {
     const formatData = {
@@ -64,41 +57,17 @@ const CoinTossPage = () => {
     coinToss(formatData, {
       onSuccess: (response) => {
         const { result, amount } = response;
-        const didWin = result;
         const appearedSide = result
           ? data.bet
           : data.bet === 'FRONT'
             ? 'BACK'
             : 'FRONT';
 
+        setResponseAmount(amount);
         setVideoSource(
           appearedSide === 'FRONT' ? '/FrontCoin.mp4' : '/BackCoin.mp4',
         );
         setIsPlaying(true);
-
-        const video = videoRef.current;
-        if (video) {
-          video.onended = () => {
-            setIsPlaying(false);
-
-            if (didWin) {
-              toast.success(
-                `배팅 성공! ${amount.toLocaleString()} 포인트 획득`,
-              );
-            } else {
-              toast.error(
-                `배팅 실패... ${formatData.amount.toLocaleString()} 포인트 차감`,
-              );
-            }
-
-            queryClient.invalidateQueries({
-              queryKey: ['getMyPoint', stageId],
-            });
-            queryClient.invalidateQueries({
-              queryKey: ['getMyTicket', stageId],
-            });
-          };
-        }
       },
       onError: (error) => {
         setLocalPoint((prev) => prev + formatData.amount);
@@ -112,57 +81,104 @@ const CoinTossPage = () => {
     handleFormErrors(errors, toast.error);
   };
 
+  const handleAnimationEnd = () => {
+    setIsPlaying(false);
+
+    const result = videoSource.includes('FrontCoin') ? 'FRONT' : 'BACK';
+    const bet = watch('bet');
+    const didWin = result === bet;
+    const userInputAmount = Number(watch('amount'));
+
+    if (didWin) {
+      toast.success(
+        `배팅 성공! ${responseAmount.toLocaleString()} 포인트 획득`,
+      );
+    } else {
+      toast.error(
+        `배팅 실패... ${userInputAmount.toLocaleString()} 포인트 차감`,
+      );
+    }
+
+    queryClient.invalidateQueries({
+      queryKey: ['getMyPoint', stageId],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ['getMyTicket', stageId],
+    });
+  };
+
   const selectedSide = watch('bet');
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit, onError)}
-      className={cn('w-full', 'max-w-[1320px]', 'space-y-[80px]')}
+    <div
+      className={cn(
+        'flex',
+        'w-full',
+        'justify-center',
+        'items-center',
+        'py-[80px]',
+        'px-[1rem]',
+      )}
     >
-      <BackPageButton
-        label="코인 토스"
-        type="push"
-        path={`/mini-game/${stageId}`}
-      />
+      <form
+        onSubmit={handleSubmit(onSubmit, onError)}
+        className={cn(
+          'w-full',
+          'max-w-[1320px]',
+          'space-y-[80px]',
+          'mobile:space-y-[40px]',
+        )}
+      >
+        <BackPageButton
+          label="코인 토스"
+          type="push"
+          path={`/mini-game/${stageId}`}
+        />
 
-      <AnimationDisplayContainer>
-        <CoinTossAnimation videoRef={videoRef} videoSource={videoSource} />
-      </AnimationDisplayContainer>
+        <AnimationDisplayContainer>
+          <CoinTossAnimation
+            videoSource={videoSource}
+            isPlaying={isPlaying}
+            onAnimationEnd={handleAnimationEnd}
+          />
+        </AnimationDisplayContainer>
 
-      <div className={cn('w-full', 'flex', 'justify-center')}>
-        <div
-          className={cn(
-            'flex',
-            'justify-between',
-            'gap-[80px]',
-            'w-[444px]',
-            'mobile:gap-[40px]',
-          )}
-        >
-          <CoinTossButton
-            side="FRONT"
-            selectedSide={selectedSide}
-            setValue={setValue}
-            isPlaying={isPlaying}
-          />
-          <CoinTossButton
-            side="BACK"
-            selectedSide={selectedSide}
-            setValue={setValue}
-            isPlaying={isPlaying}
-          />
+        <div className={cn('w-full', 'flex', 'justify-center')}>
+          <div
+            className={cn(
+              'flex',
+              'justify-between',
+              'gap-[80px]',
+              'w-[444px]',
+              'mobile:gap-[40px]',
+              'mobile:gap-20',
+            )}
+          >
+            <CoinTossButton
+              side="FRONT"
+              selectedSide={selectedSide}
+              setValue={setValue}
+              isPlaying={isPlaying}
+            />
+            <CoinTossButton
+              side="BACK"
+              selectedSide={selectedSide}
+              setValue={setValue}
+              isPlaying={isPlaying}
+            />
+          </div>
         </div>
-      </div>
 
-      <ControlForm
-        point={localPoint}
-        coinTossTicket={localCoinTossTicket}
-        register={register}
-        watch={watch}
-        isPending={isPending}
-        isPlaying={isPlaying}
-      />
-    </form>
+        <ControlForm
+          point={localPoint}
+          coinTossTicket={localCoinTossTicket}
+          register={register}
+          watch={watch}
+          isPending={isPending}
+          isPlaying={isPlaying}
+        />
+      </form>
+    </div>
   );
 };
 

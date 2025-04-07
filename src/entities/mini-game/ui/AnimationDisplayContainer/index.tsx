@@ -7,11 +7,13 @@ const AnimationDisplayContainer = ({ children }: { children: ReactNode }) => {
       className={cn(
         'w-full',
         'rounded-lg',
-        'h-[432px]',
+        'max-h-[432px]',
         'overflow-hidden',
         'flex',
         'justify-center',
         'items-center',
+        'aspect-video',
+        'min-h-[300px]',
       )}
     >
       {children}
