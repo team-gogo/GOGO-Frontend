@@ -4,8 +4,10 @@ import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { useGetStageGameQuery } from '@/entities/community/model/useGetStageGameQuery';
 import { DateContainer, BettingModal } from '@/entities/main';
+import { useGetIsWasted } from '@/entities/main/model/useGetIsWasted';
 import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
+import WastedModal from '@/entities/main/ui/WastedModal';
 import { MatchClockIcon } from '@/shared/assets/svg';
 import {
   CommunityIcon,
@@ -13,7 +15,6 @@ import {
   PriceIcon,
   RankingIcon,
 } from '@/shared/assets/svg/MainIcon';
-
 import {
   useBatchModalStore,
   useCheckAgainModalStore,
@@ -22,6 +23,7 @@ import {
   useSelectDateStore,
 } from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
+import useWastedModalStore from '@/shared/stores/useWastedModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
@@ -34,7 +36,6 @@ import {
   SectionWrapper,
 } from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
-
 import { useGetSearchMatch } from '../../model/useGetSearchMatch';
 import { useGetUserStagePoint } from '../../model/useGetUserStagePoint';
 
@@ -89,6 +90,28 @@ const MainPage = () => {
   const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
   const { isCheckAgainModalOpen, setIsCheckAgainModalOpen } =
     useCheckAgainModalStore();
+  const { isWastedModalOpen, setIsWastedModalOpen } = useWastedModalStore();
+
+  const { data: isWastedData } = useGetIsWasted(Number(stageId));
+
+  useEffect(() => {
+    if (isWastedData?.isWasted === true) {
+      const notShowWastedDate = localStorage.getItem(
+        `not_show_wasted_${stageId}`,
+      );
+      if (notShowWastedDate) {
+        const savedDate = new Date(notShowWastedDate);
+        const todayStart = new Date(today);
+        todayStart.setHours(0, 0, 0, 0);
+
+        if (savedDate < todayStart) {
+          setIsWastedModalOpen(true);
+        }
+      } else {
+        setIsWastedModalOpen(true);
+      }
+    }
+  }, [isWastedData]);
 
   const iconStyle = 'h-[1.5rem] w-[1.5rem] pad:h-[1.75rem] pad:w-[1.75rem]';
 
@@ -226,6 +249,12 @@ const MainPage = () => {
       )}
       {isCheckAgainModalOpen && (
         <BatchCancelModal onClose={() => setIsCheckAgainModalOpen(false)} />
+      )}
+      {isWastedModalOpen && (
+        <WastedModal
+          stageId={Number(stageId)}
+          onClose={() => setIsWastedModalOpen(false)}
+        />
       )}
     </div>
   );
