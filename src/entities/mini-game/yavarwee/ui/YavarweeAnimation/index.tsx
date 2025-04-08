@@ -27,10 +27,10 @@ type Props = {
 };
 
 const CANVAS_WIDTH = 900;
-const CANVAS_HEIGHT = 400;
-const CUP_WIDTH = 280;
-const CUP_HEIGHT = 280;
-const BALL_SIZE = 100;
+const CANVAS_HEIGHT = 300;
+const CUP_WIDTH = 210;
+const CUP_HEIGHT = 210;
+const BALL_SIZE = 75;
 const CUP_SPACING = 240;
 
 interface CupState {
@@ -109,7 +109,7 @@ const YavarweeAnimation = ({
 
   const [ball, setBall] = useState<BallState>({
     x: CANVAS_WIDTH / 2,
-    y: CANVAS_HEIGHT / 2 + 50,
+    y: CANVAS_HEIGHT / 2 + 30,
     visible: false,
     scale: 1,
   });
@@ -160,7 +160,7 @@ const YavarweeAnimation = ({
         })();
 
         if (isCupRevealed) {
-          targetY = CANVAS_HEIGHT / 2 - 100;
+          targetY = CANVAS_HEIGHT / 2 - 75;
           zIndex = 10;
         }
 
@@ -269,7 +269,7 @@ const YavarweeAnimation = ({
 
     if (ball.visible) {
       ctx.save();
-      ctx.translate(ball.x, ball.y + 50);
+      ctx.translate(ball.x, ball.y + 30);
       ctx.scale(ball.scale, ball.scale);
       ctx.drawImage(
         ballImageRef.current,
