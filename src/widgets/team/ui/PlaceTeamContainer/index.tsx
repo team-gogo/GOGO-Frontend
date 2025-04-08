@@ -247,8 +247,21 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       const scaleX = viewBox.width / svgRect.width;
       const scaleY = viewBox.height / svgRect.height;
 
-      const svgX = (x - svgRect.left) * scaleX;
-      const svgY = (y - svgRect.top) * scaleY;
+      let svgX, svgY;
+
+      if (!isLargeScreen) {
+        const mapContainer = courtElement.querySelector(
+          'div[style*="position: fixed"]',
+        );
+        if (!mapContainer) return;
+
+        const mapRect = mapContainer.getBoundingClientRect();
+        svgX = (x - mapRect.left) * scaleX;
+        svgY = (y - mapRect.top) * scaleY;
+      } else {
+        svgX = (x - svgRect.left) * scaleX;
+        svgY = (y - svgRect.top) * scaleY;
+      }
 
       const baseMarginRatio = 0.02;
       const maxMarginRatio = 0.05;
@@ -371,8 +384,21 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       const scaleX = viewBox.width / svgRect.width;
       const scaleY = viewBox.height / svgRect.height;
 
-      const svgX = (e.clientX - svgRect.left) * scaleX;
-      const svgY = (e.clientY - svgRect.top) * scaleY;
+      let svgX, svgY;
+
+      if (!isLargeScreen) {
+        const mapContainer = courtElement.querySelector(
+          'div[style*="position: fixed"]',
+        );
+        if (!mapContainer) return;
+
+        const mapRect = mapContainer.getBoundingClientRect();
+        svgX = (e.clientX - mapRect.left) * scaleX;
+        svgY = (e.clientY - mapRect.top) * scaleY;
+      } else {
+        svgX = (e.clientX - svgRect.left) * scaleX;
+        svgY = (e.clientY - svgRect.top) * scaleY;
+      }
 
       const baseMarginRatio = 0.01;
       const maxMarginRatio = 0.02;
