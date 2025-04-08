@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BettingModal } from '@/entities/main';
 import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
@@ -9,6 +9,7 @@ import {
   useBatchModalStore,
   useCheckAgainModalStore,
   useMatchModalStore,
+  useMyBetPointStore,
   useMyStageIdStore,
 } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
@@ -26,15 +27,17 @@ const MyBetPage = () => {
   const { stageId } = params;
 
   const { data: userPointData } = useGetUserStagePoint(Number(stageId));
-  const { data: myMatchData } = useGetMyBettingMatch(Number(stageId));
+  const { data: myMatchData, isPending: matchPending } = useGetMyBettingMatch(
+    Number(stageId),
+  );
   const { data: myTempPoint } = useGetMyTempPoint(Number(stageId));
-  const [point, setPoint] = useState<number>();
 
+  const { myBetPoint, setMyBetPoint } = useMyBetPointStore();
   const { setStageId } = useMyStageIdStore();
 
   useEffect(() => {
     if (userPointData?.point !== undefined) {
-      setPoint(userPointData.point);
+      setMyBetPoint(userPointData.point);
     }
   }, [userPointData]);
 
@@ -52,6 +55,7 @@ const MyBetPage = () => {
       className={cn(
         'flex',
         'w-full',
+        'h-full',
         'flex-col',
         'items-center',
         'justify-center',
@@ -64,15 +68,20 @@ const MyBetPage = () => {
           'flex',
           'flex-col',
           'w-full',
+          'h-full',
           'max-w-[82.5rem]',
           'gap-[3.75rem]',
         )}
       >
         <div className={cn('w-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
-          <TotalPointContainer point={point} />
+          <TotalPointContainer point={myBetPoint} />
           <PointContainer tempPoint={myTempPoint} stageId={stageId} />
         </div>
-        <MatchContainer matchInfo={myMatchData} isMyBetInfo={true} />
+        <MatchContainer
+          matchInfo={myMatchData}
+          isMyBetInfo={true}
+          isPending={matchPending}
+        />
       </div>
       {isMatchModalOpen && (
         <BettingModal onClose={() => setIsMatchModalOpen(false)} />
