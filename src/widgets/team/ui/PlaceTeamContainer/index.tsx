@@ -555,6 +555,8 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                             className="absolute inset-0"
                             style={{
                               pointerEvents: 'all',
+                              top: !isLargeScreen ? '12%' : 'auto',
+                              left: !isLargeScreen ? '-2%' : 'auto',
                             }}
                           >
                             {players.map((player, index) => (
