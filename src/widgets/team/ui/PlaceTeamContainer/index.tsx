@@ -48,6 +48,7 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
   const [draggingPlayerId, setDraggingPlayerId] = useState<string | null>(null);
   const [playerScale, setPlayerScale] = useState(1);
   const [isLargeScreen, setIsLargeScreen] = useState(true);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const svgBounds = useSvgBounds(isLargeScreen);
 
   const { gameId, category } = params;
@@ -458,8 +459,11 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       const width = window.innerWidth;
       if (width >= 1280) {
         setIsLargeScreen(true);
-      } else if (width < 1280) {
+      } else if (width < 1280 && width >= 649) {
         setIsLargeScreen(false);
+        setIsSmallScreen(false);
+      } else if (width < 649) {
+        setIsSmallScreen(true);
       }
     };
     checkScreenSize();
@@ -511,9 +515,7 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                       className={`relative h-full overflow-visible rounded-lg bg-transparent ${!isLargeScreen ? 'mx-auto' : ''}`}
                       id="court-droppable"
                     >
-                      <div
-                        className={`relative h-full ${!isLargeScreen ? 'flex items-center justify-center' : ''}`}
-                      >
+                      <div className="relative h-full">
                         <div
                           className="relative h-full w-full"
                           style={{
@@ -522,7 +524,7 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                             left: !isLargeScreen ? '50%' : 'auto',
                             top: !isLargeScreen ? '40%' : 'auto',
                             transform: !isLargeScreen
-                              ? 'translate(-50%, -50%)'
+                              ? `translate(-50%, -50%) ${isSmallScreen ? 'scale(0.8)' : ''}`
                               : 'none',
                             width: !isLargeScreen ? '100%' : '100%',
                             height: !isLargeScreen ? '400px' : '100%',
