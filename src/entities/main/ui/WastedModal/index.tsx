@@ -39,7 +39,7 @@ const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
   const handleConfirm = () => {
     if (isChecked) {
       const now = new Date();
-      now.setHours(23, 59, 59, 999); // 오늘 하루 끝까지로 설정
+      now.setHours(23, 59, 59, 999);
       localStorage.setItem(`not_show_wasted_${stageId}`, now.toISOString());
     } else {
       localStorage.removeItem(`not_show_wasted_${stageId}`);
@@ -77,6 +77,10 @@ const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
           'overflow-y-auto',
           'flex-1',
           'scroll-smooth',
+          'scrollbar-hide',
+          '[&::-webkit-scrollbar]:hidden',
+          '[-ms-overflow-style:none]',
+          '[scrollbar-width:none]',
         )}
       >
         <p className={cn('text-body2s', 'mobile:text-body3s', 'py-[0.75rem]')}>
