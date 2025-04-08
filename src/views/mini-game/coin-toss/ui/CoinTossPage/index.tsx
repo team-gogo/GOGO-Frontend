@@ -168,9 +168,9 @@ const CoinTossPage = () => {
           </div>
         </div>
 
-        <ControlForm
+        <ControlForm<CoinTossForm>
           point={localPoint}
-          coinTossTicket={localCoinTossTicket}
+          ticket={localCoinTossTicket}
           register={register}
           watch={watch}
           isPending={isPending}
