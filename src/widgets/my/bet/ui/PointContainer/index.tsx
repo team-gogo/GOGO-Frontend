@@ -22,21 +22,41 @@ const PointContainer = ({ tempPoint, stageId }: PointContainerProps) => {
         'w-full',
         'rounded-xl',
         'bg-gray-700',
-        'p-[1.5rem]',
         'justify-between',
+        'h-[5rem]',
+        'p-[1.5rem]',
       )}
     >
       <div className={cn('flex', 'items-center', 'gap-[0.75rem]', 'w-full')}>
         {tempPoint?.tempPoints.length === 0 ? (
-          <div className={cn('flex', 'w-full', 'justify-between')}>
-            <h4 className={cn('text-h4s', 'text-gray-500')}>
+          <div
+            className={cn('flex', 'w-full', 'justify-between', 'items-center')}
+          >
+            <h4
+              className={cn(
+                'tablet:text-body1s',
+                'text-body2s',
+                'text-gray-500',
+              )}
+            >
               임시포인트가 들어오지 않았습니다.
             </h4>
             <button
-              className={cn('flex', 'items-center', 'gap-[1rem]')}
+              className={cn(
+                'flex',
+                'items-center',
+                'midpad:gap-[1rem]',
+                'gap-[0.5rem]',
+              )}
               onClick={() => push(`/main/${stageId}`)}
             >
-              <p className={cn('text-body2s', 'text-main-500')}>
+              <p
+                className={cn(
+                  'midpad:text-body2s',
+                  'text-body3s',
+                  'text-main-500',
+                )}
+              >
                 베팅하러 가기
               </p>
               <RightArrowIcon color="#526FFE" />

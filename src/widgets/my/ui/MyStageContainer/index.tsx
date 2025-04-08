@@ -18,7 +18,9 @@ const MyStageContainer = ({
   const { push } = useRouter();
   return (
     <div className={cn('w-full', 'h-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
-      <h2 className={cn('text-body1e', 'text-white')}>내가 참여한 스테이지</h2>
+      <h2 className={cn('midpad:text-body1e', 'text-body3e', 'text-white')}>
+        내가 참여한 스테이지
+      </h2>
 
       {isPending && (
         <div
