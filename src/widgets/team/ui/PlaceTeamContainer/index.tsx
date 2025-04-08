@@ -485,16 +485,28 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                       className={`relative h-full overflow-visible rounded-lg bg-transparent ${!isLargeScreen ? 'mx-auto' : ''}`}
                       id="court-droppable"
                     >
-                      <div className="relative h-full">
+                      <div
+                        className={`relative h-full ${!isLargeScreen ? 'flex items-center justify-center' : ''}`}
+                      >
                         <div
                           className="relative h-full w-full"
                           style={{
                             transformOrigin: 'center center',
+                            position: !isLargeScreen ? 'fixed' : 'relative',
+                            left: !isLargeScreen ? '50%' : 'auto',
+                            top: !isLargeScreen ? '50%' : 'auto',
+                            transform: !isLargeScreen
+                              ? 'translate(-50%, -50%)'
+                              : 'none',
+                            width: !isLargeScreen ? '100%' : '100%',
+                            height: !isLargeScreen ? '400px' : '100%',
+                            maxWidth: !isLargeScreen ? '500px' : 'none',
                           }}
                         >
                           <SportMap
                             type={sportType}
                             isMapDragging={draggingPlayerId !== null}
+                            isModalUsed={!isLargeScreen}
                             onPositionChange={(x, y) => {
                               if (
                                 draggingPlayerId &&
@@ -512,7 +524,6 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                                 );
                               }
                             }}
-                            isModalUsed={!isLargeScreen}
                           />
                           <div
                             className="absolute inset-0"
