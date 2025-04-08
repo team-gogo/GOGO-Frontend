@@ -10,11 +10,17 @@ const Round = ({
   return (
     <div
       className={cn(
-        'px-20',
-        'py-12',
-        'text-body2s',
-        'text-white',
-        isCurrent ? 'border-b-1 border-solid border-white' : '',
+        'pad:py-12',
+        'pad:px-20',
+        'py-6',
+        'px-8',
+        'text-caption1s',
+        'mobile:text-caption1s',
+        'pad:text-body3s',
+        'midpad:text-body2s',
+        isCurrent
+          ? 'border-b-1 border-solid border-white text-white'
+          : 'text-gray-500',
       )}
     >
       {children}

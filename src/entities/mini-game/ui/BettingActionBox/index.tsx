@@ -15,6 +15,7 @@ interface BettingActionBoxProps<T extends MiniGameForm> {
   ticket: number;
   isPending?: boolean;
   isPlaying?: boolean;
+  type: 'coinToss' | 'yavarwee';
 }
 
 const BettingActionBox = <T extends MiniGameForm>({
@@ -24,6 +25,7 @@ const BettingActionBox = <T extends MiniGameForm>({
   ticket,
   isPending,
   isPlaying,
+  type,
 }: BettingActionBoxProps<T>) => {
   const amount = watch('amount' as Path<T>);
 
@@ -31,7 +33,17 @@ const BettingActionBox = <T extends MiniGameForm>({
     !ticket || (amount && Number(amount) > point) || isPending || isPlaying;
 
   return (
-    <div className={cn('flex', 'items-center', 'mobile:gap-24', 'gap-20')}>
+    <div
+      className={cn(
+        'flex',
+        'flex-col',
+        'pad:flex-row',
+        'items-start',
+        'pad:items-center',
+        'gap-20',
+        'pad:gap-[40px]',
+      )}
+    >
       <Input
         type="number"
         placeholder="포인트 입력해주세요"
@@ -51,7 +63,7 @@ const BettingActionBox = <T extends MiniGameForm>({
         })}
       />
       <Button type="submit" disabled={isDisabled}>
-        뒤집기
+        {type === 'coinToss' ? '섞기' : '뒤집기'}
       </Button>
     </div>
   );

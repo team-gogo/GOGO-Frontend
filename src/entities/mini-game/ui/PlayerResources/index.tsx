@@ -11,10 +11,12 @@ const PlayerResources = ({ point, ticket }: ResourcesProps) => {
     <div
       className={cn(
         'flex',
-        'items-center',
-        'gap-[40px]',
+        'flex-col',
+        'pad:flex-row',
         'items-start',
+        'pad:items-center',
         'gap-20',
+        'pad:gap-[40px]',
       )}
     >
       <div className={cn('flex', 'items-center', 'gap-24')}>

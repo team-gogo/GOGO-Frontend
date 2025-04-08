@@ -13,6 +13,7 @@ import {
 } from '@/entities/mini-game/yavarwee';
 import { YavarweeForm } from '@/shared/types/mini-game/yavarwee';
 import BackPageButton from '@/shared/ui/backPageButton';
+import { cn } from '@/shared/utils/cn';
 import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { ControlForm } from '@/widgets/mini-game';
@@ -71,7 +72,7 @@ const YavarweePage = () => {
       2: [12, 16],
       3: [16, 20],
       4: [20, 25],
-      5: [25, 30],
+      5: [35, 45],
     };
 
     const range = ranges[round];
@@ -180,14 +181,28 @@ const YavarweePage = () => {
   };
 
   return (
-    <div className="flex w-full items-center justify-center px-[1rem] py-[80px]">
+    <div
+      className={cn(
+        'flex',
+        'w-full',
+        'items-center',
+        'justify-center',
+        'px-[1rem]',
+        'py-[80px]',
+      )}
+    >
       <form
         onSubmit={handleSubmit(() => {
           if (gameState === 'betting') {
             startGameWithRound(round);
           }
         })}
-        className="w-full max-w-[1320px] space-y-[80px] mobile:space-y-[40px]"
+        className={cn(
+          'w-full',
+          'max-w-[1320px]',
+          'space-y-[80px]',
+          'mobile:space-y-[40px]',
+        )}
       >
         <BackPageButton
           label="야바위"
@@ -195,7 +210,7 @@ const YavarweePage = () => {
           path={`/mini-game/${stageId}`}
         />
 
-        <div className="space-y-24">
+        <div className={cn('space-y-24')}>
           <RoundContainer currentRound={round} />
           <AnimationDisplayContainer>
             <YavarweeAnimation
@@ -212,10 +227,10 @@ const YavarweePage = () => {
           </AnimationDisplayContainer>
         </div>
 
-        <div className="flex w-full justify-center">
-          <div className="flex w-full justify-evenly">
+        <div className={cn('flex', 'w-full', 'justify-center')}>
+          <div className={cn('flex', 'w-full', 'justify-evenly', 'gap-16')}>
             {['1', '2', '3'].map((num, idx) => (
-              <div key={num} className="w-full max-w-[182px]">
+              <div key={num} className={cn('w-full', 'max-w-[182px]')}>
                 <YavarweeButton
                   number={num as '1' | '2' | '3'}
                   setValue={(field, value) => {
@@ -236,6 +251,7 @@ const YavarweePage = () => {
           register={register}
           watch={watch}
           isPlaying={gameState !== 'betting'}
+          type="coinToss"
         />
       </form>
     </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { cn } from '@/shared/utils/cn';
 
 type GameState =
   | 'idle'
@@ -25,11 +26,12 @@ type Props = {
   shuffleDuration: number;
 };
 
-const CANVAS_WIDTH = 600;
-const CANVAS_HEIGHT = 240;
-const CUP_WIDTH = 128;
-const CUP_HEIGHT = 128;
-const BALL_SIZE = 64;
+const CANVAS_WIDTH = 900;
+const CANVAS_HEIGHT = 400;
+const CUP_WIDTH = 280;
+const CUP_HEIGHT = 280;
+const BALL_SIZE = 100;
+const CUP_SPACING = 240;
 
 interface CupState {
   x: number;
@@ -67,9 +69,9 @@ const YavarweeAnimation = ({
   const lastTimeRef = useRef<number>(0);
 
   const cupCoordinates = [
-    { x: CANVAS_WIDTH / 2 - 150 },
+    { x: CANVAS_WIDTH / 2 - CUP_SPACING },
     { x: CANVAS_WIDTH / 2 },
-    { x: CANVAS_WIDTH / 2 + 150 },
+    { x: CANVAS_WIDTH / 2 + CUP_SPACING },
   ];
 
   const [cups, setCups] = useState<CupState[]>([
@@ -107,7 +109,7 @@ const YavarweeAnimation = ({
 
   const [ball, setBall] = useState<BallState>({
     x: CANVAS_WIDTH / 2,
-    y: CANVAS_HEIGHT / 2 + 30,
+    y: CANVAS_HEIGHT / 2 + 50,
     visible: false,
     scale: 1,
   });
@@ -158,7 +160,7 @@ const YavarweeAnimation = ({
         })();
 
         if (isCupRevealed) {
-          targetY = CANVAS_HEIGHT / 2 - 50;
+          targetY = CANVAS_HEIGHT / 2 - 100;
           zIndex = 10;
         }
 
@@ -267,7 +269,7 @@ const YavarweeAnimation = ({
 
     if (ball.visible) {
       ctx.save();
-      ctx.translate(ball.x, ball.y + 30);
+      ctx.translate(ball.x, ball.y + 50);
       ctx.scale(ball.scale, ball.scale);
       ctx.drawImage(
         ballImageRef.current,
@@ -303,22 +305,34 @@ const YavarweeAnimation = ({
       case 'selecting':
         return '컵을 선택해주세요!';
       case 'result':
-        return result === 'correct' ? '정답입니다! 🎉' : '틀렸습니다! 😓';
+        return result === 'correct' ? '정답입니다!' : '틀렸습니다!';
       default:
         return '';
     }
   };
 
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gray-700">
+    <div
+      className={cn(
+        'relative',
+        'flex',
+        'h-full',
+        'w-full',
+        'flex-col',
+        'items-center',
+        'justify-center',
+        'overflow-hidden',
+        'bg-gray-700',
+      )}
+    >
       <canvas
         ref={canvasRef}
         width={CANVAS_WIDTH}
         height={CANVAS_HEIGHT}
-        className="max-w-full"
+        className={cn('max-w-full')}
       />
 
-      <div className="z-10 mt-4 text-center">
+      <div className={cn('z-10', 'mt-4', 'text-center')}>
         {[
           'betting',
           'showing',
@@ -328,7 +342,7 @@ const YavarweeAnimation = ({
           'result',
         ].includes(gameState) && (
           <p
-            className="text-xl font-bold text-gray-300"
+            className={cn('text-body1e', 'text-gray-300')}
             style={{
               animation: 'fadeInUp 0.3s ease-out',
             }}
@@ -336,7 +350,9 @@ const YavarweeAnimation = ({
             {gameState === 'result' ? (
               <span
                 className={
-                  result === 'correct' ? 'text-green-400' : 'text-red-400'
+                  result === 'correct'
+                    ? 'text-system-success'
+                    : 'text-system-error'
                 }
               >
                 {getStatusText()}
@@ -349,25 +365,72 @@ const YavarweeAnimation = ({
       </div>
 
       {gameState === 'idle' && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center rounded-2xl bg-black/30 backdrop-blur-sm">
-          <button onClick={startGame} className="text-h1e text-white">
+        <div
+          className={cn(
+            'absolute',
+            'inset-0',
+            'z-20',
+            'flex',
+            'items-center',
+            'justify-center',
+            'rounded-lg',
+            'bg-black/30',
+            'backdrop-blur-sm',
+          )}
+        >
+          <button
+            onClick={startGame}
+            className={cn('pad:text-h1e', 'text-white', 'text-body1e')}
+          >
             게임하기
           </button>
         </div>
       )}
 
       {gameState === 'round' && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-8 rounded-2xl bg-black/30 backdrop-blur-sm">
-          <p className="text-h1e text-white">다음 라운드에 도전하겠습니까?</p>
-          <div className="flex items-center gap-24">
+        <div
+          className={cn(
+            'absolute',
+            'inset-0',
+            'z-20',
+            'flex',
+            'flex-col',
+            'items-center',
+            'justify-center',
+            'gap-8',
+            'rounded-lg',
+            'bg-black/30',
+            'backdrop-blur-sm',
+          )}
+        >
+          <p className={cn('pad:text-h1e', 'text-white', 'text-body2e')}>
+            다음 라운드에 도전하겠습니까?
+          </p>
+          <div className={cn('flex', 'items-center', 'gap-24')}>
             <button
-              className="rounded px-6 py-2 text-body1s text-gray-300 hover:text-system-success"
+              className={cn(
+                'rounded',
+                'px-6',
+                'py-2',
+                'pad:text-body1s',
+                'text-body3e',
+                'text-gray-300',
+                'hover:text-system-success',
+              )}
               onClick={onNextRound}
             >
               YES
             </button>
             <button
-              className="rounded px-6 py-2 text-body1s text-gray-300 hover:text-system-error"
+              className={cn(
+                'rounded',
+                'px-6',
+                'py-2',
+                'pad:text-body1s',
+                'text-body3e',
+                'text-gray-300',
+                'hover:text-system-error',
+              )}
               onClick={onStopGame}
             >
               NO
