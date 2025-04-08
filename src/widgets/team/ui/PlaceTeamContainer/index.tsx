@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { postTeam } from '@/entities/team/api/postTeam';
+import useSvgBounds from '@/entities/team/model/useSvgBounds';
 import SportMap from '@/entities/team/ui/Map';
 import PlayerItem from '@/entities/team/ui/PlayerItem';
 import FingerIcon from '@/shared/assets/svg/FingerIcon';
@@ -45,19 +46,9 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
   const draggedPlayerRef = useRef<string | null>(null);
   const mousePositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [draggingPlayerId, setDraggingPlayerId] = useState<string | null>(null);
-  const [svgBounds, setSvgBounds] = useState<{
-    width: number;
-    height: number;
-    left: number;
-    top: number;
-  }>({
-    width: 0,
-    height: 0,
-    left: 0,
-    top: 0,
-  });
   const [playerScale, setPlayerScale] = useState(1);
   const [isLargeScreen, setIsLargeScreen] = useState(true);
+  const svgBounds = useSvgBounds(isLargeScreen);
 
   const { gameId, category } = params;
 
@@ -123,78 +114,6 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
   }, []);
 
   useEffect(() => {
-    const updateSvgBounds = () => {
-      const courtElement = document.getElementById('court-droppable');
-      if (courtElement) {
-        const svg = courtElement.querySelector('svg');
-        if (svg) {
-          const courtRect = courtElement.getBoundingClientRect();
-          const svgRect = svg.getBoundingClientRect();
-          const viewBox = svg.viewBox.baseVal;
-
-          const newBounds = {
-            width: svgRect.width,
-            height: svgRect.height,
-            left: svgRect.left - courtRect.left,
-            top: svgRect.top - courtRect.top,
-          };
-
-          setSvgBounds(newBounds);
-
-          setPlayers((prevPlayers) =>
-            prevPlayers.map((player) => {
-              if (player.x === 0 && player.y === 0) return player;
-
-              const scaleX = viewBox.width / svgRect.width;
-              const scaleY = viewBox.height / svgRect.height;
-
-              const svgX = player.relativeX
-                ? player.relativeX * (viewBox.width / 2)
-                : player.x * scaleX;
-              const svgY = player.relativeY
-                ? player.relativeY * viewBox.height
-                : player.y * scaleY;
-
-              const playerWidth = isLargeScreen ? 90 : 60;
-              const playerHeight = isLargeScreen ? 90 : 60;
-              const scale = isLargeScreen ? 0.9 : 0.6;
-              const scaledWidth = playerWidth * scale * scaleX;
-              const scaledHeight = playerHeight * scale * scaleY;
-
-              const horizontalMargin = scaledWidth * 0.01;
-              const maxX = viewBox.width / 2 - scaledWidth - horizontalMargin;
-              const maxY = viewBox.height - scaledHeight;
-
-              const boundedX = Math.max(horizontalMargin, Math.min(svgX, maxX));
-              const boundedY = Math.max(0, Math.min(svgY, maxY));
-
-              const screenX = boundedX / scaleX;
-              const screenY = boundedY / scaleY;
-
-              return {
-                ...player,
-                x: screenX,
-                y: screenY,
-                relativeX: boundedX / (viewBox.width / 2),
-                relativeY: boundedY / viewBox.height,
-              };
-            }),
-          );
-        }
-      }
-    };
-
-    updateSvgBounds();
-    window.addEventListener('resize', updateSvgBounds);
-    const timeoutId = setTimeout(updateSvgBounds, 100);
-
-    return () => {
-      window.removeEventListener('resize', updateSvgBounds);
-      clearTimeout(timeoutId);
-    };
-  }, [sportType, isLargeScreen, svgBounds.width, svgBounds.height]);
-
-  useEffect(() => {
     const updatePlayerScale = () => {
       const courtElement = document.getElementById('court-droppable');
       if (courtElement) {
@@ -221,17 +140,6 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
     if (courtElement) {
       const resizeObserver = new ResizeObserver(() => {
         updatePlayerScale();
-        const svg = courtElement.querySelector('svg');
-        if (svg) {
-          const courtRect = courtElement.getBoundingClientRect();
-          const svgRect = svg.getBoundingClientRect();
-          setSvgBounds({
-            width: Math.max(svgRect.width, 300),
-            height: svgRect.height,
-            left: svgRect.left - courtRect.left,
-            top: svgRect.top - courtRect.top,
-          });
-        }
       });
       resizeObserver.observe(courtElement);
 
