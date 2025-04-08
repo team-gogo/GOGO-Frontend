@@ -11,14 +11,18 @@ interface WastedModalProps {
 
 const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = () => {
-    if (contentRef.current) {
+    if (contentRef.current && !hasReachedBottom) {
       const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
       const isAtBottom = scrollHeight - scrollTop - clientHeight <= 5;
-      setIsButtonEnabled(isAtBottom);
+      if (isAtBottom) {
+        setHasReachedBottom(true);
+        setIsButtonEnabled(true);
+      }
     }
   };
 
@@ -34,7 +38,7 @@ const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
         contentElement.removeEventListener('scroll', handleScroll);
       }
     };
-  }, []);
+  }, [hasReachedBottom]);
 
   const handleConfirm = () => {
     if (isChecked) {
