@@ -746,7 +746,7 @@ const Bracket = () => {
               <div
                 className="relative h-full"
                 style={{
-                  minWidth: finalStage === 4 ? '900px' : '1200px',
+                  minWidth: finalStage === 4 ? '800px' : '1100px',
                   width: 'max-content',
                   margin: '0 auto',
                 }}
