@@ -1,3 +1,5 @@
+'use client';
+
 import { ReactNode, useState } from 'react';
 import { CircleQuestionIcon } from '@/shared/assets/icons';
 import { GameType } from '@/shared/model/sportTypes';
