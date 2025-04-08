@@ -726,6 +726,7 @@ const Bracket = () => {
             'p-20',
             'relative',
             'bracket-container',
+            'overflow-x-auto',
             finalStage === 4 ? 'four-bracket' : 'eight-bracket',
           )}
           style={
@@ -739,96 +740,107 @@ const Bracket = () => {
             } as React.CSSProperties
           }
         >
-          <BracketConnectionLayer
-            finalStage={finalStage}
-            firstRoundDistribution={firstRoundDistribution}
-            teamCount={totalTeams}
-          />
+          <div
+            className="relative h-full"
+            style={{
+              minWidth: finalStage === 4 ? '900px' : '1200px',
+              width: 'max-content',
+            }}
+          >
+            <BracketConnectionLayer
+              finalStage={finalStage}
+              firstRoundDistribution={firstRoundDistribution}
+              teamCount={totalTeams}
+            />
 
-          {finalStage === 4 ? (
-            <div
-              className={cn(
-                'flex',
-                'justify-between',
-                'w-full',
-                'h-full',
-                'gap-4',
-                'relative',
-                'z-10',
-              )}
-            >
-              {renderBracketColumn(
-                1,
-                firstRoundDistribution[0].top +
-                  firstRoundDistribution[0].bottom,
-                false,
-                undefined,
-                'left',
-              )}
-              {renderBracketColumn(2, 1, false, undefined, 'left')}
-              {renderBracketColumn(2, 1, false, undefined, 'right')}
-              {renderBracketColumn(
-                1,
-                firstRoundDistribution[1].top +
-                  firstRoundDistribution[1].bottom,
-                false,
-                undefined,
-                'right',
-              )}
-            </div>
-          ) : (
-            <div
-              className={cn(
-                'flex',
-                'justify-between',
-                'w-full',
-                'h-full',
-                'gap-4',
-                'relative',
-                'z-10',
-              )}
-            >
-              {renderBracketColumn(
-                1,
-                0,
-                true,
-                firstRoundDistribution[0],
-                'left',
-              )}
-              {renderBracketColumn(
-                2,
-                Math.ceil(
-                  (firstRoundDistribution[0].top +
-                    firstRoundDistribution[0].bottom) /
-                    2,
-                ),
-                false,
-                undefined,
-                'left',
-              )}
-              {renderBracketColumn(3, 1, false, undefined, 'left')}
-              {renderBracketColumn(3, 1, false, undefined, 'right')}
-              {renderBracketColumn(
-                2,
-                Math.ceil(
-                  (firstRoundDistribution[1].top +
-                    firstRoundDistribution[1].bottom) /
-                    2,
-                ),
-                false,
-                undefined,
-                'right',
-              )}
-              {renderBracketColumn(
-                1,
-                0,
-                true,
-                firstRoundDistribution[1],
-                'right',
-              )}
-            </div>
-          )}
+            {finalStage === 4 ? (
+              <div
+                className={cn(
+                  'flex',
+                  'justify-between',
+                  'h-full',
+                  'gap-4',
+                  'relative',
+                  'z-10',
+                )}
+                style={{
+                  width: finalStage === 4 ? '900px' : '1200px',
+                }}
+              >
+                {renderBracketColumn(
+                  1,
+                  firstRoundDistribution[0].top +
+                    firstRoundDistribution[0].bottom,
+                  false,
+                  undefined,
+                  'left',
+                )}
+                {renderBracketColumn(2, 1, false, undefined, 'left')}
+                {renderBracketColumn(2, 1, false, undefined, 'right')}
+                {renderBracketColumn(
+                  1,
+                  firstRoundDistribution[1].top +
+                    firstRoundDistribution[1].bottom,
+                  false,
+                  undefined,
+                  'right',
+                )}
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  'flex',
+                  'justify-between',
+                  'w-full',
+                  'h-full',
+                  'gap-4',
+                  'relative',
+                  'z-10',
+                )}
+              >
+                {renderBracketColumn(
+                  1,
+                  0,
+                  true,
+                  firstRoundDistribution[0],
+                  'left',
+                )}
+                {renderBracketColumn(
+                  2,
+                  Math.ceil(
+                    (firstRoundDistribution[0].top +
+                      firstRoundDistribution[0].bottom) /
+                      2,
+                  ),
+                  false,
+                  undefined,
+                  'left',
+                )}
+                {renderBracketColumn(3, 1, false, undefined, 'left')}
+                {renderBracketColumn(3, 1, false, undefined, 'right')}
+                {renderBracketColumn(
+                  2,
+                  Math.ceil(
+                    (firstRoundDistribution[1].top +
+                      firstRoundDistribution[1].bottom) /
+                      2,
+                  ),
+                  false,
+                  undefined,
+                  'right',
+                )}
+                {renderBracketColumn(
+                  1,
+                  0,
+                  true,
+                  firstRoundDistribution[1],
+                  'right',
+                )}
+              </div>
+            )}
+          </div>
         </div>
+
         <TeamArray
           availableTeams={availableTeams}
           isDragging={isDragging}
