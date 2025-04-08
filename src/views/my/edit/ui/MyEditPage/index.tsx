@@ -51,7 +51,7 @@ const MyEditPage = () => {
       className={cn(
         'flex',
         'w-full',
-        'h-[calc(100vh-120px)]',
+        'pad:h-[calc(100vh-120px)]',
         'flex-col',
         'items-center',
         'justify-center',
@@ -72,9 +72,24 @@ const MyEditPage = () => {
       >
         <div className={cn('flex', 'flex-col', 'w-full', 'gap-[3rem]')}>
           <BackPageButton label="정보 수정" path="/my" />
-          <div className={cn('flex', 'flex-col', 'w-full', 'gap-[2.5rem]')}>
+          <div
+            className={cn(
+              'flex',
+              'flex-col',
+              'w-full',
+              'pad:gap-[2.5rem]',
+              'gap-[1.5rem]',
+            )}
+          >
             <div
-              className={cn('flex', 'items-center', 'w-full', 'gap-[1.5rem]')}
+              className={cn(
+                'flex',
+                'pad:flex-row',
+                'flex-col',
+                'items-center',
+                'w-full',
+                'gap-[1.5rem]',
+              )}
             >
               <InputWrapper title="이름">
                 <Input
@@ -91,7 +106,14 @@ const MyEditPage = () => {
             </div>
 
             <div
-              className={cn('flex', 'items-center', 'w-full', 'gap-[1.5rem]')}
+              className={cn(
+                'flex',
+                'pad:flex-row',
+                'flex-col',
+                'items-center',
+                'w-full',
+                'gap-[1.5rem]',
+              )}
             >
               <InputWrapper title="반">
                 <Input
@@ -108,7 +130,14 @@ const MyEditPage = () => {
             </div>
 
             <div
-              className={cn('flex', 'items-center', 'w-full', 'gap-[1.5rem]')}
+              className={cn(
+                'flex',
+                'pad:flex-row',
+                'flex-col',
+                'items-center',
+                'w-full',
+                'gap-[1.5rem]',
+              )}
             >
               <InputWrapper title="성별">
                 <SexSelect
@@ -128,9 +157,11 @@ const MyEditPage = () => {
             </div>
           </div>
         </div>
-        <Button disabled={isDisabled} type="submit">
-          수정하기
-        </Button>
+        <div className={cn('pt-[5rem]')}>
+          <Button disabled={isDisabled} type="submit">
+            수정하기
+          </Button>
+        </div>
       </form>
     </div>
   );

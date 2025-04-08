@@ -51,12 +51,21 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
         'justify-between',
         'rounded-xl',
         'bg-gray-700',
-        'px-[1.625rem]',
-        'tablet:py-[2rem]',
+        'px-[1rem]',
         'py-[1.5rem]',
+        'pad:px-[1.625rem]',
+        'tablet:py-[2rem]',
       )}
     >
-      <div className={cn('flex items-center gap-[2.25rem]')}>
+      <div
+        className={cn(
+          'flex',
+          'items-center',
+          'tablet:gap-[2.25rem]',
+          'pad:gap-[1.5rem]',
+          'gap-[1rem]',
+        )}
+      >
         {isPending ? (
           <div
             className={cn('tablet:text-body1s', 'text-body2s', 'text-white')}
@@ -67,7 +76,12 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
           infoList.map((info) => (
             <div
               key={info.label}
-              className={cn('flex items-center gap-[1rem]')}
+              className={cn(
+                'flex',
+                'items-center',
+                'pad:gap-[1rem]',
+                'gap-[0.5rem]',
+              )}
             >
               <p
                 className={cn(
@@ -83,6 +97,8 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
                   'tablet:text-body1s',
                   'text-body3s',
                   'text-white',
+                  info.label === '학교' &&
+                    'w-[3rem] truncate pad:w-[6rem] tablet:w-fit',
                 )}
               >
                 {info.value}
@@ -97,17 +113,14 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
           onClick={() => setIconClicked(!iconClicked)}
           className={cn('flex items-center gap-[0.5rem]')}
         >
-          <div
-            className={cn(
-              'flex h-[1.5rem] w-[1.5rem] items-center justify-center',
-            )}
-          >
+          <div className={cn('pad:block', 'hidden')}>
             <SettingIcon color={iconClicked ? '#fff' : '#6B6B6B'} />
           </div>
+
           <p
             className={cn(
               'tablet:text-body1s',
-              'text-body2s',
+              'text-body3s',
               iconClicked ? 'text-white' : 'text-gray-500',
             )}
           >

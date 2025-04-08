@@ -1,8 +1,7 @@
 const SettingIcon = ({ color = '#6B6B6B' }: { color?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="1.25rem"
-    height="1.25rem"
+    className="h-[1rem] w-[1rem] tablet:h-[1.25rem] tablet:w-[1.25rem]"
     viewBox="0 0 20 20"
     fill="none"
   >
