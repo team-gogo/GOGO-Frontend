@@ -108,11 +108,19 @@ const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
           반복하지 마세요.
         </p>
       </div>
+
+      <Button
+        className={cn('w-full', 'mt-6')}
+        disabled={!isButtonEnabled}
+        onClick={handleConfirm}
+      >
+        확인
+      </Button>
       <div
         className={cn('flex', 'items-center', 'gap-2', 'cursor-pointer')}
         onClick={() => setIsChecked(!isChecked)}
       >
-        <CheckingBoxIcon size={32} isChecked={isChecked} />
+        <CheckingBoxIcon size={28} isChecked={isChecked} />
         <p
           className={cn(
             'text-body2s',
@@ -124,13 +132,6 @@ const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
           오늘 다시 보지 않기
         </p>
       </div>
-      <Button
-        className={cn('w-full', 'mt-6')}
-        disabled={!isButtonEnabled}
-        onClick={handleConfirm}
-      >
-        확인
-      </Button>
     </ModalLayout>
   );
 };
