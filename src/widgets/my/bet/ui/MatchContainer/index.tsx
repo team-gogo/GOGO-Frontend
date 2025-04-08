@@ -105,28 +105,32 @@ const MatchContainer = ({
             className={cn('flex', 'flex-col', 'items-center', 'gap-[1.5ren]')}
           >
             <h2 className={cn('midpad:text-h4e', 'text-body1e', 'text-white')}>
-              현재 베팅한 매치가 없습니다.
+              {isMyBetInfo
+                ? '현재 베팅한 매치가 없습니다.'
+                : '해당하는 매치가 없습니다.'}
             </h2>
-            <button
-              onClick={() => push(`/main/${stageId}`)}
-              className={cn(
-                'flex',
-                'items-center',
-                'midpad:gap-[1rem]',
-                'gap-[0.5rem]',
-              )}
-            >
-              <p
+            {isMyBetInfo && (
+              <button
+                onClick={() => push(`/main/${stageId}`)}
                 className={cn(
-                  'midpad:text-body1e',
-                  'text-body3e',
-                  'text-gray-500',
+                  'flex',
+                  'items-center',
+                  'midpad:gap-[1rem]',
+                  'gap-[0.5rem]',
                 )}
               >
-                베팅 하러가기
-              </p>
-              <RightArrowIcon />
-            </button>
+                <p
+                  className={cn(
+                    'midpad:text-body1e',
+                    'text-body3e',
+                    'text-gray-500',
+                  )}
+                >
+                  베팅 하러가기
+                </p>
+                <RightArrowIcon />
+              </button>
+            )}
           </div>
         </div>
       )}
