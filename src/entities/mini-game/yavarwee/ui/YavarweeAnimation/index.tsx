@@ -6,6 +6,7 @@ import React from 'react';
 
 type GameState =
   | 'idle'
+  | 'betting'
   | 'showing'
   | 'hiding'
   | 'shuffling'
@@ -115,16 +116,25 @@ const YavarweeAnimation = ({
       </div>
 
       <div className="z-10 mt-4 text-center">
-        {['showing', 'hiding', 'shuffling', 'result'].includes(gameState) && (
+        {[
+          'betting',
+          'showing',
+          'hiding',
+          'shuffling',
+          'selecting',
+          'result',
+        ].includes(gameState) && (
           <motion.p
             className="text-xl font-bold text-gray-300"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: -5 }}
             transition={{ duration: 0.3 }}
           >
+            {gameState === 'betting' && '포인트를 배팅해주세요!'}
             {gameState === 'showing' && '공의 위치를 확인하세요!'}
             {gameState === 'hiding' && '공을 숨기는 중...'}
             {gameState === 'shuffling' && '컵을 섞는 중...'}
+            {gameState === 'selecting' && '컵을 선택해주세요!'}
             {gameState === 'result' && (
               <span
                 className={

@@ -21,14 +21,21 @@ const YavarweePage = () => {
   const { stageId } = params;
   const { data: myPointData } = useGetMyPointQuery(stageId);
   const { data: myTicketData } = useGetMyTicketQuery(stageId);
-  const { register, watch, setValue } = useForm<YavarweeForm>();
+  const { register, handleSubmit, watch, setValue } = useForm<YavarweeForm>();
 
   const serverPoint = myPointData?.point || 0;
   const coinTossTicket = myTicketData?.yavarwee || 0;
 
   const [gameState, setGameState] = useState<
-    'idle' | 'showing' | 'hiding' | 'shuffling' | 'selecting' | 'result'
+    | 'idle'
+    | 'betting'
+    | 'showing'
+    | 'hiding'
+    | 'shuffling'
+    | 'selecting'
+    | 'result'
   >('idle');
+
   const [ballPosition, setBallPosition] = useState<number | null>(null);
   const [cupPositions, setCupPositions] = useState<number[]>([0, 1, 2]);
   const [userSelection, setUserSelection] = useState<number | null>(null);
@@ -99,6 +106,11 @@ const YavarweePage = () => {
       )}
     >
       <form
+        onSubmit={handleSubmit(() => {
+          if (gameState === 'betting') {
+            startGame();
+          }
+        })}
         className={cn(
           'w-full max-w-[1320px] space-y-[80px] mobile:space-y-[40px]',
         )}
@@ -119,7 +131,7 @@ const YavarweePage = () => {
               userSelection={userSelection}
               result={result}
               selectCup={selectCup}
-              startGame={startGame}
+              startGame={() => setGameState('betting')}
             />
           </AnimationDisplayContainer>
         </div>
@@ -148,6 +160,7 @@ const YavarweePage = () => {
           ticket={coinTossTicket}
           register={register}
           watch={watch}
+          isPlaying={gameState !== 'betting'}
         />
       </form>
     </div>
