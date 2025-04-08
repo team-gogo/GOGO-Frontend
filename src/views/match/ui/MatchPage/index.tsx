@@ -40,7 +40,7 @@ const MatchPage = () => {
     ? selectDate.split('-').map(Number)
     : [today.getFullYear(), today.getMonth() + 1, today.getDate()];
 
-  const { data: searchMatchData } = useGetSearchMatch(
+  const { data: searchMatchData, isPending: matchPending } = useGetSearchMatch(
     Number(stageId),
     year,
     month,
@@ -82,6 +82,7 @@ const MatchPage = () => {
           <MatchContainer
             matchInfo={searchMatchData}
             selectedSport={selectedSport}
+            isPending={matchPending}
           />
         </div>
       </div>
