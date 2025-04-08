@@ -48,7 +48,7 @@ const YavarweePage = () => {
 
   const amount = watch('amount');
 
-  const startGame = () => {
+  const startGameWithRound = (currentRound: number) => {
     setGameState('showing');
     const randomPosition = Math.floor(Math.random() * 3);
     setBallPosition(randomPosition);
@@ -60,14 +60,41 @@ const YavarweePage = () => {
       setGameState('hiding');
       setTimeout(() => {
         setGameState('shuffling');
-        performShuffleAnimation();
+        performShuffleAnimation(currentRound);
       }, 1000);
     }, 2000);
   };
 
-  const performShuffleAnimation = () => {
+  const getShuffleCountForRound = (round: number): number => {
+    const ranges: Record<number, [number, number]> = {
+      1: [10, 12],
+      2: [12, 16],
+      3: [16, 20],
+      4: [20, 25],
+      5: [25, 30],
+    };
+
+    const range = ranges[round];
+
+    const [min, max] = range;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  const getShuffleAnimationDurationForRound = (round: number): number => {
+    const durations: Record<number, number> = {
+      1: 1000,
+      2: 800,
+      3: 600,
+      4: 400,
+      5: 300,
+    };
+
+    return durations[round] || 1000;
+  };
+  const performShuffleAnimation = (currentRound: number) => {
     const current = [...cupPositions];
-    const shuffleCount = Math.floor(Math.random() * (16 - 8 + 1)) + 8;
+    const shuffleCount = getShuffleCountForRound(currentRound);
+    const shuffleDuration = getShuffleAnimationDurationForRound(currentRound);
     const shuffles: [number, number][] = [];
 
     for (let i = 0; i < shuffleCount; i++) {
@@ -78,18 +105,7 @@ const YavarweePage = () => {
       shuffles.push([a, b]);
     }
 
-    // 라운드별 딜레이 맵
-    const roundSpeedMap: Record<number, number> = {
-      1: 300,
-      2: 250,
-      3: 200,
-      4: 150,
-      5: 100,
-    };
-
-    const delayPerShuffle = roundSpeedMap[round] || 100;
-    let totalDelay = 0;
-
+    let delay = 0;
     shuffles.forEach(([a, b]) => {
       setTimeout(() => {
         setCupPositions((prev) => {
@@ -97,13 +113,13 @@ const YavarweePage = () => {
           [next[a], next[b]] = [next[b], next[a]];
           return next;
         });
-      }, totalDelay);
-      totalDelay += delayPerShuffle;
+      }, delay);
+      delay += shuffleDuration;
     });
 
     setTimeout(() => {
       setGameState('selecting');
-    }, totalDelay);
+    }, delay);
   };
 
   const selectCup = (selectedIdx: number) => {
@@ -146,8 +162,9 @@ const YavarweePage = () => {
   };
 
   const handleNextRound = () => {
-    setRound((prev) => prev + 1);
-    startGame();
+    const nextRound = round + 1;
+    setRound(nextRound);
+    startGameWithRound(nextRound);
   };
 
   const handleStopGame = () => {
@@ -167,7 +184,7 @@ const YavarweePage = () => {
       <form
         onSubmit={handleSubmit(() => {
           if (gameState === 'betting') {
-            startGame();
+            startGameWithRound(round);
           }
         })}
         className="w-full max-w-[1320px] space-y-[80px] mobile:space-y-[40px]"
@@ -187,10 +204,10 @@ const YavarweePage = () => {
               ballPosition={ballPosition}
               userSelection={userSelection}
               result={result}
-              selectCup={selectCup}
               startGame={() => setGameState('betting')}
               onNextRound={handleNextRound}
               onStopGame={handleStopGame}
+              shuffleDuration={getShuffleAnimationDurationForRound(round)}
             />
           </AnimationDisplayContainer>
         </div>

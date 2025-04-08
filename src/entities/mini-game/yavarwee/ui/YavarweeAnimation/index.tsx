@@ -1,8 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 type GameState =
   | 'idle'
@@ -21,11 +19,35 @@ type Props = {
   ballPosition: number | null;
   userSelection: number | null;
   result: Result;
-  selectCup: (index: number) => void;
   startGame: () => void;
   onNextRound: () => void;
   onStopGame: () => void;
+  shuffleDuration: number;
 };
+
+const CANVAS_WIDTH = 600;
+const CANVAS_HEIGHT = 240;
+const CUP_WIDTH = 128;
+const CUP_HEIGHT = 128;
+const BALL_SIZE = 64;
+
+interface CupState {
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  zIndex: number;
+  originalId: number;
+  animationProgress: number;
+  animationDuration: number;
+}
+
+interface BallState {
+  x: number;
+  y: number;
+  visible: boolean;
+  scale: number;
+}
 
 const YavarweeAnimation = ({
   gameState,
@@ -33,92 +55,268 @@ const YavarweeAnimation = ({
   ballPosition,
   userSelection,
   result,
-  selectCup,
   startGame,
   onNextRound,
   onStopGame,
+  shuffleDuration,
 }: Props) => {
-  const cupCoordinates: { x: number }[] = [{ x: -150 }, { x: 0 }, { x: 150 }];
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cupImageRef = useRef<HTMLImageElement | null>(null);
+  const ballImageRef = useRef<HTMLImageElement | null>(null);
+  const animationFrameRef = useRef<number>(0);
+  const lastTimeRef = useRef<number>(0);
 
-  const isCupRevealed = (originalCupId: number): boolean => {
-    const currentCupPosition = cupPositions.indexOf(originalCupId);
+  const cupCoordinates = [
+    { x: CANVAS_WIDTH / 2 - 150 },
+    { x: CANVAS_WIDTH / 2 },
+    { x: CANVAS_WIDTH / 2 + 150 },
+  ];
 
-    if (gameState === 'showing') {
-      return currentCupPosition === ballPosition;
+  const [cups, setCups] = useState<CupState[]>([
+    {
+      x: cupCoordinates[0].x,
+      y: CANVAS_HEIGHT / 2,
+      targetX: cupCoordinates[0].x,
+      targetY: CANVAS_HEIGHT / 2,
+      zIndex: 1,
+      originalId: 0,
+      animationProgress: 1,
+      animationDuration: 300,
+    },
+    {
+      x: cupCoordinates[1].x,
+      y: CANVAS_HEIGHT / 2,
+      targetX: cupCoordinates[1].x,
+      targetY: CANVAS_HEIGHT / 2,
+      zIndex: 1,
+      originalId: 1,
+      animationProgress: 1,
+      animationDuration: 300,
+    },
+    {
+      x: cupCoordinates[2].x,
+      y: CANVAS_HEIGHT / 2,
+      targetX: cupCoordinates[2].x,
+      targetY: CANVAS_HEIGHT / 2,
+      zIndex: 1,
+      originalId: 2,
+      animationProgress: 1,
+      animationDuration: 300,
+    },
+  ]);
+
+  const [ball, setBall] = useState<BallState>({
+    x: CANVAS_WIDTH / 2,
+    y: CANVAS_HEIGHT / 2 + 30,
+    visible: false,
+    scale: 1,
+  });
+
+  useEffect(() => {
+    const cupImage = new Image();
+    cupImage.src = '/cup.png';
+    cupImage.onload = () => {
+      cupImageRef.current = cupImage;
+    };
+
+    const ballImage = new Image();
+    ballImage.src = '/ball.png';
+    ballImage.onload = () => {
+      ballImageRef.current = ballImage;
+    };
+
+    return () => {
+      cancelAnimationFrame(animationFrameRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const newCups = [...cups];
+
+    cupPositions.forEach((positionId, index) => {
+      const cupIndex = cups.findIndex((cup) => cup.originalId === positionId);
+      if (cupIndex !== -1) {
+        const targetX = cupCoordinates[index].x;
+        let targetY = CANVAS_HEIGHT / 2;
+        let zIndex = 1;
+
+        const isCupRevealed = (() => {
+          if (gameState === 'showing') {
+            return index === ballPosition;
+          }
+
+          if (gameState === 'result') {
+            if (result === 'correct') {
+              return index === userSelection;
+            }
+            if (result === 'wrong') {
+              return positionId === ballPosition;
+            }
+          }
+
+          return false;
+        })();
+
+        if (isCupRevealed) {
+          targetY = CANVAS_HEIGHT / 2 - 50;
+          zIndex = 10;
+        }
+
+        newCups[cupIndex] = {
+          ...newCups[cupIndex],
+          targetX,
+          targetY,
+          zIndex,
+          animationProgress: 0,
+          animationDuration: gameState === 'shuffling' ? shuffleDuration : 300,
+        };
+      }
+    });
+
+    setCups(newCups);
+
+    if (ballPosition !== null) {
+      const cupIndex = cupPositions.indexOf(ballPosition);
+      const ballX = cupCoordinates[cupIndex].x;
+
+      setBall((prev) => ({
+        ...prev,
+        x: ballX,
+        visible: gameState === 'showing' || gameState === 'result',
+        scale: gameState === 'showing' ? 0.8 : 1,
+      }));
+    }
+  }, [gameState, cupPositions, ballPosition, userSelection, result]);
+
+  useEffect(() => {
+    const animate = (time: number) => {
+      if (!lastTimeRef.current) {
+        lastTimeRef.current = time;
+      }
+
+      const deltaTime = time - lastTimeRef.current;
+      lastTimeRef.current = time;
+
+      let animating = false;
+      setCups((prevCups) => {
+        return prevCups.map((cup) => {
+          if (cup.animationProgress < 1) {
+            const newProgress = Math.min(
+              cup.animationProgress + deltaTime / cup.animationDuration,
+              1,
+            );
+            animating = true;
+
+            const t = 1 - Math.pow(1 - newProgress, 2);
+
+            const x = cup.x + (cup.targetX - cup.x) * t;
+            const y = cup.y + (cup.targetY - cup.y) * t;
+
+            return {
+              ...cup,
+              x,
+              y,
+              animationProgress: newProgress,
+            };
+          }
+          return cup;
+        });
+      });
+
+      if (gameState === 'showing' && ball.scale < 1) {
+        setBall((prev) => {
+          const newScale = prev.scale + (deltaTime / 300) * 0.4;
+          if (newScale <= 1.2) {
+            animating = true;
+            return {
+              ...prev,
+              scale: newScale,
+            };
+          } else {
+            return {
+              ...prev,
+              scale: 1,
+            };
+          }
+        });
+      }
+
+      renderCanvas();
+
+      if (animating) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameRef.current);
+    };
+  }, [gameState, cups, ball]);
+
+  const renderCanvas = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx || !cupImageRef.current || !ballImageRef.current)
+      return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const sortedCups = [...cups].sort((a, b) => a.zIndex - b.zIndex);
+
+    if (ball.visible) {
+      ctx.save();
+      ctx.translate(ball.x, ball.y + 30);
+      ctx.scale(ball.scale, ball.scale);
+      ctx.drawImage(
+        ballImageRef.current,
+        -BALL_SIZE / 2,
+        -BALL_SIZE / 2,
+        BALL_SIZE,
+        BALL_SIZE,
+      );
+      ctx.restore();
     }
 
-    if (gameState === 'result') {
-      if (result === 'correct') {
-        return currentCupPosition === userSelection;
-      }
-      if (result === 'wrong') {
-        return originalCupId === ballPosition;
-      }
-    }
+    sortedCups.forEach((cup) => {
+      ctx.drawImage(
+        cupImageRef.current!,
+        cup.x - CUP_WIDTH / 2,
+        cup.y - CUP_HEIGHT / 2,
+        CUP_WIDTH,
+        CUP_HEIGHT,
+      );
+    });
+  };
 
-    return false;
+  const getStatusText = () => {
+    switch (gameState) {
+      case 'betting':
+        return '포인트를 배팅해주세요!';
+      case 'showing':
+        return '공의 위치를 확인하세요!';
+      case 'hiding':
+        return '공을 숨기는 중...';
+      case 'shuffling':
+        return '컵을 섞는 중...';
+      case 'selecting':
+        return '컵을 선택해주세요!';
+      case 'result':
+        return result === 'correct' ? '정답입니다! 🎉' : '틀렸습니다! 😓';
+      default:
+        return '';
+    }
   };
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gray-700">
-      <div className="relative mb-12 flex h-60 w-full max-w-[600px] items-center justify-center">
-        {[0, 1, 2].map((originalCupId) => (
-          <motion.div
-            key={originalCupId}
-            className="absolute w-32 cursor-pointer"
-            style={{ top: '50%' }}
-            animate={{
-              x: cupCoordinates[
-                cupPositions.findIndex((v) => v === originalCupId)
-              ].x,
-              y: isCupRevealed(originalCupId) ? -50 : 0,
-              zIndex: isCupRevealed(originalCupId) ? 10 : 1,
-              transition: { duration: gameState === 'shuffling' ? 0.5 : 0.3 },
-            }}
-            onClick={() => selectCup(cupPositions.indexOf(originalCupId))}
-          >
-            <Image
-              src="/cup.png"
-              alt={`컵 ${originalCupId + 1}`}
-              width={128}
-              height={128}
-              className="pointer-events-none h-auto w-full select-none"
-              draggable="false"
-            />
-          </motion.div>
-        ))}
-
-        {ballPosition !== null && (
-          <motion.div
-            className="absolute"
-            style={{
-              bottom: '0px',
-              left: `calc(50% + ${
-                cupCoordinates[cupPositions.indexOf(ballPosition)]?.x || 0
-              }px - 32px)`,
-            }}
-            initial={{ opacity: gameState === 'showing' ? 1 : 0 }}
-            animate={{
-              opacity:
-                gameState === 'showing' || gameState === 'result' ? 1 : 0,
-              scale:
-                gameState === 'showing' || gameState === 'result'
-                  ? [0.8, 1.2, 1]
-                  : [1],
-            }}
-            transition={{ duration: gameState === 'showing' ? 0.3 : 0.5 }}
-          >
-            <Image
-              src="/ball.png"
-              alt="공"
-              width={64}
-              height={64}
-              className="pointer-events-none select-none"
-              draggable="false"
-            />
-          </motion.div>
-        )}
-      </div>
+      <canvas
+        ref={canvasRef}
+        width={CANVAS_WIDTH}
+        height={CANVAS_HEIGHT}
+        className="max-w-full"
+      />
 
       <div className="z-10 mt-4 text-center">
         {[
@@ -129,27 +327,24 @@ const YavarweeAnimation = ({
           'selecting',
           'result',
         ].includes(gameState) && (
-          <motion.p
+          <p
             className="text-xl font-bold text-gray-300"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: -5 }}
-            transition={{ duration: 0.3 }}
+            style={{
+              animation: 'fadeInUp 0.3s ease-out',
+            }}
           >
-            {gameState === 'betting' && '포인트를 배팅해주세요!'}
-            {gameState === 'showing' && '공의 위치를 확인하세요!'}
-            {gameState === 'hiding' && '공을 숨기는 중...'}
-            {gameState === 'shuffling' && '컵을 섞는 중...'}
-            {gameState === 'selecting' && '컵을 선택해주세요!'}
-            {gameState === 'result' && (
+            {gameState === 'result' ? (
               <span
                 className={
                   result === 'correct' ? 'text-green-400' : 'text-red-400'
                 }
               >
-                {result === 'correct' ? '정답입니다! 🎉' : '틀렸습니다! 😓'}
+                {getStatusText()}
               </span>
+            ) : (
+              getStatusText()
             )}
-          </motion.p>
+          </p>
         )}
       </div>
 
