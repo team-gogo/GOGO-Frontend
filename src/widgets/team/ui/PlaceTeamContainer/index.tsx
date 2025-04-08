@@ -555,8 +555,11 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                             className="absolute inset-0"
                             style={{
                               pointerEvents: 'all',
-                              top: !isLargeScreen ? '12%' : 'auto',
-                              left: !isLargeScreen ? '-2%' : 'auto',
+                              position: 'absolute',
+                              top: !isLargeScreen ? '12%' : '0',
+                              left: !isLargeScreen ? '-2%' : '0',
+                              width: '100%',
+                              height: '100%',
                             }}
                           >
                             {players.map((player, index) => (
