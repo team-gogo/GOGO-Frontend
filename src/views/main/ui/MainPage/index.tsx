@@ -95,7 +95,7 @@ const MainPage = () => {
   const { data: isWastedData } = useGetIsWasted(Number(stageId));
 
   useEffect(() => {
-    if (isWastedData?.isWasted === false) {
+    if (isWastedData?.isWasted === true) {
       const notShowWastedDate = localStorage.getItem(
         `not_show_wasted_${stageId}`,
       );
@@ -246,7 +246,7 @@ const MainPage = () => {
       {isCheckAgainModalOpen && (
         <BatchCancelModal onClose={() => setIsCheckAgainModalOpen(false)} />
       )}
-      {isWastedModalOpen === false && (
+      {isWastedModalOpen && (
         <WastedModal
           stageId={Number(stageId)}
           onClose={() => setIsWastedModalOpen(false)}
