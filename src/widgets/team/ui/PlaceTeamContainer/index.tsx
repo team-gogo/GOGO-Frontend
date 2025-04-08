@@ -486,10 +486,16 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
         </header>
         <div className="mt-28 flex flex-1 flex-col">
           <div className="flex flex-row items-center justify-between">
-            <h1 className="mb-28 text-h3e text-white">{game?.gameName}</h1>
+            <p className="text-h3e text-white">{game?.gameName}</p>
             <div className="flex flex-row items-center justify-center gap-10">
-              <FingerIcon />
-              <h2 className="text-h3 text-white">인원을 배치 하세요</h2>
+              <FingerIcon size={isSmallScreen ? 20 : 26} />
+              <h2
+                className={`text-h3 text-white ${
+                  isSmallScreen ? 'text-h4' : 'text-h3'
+                }`}
+              >
+                인원을 배치 하세요
+              </h2>
             </div>
           </div>
           <div className="px-4">
