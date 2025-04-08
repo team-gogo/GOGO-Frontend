@@ -17,7 +17,7 @@ const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
   const handleScroll = () => {
     if (contentRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
-      const isAtBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 1;
+      const isAtBottom = scrollHeight - scrollTop - clientHeight <= 5;
       setIsButtonEnabled(isAtBottom);
     }
   };
