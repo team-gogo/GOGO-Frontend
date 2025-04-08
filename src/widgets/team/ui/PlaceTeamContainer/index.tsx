@@ -468,8 +468,9 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                 className={`relative w-full ${isLargeScreen ? 'h-[500px]' : 'h-[400px]'}`}
                 style={{
                   maxWidth: isLargeScreen ? 'none' : '100%',
-                  minWidth: '780px',
+                  minWidth: isLargeScreen ? '780px' : '100%',
                   margin: '0 auto',
+                  overflow: !isLargeScreen ? 'hidden' : 'visible',
                 }}
               >
                 <Droppable
@@ -481,121 +482,134 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="relative h-full overflow-visible rounded-lg bg-transparent"
+                      className={`relative h-full overflow-visible rounded-lg bg-transparent ${!isLargeScreen ? 'mx-auto' : ''}`}
                       id="court-droppable"
                     >
                       <div className="relative h-full">
-                        <SportMap
-                          type={sportType}
-                          isMapDragging={draggingPlayerId !== null}
-                          onPositionChange={(x, y) => {
-                            if (draggingPlayerId && draggedPlayerRef.current) {
-                              if (x === -1 && y === -1) {
-                                setDraggingPlayerId(null);
-                                draggedPlayerRef.current = null;
-                                return;
-                              }
-                              handlePlayerDrag(
-                                draggedPlayerRef.current,
-                                x + svgBounds.left,
-                                y + svgBounds.top,
-                              );
-                            }
-                          }}
-                        />
                         <div
-                          className="absolute inset-0"
+                          className="relative h-full w-full"
                           style={{
-                            pointerEvents: 'all',
+                            transformOrigin: 'center center',
                           }}
                         >
-                          {players.map((player, index) => (
-                            <Draggable
-                              key={player.id}
-                              draggableId={player.id}
-                              index={index}
-                            >
-                              {(provided, snapshot) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  id={`player-${player.id}`}
-                                  style={{
-                                    ...provided.draggableProps.style,
-                                    position: 'absolute',
-                                    left: `${player.x}px`,
-                                    top: `${player.y}px`,
-                                    transform: `scale(${playerScale})`,
-                                    transformOrigin: 'center center',
-                                    transition: snapshot.isDragging
-                                      ? 'none'
-                                      : 'transform 0.2s, left 0.2s, top 0.2s',
-                                    zIndex:
-                                      snapshot.isDragging ||
-                                      draggingPlayerId === player.id
-                                        ? 99999
-                                        : 1,
-                                    pointerEvents: 'auto',
-                                  }}
-                                  onMouseDown={(e) => {
-                                    if (e.button === 0) {
-                                      e.stopPropagation();
-                                      e.preventDefault();
-                                      setDraggingPlayerId(player.id);
-                                      draggedPlayerRef.current = player.id;
+                          <SportMap
+                            type={sportType}
+                            isMapDragging={draggingPlayerId !== null}
+                            onPositionChange={(x, y) => {
+                              if (
+                                draggingPlayerId &&
+                                draggedPlayerRef.current
+                              ) {
+                                if (x === -1 && y === -1) {
+                                  setDraggingPlayerId(null);
+                                  draggedPlayerRef.current = null;
+                                  return;
+                                }
+                                handlePlayerDrag(
+                                  draggedPlayerRef.current,
+                                  x + svgBounds.left,
+                                  y + svgBounds.top,
+                                );
+                              }
+                            }}
+                            isModalUsed={!isLargeScreen}
+                          />
+                          <div
+                            className="absolute inset-0"
+                            style={{
+                              pointerEvents: 'all',
+                            }}
+                          >
+                            {players.map((player, index) => (
+                              <Draggable
+                                key={player.id}
+                                draggableId={player.id}
+                                index={index}
+                              >
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    id={`player-${player.id}`}
+                                    style={{
+                                      ...provided.draggableProps.style,
+                                      position: 'absolute',
+                                      left: `${player.x}px`,
+                                      top: `${player.y}px`,
+                                      transform: `scale(${playerScale})`,
+                                      transformOrigin: 'center center',
+                                      transition: snapshot.isDragging
+                                        ? 'none'
+                                        : 'transform 0.2s, left 0.2s, top 0.2s',
+                                      zIndex:
+                                        snapshot.isDragging ||
+                                        draggingPlayerId === player.id
+                                          ? 99999
+                                          : 1,
+                                      pointerEvents: 'auto',
+                                    }}
+                                    onMouseDown={(e) => {
+                                      if (e.button === 0) {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        setDraggingPlayerId(player.id);
+                                        draggedPlayerRef.current = player.id;
 
-                                      const handleMouseMove = (e: MouseEvent) =>
-                                        handleGlobalMouseMove(e, player.id);
+                                        const handleMouseMove = (
+                                          e: MouseEvent,
+                                        ) =>
+                                          handleGlobalMouseMove(e, player.id);
 
-                                      const handleMouseUp = () => {
-                                        setDraggingPlayerId(null);
-                                        draggedPlayerRef.current = null;
-                                        window.removeEventListener(
+                                        const handleMouseUp = () => {
+                                          setDraggingPlayerId(null);
+                                          draggedPlayerRef.current = null;
+                                          window.removeEventListener(
+                                            'mousemove',
+                                            handleMouseMove,
+                                          );
+                                          window.removeEventListener(
+                                            'mouseup',
+                                            handleMouseUp,
+                                          );
+                                        };
+
+                                        window.addEventListener(
                                           'mousemove',
                                           handleMouseMove,
                                         );
-                                        window.removeEventListener(
+                                        window.addEventListener(
                                           'mouseup',
                                           handleMouseUp,
                                         );
-                                      };
-
-                                      window.addEventListener(
-                                        'mousemove',
-                                        handleMouseMove,
-                                      );
-                                      window.addEventListener(
-                                        'mouseup',
-                                        handleMouseUp,
-                                      );
-                                    }
-                                  }}
-                                >
-                                  <PlayerItem
-                                    name={player.name}
-                                    isDragging={
-                                      snapshot.isDragging ||
-                                      draggingPlayerId === player.id
-                                    }
-                                    style={{
-                                      position: 'relative',
-                                      cursor: 'move',
-                                      userSelect: 'none',
-                                      touchAction: 'none',
-                                      pointerEvents: 'auto',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      width: isLargeScreen ? '90px' : '60px',
-                                      height: isLargeScreen ? '90px' : '60px',
+                                      }
                                     }}
-                                    className="transition-transform"
-                                  />
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
+                                  >
+                                    <PlayerItem
+                                      name={player.name}
+                                      isDragging={
+                                        snapshot.isDragging ||
+                                        draggingPlayerId === player.id
+                                      }
+                                      style={{
+                                        position: 'relative',
+                                        cursor: 'move',
+                                        userSelect: 'none',
+                                        touchAction: 'none',
+                                        pointerEvents: 'auto',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: isLargeScreen ? '90px' : '60px',
+                                        height: isLargeScreen ? '90px' : '60px',
+                                      }}
+                                      className="transition-transform"
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                          </div>
                         </div>
                       </div>
                       {provided.placeholder}
