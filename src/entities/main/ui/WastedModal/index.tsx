@@ -38,8 +38,9 @@ const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
 
   const handleConfirm = () => {
     if (isChecked) {
-      const now = new Date().toISOString();
-      localStorage.setItem(`not_show_wasted_${stageId}`, now);
+      const now = new Date();
+      now.setHours(23, 59, 59, 999); // 오늘 하루 끝까지로 설정
+      localStorage.setItem(`not_show_wasted_${stageId}`, now.toISOString());
     } else {
       localStorage.removeItem(`not_show_wasted_${stageId}`);
     }

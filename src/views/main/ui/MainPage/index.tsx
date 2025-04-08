@@ -100,7 +100,11 @@ const MainPage = () => {
         `not_show_wasted_${stageId}`,
       );
       if (notShowWastedDate) {
-        if (new Date(notShowWastedDate) < today) {
+        const savedDate = new Date(notShowWastedDate);
+        const todayStart = new Date(today);
+        todayStart.setHours(0, 0, 0, 0);
+
+        if (savedDate < todayStart) {
           setIsWastedModalOpen(true);
         }
       } else {
