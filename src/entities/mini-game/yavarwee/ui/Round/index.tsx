@@ -1,8 +1,22 @@
 import { cn } from '@/shared/utils/cn';
 
-const Round = ({ children }: { children: React.ReactNode }) => {
+const Round = ({
+  children,
+  isCurrent = false,
+}: {
+  children: React.ReactNode;
+  isCurrent?: boolean;
+}) => {
   return (
-    <div className={cn('px-20', 'py-12', 'text-white', 'text-body2s')}>
+    <div
+      className={cn(
+        'px-20',
+        'py-12',
+        'text-body2s',
+        'text-white',
+        isCurrent ? 'border-b-1 border-solid border-white' : '',
+      )}
+    >
       {children}
     </div>
   );

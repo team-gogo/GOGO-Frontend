@@ -1,14 +1,14 @@
 import { Round } from '@/entities/mini-game/yavarwee';
 import { cn } from '@/shared/utils/cn';
 
-const RoundContainer = () => {
+const RoundContainer = ({ currentRound }: { currentRound: number }) => {
   return (
     <div className={cn('flex', 'items-center')}>
-      <Round>1라운드</Round>
-      <Round>2라운드</Round>
-      <Round>3라운드</Round>
-      <Round>4라운드</Round>
-      <Round>5라운드</Round>
+      {[1, 2, 3, 4, 5].map((roundNumber) => (
+        <Round key={roundNumber} isCurrent={roundNumber === currentRound}>
+          {roundNumber}라운드
+        </Round>
+      ))}
     </div>
   );
 };

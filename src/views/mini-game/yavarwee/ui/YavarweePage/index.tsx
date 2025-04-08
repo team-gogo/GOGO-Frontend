@@ -3,6 +3,9 @@
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { AnimationDisplayContainer } from '@/entities/mini-game';
 import {
   YavarweeAnimation,
@@ -10,7 +13,6 @@ import {
 } from '@/entities/mini-game/yavarwee';
 import { YavarweeForm } from '@/shared/types/mini-game/yavarwee';
 import BackPageButton from '@/shared/ui/backPageButton';
-import { cn } from '@/shared/utils/cn';
 import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { ControlForm } from '@/widgets/mini-game';
@@ -21,7 +23,8 @@ const YavarweePage = () => {
   const { stageId } = params;
   const { data: myPointData } = useGetMyPointQuery(stageId);
   const { data: myTicketData } = useGetMyTicketQuery(stageId);
-  const { register, handleSubmit, watch, setValue } = useForm<YavarweeForm>();
+  const { register, handleSubmit, watch, setValue, reset } =
+    useForm<YavarweeForm>();
 
   const serverPoint = myPointData?.point || 0;
   const coinTossTicket = myTicketData?.yavarwee || 0;
@@ -34,12 +37,16 @@ const YavarweePage = () => {
     | 'shuffling'
     | 'selecting'
     | 'result'
+    | 'round'
   >('idle');
 
   const [ballPosition, setBallPosition] = useState<number | null>(null);
   const [cupPositions, setCupPositions] = useState<number[]>([0, 1, 2]);
   const [userSelection, setUserSelection] = useState<number | null>(null);
   const [result, setResult] = useState<'correct' | 'wrong' | null>(null);
+  const [round, setRound] = useState<number>(1);
+
+  const amount = watch('amount');
 
   const startGame = () => {
     setGameState('showing');
@@ -71,7 +78,18 @@ const YavarweePage = () => {
       shuffles.push([a, b]);
     }
 
-    let delay = 0;
+    // 라운드별 딜레이 맵
+    const roundSpeedMap: Record<number, number> = {
+      1: 300,
+      2: 250,
+      3: 200,
+      4: 150,
+      5: 100,
+    };
+
+    const delayPerShuffle = roundSpeedMap[round] || 100;
+    let totalDelay = 0;
+
     shuffles.forEach(([a, b]) => {
       setTimeout(() => {
         setCupPositions((prev) => {
@@ -79,13 +97,13 @@ const YavarweePage = () => {
           [next[a], next[b]] = [next[b], next[a]];
           return next;
         });
-      }, delay);
-      delay += 600;
+      }, totalDelay);
+      totalDelay += delayPerShuffle;
     });
 
     setTimeout(() => {
       setGameState('selecting');
-    }, delay);
+    }, totalDelay);
   };
 
   const selectCup = (selectedIdx: number) => {
@@ -97,23 +115,62 @@ const YavarweePage = () => {
 
     setResult(correct ? 'correct' : 'wrong');
     setGameState('result');
+
+    setTimeout(() => {
+      if (correct) {
+        if (round >= 5) {
+          console.log({
+            status: true,
+            round,
+            amount: Number(amount),
+          });
+          toast.success('야바위 라운드 종료 포인트를 정산합니다.');
+          setRound(1);
+          reset();
+          setGameState('idle');
+        } else {
+          setGameState('round');
+        }
+      } else {
+        console.log({
+          status: false,
+          round,
+          amount: Number(amount),
+        });
+        toast.error('야바위 배팅에 실패했습니다.');
+        setRound(1);
+        reset();
+        setGameState('idle');
+      }
+    }, 1500);
+  };
+
+  const handleNextRound = () => {
+    setRound((prev) => prev + 1);
+    startGame();
+  };
+
+  const handleStopGame = () => {
+    console.log({
+      status: true,
+      round,
+      amount: Number(amount),
+    });
+    toast.success('야바위 라운드 종료 포인트를 정산합니다.');
+    setRound(1);
+    reset();
+    setGameState('idle');
   };
 
   return (
-    <div
-      className={cn(
-        'flex w-full items-center justify-center px-[1rem] py-[80px]',
-      )}
-    >
+    <div className="flex w-full items-center justify-center px-[1rem] py-[80px]">
       <form
         onSubmit={handleSubmit(() => {
           if (gameState === 'betting') {
             startGame();
           }
         })}
-        className={cn(
-          'w-full max-w-[1320px] space-y-[80px] mobile:space-y-[40px]',
-        )}
+        className="w-full max-w-[1320px] space-y-[80px] mobile:space-y-[40px]"
       >
         <BackPageButton
           label="야바위"
@@ -122,7 +179,7 @@ const YavarweePage = () => {
         />
 
         <div className="space-y-24">
-          <RoundContainer />
+          <RoundContainer currentRound={round} />
           <AnimationDisplayContainer>
             <YavarweeAnimation
               gameState={gameState}
@@ -132,17 +189,18 @@ const YavarweePage = () => {
               result={result}
               selectCup={selectCup}
               startGame={() => setGameState('betting')}
+              onNextRound={handleNextRound}
+              onStopGame={handleStopGame}
             />
           </AnimationDisplayContainer>
         </div>
 
-        <div className={cn('flex', 'w-full', 'justify-center')}>
-          <div className={cn('flex', 'w-full', 'justify-evenly')}>
+        <div className="flex w-full justify-center">
+          <div className="flex w-full justify-evenly">
             {['1', '2', '3'].map((num, idx) => (
-              <div key={num} className={cn('max-w-[182px]', 'w-full')}>
+              <div key={num} className="w-full max-w-[182px]">
                 <YavarweeButton
                   number={num as '1' | '2' | '3'}
-                  selectedNumber={watch('bet')}
                   setValue={(field, value) => {
                     if (gameState === 'selecting') {
                       setValue(field, value);

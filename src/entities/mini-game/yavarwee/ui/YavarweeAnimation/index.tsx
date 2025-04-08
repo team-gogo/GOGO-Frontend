@@ -11,7 +11,8 @@ type GameState =
   | 'hiding'
   | 'shuffling'
   | 'selecting'
-  | 'result';
+  | 'result'
+  | 'round';
 type Result = 'correct' | 'wrong' | null;
 
 type Props = {
@@ -22,6 +23,8 @@ type Props = {
   result: Result;
   selectCup: (index: number) => void;
   startGame: () => void;
+  onNextRound: () => void;
+  onStopGame: () => void;
 };
 
 const YavarweeAnimation = ({
@@ -32,6 +35,8 @@ const YavarweeAnimation = ({
   result,
   selectCup,
   startGame,
+  onNextRound,
+  onStopGame,
 }: Props) => {
   const cupCoordinates: { x: number }[] = [{ x: -150 }, { x: 0 }, { x: 150 }];
 
@@ -153,6 +158,26 @@ const YavarweeAnimation = ({
           <button onClick={startGame} className="text-h1e text-white">
             게임하기
           </button>
+        </div>
+      )}
+
+      {gameState === 'round' && (
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-8 rounded-2xl bg-black/30 backdrop-blur-sm">
+          <p className="text-h1e text-white">다음 라운드에 도전하겠습니까?</p>
+          <div className="flex items-center gap-24">
+            <button
+              className="rounded px-6 py-2 text-body1s text-gray-300 hover:text-system-success"
+              onClick={onNextRound}
+            >
+              YES
+            </button>
+            <button
+              className="rounded px-6 py-2 text-body1s text-gray-300 hover:text-system-error"
+              onClick={onStopGame}
+            >
+              NO
+            </button>
+          </div>
         </div>
       )}
     </div>
