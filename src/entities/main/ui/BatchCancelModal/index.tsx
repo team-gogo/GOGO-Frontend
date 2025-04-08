@@ -69,11 +69,14 @@ const BatchCancelModal = ({ onClose }: BatchCancelModalProps) => {
       containerClassName={cn(
         'rounded-lg',
         'bg-gray-700',
-        'px-[2.5rem]',
-        'py-[2.25rem]',
+        'tablet:px-[2.5rem]',
+        'tablet:py-[2.25rem]',
+        'px-[1rem]',
+        'py-[1.25rem]',
         'max-w-[38.75rem]',
         'w-full',
         'space-y-24',
+        'm-20',
       )}
     >
       <div
@@ -82,7 +85,8 @@ const BatchCancelModal = ({ onClose }: BatchCancelModalProps) => {
           'flex-col',
           'justify-center',
           'items-center',
-          'pt-[4rem]',
+          'pad:pt-[4rem]',
+          'pt-[1rem]',
         )}
       >
         <div
@@ -91,7 +95,8 @@ const BatchCancelModal = ({ onClose }: BatchCancelModalProps) => {
             'flex-col',
             'justify-center',
             'items-center',
-            'gap-[5.5rem]',
+            'pad:gap-[5.5rem]',
+            'gap-[2rem]',
             'w-full',
           )}
         >
@@ -100,9 +105,16 @@ const BatchCancelModal = ({ onClose }: BatchCancelModalProps) => {
               className={cn('transition-transform', 'duration-500')}
               style={{ transform: `rotate(${rotation}deg)` }}
             >
-              <TimerIcon size="3.75rem" />
+              <TimerIcon className="h-[2.5rem] w-[2.5rem] tablet:h-[3.75rem] tablet:w-[3.75rem]" />
             </div>
-            <p className={cn('text-h1e', 'text-system-error', 'w-[8rem]')}>
+            <p
+              className={cn(
+                'tablet:text-h1e',
+                'text-h3e',
+                'text-system-error',
+                'w-[8rem]',
+              )}
+            >
               {formatTimeLeft(timeLeft)}
             </p>
           </div>
@@ -135,8 +147,14 @@ const BatchCancelModal = ({ onClose }: BatchCancelModalProps) => {
               )}
             >
               <WarningIcon />
-              <p className={cn('text-caption1s', 'text-gray-500')}>
-                정산 취소 후 3분 뒤 &apos;정산 완료&apos;를 클릭하면 정산이
+              <p
+                className={cn(
+                  'pad:text-caption1s',
+                  'text-caption3s',
+                  'text-gray-500',
+                )}
+              >
+                정산 취소 후 3분 뒤 &apos;정산 완료&apos;를 하면 정산이
                 완료됩니다.
               </p>
             </div>
