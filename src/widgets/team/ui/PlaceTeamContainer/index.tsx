@@ -494,7 +494,7 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                             transformOrigin: 'center center',
                             position: !isLargeScreen ? 'fixed' : 'relative',
                             left: !isLargeScreen ? '50%' : 'auto',
-                            top: !isLargeScreen ? '50%' : 'auto',
+                            top: !isLargeScreen ? '40%' : 'auto',
                             transform: !isLargeScreen
                               ? 'translate(-50%, -50%)'
                               : 'none',
