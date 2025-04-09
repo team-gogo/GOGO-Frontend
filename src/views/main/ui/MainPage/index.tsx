@@ -72,7 +72,7 @@ const MainPage = () => {
   const { data: searchMatchData, isPending: searchMatchPending } =
     useGetSearchMatch(Number(stageId), year, month, day);
 
-  const { data: rankingData } = useGetRankingQuery(stageId);
+  const { data: rankingData } = useGetRankingQuery(stageId, 0, 4);
 
   const { data: activeGameList } = useGetActiveGameQuery(stageId);
 
@@ -95,12 +95,16 @@ const MainPage = () => {
   const { data: isWastedData } = useGetIsWasted(Number(stageId));
 
   useEffect(() => {
-    if (isWastedData?.isWasted === false) {
+    if (isWastedData?.isWasted === true) {
       const notShowWastedDate = localStorage.getItem(
         `not_show_wasted_${stageId}`,
       );
       if (notShowWastedDate) {
-        if (new Date(notShowWastedDate) < today) {
+        const savedDate = new Date(notShowWastedDate);
+        const todayStart = new Date(today);
+        todayStart.setHours(0, 0, 0, 0);
+
+        if (savedDate < todayStart) {
           setIsWastedModalOpen(true);
         }
       } else {
@@ -246,7 +250,7 @@ const MainPage = () => {
       {isCheckAgainModalOpen && (
         <BatchCancelModal onClose={() => setIsCheckAgainModalOpen(false)} />
       )}
-      {isWastedModalOpen === false && (
+      {isWastedModalOpen && (
         <WastedModal
           stageId={Number(stageId)}
           onClose={() => setIsWastedModalOpen(false)}
