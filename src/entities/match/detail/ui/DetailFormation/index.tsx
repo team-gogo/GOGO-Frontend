@@ -331,10 +331,10 @@ const DetailFormation = ({
 
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-      <div className="px-4">
+      <div className="scroll-hidden overflow-x-auto px-4">
         <div className="relative flex justify-center">
           <div
-            className={`relative w-full ${isLargeScreen ? 'h-[500px]' : 'h-[400px]'}`}
+            className={`relative h-[30rem] w-full`}
             style={{
               maxWidth: isLargeScreen ? 'none' : '100%',
               minWidth: isModalUsed ? '660px' : '780px',
