@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useMatchStore } from '@/shared/stores';
+import {
+  useAlarmClickStore,
+  useMatchNoticeStore,
+  useMatchStore,
+} from '@/shared/stores';
 import { MatchData } from '@/shared/types/my/bet';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
@@ -21,6 +25,18 @@ const MatchDetailPage = ({ params }: MatchDetailPageProps) => {
   const { matchId } = params;
 
   const { match, setMatch } = useMatchStore();
+  const { matchNoticeArr } = useMatchNoticeStore();
+  const { setIsAlarmClicked } = useAlarmClickStore();
+
+  const noticeItem = matchNoticeArr.find(
+    (item) => item.matchId === Number(matchId),
+  );
+
+  useEffect(() => {
+    if (noticeItem) {
+      setIsAlarmClicked(noticeItem?.isNotice);
+    }
+  }, [noticeItem, matchId]);
 
   const [matchFromLocalStorage, setMatchFromLocalStorage] =
     useState<MatchData>();
