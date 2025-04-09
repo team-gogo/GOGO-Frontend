@@ -18,6 +18,7 @@ import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { ControlForm } from '@/widgets/mini-game';
 import { RoundContainer } from '@/widgets/mini-game/yavarwee';
+import { useBetYavarweeMutation } from '../../model/useBetYavarweeMutation';
 
 const YavarweePage = () => {
   const params = useParams<{ stageId: string }>();
@@ -46,6 +47,9 @@ const YavarweePage = () => {
   const [userSelection, setUserSelection] = useState<number | null>(null);
   const [result, setResult] = useState<'correct' | 'wrong' | null>(null);
   const [round, setRound] = useState<number>(1);
+  const [betUuid, setBetUuid] = useState<string | null>(null);
+
+  const { mutate: betYavarwee } = useBetYavarweeMutation(stageId);
 
   const amount = watch('amount');
 
@@ -192,9 +196,14 @@ const YavarweePage = () => {
       )}
     >
       <form
-        onSubmit={handleSubmit(() => {
+        onSubmit={handleSubmit((data) => {
           if (gameState === 'betting') {
-            startGameWithRound(round);
+            betYavarwee(data, {
+              onSuccess: (res) => {
+                setBetUuid(res.uuid);
+                startGameWithRound(round);
+              },
+            });
           }
         })}
         className={cn(
