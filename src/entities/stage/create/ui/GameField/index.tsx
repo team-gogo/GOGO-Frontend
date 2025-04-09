@@ -35,7 +35,8 @@ const GameField = ({
   return (
     <div
       className={cn(
-        'tablet:flex',
+        'flex',
+        'tablet:flex-nowrap',
         'gap-24',
         'w-full',
         'flex-wrap',

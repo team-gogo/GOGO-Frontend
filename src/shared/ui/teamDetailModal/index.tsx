@@ -30,8 +30,9 @@ const TeamDetailModal = ({ onClose, isWin = true }: TeamDetailModalProps) => {
         'px-[28px]',
         'py-[36px]',
         'max-w-[45rem]',
-        'w-full',
+        'w-[calc(100%-2.5rem)]',
         'space-y-24',
+        'm-5',
       )}
     >
       <div className={cn('flex', 'flex-col', 'w-full', 'gap-[1.5rem]')}>
