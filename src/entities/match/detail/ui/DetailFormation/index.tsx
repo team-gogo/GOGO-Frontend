@@ -331,14 +331,15 @@ const DetailFormation = ({
 
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-      <div className="scroll-hidden overflow-x-auto px-4">
+      <div className="scroll-hidden max-w-full overflow-x-auto px-4">
         <div className="relative flex justify-center">
           <div
             className={`relative h-[30rem] w-full`}
             style={{
-              maxWidth: isLargeScreen ? 'none' : '100%',
+              maxWidth: isModalUsed ? '660px' : isLargeScreen ? 'none' : '100%',
               minWidth: isModalUsed ? '660px' : '780px',
               margin: '0 auto',
+              overflow: 'hidden',
             }}
           >
             <Droppable droppableId="court" type="PLAYER" isDropDisabled={false}>
