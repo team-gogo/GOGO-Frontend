@@ -331,8 +331,18 @@ const DetailFormation = ({
 
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-      <div className="scroll-hidden max-w-full overflow-x-auto px-4">
-        <div className="relative flex justify-center">
+      <div
+        className="scroll-hidden max-w-full overflow-x-auto"
+        style={{
+          padding: '0 1rem',
+          scrollPaddingLeft: '1rem',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
+        <div
+          className="relative flex justify-center"
+          style={{ minWidth: 'fit-content' }}
+        >
           <div
             className={`relative h-[30rem] w-full`}
             style={{
