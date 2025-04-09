@@ -147,7 +147,11 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
     >
       <div className={cn('flex flex-col gap-12')}>
         <hr className={cn('border-gray-600')} />
-        <div className={cn('relative flex h-[380px] flex-col overflow-x-auto')}>
+        <div
+          className={cn(
+            'scroll-hidden relative flex h-[380px] flex-col overflow-x-auto',
+          )}
+        >
           <div
             className="relative h-full"
             style={{
