@@ -332,7 +332,7 @@ const DetailFormation = ({
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <div
-        className="scroll-hidden max-w-full overflow-x-auto"
+        className="scroll-hidden max-w-full overflow-x-auto laptop:overflow-x-hidden"
         style={{
           padding: '0 1rem',
           scrollPaddingLeft: '1rem',
