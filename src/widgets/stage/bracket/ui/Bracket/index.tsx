@@ -741,7 +741,15 @@ const Bracket = () => {
             } as React.CSSProperties
           }
         >
-          <div className={cn('overflow-x-auto', 'w-full', 'h-full', 'flex')}>
+          <div
+            className={cn(
+              'overflow-x-auto',
+              'scroll-hidden',
+              'w-full',
+              'h-full',
+              'flex',
+            )}
+          >
             <div className={cn('p-20', 'min-w-full')}>
               <div
                 className="relative h-full"
