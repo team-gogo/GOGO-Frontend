@@ -19,6 +19,7 @@ import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery
 import { ControlForm } from '@/widgets/mini-game';
 import { RoundContainer } from '@/widgets/mini-game/yavarwee';
 import { useBetYavarweeMutation } from '../../model/useBetYavarweeMutation';
+import { useComfirmYavarweeMutation } from '../../model/useComfirmYavarweeMutation';
 
 const YavarweePage = () => {
   const params = useParams<{ stageId: string }>();
@@ -50,8 +51,7 @@ const YavarweePage = () => {
   const [betUuid, setBetUuid] = useState<string | null>(null);
 
   const { mutate: betYavarwee } = useBetYavarweeMutation(stageId);
-
-  const amount = watch('amount');
+  const { mutate: comfirmYavarwee } = useComfirmYavarweeMutation(stageId);
 
   const startGameWithRound = (currentRound: number) => {
     setGameState('showing');
@@ -140,10 +140,10 @@ const YavarweePage = () => {
     setTimeout(() => {
       if (correct) {
         if (round >= 5) {
-          console.log({
-            status: true,
+          comfirmYavarwee({
+            uuid: betUuid!,
             round,
-            amount: Number(amount),
+            status: true,
           });
           toast.success('야바위 라운드 종료 포인트를 정산합니다.');
           setRound(1);
@@ -153,10 +153,10 @@ const YavarweePage = () => {
           setGameState('round');
         }
       } else {
-        console.log({
-          status: false,
+        comfirmYavarwee({
+          uuid: betUuid!,
           round,
-          amount: Number(amount),
+          status: false,
         });
         toast.error('야바위 배팅에 실패했습니다.');
         setRound(1);
@@ -173,10 +173,10 @@ const YavarweePage = () => {
   };
 
   const handleStopGame = () => {
-    console.log({
-      status: true,
+    comfirmYavarwee({
+      uuid: betUuid!,
       round,
-      amount: Number(amount),
+      status: true,
     });
     toast.success('야바위 라운드 종료 포인트를 정산합니다.');
     setRound(1);
@@ -198,7 +198,12 @@ const YavarweePage = () => {
       <form
         onSubmit={handleSubmit((data) => {
           if (gameState === 'betting') {
-            betYavarwee(data, {
+            const parsedData = {
+              ...data,
+              amount: Number(data.amount),
+            };
+
+            betYavarwee(parsedData, {
               onSuccess: (res) => {
                 setBetUuid(res.uuid);
                 startGameWithRound(round);
