@@ -51,7 +51,8 @@ const PlinkoBottomDiv = ({
             >
               <p
                 className={cn(
-                  'text-[1vw]',
+                  'min-text-[0.7vw]',
+                  'text-[0.7vw]',
                   'min-leading-[1.375rem]',
                   'text-main-600',
                 )}
