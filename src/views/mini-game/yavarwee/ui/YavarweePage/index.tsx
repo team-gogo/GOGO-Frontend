@@ -14,6 +14,7 @@ import {
 import { YavarweeForm } from '@/shared/types/mini-game/yavarwee';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
+import { useGetBetLimit } from '@/views/mini-game/model/useGetBetLimit';
 import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { ControlForm } from '@/widgets/mini-game';
@@ -26,11 +27,14 @@ const YavarweePage = () => {
   const { stageId } = params;
   const { data: myPointData } = useGetMyPointQuery(stageId);
   const { data: myTicketData } = useGetMyTicketQuery(stageId);
+  const { data: betLimitData } = useGetBetLimit(stageId);
   const { register, handleSubmit, watch, setValue, reset } =
     useForm<YavarweeForm>();
 
   const serverPoint = myPointData?.point || 0;
   const serverTicket = myTicketData?.yavarwee || 0;
+  const minBetLimit = betLimitData?.coinToss.minBetPoint || 0;
+  const maxBetLimit = betLimitData?.coinToss.maxBetPoint || 0;
 
   const [gameState, setGameState] = useState<
     | 'idle'
@@ -291,7 +295,9 @@ const YavarweePage = () => {
           register={register}
           watch={watch}
           isPlaying={gameState !== 'betting'}
-          type="coinToss"
+          minBetLimit={minBetLimit}
+          maxBetLimit={maxBetLimit}
+          type="yavarwee"
         />
       </form>
     </div>
