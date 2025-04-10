@@ -86,10 +86,10 @@ const YavarweePage = () => {
 
   const getShuffleCountForRound = (round: number): number => {
     const ranges: Record<number, [number, number]> = {
-      1: [10, 12],
-      2: [12, 16],
-      3: [16, 20],
-      4: [20, 25],
+      1: [12, 16],
+      2: [16, 20],
+      3: [20, 25],
+      4: [25, 30],
       5: [35, 45],
     };
 
@@ -99,11 +99,11 @@ const YavarweePage = () => {
 
   const getShuffleAnimationDurationForRound = (round: number): number => {
     const durations: Record<number, number> = {
-      1: 1000,
-      2: 800,
-      3: 600,
-      4: 400,
-      5: 300,
+      1: 800,
+      2: 600,
+      3: 400,
+      4: 300,
+      5: 200,
     };
 
     return durations[round] || 1000;
