@@ -12,6 +12,8 @@ interface ControlFormProps<T extends CoinTossForm | YavarweeForm> {
   isPending?: boolean;
   isPlaying?: boolean;
   type: 'coinToss' | 'yavarwee';
+  minBetLimit: number;
+  maxBetLimit: number;
 }
 
 const ControlForm = <T extends CoinTossForm | YavarweeForm>({
@@ -22,6 +24,8 @@ const ControlForm = <T extends CoinTossForm | YavarweeForm>({
   isPending,
   isPlaying,
   type,
+  minBetLimit,
+  maxBetLimit,
 }: ControlFormProps<T>) => {
   return (
     <div className={cn('space-y-24')}>
@@ -34,6 +38,8 @@ const ControlForm = <T extends CoinTossForm | YavarweeForm>({
         isPending={isPending}
         isPlaying={isPlaying}
         type={type}
+        minBetLimit={minBetLimit}
+        maxBetLimit={maxBetLimit}
       />
     </div>
   );

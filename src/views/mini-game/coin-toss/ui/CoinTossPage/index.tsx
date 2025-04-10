@@ -12,6 +12,7 @@ import { handleFormErrors } from '@/shared/model/formErrorUtils';
 import { CoinTossForm } from '@/shared/types/mini-game/coin-toss';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
+import { useGetBetLimit } from '@/views/mini-game/model/useGetBetLimit';
 import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { ControlForm } from '@/widgets/mini-game';
@@ -28,6 +29,7 @@ const CoinTossPage = () => {
 
   const { data: myPointData } = useGetMyPointQuery(stageId);
   const { data: myTicketData } = useGetMyTicketQuery(stageId);
+  const { data: betLimitData } = useGetBetLimit(stageId);
   const { mutate: coinToss, isPending } = usePostCoinToss(stageId);
 
   const [localPoint, setLocalPoint] = useState<number>(0);
@@ -37,6 +39,8 @@ const CoinTossPage = () => {
 
   const serverPoint = myPointData?.point || 0;
   const coinTossTicket = myTicketData?.coinToss || 0;
+  const minBetLimit = betLimitData?.coinToss.minBetPoint || 0;
+  const maxBetLimit = betLimitData?.coinToss.maxBetPoint || 0;
 
   useEffect(() => {
     setLocalPoint(serverPoint);
@@ -171,6 +175,8 @@ const CoinTossPage = () => {
           watch={watch}
           isPending={isPending}
           isPlaying={isPlaying}
+          minBetLimit={minBetLimit}
+          maxBetLimit={maxBetLimit}
           type="coinToss"
         />
       </form>
