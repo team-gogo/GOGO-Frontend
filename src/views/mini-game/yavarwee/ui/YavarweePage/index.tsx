@@ -34,7 +34,7 @@ const YavarweePage = () => {
   const serverPoint = myPointData?.point || 0;
   const serverTicket = myTicketData?.yavarwee || 0;
   const minBetLimit = betLimitData?.yavarwee.minBetPoint || 0;
-  const maxBetLimit = betLimitData?.yavarwee.minBetPoint || 0;
+  const maxBetLimit = betLimitData?.yavarwee.maxBetPoint || 0;
 
   const [gameState, setGameState] = useState<
     | 'idle'
