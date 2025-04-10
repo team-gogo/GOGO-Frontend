@@ -137,8 +137,7 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
         'rounded-lg',
         'bg-gray-700',
         'p-[40px]',
-        'max-w-[62.5rem]',
-
+        'max-w-[70rem]',
         'w-[calc(100%-40px)]',
         'space-y-24',
         'mx-20',
@@ -155,7 +154,7 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
           <div
             className="relative h-full"
             style={{
-              minWidth: finalStage === 4 ? '900px' : '1200px',
+              minWidth: finalStage === 4 ? '900px' : '1000px',
               width: 'max-content',
             }}
           >
