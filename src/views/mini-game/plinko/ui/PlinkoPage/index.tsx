@@ -70,8 +70,8 @@ const PlinkoPage = () => {
   const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId), amount);
   const { data: betLimitData } = useGetBetLimit(stageId);
 
-  const minBetLimit = betLimitData?.coinToss.minBetPoint || 0;
-  const maxBetLimit = betLimitData?.coinToss.maxBetPoint || 0;
+  const minBetLimit = betLimitData?.plinko.minBetPoint || 0;
+  const maxBetLimit = betLimitData?.plinko.maxBetPoint || 0;
 
   const onSubmit = (data: PlinkoFormType) => {
     if (isLoading) return;
