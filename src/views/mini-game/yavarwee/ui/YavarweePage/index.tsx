@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,7 +30,7 @@ const YavarweePage = () => {
     useForm<YavarweeForm>();
 
   const serverPoint = myPointData?.point || 0;
-  const coinTossTicket = myTicketData?.yavarwee || 0;
+  const serverTicket = myTicketData?.yavarwee || 0;
 
   const [gameState, setGameState] = useState<
     | 'idle'
@@ -49,6 +49,16 @@ const YavarweePage = () => {
   const [result, setResult] = useState<'correct' | 'wrong' | null>(null);
   const [round, setRound] = useState<number>(1);
   const [betUuid, setBetUuid] = useState<string | null>(null);
+  const [localPoint, setLocalPoint] = useState<number>(serverPoint);
+  const [localTicket, setLocalTicket] = useState<number>(serverTicket);
+
+  useEffect(() => {
+    setLocalPoint(serverPoint);
+  }, [serverPoint]);
+
+  useEffect(() => {
+    setLocalTicket(serverTicket);
+  }, [serverTicket]);
 
   const { mutate: betYavarwee } = useBetYavarweeMutation(stageId);
   const { mutate: comfirmYavarwee } = useComfirmYavarweeMutation(stageId);
@@ -79,9 +89,7 @@ const YavarweePage = () => {
       5: [35, 45],
     };
 
-    const range = ranges[round];
-
-    const [min, max] = range;
+    const [min, max] = ranges[round];
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
@@ -96,6 +104,7 @@ const YavarweePage = () => {
 
     return durations[round] || 1000;
   };
+
   const performShuffleAnimation = (currentRound: number) => {
     const current = [...cupPositions];
     const shuffleCount = getShuffleCountForRound(currentRound);
@@ -140,28 +149,40 @@ const YavarweePage = () => {
     setTimeout(() => {
       if (correct) {
         if (round >= 5) {
-          comfirmYavarwee({
-            uuid: betUuid!,
-            round,
-            status: true,
-          });
-          toast.success('야바위 라운드 종료 포인트를 정산합니다.');
-          setRound(1);
-          reset();
-          setGameState('idle');
+          comfirmYavarwee(
+            {
+              uuid: betUuid!,
+              round,
+              status: true,
+            },
+            {
+              onSuccess: () => {
+                toast.success('야바위 라운드 종료 포인트를 정산합니다.');
+                setRound(1);
+                reset();
+                setGameState('idle');
+              },
+            },
+          );
         } else {
           setGameState('round');
         }
       } else {
-        comfirmYavarwee({
-          uuid: betUuid!,
-          round,
-          status: false,
-        });
-        toast.error('야바위 배팅에 실패했습니다.');
-        setRound(1);
-        reset();
-        setGameState('idle');
+        comfirmYavarwee(
+          {
+            uuid: betUuid!,
+            round,
+            status: false,
+          },
+          {
+            onSuccess: () => {
+              toast.error('야바위 배팅에 실패했습니다.');
+              setRound(1);
+              reset();
+              setGameState('idle');
+            },
+          },
+        );
       }
     }, 1500);
   };
@@ -173,15 +194,21 @@ const YavarweePage = () => {
   };
 
   const handleStopGame = () => {
-    comfirmYavarwee({
-      uuid: betUuid!,
-      round,
-      status: true,
-    });
-    toast.success('야바위 라운드 종료 포인트를 정산합니다.');
-    setRound(1);
-    reset();
-    setGameState('idle');
+    comfirmYavarwee(
+      {
+        uuid: betUuid!,
+        round,
+        status: true,
+      },
+      {
+        onSuccess: () => {
+          toast.success('야바위 라운드 종료 포인트를 정산합니다.');
+          setRound(1);
+          reset();
+          setGameState('idle');
+        },
+      },
+    );
   };
 
   return (
@@ -205,6 +232,9 @@ const YavarweePage = () => {
 
             betYavarwee(parsedData, {
               onSuccess: (res) => {
+                const amountValue = Number(watch('amount'));
+                setLocalPoint((prev) => prev - amountValue);
+                setLocalTicket((prev) => prev - 1);
                 setBetUuid(res.uuid);
                 startGameWithRound(round);
               },
@@ -260,8 +290,8 @@ const YavarweePage = () => {
         </div>
 
         <ControlForm
-          point={serverPoint}
-          ticket={coinTossTicket}
+          point={localPoint}
+          ticket={localTicket}
           register={register}
           watch={watch}
           isPlaying={gameState !== 'betting'}

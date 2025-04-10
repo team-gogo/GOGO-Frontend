@@ -175,6 +175,7 @@ const CoinTossPage = () => {
           watch={watch}
           isPending={isPending}
           isPlaying={isPlaying}
+          type="coinToss"
         />
       </form>
     </div>
