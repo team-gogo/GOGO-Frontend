@@ -58,6 +58,8 @@ const PlinkoInputBox = ({
                 onChange={(e) => {
                   setValue('amount', Number(e.target.value));
                 }}
+                min={minBetLimit}
+                max={maxBetLimit}
               />
               <div className={cn('flex', 'items-center', 'gap-8', 'mt-4')}>
                 <WarningIcon />

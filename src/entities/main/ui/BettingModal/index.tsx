@@ -189,6 +189,8 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
               type="number"
               placeholder="포인트를 입력해주세요."
               bgColor="bg-gray-600"
+              min={maxMinPointData?.minBettingPoint}
+              max={maxMinPointData?.maxBettingPoint}
             />
             <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
               <WarningIcon />
