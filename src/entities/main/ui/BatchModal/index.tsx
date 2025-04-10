@@ -62,11 +62,14 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
       containerClassName={cn(
         'rounded-lg',
         'bg-gray-700',
-        'px-[40px]',
-        'py-[36px]',
+        'tablet:px-[2.5rem]',
+        'tablet:py-[2.25rem]',
+        'px-[1.5rem]',
+        'py-[1.25rem]',
         'max-w-[38.75rem]',
         'w-full',
         'space-y-24',
+        'm-20',
       )}
     >
       <form
@@ -76,7 +79,8 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
           'flex-col',
           'items-center',
           'justify-center',
-          'gap-[3.75rem]',
+          'pad:gap-[3.75rem]',
+          'gap-[1.5rem]',
           'w-full',
         )}
       >
@@ -87,7 +91,7 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
             'justify-center',
             'gap-[1.5rem]',
             'w-full',
-            'pt-[2rem]',
+            'pad:pt-[2rem]',
           )}
         >
           <div
@@ -144,7 +148,13 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
           </Button>
           <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
             <WarningIcon />
-            <p className={cn('text-caption1s', 'text-gray-500')}>
+            <p
+              className={cn(
+                'pad:text-caption1s',
+                'text-caption3s',
+                'text-gray-500',
+              )}
+            >
               정산 완료 후 5분 이내에만 취소할 수 있습니다.
             </p>
           </div>
