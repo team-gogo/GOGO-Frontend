@@ -3,18 +3,20 @@ import { cn } from '@/shared/utils/cn';
 
 interface ResourcesProps {
   point: number;
-  coinTossTicket: number;
+  ticket: number;
 }
 
-const PlayerResources = ({ point, coinTossTicket }: ResourcesProps) => {
+const PlayerResources = ({ point, ticket }: ResourcesProps) => {
   return (
     <div
       className={cn(
         'flex',
-        'items-center',
-        'gap-[40px]',
+        'flex-col',
+        'pad:flex-row',
         'items-start',
+        'pad:items-center',
         'gap-20',
+        'pad:gap-[40px]',
       )}
     >
       <div className={cn('flex', 'items-center', 'gap-24')}>
@@ -35,7 +37,7 @@ const PlayerResources = ({ point, coinTossTicket }: ResourcesProps) => {
         <div className={cn('flex', 'items-center', 'gap-12')}>
           <TicketIcon size={24} color="#fff" />
           <p className={cn('tablet:text-body2s', 'text-white', 'text-body3s')}>
-            {coinTossTicket}
+            {ticket}
           </p>
         </div>
       </div>

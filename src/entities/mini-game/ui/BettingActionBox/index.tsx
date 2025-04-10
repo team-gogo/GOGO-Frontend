@@ -1,41 +1,56 @@
-import { UseFormRegister, UseFormWatch } from 'react-hook-form';
+import { Path, UseFormRegister, UseFormWatch } from 'react-hook-form';
 import { PointIcon } from '@/shared/assets/svg';
 import { CoinTossForm } from '@/shared/types/mini-game/coin-toss';
+import { YavarweeForm } from '@/shared/types/mini-game/yavarwee';
 import Button from '@/shared/ui/button';
 import Input from '@/shared/ui/input';
 import { cn } from '@/shared/utils/cn';
 
-const BettingActionBox = ({
+type MiniGameForm = CoinTossForm | YavarweeForm;
+
+interface BettingActionBoxProps<T extends MiniGameForm> {
+  register: UseFormRegister<T>;
+  watch: UseFormWatch<T>;
+  point: number;
+  ticket: number;
+  isPending?: boolean;
+  isPlaying?: boolean;
+  type: 'coinToss' | 'yavarwee';
+}
+
+const BettingActionBox = <T extends MiniGameForm>({
   register,
   watch,
   point,
-  coinTossTicket,
+  ticket,
   isPending,
   isPlaying,
-}: {
-  register: UseFormRegister<CoinTossForm>;
-  watch: UseFormWatch<CoinTossForm>;
-  point: number;
-  coinTossTicket: number;
-  isPending: boolean;
-  isPlaying?: boolean;
-}) => {
-  const amount = watch('amount');
+  type,
+}: BettingActionBoxProps<T>) => {
+  const amount = watch('amount' as Path<T>);
 
   const isDisabled =
-    !coinTossTicket ||
-    (amount && Number(amount) > point) ||
-    isPending ||
-    isPlaying;
+    !ticket || (amount && Number(amount) > point) || isPending || isPlaying;
+
   return (
-    <div className={cn('flex', 'items-center', 'mobile:gap-24', 'gap-20')}>
+    <div
+      className={cn(
+        'flex',
+        'flex-col',
+        'pad:flex-row',
+        'items-start',
+        'pad:items-center',
+        'gap-20',
+        'pad:gap-[40px]',
+      )}
+    >
       <Input
         type="number"
         placeholder="포인트 입력해주세요"
         icon={<PointIcon />}
         min={1}
         step={1}
-        {...register('amount', {
+        {...register('amount' as Path<T>, {
           required: '베팅 포인트를 입력해주세요',
           min: {
             value: 1,
@@ -48,7 +63,7 @@ const BettingActionBox = ({
         })}
       />
       <Button type="submit" disabled={isDisabled}>
-        뒤집기
+        {type === 'coinToss' ? '섞기' : '뒤집기'}
       </Button>
     </div>
   );

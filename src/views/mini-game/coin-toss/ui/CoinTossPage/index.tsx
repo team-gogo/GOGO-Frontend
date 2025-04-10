@@ -129,11 +129,7 @@ const CoinTossPage = () => {
           'mobile:space-y-[40px]',
         )}
       >
-        <BackPageButton
-          label="코인 토스"
-          type="push"
-          path={`/mini-game/${stageId}`}
-        />
+        <BackPageButton label="코인 토스" type="back" />
 
         <AnimationDisplayContainer>
           <CoinTossAnimation
@@ -168,13 +164,14 @@ const CoinTossPage = () => {
           </div>
         </div>
 
-        <ControlForm
+        <ControlForm<CoinTossForm>
           point={localPoint}
-          coinTossTicket={localCoinTossTicket}
+          ticket={localCoinTossTicket}
           register={register}
           watch={watch}
           isPending={isPending}
           isPlaying={isPlaying}
+          type="coinToss"
         />
       </form>
     </div>
