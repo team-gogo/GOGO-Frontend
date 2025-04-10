@@ -26,7 +26,8 @@ const TeamListContainer = ({ teams }: TeamListContainerProps) => {
           className={cn(
             'flex',
             'w-full',
-            'px-[1.5rem]',
+            'pad:px-[1.5rem]',
+            'px-[0.75rem]',
             'py-[1.25rem]',
             'flex-col',
             'rounded-xl',
@@ -35,7 +36,7 @@ const TeamListContainer = ({ teams }: TeamListContainerProps) => {
         >
           <div className={cn('flex', 'justify-between', 'items-center')}>
             <p className={cn('text-body3s', 'text-white')}>{team.teamName}</p>
-            <div className={cn('flex', 'gap-[1.25rem]')}>
+            <div className={cn('flex', 'pad:gap-[1.25rem]', 'gap-[0.5rem]')}>
               <div className={cn('flex', 'gap-[0.5rem]', 'items-center')}>
                 <OfficialIcon isResponsive={false} />
                 <p className={cn('text-caption1s', 'text-white')}>

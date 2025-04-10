@@ -70,7 +70,9 @@ const MatchTeamPage = () => {
       >
         <BackPageButton />
         <div className={cn('flex', 'w-full', 'gap-[1.5rem]', 'flex-col')}>
-          <div className={cn('flex', 'w-full', 'justify-between')}>
+          <div
+            className={cn('flex', 'w-full', 'justify-between', 'gap-[1rem]')}
+          >
             <MatchNameContainer gameData={gameData} />
             <ShowBracketButton onClick={() => setIsBracketModalOpen(true)} />
           </div>

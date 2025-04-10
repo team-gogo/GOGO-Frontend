@@ -80,7 +80,6 @@ const DateContainer = () => {
       className={cn(
         'flex',
         'items-center',
-        'mobile:w-[15rem]',
         'pad:w-[30rem]',
         'tablet:w-[40rem]',
         'justify-end',
