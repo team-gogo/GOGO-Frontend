@@ -20,7 +20,9 @@ const YavarweeButton = ({
         if (onClick) onClick();
       }}
       bg="bg-black-800 hover:bg-main-600"
-      border="border-white hover:border-main-600"
+      border={
+        isPending ? 'border-transparent' : 'border-white hover:border-main-600'
+      }
       disabled={isPending}
     >
       {number}
