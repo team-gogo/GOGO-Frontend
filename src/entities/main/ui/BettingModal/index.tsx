@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { PointCircleIcon } from '@/shared/assets/svg';
+import { PointCircleIcon, WarningIcon } from '@/shared/assets/svg';
 import { useMatchStore, usePointStore } from '@/shared/stores';
 import { BettingFormData } from '@/shared/types/main';
 import Button from '@/shared/ui/button';
@@ -51,12 +51,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
 
   const { data: maxMinPointData } = useGetMaxMinBetPoint(Number(stageId));
 
-  const isDisabled =
-    !bettingPoint ||
-    !selectedTeamId ||
-    Number(bettingPoint) > Number(maxMinPointData?.maxBettingPoint) ||
-    Number(bettingPoint) < Number(maxMinPointData?.minBettingPoint) ||
-    bettingPoint > point;
+  const isDisabled = !bettingPoint || !selectedTeamId || bettingPoint > point;
 
   const onSubmit = (data: BettingFormData) => {
     const formattedData = formatBettingData(data, selectedTeamId);
@@ -188,12 +183,28 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
             'gap-[0.75rem]',
           )}
         >
-          <Input
-            {...register('bettingPoint', { required: true, min: 1 })}
-            type="number"
-            placeholder="포인트를 입력해주세요."
-            bgColor="bg-gray-600"
-          />
+          <div className={cn('flex', 'flex-col', 'w-full', 'gap-[0.25rem]')}>
+            <Input
+              {...register('bettingPoint', { required: true, min: 1 })}
+              type="number"
+              placeholder="포인트를 입력해주세요."
+              bgColor="bg-gray-600"
+            />
+            <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
+              <WarningIcon />
+              <div className={cn('flex', 'items-center', 'gap-[0.75rem]')}>
+                <p className={cn('text-gray-400', 'text-caption3s')}>
+                  최소 베팅 금액 : {maxMinPointData?.minBettingPoint}
+                </p>
+                <div
+                  className={cn('w-[0.0625rem]', 'h-[1rem]', 'bg-gray-600')}
+                />
+                <p className={cn('text-gray-400', 'text-caption3s')}>
+                  최대 베팅 금액 : {maxMinPointData?.maxBettingPoint}
+                </p>
+              </div>
+            </div>
+          </div>
           <Button disabled={isDisabled} type="submit">
             베팅
           </Button>
