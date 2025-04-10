@@ -2,11 +2,13 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { usePointTicketStore } from '@/shared/stores';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { formatPlinkoData } from '@/views/mini-game/model/formatPlinkoData';
+import { useGetBetLimit } from '@/views/mini-game/model/useGetBetLimit';
 import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { usePlinkoForm } from '@/views/mini-game/model/usePlinkoForm';
@@ -66,9 +68,22 @@ const PlinkoPage = () => {
   const isDisabled = !!(!amount || !risk || ticket === 0 || amount > point);
 
   const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId), amount);
+  const { data: betLimitData } = useGetBetLimit(stageId);
+
+  const minBetLimit = betLimitData?.plinko.minBetPoint || 0;
+  const maxBetLimit = betLimitData?.plinko.maxBetPoint || 0;
 
   const onSubmit = (data: PlinkoFormType) => {
     if (isLoading) return;
+
+    const formattedAmount = data.amount;
+
+    if (formattedAmount < minBetLimit || formattedAmount > maxBetLimit) {
+      toast.error(
+        `배팅 금액은 최소 ${minBetLimit} 이상, 최대 ${maxBetLimit} 이하여야 합니다.`,
+      );
+      return;
+    }
 
     setIsLoading(true);
     const formattedData = formatPlinkoData(data, selectedRisk);
@@ -144,6 +159,8 @@ const PlinkoPage = () => {
               selectedRisk={selectedRisk}
               setSelectedRisk={setSelectedRisk}
               gameRunningCount={gameRunningCount}
+              minBetLimit={minBetLimit}
+              maxBetLimit={maxBetLimit}
             />
           </form>
 
