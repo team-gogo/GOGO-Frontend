@@ -73,7 +73,7 @@ const StageMatchSection = ({
         <div
           className={cn(
             'flex',
-            'min-h-[18.25rem]',
+            stages ? 'min-h-[18.25rem]' : 'min-h-[17.9375rem]',
             'justify-center',
             'items-center',
             'pad:text-body1e',
@@ -103,7 +103,7 @@ const StageMatchSection = ({
         <div
           className={cn(
             'flex',
-            'min-h-[18.25rem]',
+            'min-h-[17.9375rem]',
             'justify-center',
             'items-center',
             'pad:text-body1e',
