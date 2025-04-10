@@ -248,11 +248,7 @@ const YavarweePage = () => {
           'mobile:space-y-[40px]',
         )}
       >
-        <BackPageButton
-          label="야바위"
-          type="push"
-          path={`/mini-game/${stageId}`}
-        />
+        <BackPageButton label="야바위" type="back" />
 
         <div className={cn('space-y-24')}>
           <RoundContainer currentRound={round} />

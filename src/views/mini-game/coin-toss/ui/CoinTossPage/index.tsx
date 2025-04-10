@@ -129,11 +129,7 @@ const CoinTossPage = () => {
           'mobile:space-y-[40px]',
         )}
       >
-        <BackPageButton
-          label="코인 토스"
-          type="push"
-          path={`/mini-game/${stageId}`}
-        />
+        <BackPageButton label="코인 토스" type="back" />
 
         <AnimationDisplayContainer>
           <CoinTossAnimation
