@@ -17,7 +17,7 @@ const MiniGameSection = ({ stageId, activeGameList }: MiniGameSectionProps) => {
     {
       Icon: ShellGameIcon,
       label: '야바위',
-      path: 'shell-game',
+      path: 'yavarwee',
       isActive: activeGameList?.isYavarweeActive,
     },
     {

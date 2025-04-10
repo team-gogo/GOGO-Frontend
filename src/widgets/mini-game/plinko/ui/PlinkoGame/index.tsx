@@ -248,16 +248,32 @@ const PlinkoGame = ({
   useEffect(() => {
     if (plinkoData?.multi !== undefined) {
       const targetXValues = [
-        12.617, 12.621, 15.9, 11.1, 15.8, 18.7, 18.756, 18.8, 19.05, 19, 31.3,
-        20.1, 26.7, 27, 38.4, 42.76,
+        [12.617], //0
+        [12.621, 120], //1
+        [15.9, 18.6], //2
+        [11.1, 17.5], //3
+        [15.8, 110], //4
+        [18.7, 22.25], //5
+        [18.756, 29.5, 95], //6
+        [18.8, 13.5, 70], //7
+        [19.05, 26, 31, 115, 90], //8
+        [19, 34, 25.5, 130, 80], //9
+        [31.3, 22], //10
+        [20.1], //11
+        [26.7, 75], //12
+        [27, 69], //13
+        [38.4], //14
+        [42.76], //15
       ];
 
       if (plinkoData.multi >= 0 && plinkoData.multi < targetXValues.length) {
-        const targetX = targetXValues[plinkoData.multi];
+        const targetXs = targetXValues[plinkoData.multi];
+        const randomTargetX =
+          targetXs[Math.floor(Math.random() * targetXs.length)];
         setBtnClickIdxs((prev) => [...prev, plinkoData.multi]);
 
         setTimeout(() => {
-          spawnBall(targetX, plinkoData.multi, Number(plinkoData.amount));
+          spawnBall(randomTargetX, plinkoData.multi, Number(plinkoData.amount));
         }, 0);
       }
     }

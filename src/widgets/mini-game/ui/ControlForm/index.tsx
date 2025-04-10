@@ -1,35 +1,45 @@
 import { UseFormRegister, UseFormWatch } from 'react-hook-form';
 import { BettingActionBox, PlayerResources } from '@/entities/mini-game';
 import { CoinTossForm } from '@/shared/types/mini-game/coin-toss';
+import { YavarweeForm } from '@/shared/types/mini-game/yavarwee';
 import { cn } from '@/shared/utils/cn';
 
-interface ControlFormProps {
-  register: UseFormRegister<CoinTossForm>;
-  watch: UseFormWatch<CoinTossForm>;
+interface ControlFormProps<T extends CoinTossForm | YavarweeForm> {
+  register: UseFormRegister<T>;
+  watch: UseFormWatch<T>;
   point: number;
-  coinTossTicket: number;
-  isPending: boolean;
+  ticket: number;
+  isPending?: boolean;
   isPlaying?: boolean;
+  type: 'coinToss' | 'yavarwee';
+  minBetLimit: number;
+  maxBetLimit: number;
 }
 
-const ControlForm = ({
+const ControlForm = <T extends CoinTossForm | YavarweeForm>({
   register,
   watch,
   point,
-  coinTossTicket,
+  ticket,
   isPending,
   isPlaying,
-}: ControlFormProps) => {
+  type,
+  minBetLimit,
+  maxBetLimit,
+}: ControlFormProps<T>) => {
   return (
     <div className={cn('space-y-24')}>
-      <PlayerResources point={point} coinTossTicket={coinTossTicket} />
+      <PlayerResources point={point} ticket={ticket} />
       <BettingActionBox
         register={register}
         watch={watch}
         point={point}
-        coinTossTicket={coinTossTicket}
+        ticket={ticket}
         isPending={isPending}
         isPlaying={isPlaying}
+        type={type}
+        minBetLimit={minBetLimit}
+        maxBetLimit={maxBetLimit}
       />
     </div>
   );

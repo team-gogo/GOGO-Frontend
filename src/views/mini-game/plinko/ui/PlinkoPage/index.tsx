@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { usePointTicketStore } from '@/shared/stores';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
@@ -16,6 +16,7 @@ import { PlinkoGame, PlinkoInputBox } from '@/widgets/mini-game';
 const PlinkoPage = () => {
   const params = useParams<{ boardId: string; stageId: string }>();
   const { stageId } = params;
+  const { back } = useRouter();
 
   const { point, setPoint, ticket, setTicket } = usePointTicketStore();
 
@@ -23,8 +24,11 @@ const PlinkoPage = () => {
   const [gameRunningCount, setGameRunningCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data: myPoint } = useGetMyPointQuery(String(stageId));
-  const { data: myTicket } = useGetMyTicketQuery(String(stageId));
+  const { data: myPoint, refetch: refetchMyPoint } =
+    useGetMyPointQuery(stageId);
+  const { data: myTicket, refetch: refetchMyTicket } = useGetMyTicketQuery(
+    String(stageId),
+  );
 
   useEffect(() => {
     if (myPoint !== undefined && myPoint !== null) {
@@ -35,6 +39,16 @@ const PlinkoPage = () => {
       setTicket(myTicket.plinko || 0);
     }
   }, [myPoint, myTicket]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      refetchMyPoint();
+      refetchMyTicket();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const {
     register,
@@ -91,7 +105,14 @@ const PlinkoPage = () => {
           'gap-[3rem]',
         )}
       >
-        <BackPageButton label="플린코" />
+        <BackPageButton
+          label="플린코"
+          onClick={() => {
+            refetchMyPoint();
+            refetchMyTicket();
+            back();
+          }}
+        />
         <div
           className={cn(
             'w-full',
@@ -110,7 +131,7 @@ const PlinkoPage = () => {
               'flex',
               'gap-[2.5rem]',
               'flex-col',
-              'desktop:w-fit',
+              'desktop:w-[24.5rem]',
               'w-full',
             )}
           >

@@ -72,7 +72,7 @@ const MainPage = () => {
   const { data: searchMatchData, isPending: searchMatchPending } =
     useGetSearchMatch(Number(stageId), year, month, day);
 
-  const { data: rankingData } = useGetRankingQuery(stageId);
+  const { data: rankingData } = useGetRankingQuery(stageId, 0, 4);
 
   const { data: activeGameList } = useGetActiveGameQuery(stageId);
 
