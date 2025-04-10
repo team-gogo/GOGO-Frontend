@@ -402,7 +402,7 @@ const Match = ({ match }: MatchProps) => {
               className={cn(
                 'flex',
                 'w-full',
-                'pt-[1.25rem]',
+                'pt-[1.0625rem]',
                 'justify-between',
                 'items-center',
                 'border-t-1',
