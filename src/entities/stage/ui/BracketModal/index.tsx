@@ -34,8 +34,9 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
   }, [gameId]);
 
   const teamCount = useMemo(() => {
-    let count = 0;
     if (!bracketData) return 0;
+
+    const teamSet = new Set<number>();
 
     if (typeof bracketData === 'object' && !Array.isArray(bracketData)) {
       if (bracketData.format && Array.isArray(bracketData.format)) {
@@ -47,16 +48,16 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
           ) {
             formatItem.match.forEach((match) => {
               if (match.ateamId !== null && match.ateamId !== undefined) {
-                count++;
+                teamSet.add(match.ateamId);
               }
               if (match.bteamId !== null && match.bteamId !== undefined) {
-                count++;
+                teamSet.add(match.bteamId);
               }
             });
           }
         });
       }
-      return count;
+      return teamSet.size;
     }
     return 0;
   }, [bracketData]);
