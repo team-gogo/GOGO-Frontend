@@ -277,9 +277,9 @@ const YavarweePage = () => {
               <div key={num} className={cn('w-full', 'max-w-[182px]')}>
                 <YavarweeButton
                   number={num as '1' | '2' | '3'}
-                  setValue={(field, value) => {
+                  onBet={(value) => {
                     if (gameState === 'selecting') {
-                      setValue(field, value);
+                      setValue('bet', value);
                       selectCup(idx);
                     }
                   }}

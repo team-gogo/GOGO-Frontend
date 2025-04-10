@@ -1,24 +1,22 @@
-import { UseFormSetValue } from 'react-hook-form';
-import { YavarweeForm } from '@/shared/types/mini-game/yavarwee';
 import Button from '@/shared/ui/button';
 
 interface YavarweeButtonProps {
   number: '1' | '2' | '3';
-  setValue: UseFormSetValue<YavarweeForm>;
+  onBet: (value: '1' | '2' | '3') => void;
   onClick?: () => void;
 }
 
-const YavarweeButton = ({ number, setValue, onClick }: YavarweeButtonProps) => {
+const YavarweeButton = ({ number, onBet, onClick }: YavarweeButtonProps) => {
   return (
     <Button
       onClick={() => {
-        setValue('bet', number);
+        onBet(number);
         if (onClick) onClick();
       }}
       bg="bg-black-800 hover:bg-main-600"
       border="border-white hover:border-main-600"
     >
-      {`${number}`}
+      {number}
     </Button>
   );
 };
