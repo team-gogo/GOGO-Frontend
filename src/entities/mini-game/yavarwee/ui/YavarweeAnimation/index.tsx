@@ -30,7 +30,7 @@ const CUP_WIDTH = 210;
 const CUP_HEIGHT = 210;
 const BALL_SIZE = 75;
 const CUP_SPACING = 240;
-const SELECTION_TIMER_DURATION = 3000; // 3 seconds in milliseconds
+const SELECTION_TIMER_DURATION = 3000;
 
 interface CupState {
   x: number;
@@ -124,7 +124,6 @@ const YavarweeAnimation = ({
     let timerInterval: NodeJS.Timeout | null = null;
 
     if (gameState === 'selecting' && userSelection === null) {
-      // Update timer every 30ms for smooth animation
       const updateInterval = 30;
       const decrementAmount = (updateInterval / SELECTION_TIMER_DURATION) * 100;
 
