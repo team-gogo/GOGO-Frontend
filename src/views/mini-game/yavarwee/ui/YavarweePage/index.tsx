@@ -56,6 +56,11 @@ const YavarweePage = () => {
   const [localPoint, setLocalPoint] = useState<number>(serverPoint);
   const [localTicket, setLocalTicket] = useState<number>(serverTicket);
 
+  const { mutate: betYavarwee, isPending: betIsPending } =
+    useBetYavarweeMutation(stageId);
+  const { mutate: comfirmYavarwee, isPending: comfirmIsPending } =
+    useComfirmYavarweeMutation(stageId);
+
   useEffect(() => {
     setLocalPoint(serverPoint);
   }, [serverPoint]);
@@ -64,8 +69,33 @@ const YavarweePage = () => {
     setLocalTicket(serverTicket);
   }, [serverTicket]);
 
-  const { mutate: betYavarwee } = useBetYavarweeMutation(stageId);
-  const { mutate: comfirmYavarwee } = useComfirmYavarweeMutation(stageId);
+  useEffect(() => {
+    if (gameState === 'selecting') {
+      const timer = setTimeout(() => {
+        if (userSelection === null) {
+          comfirmYavarwee(
+            {
+              uuid: betUuid!,
+              round,
+              status: false,
+            },
+            {
+              onSuccess: () => {
+                toast.error(
+                  '컵 선택 제한 시간(3초)을 지나서 야바위를 종료합니다.',
+                );
+                setRound(1);
+                reset();
+                setGameState('idle');
+              },
+            },
+          );
+        }
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [gameState, userSelection, betUuid, round, reset, comfirmYavarwee]);
 
   const startGameWithRound = (currentRound: number) => {
     setGameState('showing');
@@ -283,6 +313,7 @@ const YavarweePage = () => {
                       selectCup(idx);
                     }
                   }}
+                  isPending={comfirmIsPending}
                 />
               </div>
             ))}
@@ -293,6 +324,7 @@ const YavarweePage = () => {
           point={localPoint}
           ticket={localTicket}
           register={register}
+          isPending={betIsPending}
           watch={watch}
           isPlaying={gameState !== 'betting'}
           minBetLimit={minBetLimit}
