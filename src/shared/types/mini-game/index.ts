@@ -36,3 +36,13 @@ export interface PlinkoResponse {
 export interface getMyPointResponse {
   point: number;
 }
+interface MiniGameConfig {
+  minBetPoint: number;
+  maxBetPoint: number;
+}
+
+export interface ResponseBetLimit {
+  plinko: MiniGameConfig;
+  yavarwee: MiniGameConfig;
+  coinToss: MiniGameConfig;
+}
