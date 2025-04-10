@@ -166,7 +166,11 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
                 {totalBettingPoints}
               </p>
             </div>
-            <h2 className={cn('text-h1e', 'text-gray-500')}>VS</h2>
+            <h2
+              className={cn('tablet:text-h4e', 'text-body1s', 'text-gray-500')}
+            >
+              VS
+            </h2>
           </div>
           <MatchTeam
             team={bteam}
