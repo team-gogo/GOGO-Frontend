@@ -80,10 +80,8 @@ const DateContainer = () => {
       className={cn(
         'flex',
         'items-center',
-        'mobile:w-[15rem]',
         'pad:w-[30rem]',
         'tablet:w-[40rem]',
-        'w-[12.5rem]',
         'justify-end',
       )}
     >
@@ -97,7 +95,10 @@ const DateContainer = () => {
         )}
       >
         <button onClick={handlePrev}>
-          <LeftArrow color="#6B6B6B" />
+          <LeftArrow
+            color="#6B6B6B"
+            size={visibleCount === 1 ? '1.5rem' : '2.5rem'}
+          />
         </button>
         {dates
           .slice(startIndex, startIndex + visibleCount)
@@ -128,7 +129,7 @@ const DateContainer = () => {
             </button>
           ))}
         <button onClick={handleNext}>
-          <RightArrowIcon size="2.5rem" />
+          <RightArrowIcon size={visibleCount === 1 ? '1.5rem' : '2.5rem'} />
         </button>
       </div>
     </div>

@@ -14,7 +14,8 @@ const ShowBracketButton = ({ onClick }: ShowBracketButtonProps) => {
         'flex',
         'gap-8',
         'py-8',
-        'px-24',
+        'tablet:px-[1.5rem]',
+        'px-[0.75rem]',
         'border-1',
         'border-solid',
         'border-main-500',
@@ -26,7 +27,7 @@ const ShowBracketButton = ({ onClick }: ShowBracketButtonProps) => {
       <p
         className={cn(
           'text-main-500',
-          'mobile:text-body3s',
+          'pad:text-body3s',
           'text-nowrap',
           'text-caption3s',
         )}

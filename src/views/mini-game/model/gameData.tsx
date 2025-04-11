@@ -10,7 +10,7 @@ export const createMiniGameItems = (
       <ShellGameIcon
         size={60}
         color={isActive ? '#fff' : '#898989'}
-        className="h-[2.25rem] w-[2.25rem] mobile:h-[3.75rem] mobile:w-[3.75rem]"
+        className="h-[2.25rem] w-[2.25rem] pad:h-[3.75rem] pad:w-[3.75rem]"
       />
     ),
     name: '야바위',
@@ -22,7 +22,7 @@ export const createMiniGameItems = (
       <CoinIcon
         size={60}
         color={isActive ? '#fff' : '#898989'}
-        className="h-[2.25rem] w-[2.25rem] mobile:h-[3.75rem] mobile:w-[3.75rem]"
+        className="h-[2.25rem] w-[2.25rem] pad:h-[3.75rem] pad:w-[3.75rem]"
       />
     ),
     name: '코인 토스',
@@ -34,7 +34,7 @@ export const createMiniGameItems = (
       <PlinkoIcon
         size={60}
         color={isActive ? '#fff' : '#898989'}
-        className="h-[2.25rem] w-[2.25rem] mobile:h-[3.75rem] mobile:w-[3.75rem]"
+        className="h-[2.25rem] w-[2.25rem] pad:h-[3.75rem] pad:w-[3.75rem]"
       />
     ),
     name: '플린코',

@@ -56,6 +56,11 @@ const YavarweePage = () => {
   const [localPoint, setLocalPoint] = useState<number>(serverPoint);
   const [localTicket, setLocalTicket] = useState<number>(serverTicket);
 
+  const { mutate: betYavarwee, isPending: betIsPending } =
+    useBetYavarweeMutation(stageId);
+  const { mutate: comfirmYavarwee, isPending: comfirmIsPending } =
+    useComfirmYavarweeMutation(stageId);
+
   useEffect(() => {
     setLocalPoint(serverPoint);
   }, [serverPoint]);
@@ -64,8 +69,33 @@ const YavarweePage = () => {
     setLocalTicket(serverTicket);
   }, [serverTicket]);
 
-  const { mutate: betYavarwee } = useBetYavarweeMutation(stageId);
-  const { mutate: comfirmYavarwee } = useComfirmYavarweeMutation(stageId);
+  useEffect(() => {
+    if (gameState === 'selecting') {
+      const timer = setTimeout(() => {
+        if (userSelection === null) {
+          comfirmYavarwee(
+            {
+              uuid: betUuid!,
+              round,
+              status: false,
+            },
+            {
+              onSuccess: () => {
+                toast.error(
+                  '컵 선택 제한 시간(3초)을 지나서 야바위를 종료합니다.',
+                );
+                setRound(1);
+                reset();
+                setGameState('idle');
+              },
+            },
+          );
+        }
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [gameState, userSelection, betUuid, round, reset, comfirmYavarwee]);
 
   const startGameWithRound = (currentRound: number) => {
     setGameState('showing');
@@ -86,10 +116,10 @@ const YavarweePage = () => {
 
   const getShuffleCountForRound = (round: number): number => {
     const ranges: Record<number, [number, number]> = {
-      1: [10, 12],
-      2: [12, 16],
-      3: [16, 20],
-      4: [20, 25],
+      1: [12, 16],
+      2: [16, 20],
+      3: [20, 25],
+      4: [25, 30],
       5: [35, 45],
     };
 
@@ -99,11 +129,11 @@ const YavarweePage = () => {
 
   const getShuffleAnimationDurationForRound = (round: number): number => {
     const durations: Record<number, number> = {
-      1: 1000,
-      2: 800,
-      3: 600,
-      4: 400,
-      5: 300,
+      1: 800,
+      2: 600,
+      3: 400,
+      4: 300,
+      5: 200,
     };
 
     return durations[round] || 1000;
@@ -283,6 +313,7 @@ const YavarweePage = () => {
                       selectCup(idx);
                     }
                   }}
+                  isPending={comfirmIsPending}
                 />
               </div>
             ))}
@@ -293,6 +324,7 @@ const YavarweePage = () => {
           point={localPoint}
           ticket={localTicket}
           register={register}
+          isPending={betIsPending}
           watch={watch}
           isPlaying={gameState !== 'betting'}
           minBetLimit={minBetLimit}

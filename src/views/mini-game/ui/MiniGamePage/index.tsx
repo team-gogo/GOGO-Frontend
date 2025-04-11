@@ -68,7 +68,7 @@ const MiniGamePage = () => {
               icon={
                 <MiniGameIcon
                   color="#fff"
-                  className="h-[1.5rem] w-[1.5rem] mobile:h-[2.25rem] mobile:w-[2.25rem]"
+                  className="h-[1.5rem] w-[1.5rem] pad:h-[2.25rem] pad:w-[2.25rem]"
                 />
               }
               title="미니게임"
@@ -83,7 +83,7 @@ const MiniGamePage = () => {
           <div>
             <InfoContainer
               icon={
-                <StoreIcon className="h-[1.5rem] w-[1.5rem] mobile:h-[2.25rem] mobile:w-[2.25rem]" />
+                <StoreIcon className="h-[1.5rem] w-[1.5rem] pad:h-[2.25rem] pad:w-[2.25rem]" />
               }
               title="상점"
               rightContent={<StoreInfo myPoint={myPoint.point} />}

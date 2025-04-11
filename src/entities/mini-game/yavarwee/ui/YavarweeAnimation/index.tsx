@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/shared/utils/cn';
 
@@ -32,6 +30,7 @@ const CUP_WIDTH = 210;
 const CUP_HEIGHT = 210;
 const BALL_SIZE = 75;
 const CUP_SPACING = 240;
+const SELECTION_TIMER_DURATION = 3000;
 
 interface CupState {
   x: number;
@@ -67,6 +66,8 @@ const YavarweeAnimation = ({
   const ballImageRef = useRef<HTMLImageElement | null>(null);
   const animationFrameRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
+  const [timerProgress, setTimerProgress] = useState<number>(100);
+  const timerStartTimeRef = useRef<number | null>(null);
 
   const cupCoordinates = [
     { x: CANVAS_WIDTH / 2 - CUP_SPACING },
@@ -113,6 +114,33 @@ const YavarweeAnimation = ({
     visible: false,
     scale: 1,
   });
+
+  useEffect(() => {
+    if (gameState === 'selecting') {
+      const now = Date.now();
+      timerStartTimeRef.current = now;
+      setTimerProgress(100);
+
+      const updateInterval = 30;
+
+      const interval = setInterval(() => {
+        const elapsedTime = Date.now() - (timerStartTimeRef.current || now);
+        const remainingTime = Math.max(
+          0,
+          SELECTION_TIMER_DURATION - elapsedTime,
+        );
+        const newProgress = (remainingTime / SELECTION_TIMER_DURATION) * 100;
+
+        setTimerProgress(newProgress);
+
+        if (remainingTime <= 0) {
+          clearInterval(interval);
+        }
+      }, updateInterval);
+
+      return () => clearInterval(interval);
+    }
+  }, [gameState]);
 
   useEffect(() => {
     const cupImage = new Image();
@@ -311,6 +339,12 @@ const YavarweeAnimation = ({
     }
   };
 
+  const getTimerColor = () => {
+    if (timerProgress > 66) return 'bg-green-500';
+    if (timerProgress > 33) return 'bg-yellow-500';
+    return 'bg-red-500';
+  };
+
   return (
     <div
       className={cn(
@@ -332,7 +366,16 @@ const YavarweeAnimation = ({
         className={cn('max-w-full')}
       />
 
-      <div className={cn('z-10', 'mt-4', 'text-center')}>
+      <div
+        className={cn(
+          'z-10',
+          'mt-4',
+          'space-y-16',
+          'text-center',
+          'w-full',
+          'px-4',
+        )}
+      >
         {[
           'betting',
           'showing',
@@ -361,6 +404,22 @@ const YavarweeAnimation = ({
               getStatusText()
             )}
           </p>
+        )}
+
+        {gameState === 'selecting' && userSelection === null && (
+          <div className="mx-auto mt-2 h-10 w-full max-w-[500px] overflow-hidden rounded-sm bg-gray-600">
+            <div
+              className={cn(
+                'h-2.5',
+                'transition-all',
+                'duration-75',
+                getTimerColor(),
+              )}
+              style={{
+                width: `${timerProgress}%`,
+              }}
+            />
+          </div>
         )}
       </div>
 
