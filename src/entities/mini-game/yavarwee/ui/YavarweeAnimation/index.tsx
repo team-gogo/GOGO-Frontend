@@ -67,6 +67,7 @@ const YavarweeAnimation = ({
   const animationFrameRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const [timerProgress, setTimerProgress] = useState<number>(100);
+  const timerStartTimeRef = useRef<number | null>(null);
 
   const cupCoordinates = [
     { x: CANVAS_WIDTH / 2 - CUP_SPACING },
@@ -116,29 +117,30 @@ const YavarweeAnimation = ({
 
   useEffect(() => {
     if (gameState === 'selecting') {
+      const now = Date.now();
+      timerStartTimeRef.current = now;
       setTimerProgress(100);
+
+      const updateInterval = 30;
+
+      const interval = setInterval(() => {
+        const elapsedTime = Date.now() - (timerStartTimeRef.current || now);
+        const remainingTime = Math.max(
+          0,
+          SELECTION_TIMER_DURATION - elapsedTime,
+        );
+        const newProgress = (remainingTime / SELECTION_TIMER_DURATION) * 100;
+
+        setTimerProgress(newProgress);
+
+        if (remainingTime <= 0) {
+          clearInterval(interval);
+        }
+      }, updateInterval);
+
+      return () => clearInterval(interval);
     }
   }, [gameState]);
-
-  useEffect(() => {
-    let timerInterval: NodeJS.Timeout | null = null;
-
-    if (gameState === 'selecting' && userSelection === null) {
-      const updateInterval = 30;
-      const decrementAmount = (updateInterval / SELECTION_TIMER_DURATION) * 100;
-
-      timerInterval = setInterval(() => {
-        setTimerProgress((prev) => {
-          const newProgress = Math.max(0, prev - decrementAmount);
-          return newProgress;
-        });
-      }, updateInterval);
-    }
-
-    return () => {
-      if (timerInterval) clearInterval(timerInterval);
-    };
-  }, [gameState, userSelection]);
 
   useEffect(() => {
     const cupImage = new Image();
