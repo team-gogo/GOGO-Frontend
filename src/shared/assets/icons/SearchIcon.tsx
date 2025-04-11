@@ -1,13 +1,15 @@
 interface Props {
   size?: number;
   color?: string;
+  className?: string;
 }
 
-const SearchIcon = ({ size = 40, color = '#727272' }: Props) => {
+const SearchIcon = ({ size = 40, color = '#727272', className }: Props) => {
   return (
     <svg
       width={size}
       height={size}
+      className={className}
       viewBox="0 0 40 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
