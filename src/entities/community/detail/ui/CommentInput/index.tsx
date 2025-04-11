@@ -16,12 +16,14 @@ interface CommentInputProps {
   boardId: string;
   stageId: string;
   onAddComment: (newComment: Comment) => void;
+  currentPage: number;
 }
 
 const CommentInput = ({
   boardId,
   stageId,
   onAddComment,
+  currentPage,
 }: CommentInputProps) => {
   const { register, handleSubmit, reset } = useForm<CommentFormData>({
     defaultValues: {
@@ -32,6 +34,7 @@ const CommentInput = ({
   const { mutate: boardComment, isPending } = usePostBoardCommentMutation(
     boardId,
     stageId,
+    currentPage,
   );
 
   const onSubmit: SubmitHandler<CommentFormData> = async (data) => {

@@ -60,6 +60,7 @@ const CommunityItemContainer = ({
               item={item}
               isMainUsed={isMainUsed}
               stageId={stageId}
+              currentPage={currentPage}
             />
           ))}
         </div>
