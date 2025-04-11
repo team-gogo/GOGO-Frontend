@@ -82,7 +82,15 @@ const CommunityContent = ({
           <h1 className={cn('mobile:text-body2e', 'text-white', 'text-body3e')}>
             {title}
           </h1>
-          <p className={cn('text-body3s', 'text-gray-300')}>{content}</p>
+          <p
+            className={cn(
+              'text-body3s',
+              'text-gray-300',
+              'whitespace-pre-line',
+            )}
+          >
+            {content}
+          </p>
         </div>
       </div>
       <div className={cn('flex', 'items-center', 'justify-between')}>
