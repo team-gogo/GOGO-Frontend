@@ -42,9 +42,18 @@ const CommunityContent = ({
   const { mutate: boardLike } = usePostBoardLikeMutation(boardId, stageId);
 
   const handleLike = () => {
-    setLiked(!liked);
-    setLikeCountState((prev) => (liked ? prev - 1 : prev + 1));
-    boardLike();
+    const nextLiked = !liked;
+    const nextCount = nextLiked ? likeCountState + 1 : likeCountState - 1;
+
+    setLiked(nextLiked);
+    setLikeCountState(nextCount);
+
+    boardLike(undefined, {
+      onError: () => {
+        setLiked((prev) => !prev);
+        setLikeCountState((prev) => (nextLiked ? prev - 1 : prev + 1));
+      },
+    });
   };
 
   return (
