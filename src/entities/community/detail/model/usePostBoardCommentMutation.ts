@@ -5,6 +5,7 @@ import { postBoardComment } from '../api/postBoardComment';
 export const usePostBoardCommentMutation = (
   boardId: string,
   stageId: string,
+  currentPage: number,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -15,7 +16,7 @@ export const usePostBoardCommentMutation = (
         queryKey: ['communityDetail', boardId],
       });
       queryClient.invalidateQueries({
-        queryKey: ['communityList', stageId],
+        queryKey: ['communityList', stageId, currentPage],
         exact: false,
       });
       return data;
