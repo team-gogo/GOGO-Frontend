@@ -8,9 +8,15 @@ interface CommunityItemsProps {
   item: CommunityItemProps;
   isMainUsed?: boolean;
   stageId: string;
+  currentPage: number;
 }
 
-const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
+const CommunityItem = ({
+  item,
+  isMainUsed,
+  stageId,
+  currentPage,
+}: CommunityItemsProps) => {
   const formatCount = (count: number) => {
     return count >= 100 ? '99+' : count.toString();
   };
@@ -20,7 +26,7 @@ const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
 
   return (
     <Link
-      href={`/community/${stageId}/detail/${boardId}`}
+      href={`/community/${stageId}/detail/${boardId}?page=${currentPage}`}
       className={cn(
         'text-gray-600',
         'bg-gray-700',
