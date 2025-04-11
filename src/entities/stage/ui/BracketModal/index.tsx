@@ -124,7 +124,9 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
             'flex h-[300px] items-center justify-center text-white',
           )}
         >
-          대진표를 불러오는데 실패했습니다.
+          {teamCount === 0
+            ? '등록된 팀이 없습니다.'
+            : '대진표를 불러오는데 실패했습니다.'}
         </div>
       </ModalLayout>
     );
