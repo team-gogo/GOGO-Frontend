@@ -30,8 +30,6 @@ const MatchTeamPage = () => {
   const { selectedGameSystem, setSelectedGameSystem } =
     useSelectedGameSystemStore();
 
-  console.log(selectedGameId, selectedGameSystem);
-
   useEffect(() => {
     if (gameData) {
       setSelectedGameId(gameData.games[0].gameId);
@@ -79,7 +77,9 @@ const MatchTeamPage = () => {
             className={cn('flex', 'w-full', 'justify-between', 'gap-[1rem]')}
           >
             <MatchNameContainer gameData={gameData} />
-            <ShowBracketButton onClick={() => setIsBracketModalOpen(true)} />
+            {selectedGameSystem === 'TOURNAMENT' && (
+              <ShowBracketButton onClick={() => setIsBracketModalOpen(true)} />
+            )}
           </div>
           <TeamListContainer teams={teamInfoData} />
         </div>
