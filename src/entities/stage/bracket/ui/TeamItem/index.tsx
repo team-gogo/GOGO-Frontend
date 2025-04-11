@@ -46,16 +46,13 @@ const TeamItem = ({
           'w-[180px]',
           'h-[48px]',
           'rounded-lg',
-          'bg-gray-600',
+          'bg-main-600',
           'flex',
           'items-center',
           'justify-center',
           'text-body1',
           'text-white',
           'relative',
-          'border-4',
-          'border-solid',
-          'border-main-600',
           className,
         )}
       >
