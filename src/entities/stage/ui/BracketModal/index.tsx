@@ -105,7 +105,7 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
     );
   }
 
-  if (!bracketData) {
+  if (!bracketData || teamCount === 0) {
     return (
       <ModalLayout
         title={'대진표'}
