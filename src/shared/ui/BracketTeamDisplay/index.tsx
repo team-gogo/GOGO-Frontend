@@ -26,8 +26,6 @@ const BracketTeamDisplay = ({
     return bracketData.format;
   };
 
-  console.log('formatData', getFormatData());
-
   const getWinnerTeamId = (round: string, turn?: number) => {
     const formatData = getFormatData();
     if (!formatData) return null;
@@ -51,8 +49,6 @@ const BracketTeamDisplay = ({
 
     return winner;
   };
-
-  console.log(getWinnerTeamId('QUARTER_FINALS'));
 
   const getTeamByRoundAndTurn = (
     round: string,
