@@ -34,8 +34,9 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
   }, [gameId]);
 
   const teamCount = useMemo(() => {
-    let count = 0;
     if (!bracketData) return 0;
+
+    const teamSet = new Set<number>();
 
     if (typeof bracketData === 'object' && !Array.isArray(bracketData)) {
       if (bracketData.format && Array.isArray(bracketData.format)) {
@@ -47,16 +48,16 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
           ) {
             formatItem.match.forEach((match) => {
               if (match.ateamId !== null && match.ateamId !== undefined) {
-                count++;
+                teamSet.add(match.ateamId);
               }
               if (match.bteamId !== null && match.bteamId !== undefined) {
-                count++;
+                teamSet.add(match.bteamId);
               }
             });
           }
         });
       }
-      return count;
+      return teamSet.size;
     }
     return 0;
   }, [bracketData]);
@@ -104,7 +105,7 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
     );
   }
 
-  if (!bracketData) {
+  if (!bracketData || teamCount === 0) {
     return (
       <ModalLayout
         title={'대진표'}
@@ -123,7 +124,9 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
             'flex h-[300px] items-center justify-center text-white',
           )}
         >
-          대진표를 불러오는데 실패했습니다.
+          {teamCount === 0
+            ? '등록된 팀이 없습니다.'
+            : '대진표를 불러오는데 실패했습니다.'}
         </div>
       </ModalLayout>
     );
@@ -137,8 +140,7 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
         'rounded-lg',
         'bg-gray-700',
         'p-[40px]',
-        'max-w-[62.5rem]',
-
+        'max-w-[70rem]',
         'w-[calc(100%-40px)]',
         'space-y-24',
         'mx-20',
@@ -155,7 +157,7 @@ const BracketModal = ({ onClose, gameId }: BracketModalProps) => {
           <div
             className="relative h-full"
             style={{
-              minWidth: finalStage === 4 ? '900px' : '1200px',
+              minWidth: finalStage === 4 ? '900px' : '1000px',
               width: 'max-content',
             }}
           >
