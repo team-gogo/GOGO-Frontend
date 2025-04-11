@@ -26,6 +26,30 @@ const BracketTeamDisplay = ({
     return bracketData.format;
   };
 
+  console.log('formatData', getFormatData());
+
+  const getWinnerTeamId = (round: string) => {
+    const formatData = getFormatData();
+    if (!formatData) return null;
+
+    const formatItem = formatData.find((item) => item.round === round);
+
+    const winningMatch = formatItem?.match.find((m) => m.winTeamId);
+    if (!winningMatch) return null;
+
+    const winner = {
+      id: winningMatch.winTeamId,
+      name:
+        winningMatch.winTeamId === winningMatch.ateamId
+          ? winningMatch.ateamName
+          : winningMatch.bteamName,
+    };
+
+    return winner;
+  };
+
+  console.log(getWinnerTeamId('QUARTER_FINALS'));
+
   const getTeamByRoundAndTurn = (
     round: string,
     turn: number,
@@ -107,6 +131,7 @@ const BracketTeamDisplay = ({
 
             let teamId = null;
             let teamName = null;
+            let isWinner = false;
             const buyTeam = findBuyTeam();
 
             if (side === 'left') {
@@ -166,6 +191,11 @@ const BracketTeamDisplay = ({
               }
             }
 
+            if (teamId) {
+              const winner = getWinnerTeamId('QUARTER_FINALS');
+              isWinner = winner?.id === teamId;
+            }
+
             return (
               <div key={`${side}_${idx}`} className="relative">
                 <div
@@ -180,6 +210,7 @@ const BracketTeamDisplay = ({
                   <TeamItem
                     teamName={teamName || (teamId ? `${teamId}` : 'TBD')}
                     className="w-[160px]"
+                    isWinner={isWinner}
                   />
                 </div>
               </div>
@@ -232,6 +263,7 @@ const BracketTeamDisplay = ({
           .map((_, idx) => {
             let teamId = null;
             let teamName = null;
+            let isWinner = false;
 
             if (round === 'SEMI_FINALS') {
               if (side === 'left') {
@@ -264,11 +296,17 @@ const BracketTeamDisplay = ({
               }
             }
 
+            if (teamId) {
+              const winner = getWinnerTeamId(round || '');
+              isWinner = winner?.id === teamId;
+            }
+
             return (
               <div key={`${side}_${idx}`} className="relative">
                 <TeamItem
                   teamName={teamName || (teamId ? `${teamId}` : 'TBD')}
                   className="w-[160px]"
+                  isWinner={isWinner}
                 />
               </div>
             );
