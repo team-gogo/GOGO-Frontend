@@ -76,11 +76,7 @@ const MatchDetailContainer = ({
           patchNotice({ isNotice: isAlarmClicked });
         }}
       >
-        {isAlarmClicked ? (
-          <BlueAlarmIcon size="2rem" />
-        ) : (
-          <GrayAlarmIcon size="2rem" />
-        )}
+        {isAlarmClicked ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
       </button>
       <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
         <SystemLabel system={system} roundText={roundText} isFinal={isFinal} />

@@ -7,17 +7,15 @@ import FourBracketLine from '@/shared/assets/svg/BarcketLine/FourBracketLine';
 import SevenBracketLine from '@/shared/assets/svg/BarcketLine/SevenBracketLine';
 import SixBracketLine from '@/shared/assets/svg/BarcketLine/SixBracketLine';
 import ThreeBracketLine from '@/shared/assets/svg/BarcketLine/ThreeBracketLine';
+import { GroupDistribution } from '@/shared/model/calculateTeamDistribution';
 import { cn } from '@/shared/utils/cn';
-
-interface GroupDistribution {
-  top: number;
-  bottom: number;
-}
 
 interface BracketConnectionLayerProps {
   finalStage: number;
   teamCount: number;
   firstRoundDistribution: [GroupDistribution, GroupDistribution];
+  smallViewBox?: string;
+  largeViewBox?: string;
 }
 
 interface BracketSvgProps {
@@ -63,6 +61,8 @@ const BracketConnectionLayer = ({
   finalStage,
   teamCount,
   firstRoundDistribution,
+  smallViewBox = '0 0 992 220',
+  largeViewBox = '0 0 1184 364',
 }: BracketConnectionLayerProps) => {
   const cssVars = {
     '--bracket-final-stage': finalStage,
@@ -76,9 +76,6 @@ const BracketConnectionLayer = ({
       firstRoundDistribution[1].top +
       firstRoundDistribution[1].bottom,
   } as React.CSSProperties;
-
-  const smallViewBox = '0 0 992 220';
-  const largeViewBox = '0 0 1184 364';
 
   const smallSvgStyle = {
     maxWidth: '80%',

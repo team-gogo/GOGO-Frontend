@@ -49,7 +49,16 @@ const GameCardContainer = ({
   ];
 
   return (
-    <div className={cn('flex', 'items-center', 'gap-24', 'w-full', 'mt-24')}>
+    <div
+      className={cn(
+        'flex',
+        'items-center',
+        'pad:gap-[1.5rem]',
+        'gap-[0.75rem]',
+        'w-full',
+        'mt-24',
+      )}
+    >
       {items.map((item, index) => {
         return (
           <GameSelectionCard

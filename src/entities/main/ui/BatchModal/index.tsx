@@ -62,11 +62,14 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
       containerClassName={cn(
         'rounded-lg',
         'bg-gray-700',
-        'px-[40px]',
-        'py-[36px]',
+        'tablet:px-[2.5rem]',
+        'tablet:py-[2.25rem]',
+        'px-[1.5rem]',
+        'py-[1.25rem]',
         'max-w-[38.75rem]',
         'w-full',
         'space-y-24',
+        'm-20',
       )}
     >
       <form
@@ -76,7 +79,8 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
           'flex-col',
           'items-center',
           'justify-center',
-          'gap-[3.75rem]',
+          'pad:gap-[3.75rem]',
+          'gap-[1.5rem]',
           'w-full',
         )}
       >
@@ -87,7 +91,7 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
             'justify-center',
             'gap-[1.5rem]',
             'w-full',
-            'pt-[2rem]',
+            'pad:pt-[2rem]',
           )}
         >
           <div
@@ -99,7 +103,9 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
               'gap-[1rem]',
             )}
           >
-            <h2 className={cn('text-h4e', 'text-white')}>{aTeam?.teamName}</h2>
+            <h2 className={cn('tablet:text-h4e', 'text-body2s', 'text-white')}>
+              {aTeam?.teamName}
+            </h2>
             <Input
               {...register('aTeamScore', { required: true })}
               placeholder="스코어 입력"
@@ -118,7 +124,9 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
               'gap-[1rem]',
             )}
           >
-            <h2 className={cn('text-h4e', 'text-white')}>{bTeam?.teamName}</h2>
+            <h2 className={cn('tablet:text-h4e', 'text-body2s', 'text-white')}>
+              {bTeam?.teamName}
+            </h2>
             <Input
               {...register('bTeamScore', { required: true })}
               placeholder="스코어 입력"
@@ -142,7 +150,13 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
           </Button>
           <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
             <WarningIcon />
-            <p className={cn('text-caption1s', 'text-gray-500')}>
+            <p
+              className={cn(
+                'pad:text-caption1s',
+                'text-caption3s',
+                'text-gray-500',
+              )}
+            >
               정산 완료 후 5분 이내에만 취소할 수 있습니다.
             </p>
           </div>

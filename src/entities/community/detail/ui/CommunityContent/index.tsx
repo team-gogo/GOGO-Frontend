@@ -21,6 +21,7 @@ interface CommunityContentProps {
   isLiked: boolean;
   boardId: string;
   stageId: string;
+  currentPage: number;
 }
 
 const CommunityContent = ({
@@ -35,16 +36,30 @@ const CommunityContent = ({
   isLiked,
   boardId,
   stageId,
+  currentPage,
 }: CommunityContentProps) => {
   const [liked, setLiked] = useState(isLiked);
   const [likeCountState, setLikeCountState] = useState(likeCount);
 
-  const { mutate: boardLike } = usePostBoardLikeMutation(boardId, stageId);
+  const { mutate: boardLike } = usePostBoardLikeMutation(
+    boardId,
+    stageId,
+    currentPage,
+  );
 
   const handleLike = () => {
-    setLiked(!liked);
-    setLikeCountState((prev) => (liked ? prev - 1 : prev + 1));
-    boardLike();
+    const nextLiked = !liked;
+    const nextCount = nextLiked ? likeCountState + 1 : likeCountState - 1;
+
+    setLiked(nextLiked);
+    setLikeCountState(nextCount);
+
+    boardLike(undefined, {
+      onError: () => {
+        setLiked((prev) => !prev);
+        setLikeCountState((prev) => (nextLiked ? prev - 1 : prev + 1));
+      },
+    });
   };
 
   return (
@@ -61,7 +76,7 @@ const CommunityContent = ({
         <div className={cn('flex', 'items-center', 'gap-24')}>
           <SportTypeLabel isHaveBorder={true} type={stageCategory} />
           <p
-            className={cn('text-body1e', 'text-gray-300', 'mobile:text-body2e')}
+            className={cn('mobile:text-body1e', 'text-gray-300', 'text-body2e')}
           >
             {stageName}
           </p>
@@ -69,9 +84,9 @@ const CommunityContent = ({
             <PersonIcon />
             <p
               className={cn(
-                'text-body3s',
+                'mobile:text-body3s',
                 'text-gray-300',
-                'mobile:text-caption1s',
+                'text-caption1s',
               )}
             >
               {authorName}
@@ -79,10 +94,18 @@ const CommunityContent = ({
           </div>
         </div>
         <div className={cn('flex', 'flex-col', 'gap-16')}>
-          <h1 className={cn('text-body2e', 'text-white', 'mobile:text-body3e')}>
+          <h1 className={cn('mobile:text-body2e', 'text-white', 'text-body3e')}>
             {title}
           </h1>
-          <p className={cn('text-body3s', 'text-gray-300')}>{content}</p>
+          <p
+            className={cn(
+              'text-body3s',
+              'text-gray-300',
+              'whitespace-pre-line',
+            )}
+          >
+            {content}
+          </p>
         </div>
       </div>
       <div className={cn('flex', 'items-center', 'justify-between')}>
@@ -91,9 +114,9 @@ const CommunityContent = ({
             <CommentIcon />
             <p
               className={cn(
-                'text-gray-300',
+                'mobile:text-gray-300',
                 'text-body3s',
-                'mobile:text-caption1s',
+                'text-caption1s',
               )}
             >
               {commentCount}

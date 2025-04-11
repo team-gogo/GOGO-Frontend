@@ -20,7 +20,7 @@ const TopRankListItem = ({ rank }: TopRankListItemProps) => {
           primaryColor="#4D4D4D"
           secondaryColor="#4D4D4D"
           rank={0}
-          className="h-[100px] w-[100px] mobile:h-[80px] mobile:w-[80px]"
+          className="h-[80px] w-[80px] mobile:h-[100px] mobile:w-[100px]"
         />
       </div>
     );
@@ -54,7 +54,7 @@ const TopRankListItem = ({ rank }: TopRankListItemProps) => {
         primaryColor={medalColors.primary}
         secondaryColor={medalColors.secondary}
         rank={rank.rank}
-        className="h-[100px] w-[100px] mobile:h-[80px] mobile:w-[80px]"
+        className="h-[80px] w-[80px] mobile:h-[100px] mobile:w-[100px]"
       />
     </div>
   );

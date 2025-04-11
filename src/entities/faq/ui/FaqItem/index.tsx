@@ -35,7 +35,7 @@ const FaqItem = ({ question, answer }: Props) => {
       <div className={cn('flex', 'items-center', 'justify-between', 'gap-24')}>
         <div className={cn('flex', 'items-center', 'gap-16')}>
           {isOpen ? <BlueQuestionIcon /> : <QuestionIcon />}
-          <p className={cn('text-body2s', 'text-white', 'mobile:text-body3s')}>
+          <p className={cn('mobile:text-body2s', 'text-white', 'text-body3s')}>
             {question}
           </p>
         </div>
@@ -46,7 +46,8 @@ const FaqItem = ({ question, answer }: Props) => {
               'whitespace-nowrap',
               isOpen ? 'text-main-300' : 'text-gray-400',
               'transition-colors duration-300',
-              'mobile:hidden',
+              'hidden',
+              'mobile:box',
             )}
           >
             답변 보기

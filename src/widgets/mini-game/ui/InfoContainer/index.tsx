@@ -12,7 +12,7 @@ const InfoContainer = ({ icon, title, rightContent }: InfoContainerProps) => {
     <div className={cn('flex', 'items-center', 'justify-between')}>
       <div className={cn('flex', 'items-center', 'gap-12')}>
         {icon}
-        <p className={cn('text-body1e', 'text-white', 'mobile:text-body3e')}>
+        <p className={cn('pad:text-body1e', 'text-white', 'text-body3e')}>
           {title}
         </p>
       </div>

@@ -19,7 +19,18 @@ const TeamMatchPoint = ({ team, isPredicted }: TeamMatchPointProps) => {
         'h-full',
       )}
     >
-      <div className={cn('flex', 'items-center', 'gap-[0.25rem]', 'h-full')}>
+      <div
+        className={cn(
+          'flex',
+          'laptop:min-w-[16.125rem]',
+          'pad:min-w-[10rem]',
+          'min-w-[7.5rem]',
+          'items-center',
+          'gap-[0.25rem]',
+          'h-full',
+          'justify-center',
+        )}
+      >
         <PointCircleIcon color={!isPredicted ? '#A6A6A6' : '#526FFE'} />
         <p
           className={cn(
@@ -32,7 +43,9 @@ const TeamMatchPoint = ({ team, isPredicted }: TeamMatchPointProps) => {
       </div>
       <h2
         className={cn(
-          'text-h1e',
+          'laptop:text-h1e',
+          'pad:text-h4e',
+          'text-body2e',
           !isPredicted ? 'text-white' : 'text-main-500',
         )}
       >

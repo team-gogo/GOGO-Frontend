@@ -8,7 +8,7 @@ export const createStoreItems = (
     icon: (isActive: boolean) => (
       <TicketIcon
         color={isActive ? '#fff' : '#898989'}
-        className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
+        className="h-[2.25rem] w-[2.25rem] pad:h-[3.75rem] pad:w-[3.75rem]"
       />
     ),
     name: '야바위',
@@ -20,7 +20,7 @@ export const createStoreItems = (
     icon: (isActive: boolean) => (
       <TicketIcon
         color={isActive ? '#fff' : '#898989'}
-        className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
+        className="h-[2.25rem] w-[2.25rem] pad:h-[3.75rem] pad:w-[3.75rem]"
       />
     ),
     name: '코인 토스',
@@ -32,7 +32,7 @@ export const createStoreItems = (
     icon: (isActive: boolean) => (
       <TicketIcon
         color={isActive ? '#fff' : '#898989'}
-        className="mobile:h-[2.25rem] mobile:w-[2.25rem]"
+        className="h-[2.25rem] w-[2.25rem] pad:h-[3.75rem] pad:w-[3.75rem]"
       />
     ),
     name: '플린코',

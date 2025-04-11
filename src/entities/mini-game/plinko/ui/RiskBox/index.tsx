@@ -34,7 +34,9 @@ const RiskBox = ({
 
   return (
     <div className={cn('flex', 'w-full', 'flex-col', 'gap-[1.5rem]')}>
-      <h2 className={cn('text-body2e', 'text-white')}>리스크</h2>
+      <h2 className={cn('midpad:text-body2e', 'text-caption1e', 'text-white')}>
+        리스크
+      </h2>
       <div className={cn('flex', 'flex-row', 'w-full', 'gap-[0.75rem]')}>
         {risks.map((risk) => (
           <Button

@@ -8,9 +8,15 @@ interface CommunityItemsProps {
   item: CommunityItemProps;
   isMainUsed?: boolean;
   stageId: string;
+  currentPage: number;
 }
 
-const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
+const CommunityItem = ({
+  item,
+  isMainUsed,
+  stageId,
+  currentPage,
+}: CommunityItemsProps) => {
   const formatCount = (count: number) => {
     return count >= 100 ? '99+' : count.toString();
   };
@@ -20,7 +26,7 @@ const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
 
   return (
     <Link
-      href={`/community/${stageId}/detail/${boardId}`}
+      href={`/community/${stageId}/detail/${boardId}?page=${currentPage}`}
       className={cn(
         'text-gray-600',
         'bg-gray-700',
@@ -30,8 +36,8 @@ const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
         'rounded-lg',
         'grid',
         'w-full',
-        'grid-cols-[1fr_3fr_1fr_1fr]',
-        'tablet:grid-cols-[1fr_3fr]',
+        'tablet:grid-cols-[1fr_3fr_1fr_1fr]',
+        'grid-cols-[1fr_3fr]',
         'items-center',
       )}
     >
@@ -60,7 +66,8 @@ const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
           'text-gray-300',
           'text-body2s',
           'text-center',
-          'tablet:hidden',
+          'hidden',
+          'tablet:block',
         )}
       >
         {author.name}
@@ -71,7 +78,8 @@ const CommunityItem = ({ item, isMainUsed, stageId }: CommunityItemsProps) => {
           'justify-center',
           'items-center',
           'gap-16',
-          'tablet:hidden',
+          'hidden',
+          'tablet:flex',
         )}
       >
         <div className={cn('flex', 'items-center', 'gap-8')}>

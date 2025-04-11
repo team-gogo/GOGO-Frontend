@@ -187,7 +187,8 @@ const Match = ({ match }: MatchProps) => {
     'border-4',
     'border-solid',
     'border-main-300',
-    'py-[1.25rem]',
+    'laptop:py-[1.25rem]',
+    'py-[0.75rem]',
   ];
 
   return (
@@ -195,11 +196,14 @@ const Match = ({ match }: MatchProps) => {
       className={cn(
         'flex',
         'flex-col',
-        'py-[1.5rem]',
-        'px-[2rem]',
+        'laptop:py-[1.5rem]',
+        'laptop:px-[2rem]',
         'rounded-xl',
         'bg-gray-700',
         'relative',
+        'w-full',
+        'px-[1rem]',
+        'py-[0.75rem]',
         isFinal && borderStyle,
       )}
     >
@@ -212,11 +216,26 @@ const Match = ({ match }: MatchProps) => {
           matchId={matchId}
         />
       )}
-      <div className={cn('flex', 'flex-col', 'justify-center', 'gap-[2rem]')}>
+      <div
+        className={cn(
+          'flex',
+          'flex-col',
+          'justify-center',
+          'gap-[2rem]',
+          'h-full',
+        )}
+      >
         <div
           className={cn('flex', 'w-full', 'justify-between', 'items-center')}
         >
-          <div className={cn('flex', 'items-center', 'gap-[1.25rem]')}>
+          <div
+            className={cn(
+              'flex',
+              'items-center',
+              'laptop:gap-[1.25rem]',
+              'gap-[0.5rem]',
+            )}
+          >
             <button
               onClick={() => {
                 setIsAlarmClicked(!isAlarmClicked);
@@ -225,7 +244,14 @@ const Match = ({ match }: MatchProps) => {
             >
               {isMatchNoticeChecked ? <BlueAlarmIcon /> : <GrayAlarmIcon />}
             </button>
-            <div className={cn('flex', 'items-center', 'gap-[1.5rem]')}>
+            <div
+              className={cn(
+                'flex',
+                'items-center',
+                'laptop:gap-[1.5rem]',
+                'gap-[1rem]',
+              )}
+            >
               <SystemLabel
                 system={system}
                 roundText={roundText}
@@ -253,8 +279,18 @@ const Match = ({ match }: MatchProps) => {
               push(`/match/${matchId}`);
             }}
           >
-            <p className={cn('text-body3s', 'text-gray-500')}>자세히 보기</p>
-            <RightArrowIcon />
+            <p
+              className={cn(
+                'desktop:text-body3s',
+                'text-caption2s',
+                'text-gray-500',
+              )}
+            >
+              자세히 보기
+            </p>
+            <div className={cn('hidden', 'desktop:block')}>
+              <RightArrowIcon />
+            </div>
           </button>
         </div>
         <div
@@ -283,7 +319,7 @@ const Match = ({ match }: MatchProps) => {
               </p>
             </div>
             {isMatchFinish && result !== null ? (
-              <h2 className={cn('text-h2e', 'text-white')}>
+              <h2 className={cn('text-h4e', 'text-white')}>
                 {winnerTeam} 승리
               </h2>
             ) : (
@@ -317,7 +353,12 @@ const Match = ({ match }: MatchProps) => {
                     )}
                   </p>
                   <h2
-                    className={cn('text-h2e', getTeamClassName(ateam?.teamId))}
+                    className={cn(
+                      'laptop:text-h4e',
+                      'pad:text-body1s',
+                      'text-body2s',
+                      getTeamClassName(ateam?.teamId),
+                    )}
                   >
                     {ateam?.teamName}
                   </h2>
@@ -345,7 +386,11 @@ const Match = ({ match }: MatchProps) => {
                     )}
                   </p>
                   <h2
-                    className={cn('text-h2e', getTeamClassName(bteam?.teamId))}
+                    className={cn(
+                      'laptop:text-h4e',
+                      'text-body1s',
+                      getTeamClassName(bteam?.teamId),
+                    )}
                   >
                     {bteam?.teamName}
                   </h2>
@@ -358,7 +403,7 @@ const Match = ({ match }: MatchProps) => {
               className={cn(
                 'flex',
                 'w-full',
-                'pt-[1.25rem]',
+                'pt-[1.0625rem]',
                 'justify-between',
                 'items-center',
                 'border-t-1',

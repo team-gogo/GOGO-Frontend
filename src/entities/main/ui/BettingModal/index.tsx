@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { PointCircleIcon } from '@/shared/assets/svg';
+import { PointCircleIcon, WarningIcon } from '@/shared/assets/svg';
 import { useMatchStore, usePointStore } from '@/shared/stores';
 import { BettingFormData } from '@/shared/types/main';
 import Button from '@/shared/ui/button';
@@ -51,12 +51,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
 
   const { data: maxMinPointData } = useGetMaxMinBetPoint(Number(stageId));
 
-  const isDisabled =
-    !bettingPoint ||
-    !selectedTeamId ||
-    Number(bettingPoint) > Number(maxMinPointData?.maxBettingPoint) ||
-    Number(bettingPoint) < Number(maxMinPointData?.minBettingPoint) ||
-    bettingPoint > point;
+  const isDisabled = !bettingPoint || !selectedTeamId || bettingPoint > point;
 
   const onSubmit = (data: BettingFormData) => {
     const formattedData = formatBettingData(data, selectedTeamId);
@@ -105,11 +100,15 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
       containerClassName={cn(
         'rounded-lg',
         'bg-gray-700',
-        'px-[40px]',
-        'py-[36px]',
+        'tablet:px-[2.5rem]',
+        'tablet:py-[2.25rem]',
+        'px-[1.5rem]',
+        'py-[1.25rem]',
         'max-w-[38.75rem]',
         'w-full',
         'space-y-24',
+        'mx-20',
+        'my-20',
       )}
     >
       <form
@@ -133,14 +132,7 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
             type={category && category.length > 0 ? category : ''}
           />
         </div>
-        <div
-          className={cn(
-            'flex',
-            'justify-center',
-            'items-center',
-            'gap-[3.75rem]',
-          )}
-        >
+        <div className={cn('flex', 'justify-center', 'items-center')}>
           <MatchTeam
             team={ateam}
             percentage={Number(aTeamPercentage)}
@@ -169,7 +161,11 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
                 {totalBettingPoints}
               </p>
             </div>
-            <h2 className={cn('text-h1e', 'text-gray-500')}>VS</h2>
+            <h2
+              className={cn('tablet:text-h4e', 'text-body1s', 'text-gray-500')}
+            >
+              VS
+            </h2>
           </div>
           <MatchTeam
             team={bteam}
@@ -187,12 +183,30 @@ const BettingModal = ({ onClose }: BettingModalProps) => {
             'gap-[0.75rem]',
           )}
         >
-          <Input
-            {...register('bettingPoint', { required: true, min: 1 })}
-            type="number"
-            placeholder="포인트를 입력해주세요."
-            bgColor="bg-gray-600"
-          />
+          <div className={cn('flex', 'flex-col', 'w-full', 'gap-[0.25rem]')}>
+            <Input
+              {...register('bettingPoint', { required: true, min: 1 })}
+              type="number"
+              placeholder="포인트를 입력해주세요."
+              bgColor="bg-gray-600"
+              min={maxMinPointData?.minBettingPoint}
+              max={maxMinPointData?.maxBettingPoint}
+            />
+            <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
+              <WarningIcon />
+              <div className={cn('flex', 'items-center', 'gap-[0.75rem]')}>
+                <p className={cn('text-gray-400', 'text-caption3s')}>
+                  최소 베팅 금액 : {maxMinPointData?.minBettingPoint}
+                </p>
+                <div
+                  className={cn('w-[0.0625rem]', 'h-[1rem]', 'bg-gray-600')}
+                />
+                <p className={cn('text-gray-400', 'text-caption3s')}>
+                  최대 베팅 금액 : {maxMinPointData?.maxBettingPoint}
+                </p>
+              </div>
+            </div>
+          </div>
           <Button disabled={isDisabled} type="submit">
             베팅
           </Button>

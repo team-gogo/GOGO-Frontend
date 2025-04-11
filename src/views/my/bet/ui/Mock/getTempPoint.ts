@@ -6,18 +6,18 @@ const getTempPoint = (): TempPointsResponse => {
       {
         tempPointId: 1,
         tempPoint: 100,
-        expiredDate: '2025-03-12T01:41:00',
+        expiredDate: '2025-04-08T10:30:00',
       },
-      {
-        tempPointId: 2,
-        tempPoint: 50,
-        expiredDate: '2025-03-12T01:41:00',
-      },
-      {
-        tempPointId: 3,
-        tempPoint: 200,
-        expiredDate: '2025-03-12T01:41:00',
-      },
+      // {
+      //   tempPointId: 2,
+      //   tempPoint: 50,
+      //   expiredDate: '2025-03-12T01:41:00',
+      // },
+      // {
+      //   tempPointId: 3,
+      //   tempPoint: 200,
+      //   expiredDate: '2025-03-12T01:41:00',
+      // },
     ],
   };
 };

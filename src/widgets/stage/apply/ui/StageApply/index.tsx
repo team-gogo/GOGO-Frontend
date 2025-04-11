@@ -115,7 +115,7 @@ const StageApply = ({
             'gap-[3rem]',
           )}
         >
-          <h1 className={cn('text-body1e', 'text-white', 'laptop:text-body2e')}>
+          <h1 className={cn('laptop:text-body1e', 'text-white', 'text-body2e')}>
             {gameName}
           </h1>
           <div className={cn('flex', 'justify-center', 'w-full')}>
