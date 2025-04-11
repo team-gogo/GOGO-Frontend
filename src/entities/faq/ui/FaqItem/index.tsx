@@ -35,7 +35,7 @@ const FaqItem = ({ question, answer }: Props) => {
       <div className={cn('flex', 'items-center', 'justify-between', 'gap-24')}>
         <div className={cn('flex', 'items-center', 'gap-16')}>
           {isOpen ? <BlueQuestionIcon /> : <QuestionIcon />}
-          <p className={cn('mobile:text-body2s', 'text-white', 'text-body3s')}>
+          <p className={cn('pad:text-body2s', 'text-white', 'text-body3s')}>
             {question}
           </p>
         </div>
