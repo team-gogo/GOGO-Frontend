@@ -103,7 +103,7 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
               'gap-[1rem]',
             )}
           >
-            <h2 className={cn('text-h4e', 'laptop:text-body1s', 'text-white')}>
+            <h2 className={cn('tablet:text-h4e', 'text-body2s', 'text-white')}>
               {aTeam?.teamName}
             </h2>
             <Input
@@ -124,7 +124,9 @@ const BatchModal = ({ onClose }: BatchModalProps) => {
               'gap-[1rem]',
             )}
           >
-            <h2 className={cn('text-h4e', 'text-white')}>{bTeam?.teamName}</h2>
+            <h2 className={cn('tablet:text-h4e', 'text-body2s', 'text-white')}>
+              {bTeam?.teamName}
+            </h2>
             <Input
               {...register('bTeamScore', { required: true })}
               placeholder="스코어 입력"
