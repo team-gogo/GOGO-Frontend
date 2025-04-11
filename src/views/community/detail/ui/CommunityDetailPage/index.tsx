@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { CommentInput, CommunityContent } from '@/entities/community/detail';
 import { Comment } from '@/shared/types/community/detail';
@@ -11,8 +11,10 @@ import { useGetCommunityDetailQuery } from '../../model/useGetCommunityDetailQue
 
 const CommunityDetailPage = () => {
   const params = useParams<{ boardId: string; stageId: string }>();
+  const searchParams = useSearchParams();
   const { boardId } = params;
   const { stageId } = params;
+  const currentPage = Number(searchParams.get('page') || 1);
   const { data, isLoading, isError } = useGetCommunityDetailQuery(boardId);
   const [comments, setComments] = useState<Comment[]>([]);
 
@@ -58,6 +60,7 @@ const CommunityDetailPage = () => {
           isLiked={data.isLiked}
           boardId={boardId}
           stageId={stageId}
+          currentPage={currentPage}
         />
         <CommentContainer boardId={boardId} comments={comments} />
       </div>
@@ -65,6 +68,7 @@ const CommunityDetailPage = () => {
         boardId={boardId}
         stageId={stageId}
         onAddComment={handleAddComment}
+        currentPage={currentPage}
       />
     </div>
   );
