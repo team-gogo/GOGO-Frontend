@@ -28,13 +28,17 @@ const BracketTeamDisplay = ({
 
   console.log('formatData', getFormatData());
 
-  const getWinnerTeamId = (round: string) => {
+  const getWinnerTeamId = (round: string, turn?: number) => {
     const formatData = getFormatData();
     if (!formatData) return null;
 
     const formatItem = formatData.find((item) => item.round === round);
+    if (!formatItem) return null;
 
-    const winningMatch = formatItem?.match.find((m) => m.winTeamId);
+    const winningMatch = turn
+      ? formatItem.match.find((m) => m.turn === turn && m.winTeamId)
+      : formatItem.match.find((m) => m.winTeamId);
+
     if (!winningMatch) return null;
 
     const winner = {
@@ -200,7 +204,23 @@ const BracketTeamDisplay = ({
             }
 
             if (teamId) {
-              const winner = getWinnerTeamId('QUARTER_FINALS');
+              let matchTurn = 1;
+
+              if (side === 'left') {
+                if (actualIndex === 0 || actualIndex === 1) {
+                  matchTurn = 1;
+                } else {
+                  matchTurn = 2;
+                }
+              } else if (side === 'right') {
+                if (actualIndex === 0 || actualIndex === 1) {
+                  matchTurn = teamCount === 6 ? 3 : 4;
+                } else {
+                  matchTurn = 3;
+                }
+              }
+
+              const winner = getWinnerTeamId('QUARTER_FINALS', matchTurn);
               isWinner = winner?.id === teamId;
             }
 
@@ -305,7 +325,7 @@ const BracketTeamDisplay = ({
             }
 
             if (teamId) {
-              const winner = getWinnerTeamId(round || '');
+              const winner = getWinnerTeamId(round || '', idx);
               isWinner = winner?.id === teamId;
             }
 
