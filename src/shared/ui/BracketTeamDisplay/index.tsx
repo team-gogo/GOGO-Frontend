@@ -26,6 +26,30 @@ const BracketTeamDisplay = ({
     return bracketData.format;
   };
 
+  const getWinnerTeamId = (round: string, turn?: number) => {
+    const formatData = getFormatData();
+    if (!formatData) return null;
+
+    const formatItem = formatData.find((item) => item.round === round);
+    if (!formatItem) return null;
+
+    const winningMatch = turn
+      ? formatItem.match.find((m) => m.turn === turn && m.winTeamId)
+      : formatItem.match.find((m) => m.winTeamId);
+
+    if (!winningMatch) return null;
+
+    const winner = {
+      id: winningMatch.winTeamId,
+      name:
+        winningMatch.winTeamId === winningMatch.ateamId
+          ? winningMatch.ateamName
+          : winningMatch.bteamName,
+    };
+
+    return winner;
+  };
+
   const getTeamByRoundAndTurn = (
     round: string,
     turn: number,
@@ -107,6 +131,7 @@ const BracketTeamDisplay = ({
 
             let teamId = null;
             let teamName = null;
+            let isWinner = false;
             const buyTeam = findBuyTeam();
 
             if (side === 'left') {
@@ -148,6 +173,14 @@ const BracketTeamDisplay = ({
               } else if (actualIndex === 1) {
                 teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 4, 'A');
                 teamName = getTeamNameByRoundAndTurn('QUARTER_FINALS', 4, 'A');
+                if (teamCount === 6) {
+                  teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 3, 'A');
+                  teamName = getTeamNameByRoundAndTurn(
+                    'QUARTER_FINALS',
+                    3,
+                    'A',
+                  );
+                }
               } else if (actualIndex === 2) {
                 if (teamCount === 7 && buyTeam) {
                   teamId = getTeamByRoundAndTurn('SEMI_FINALS', 2, 'A');
@@ -166,6 +199,27 @@ const BracketTeamDisplay = ({
               }
             }
 
+            if (teamId) {
+              let matchTurn = 1;
+
+              if (side === 'left') {
+                if (actualIndex === 0 || actualIndex === 1) {
+                  matchTurn = 1;
+                } else {
+                  matchTurn = 2;
+                }
+              } else if (side === 'right') {
+                if (actualIndex === 0 || actualIndex === 1) {
+                  matchTurn = teamCount === 6 ? 3 : 4;
+                } else {
+                  matchTurn = 3;
+                }
+              }
+
+              const winner = getWinnerTeamId('QUARTER_FINALS', matchTurn);
+              isWinner = winner?.id === teamId;
+            }
+
             return (
               <div key={`${side}_${idx}`} className="relative">
                 <div
@@ -180,6 +234,7 @@ const BracketTeamDisplay = ({
                   <TeamItem
                     teamName={teamName || (teamId ? `${teamId}` : 'TBD')}
                     className="w-[160px]"
+                    isWinner={isWinner}
                   />
                 </div>
               </div>
@@ -232,6 +287,7 @@ const BracketTeamDisplay = ({
           .map((_, idx) => {
             let teamId = null;
             let teamName = null;
+            let isWinner = false;
 
             if (round === 'SEMI_FINALS') {
               if (side === 'left') {
@@ -264,11 +320,17 @@ const BracketTeamDisplay = ({
               }
             }
 
+            if (teamId) {
+              const winner = getWinnerTeamId(round || '', idx);
+              isWinner = winner?.id === teamId;
+            }
+
             return (
               <div key={`${side}_${idx}`} className="relative">
                 <TeamItem
                   teamName={teamName || (teamId ? `${teamId}` : 'TBD')}
                   className="w-[160px]"
+                  isWinner={isWinner}
                 />
               </div>
             );
