@@ -17,13 +17,23 @@ const MatchNameContainer = ({ gameData }: MatchNameContainerProps) => {
     })) ?? [];
 
   return (
-    <div className={cn('flex', 'gap-[2.25rem]')}>
+    <div
+      className={cn(
+        'flex',
+        'whitespace-nowrap',
+        'overflow-x-auto',
+        'midpad:gap-[2.25rem]',
+        'gap-[1.5rem]',
+        'scroll-hidden',
+      )}
+    >
       {matchNames.map(({ name, id }) => (
         <div
           key={id}
           className={cn(
             'flex',
-            'pb-[1.25rem]',
+            'laptop:pb-[1.25rem]',
+            'pb-[0.75rem]',
             'flex-col',
             'justify-center',
             'items-center',
@@ -33,7 +43,8 @@ const MatchNameContainer = ({ gameData }: MatchNameContainerProps) => {
         >
           <button
             className={cn(
-              'text-body1e',
+              'laptop:text-body1e',
+              'text-body3e',
               'text-center',
               Number(selectedGameId) === id ? 'text-white' : 'text-gray-500',
             )}

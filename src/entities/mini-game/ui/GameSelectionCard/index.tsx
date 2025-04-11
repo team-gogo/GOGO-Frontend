@@ -102,7 +102,7 @@ const GameSelectionCard = ({
           {icon(!buttonDisabled)}
           <p
             className={cn(
-              'mobile:text-h4s',
+              'pad:text-h4s',
               'text-body2s',
               !buttonDisabled ? 'text-white' : 'text-gray-400',
             )}
@@ -132,7 +132,7 @@ const GameSelectionCard = ({
           <div className={cn('flex', 'items-center', 'justify-center')}>
             <p
               className={cn(
-                'mobile:text-body3s',
+                'pad:text-body3s',
                 'text-gray-500',
                 'text-caption3s',
               )}
