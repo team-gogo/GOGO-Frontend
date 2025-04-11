@@ -173,6 +173,14 @@ const BracketTeamDisplay = ({
               } else if (actualIndex === 1) {
                 teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 4, 'A');
                 teamName = getTeamNameByRoundAndTurn('QUARTER_FINALS', 4, 'A');
+                if (teamCount === 6) {
+                  teamId = getTeamByRoundAndTurn('QUARTER_FINALS', 3, 'A');
+                  teamName = getTeamNameByRoundAndTurn(
+                    'QUARTER_FINALS',
+                    3,
+                    'A',
+                  );
+                }
               } else if (actualIndex === 2) {
                 if (teamCount === 7 && buyTeam) {
                   teamId = getTeamByRoundAndTurn('SEMI_FINALS', 2, 'A');
