@@ -55,6 +55,7 @@ const WastedModal = ({ onClose, stageId }: WastedModalProps) => {
     <ModalLayout
       title="파산하셨습니다"
       onClose={onClose}
+      canClose={false}
       containerClassName={cn(
         'rounded-lg',
         'bg-gray-700',
