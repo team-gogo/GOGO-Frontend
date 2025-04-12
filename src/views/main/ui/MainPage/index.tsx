@@ -28,6 +28,7 @@ import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
 import { useGetActiveGameQuery } from '@/views/mini-game/model/useGetActiveGameQuery';
+import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetRankingQuery } from '@/views/ranking/model/useGetRankingQuery';
 import { CommunityItemContainer } from '@/widgets/community';
 import {
@@ -37,7 +38,6 @@ import {
 } from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
 import { useGetSearchMatch } from '../../model/useGetSearchMatch';
-import { useGetUserStagePoint } from '../../model/useGetUserStagePoint';
 
 const MainPage = () => {
   const params = useParams<{ stageId: string }>();
@@ -47,7 +47,7 @@ const MainPage = () => {
   const { point, setPoint } = usePointStore();
   const { selectDate, setSelectDate } = useSelectDateStore();
 
-  const { data: userPointData } = useGetUserStagePoint(Number(stageId));
+  const { data: userPointData } = useGetMyPointQuery(stageId);
 
   useEffect(() => {
     if (userPointData?.point) {

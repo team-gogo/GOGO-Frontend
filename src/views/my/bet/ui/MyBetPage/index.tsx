@@ -13,7 +13,7 @@ import {
   useMyStageIdStore,
 } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
-import { useGetUserStagePoint } from '@/views/main/model/useGetUserStagePoint';
+import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetMyBettingMatch } from '@/views/my/model/useGetMyBettingMatch';
 import { useGetMyTempPoint } from '@/views/my/model/useGetMyTempPoint';
 import {
@@ -26,7 +26,7 @@ const MyBetPage = () => {
   const params = useParams<{ stageId: string }>();
   const { stageId } = params;
 
-  const { data: userPointData } = useGetUserStagePoint(Number(stageId));
+  const { data: userPointData } = useGetMyPointQuery(stageId);
   const { data: myMatchData, isPending: matchPending } = useGetMyBettingMatch(
     Number(stageId),
   );
