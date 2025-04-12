@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react'; // useRef 추가
 import { toast } from 'react-toastify';
 import { usePointTicketStore } from '@/shared/stores';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
@@ -25,12 +25,19 @@ const PlinkoPage = () => {
   const [plinkoData, setPlinkoData] = useState<PlinkoResponse | null>(null);
   const [gameRunningCount, setGameRunningCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGameEnd, setIsGameEnd] = useState(false);
 
   const { data: myPoint, refetch: refetchMyPoint } =
     useGetMyPointQuery(stageId);
   const { data: myTicket, refetch: refetchMyTicket } = useGetMyTicketQuery(
     String(stageId),
   );
+
+  useEffect(() => {
+    if (isGameEnd === true && gameRunningCount === 0) {
+      refetchMyPoint();
+    }
+  }, [isGameEnd, gameRunningCount]);
 
   useEffect(() => {
     if (myPoint !== undefined && myPoint !== null) {
@@ -73,8 +80,11 @@ const PlinkoPage = () => {
   const minBetLimit = betLimitData?.plinko.minBetPoint || 0;
   const maxBetLimit = betLimitData?.plinko.maxBetPoint || 0;
 
+  const submitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const onSubmit = (data: PlinkoFormType) => {
     if (isLoading) return;
+    setIsGameEnd(false);
 
     const formattedAmount = data.amount;
 
@@ -98,6 +108,14 @@ const PlinkoPage = () => {
         setIsLoading(false);
       },
     });
+
+    if (submitTimeoutRef.current) {
+      clearTimeout(submitTimeoutRef.current);
+    }
+
+    submitTimeoutRef.current = setTimeout(() => {
+      setIsGameEnd(true);
+    }, 500);
   };
 
   return (
