@@ -25,7 +25,7 @@ const CommentInput = ({
   onAddComment,
   currentPage,
 }: CommentInputProps) => {
-  const { register, handleSubmit, reset } = useForm<CommentFormData>({
+  const { register, handleSubmit, reset, watch } = useForm<CommentFormData>({
     defaultValues: {
       boardId,
     },
@@ -56,6 +56,7 @@ const CommentInput = ({
         placeholder="댓글을 입력해주세요"
         maxLength={300}
         icon={<SendIcon />}
+        value={watch('content') || ''}
       />
     </form>
   );
