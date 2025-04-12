@@ -388,7 +388,8 @@ const Match = ({ match }: MatchProps) => {
                   <h2
                     className={cn(
                       'laptop:text-h4e',
-                      'text-body1s',
+                      'pad:text-body1s',
+                      'text-body2s',
                       getTeamClassName(bteam?.teamId),
                     )}
                   >
