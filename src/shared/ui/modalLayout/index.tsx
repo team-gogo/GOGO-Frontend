@@ -18,7 +18,7 @@ const ModalLayout = ({
   children,
   containerClassName,
   showHeader = true,
-  canClose = false,
+  canClose = true,
 }: ModalLayoutProps) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
