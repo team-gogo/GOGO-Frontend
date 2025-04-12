@@ -73,20 +73,27 @@ const CommunityContent = ({
       )}
     >
       <div className={cn('space-y-24')}>
-        <div className={cn('flex', 'items-center', 'gap-24')}>
+        <div className={cn('flex', 'items-center', 'mobile:gap-24', 'gap-12')}>
           <SportTypeLabel isHaveBorder={true} type={stageCategory} />
           <p
-            className={cn('mobile:text-body1e', 'text-gray-300', 'text-body2e')}
+            className={cn(
+              'mobile:text-body1e',
+              'text-gray-300',
+              'text-body3e',
+              'truncate',
+              'whitespace-nowrap',
+            )}
           >
             {stageName}
           </p>
-          <div className={cn('flex', 'items-center', 'gap-8')}>
+          <div className={cn('flex', 'items-center', 'mobile:gap-8', 'gap-2')}>
             <PersonIcon />
             <p
               className={cn(
                 'mobile:text-body3s',
                 'text-gray-300',
                 'text-caption1s',
+                'whitespace-nowrap',
               )}
             >
               {authorName}
