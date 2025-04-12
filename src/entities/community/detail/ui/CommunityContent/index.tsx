@@ -119,13 +119,7 @@ const CommunityContent = ({
         <div className={cn('flex', 'items-center', 'gap-16')}>
           <div className={cn('flex', 'items-center', 'gap-8')}>
             <CommentIcon />
-            <p
-              className={cn(
-                'mobile:text-gray-300',
-                'text-body3s',
-                'text-caption1s',
-              )}
-            >
+            <p className={cn('text-body3s', 'text-caption1s', 'text-gray-300')}>
               {commentCount}
             </p>
           </div>
