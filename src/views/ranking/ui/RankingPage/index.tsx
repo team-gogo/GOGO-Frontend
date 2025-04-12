@@ -13,7 +13,7 @@ const RankingPage = () => {
   const { stageId } = params;
 
   const [page, setPage] = useState(0);
-  const size = 10;
+  const size = 300;
   const [allRanks, setAllRanks] = useState<RankItem[]>([]);
   const [isLastPage, setIsLastPage] = useState(false);
 
