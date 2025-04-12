@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, useEffect } from 'react';
 import { cn } from '@/shared/utils/cn';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -21,11 +21,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       onIconClick,
       showBorder = false,
       isPlcCenter = false,
+      value,
       ...attributes
     },
     ref,
   ) => {
     const [inputLength, setInputLength] = useState(0);
+
+    useEffect(() => {
+      setInputLength(typeof value === 'string' ? value.length : 0);
+    }, [value]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
