@@ -36,6 +36,7 @@ const PlinkoPage = () => {
   useEffect(() => {
     if (isGameEnd === true && gameRunningCount === 0) {
       refetchMyPoint();
+      refetchMyTicket();
     }
   }, [isGameEnd, gameRunningCount]);
 
