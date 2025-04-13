@@ -346,8 +346,9 @@ const DetailFormation = ({
           <div
             className={`relative h-[30rem] w-full`}
             style={{
-              maxWidth: isModalUsed ? '660px' : isLargeScreen ? 'none' : '100%',
-              minWidth: isModalUsed ? '660px' : '780px',
+              maxWidth: isModalUsed ? '660px' : '1200px',
+              minWidth: isModalUsed ? '660px' : '1200px',
+              width: isModalUsed ? '660px' : '1200px',
               margin: '0 auto',
               overflow: 'hidden',
             }}
