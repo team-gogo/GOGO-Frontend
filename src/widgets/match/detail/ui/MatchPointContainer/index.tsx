@@ -46,7 +46,7 @@ const MatchPointContainer = ({ ateam, bteam, betting }: MatchPointProps) => {
         <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
           <PointCircleIcon color="#FFFFFF" />
           <p className={cn('text-body2s', 'text-white')}>
-            {betting.bettingPoint}
+            {ateam.bettingPoint + bteam.bettingPoint}
           </p>
         </div>
       </div>
