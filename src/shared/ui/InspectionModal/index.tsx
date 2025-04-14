@@ -7,10 +7,9 @@ import GOGOIcon from '../GOGOIcon';
 
 interface InspectionModalProps {
   service?: string;
-  onClose: () => void;
 }
 
-const InspectionModal = ({ service = '', onClose }: InspectionModalProps) => {
+const InspectionModal = ({ service = '' }: InspectionModalProps) => {
   return (
     <ModalLayout
       title=""
@@ -23,7 +22,6 @@ const InspectionModal = ({ service = '', onClose }: InspectionModalProps) => {
         'px-[5rem]',
         'py-[2.5rem]',
       )}
-      onClose={onClose}
     >
       <GOGOIcon
         GWidth={24}
