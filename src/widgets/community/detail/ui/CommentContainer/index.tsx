@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { CommentItem } from '@/entities/community/detail';
 import { SortType } from '@/shared/model/sportTypes';
 import { Comment } from '@/shared/types/community/detail';
@@ -15,6 +15,16 @@ const CommentContainer = ({ boardId, comments }: CommentContainerProps) => {
   const handleSortClick = (sort: SortType) => {
     setSelectedSort(sort === 'LATEST' ? 'LAST' : 'LATEST');
   };
+
+  const sortedComments = useMemo(() => {
+    return [...comments].sort((a, b) => {
+      if (selectedSort === 'LATEST') {
+        return Number(b.commentId) - Number(a.commentId);
+      } else {
+        return Number(a.commentId) - Number(b.commentId);
+      }
+    });
+  }, [comments, selectedSort]);
 
   return (
     <div className={cn('space-y-24', 'min-h-[16.25rem]', 'flex', 'flex-col')}>
@@ -37,12 +47,12 @@ const CommentContainer = ({ boardId, comments }: CommentContainerProps) => {
           'flex-col',
         )}
       >
-        {comments.length === 0 ? (
+        {sortedComments.length === 0 ? (
           <p className={cn('text-body1s', 'text-gray-500')}>
             첫 댓글을 달아보세요!
           </p>
         ) : (
-          comments.map((comment) => (
+          sortedComments.map((comment) => (
             <CommentItem
               key={comment.commentId}
               authorName={comment.author.name}
