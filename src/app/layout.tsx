@@ -3,7 +3,7 @@ import TanstackProviders from '@/shared/libs/TanstackProviders';
 import ToastProvider from '@/shared/libs/ToastProvider';
 import '../shared/styles/globals.css';
 import { suit } from '@/shared/styles/fonts';
-import InspectionModal from '@/shared/ui/InspectionModal';
+// import InspectionModal from '@/shared/ui/InspectionModal';
 import { cn } from '@/shared/utils/cn';
 import type { Metadata } from 'next';
 
@@ -26,7 +26,7 @@ export default function RootLayout({
         <TanstackProviders>
           <ToastProvider>
             {children}
-            <InspectionModal service="GOGO" />
+            {/* <InspectionModal service="GOGO" /> */}
           </ToastProvider>
         </TanstackProviders>
       </body>
