@@ -13,15 +13,23 @@ const CommentContainer = ({ boardId, comments }: CommentContainerProps) => {
   const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
 
   const handleSortClick = (sort: SortType) => {
-    setSelectedSort(sort === 'LATEST' ? 'LAST' : 'LATEST');
+    if (sort === 'LATEST') {
+      setSelectedSort('LAST');
+    } else if (sort === 'LAST') {
+      setSelectedSort('LIKE');
+    } else {
+      setSelectedSort('LATEST');
+    }
   };
 
   const sortedComments = useMemo(() => {
     return [...comments].sort((a, b) => {
       if (selectedSort === 'LATEST') {
         return Number(b.commentId) - Number(a.commentId);
-      } else {
+      } else if (selectedSort === 'LAST') {
         return Number(a.commentId) - Number(b.commentId);
+      } else {
+        return b.likeCount - a.likeCount;
       }
     });
   }, [comments, selectedSort]);
