@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowDownIcon, ArrowUpIcon, PlinkoIcon } from '@/shared/assets/icons';
+import { HeartIcon } from '@/shared/assets/icons';
 import {
   BadmintonIcon,
   BaseballIcon,
@@ -21,7 +22,7 @@ export type SportType =
   | 'BADMINTON'
   | 'ETC';
 
-export type SortType = 'LATEST' | 'LAST';
+export type SortType = 'LATEST' | 'LAST' | 'LIKE';
 
 export type GameType = 'YAVARWEE' | 'COINTOSS' | 'PLINKO';
 
@@ -64,5 +65,9 @@ export const SPORT_TYPES: Record<
   PLINKO: {
     icon: (color) => <PlinkoIcon color={color || '#526FFE'} />,
     text: '플린코',
+  },
+  LIKE: {
+    icon: (color) => <HeartIcon color={color || '#526FFE'} />,
+    text: '좋아요순',
   },
 };
