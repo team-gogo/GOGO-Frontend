@@ -1,16 +1,33 @@
+import { useState } from 'react';
 import { CommentItem } from '@/entities/community/detail';
+import { SortType } from '@/shared/model/sportTypes';
 import { Comment } from '@/shared/types/community/detail';
+import SportTypeLabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
-
 interface CommentContainerProps {
   boardId: string;
   comments: Comment[];
 }
 
 const CommentContainer = ({ boardId, comments }: CommentContainerProps) => {
+  const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
+
+  const handleSortClick = (sort: SortType) => {
+    setSelectedSort(sort === 'LATEST' ? 'LAST' : 'LATEST');
+  };
+
   return (
     <div className={cn('space-y-24', 'min-h-[16.25rem]', 'flex', 'flex-col')}>
-      <p className={cn('text-body1e', 'text-white')}>댓글</p>
+      <div className={cn('flex', 'justify-between')}>
+        <p className={cn('text-body1e', 'text-white')}>댓글</p>
+        <SportTypeLabel
+          type={selectedSort}
+          isHaveBorder={true}
+          onClick={() => handleSortClick(selectedSort)}
+          isSelected={false}
+          asButton={true}
+        />
+      </div>
       <div
         className={cn(
           'space-y-20',
