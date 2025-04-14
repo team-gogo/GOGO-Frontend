@@ -1,3 +1,4 @@
+import InspectionModal from '@/shared/ui/InspectionModal';
 import { cn } from '@/shared/utils/cn';
 import { RankingPage } from '@/views/ranking';
 
@@ -14,6 +15,7 @@ const page = () => {
       )}
     >
       <RankingPage />
+      <InspectionModal service="GOGO" onClose={() => {}} />
     </div>
   );
 };
