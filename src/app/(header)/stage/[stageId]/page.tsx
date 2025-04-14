@@ -1,7 +1,11 @@
 import { MatchApplyPage } from '@/views/stage/apply';
 
 const page = () => {
-  return <MatchApplyPage />;
+  return (
+    <>
+      <MatchApplyPage />
+    </>
+  );
 };
 
 export default page;

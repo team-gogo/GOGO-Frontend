@@ -3,6 +3,7 @@ import TanstackProviders from '@/shared/libs/TanstackProviders';
 import ToastProvider from '@/shared/libs/ToastProvider';
 import '../shared/styles/globals.css';
 import { suit } from '@/shared/styles/fonts';
+import InspectionModal from '@/shared/ui/InspectionModal';
 import { cn } from '@/shared/utils/cn';
 import type { Metadata } from 'next';
 
@@ -23,7 +24,10 @@ export default function RootLayout({
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
         <TanstackProviders>
-          <ToastProvider>{children}</ToastProvider>
+          <ToastProvider>
+            {children}
+            <InspectionModal service="GOGO" />
+          </ToastProvider>
         </TanstackProviders>
       </body>
     </html>
