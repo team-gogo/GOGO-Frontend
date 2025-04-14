@@ -51,15 +51,24 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
         'justify-between',
         'rounded-xl',
         'bg-gray-700',
-        'px-[1.625rem]',
-        'py-[2rem]',
-        'tablet:py-[1.5rem]',
+        'px-[1rem]',
+        'py-[1.5rem]',
+        'pad:px-[1.625rem]',
+        'tablet:py-[2rem]',
       )}
     >
-      <div className={cn('flex items-center gap-[2.25rem]')}>
+      <div
+        className={cn(
+          'flex',
+          'items-center',
+          'tablet:gap-[2.25rem]',
+          'pad:gap-[1.5rem]',
+          'gap-[1rem]',
+        )}
+      >
         {isPending ? (
           <div
-            className={cn('text-body1s', 'tablet:text-body2s', 'text-white')}
+            className={cn('tablet:text-body1s', 'text-body2s', 'text-white')}
           >
             내 정보를 불러오는 중...
           </div>
@@ -67,12 +76,17 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
           infoList.map((info) => (
             <div
               key={info.label}
-              className={cn('flex items-center gap-[1rem]')}
+              className={cn(
+                'flex',
+                'items-center',
+                'pad:gap-[1rem]',
+                'gap-[0.5rem]',
+              )}
             >
               <p
                 className={cn(
-                  'text-body2s',
-                  'tablet:text-body3s',
+                  'tablet:text-body2s',
+                  'text-body3s',
                   'text-gray-500',
                 )}
               >
@@ -80,9 +94,11 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
               </p>
               <p
                 className={cn(
-                  'text-body1s',
-                  'tablet:text-body3s',
+                  'tablet:text-body1s',
+                  'text-body3s',
                   'text-white',
+                  info.label === '학교' &&
+                    'w-[3rem] truncate pad:w-[6rem] tablet:w-fit',
                 )}
               >
                 {info.value}
@@ -97,17 +113,14 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
           onClick={() => setIconClicked(!iconClicked)}
           className={cn('flex items-center gap-[0.5rem]')}
         >
-          <div
-            className={cn(
-              'flex h-[1.5rem] w-[1.5rem] items-center justify-center',
-            )}
-          >
+          <div className={cn('pad:block', 'hidden')}>
             <SettingIcon color={iconClicked ? '#fff' : '#6B6B6B'} />
           </div>
+
           <p
             className={cn(
-              'text-body1s',
-              'tablet:text-body2s',
+              'tablet:text-body1s',
+              'text-body3s',
               iconClicked ? 'text-white' : 'text-gray-500',
             )}
           >
@@ -125,8 +138,8 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
               'items-center',
               'rounded-xl',
               'bg-gray-700',
-              'px-[2.25rem]',
-              'tablet:px-[1.5rem]',
+              'tablet:px-[2.25rem]',
+              'px-[1.5rem]',
               'py-[2.5rem]',
               'shadow-[0px_0px_18px_0px_rgba(0,0,0,0.25)]',
             )}
@@ -137,8 +150,8 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
                 'flex-col',
                 'items-center',
                 'justify-center',
-                'gap-[4.1875rem]',
-                'tablet:gap-[3rem]',
+                'tablet:gap-[4.1875rem]',
+                'gap-[3rem]',
               )}
             >
               {menuItems.map((item) => (
@@ -146,8 +159,8 @@ const MyInfoContainer = ({ myInfo, isPending }: MyInfoContainerProps) => {
                   key={item.label}
                   onClick={item.action}
                   className={cn(
-                    'text-body2s',
-                    'tablet:text-bod3s',
+                    'tablet:text-body2s',
+                    'text-bod3s',
                     'text-gray-400',
                     item.hoverClass,
                   )}

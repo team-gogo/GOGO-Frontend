@@ -146,6 +146,7 @@ const MatchApplyPage = () => {
                 'flex-grow',
                 'text-body1e',
                 'text-white',
+                'mobile:text-body3e',
               )}
             >
               정보를 불러오는중...
@@ -154,10 +155,10 @@ const MatchApplyPage = () => {
             <div
               className={cn(
                 'grid',
-                'grid-cols-3',
+                'midpad:grid-cols-3',
                 'gap-x-[1.125rem]',
                 'gap-y-[1.5rem]',
-                'tablet:grid-cols-1',
+                'grid-cols-1',
                 'w-full',
               )}
             >

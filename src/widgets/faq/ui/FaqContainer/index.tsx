@@ -28,8 +28,12 @@ const FaqContainer = () => {
       )}
     >
       <div className={cn('flex', 'items-center', 'justify-center', 'gap-16')}>
-        <QuestionIcon size={60} color="#fff" />
-        <h1 className={cn('text-white', 'text-h1e')}>FAQ</h1>
+        <QuestionIcon
+          color="#fff"
+          className={cn('pad:h-[60px]', 'pad:w-[60px]', 'h-[32px]', 'w-[32px]')}
+        />
+
+        <h1 className={cn('text-white', 'pad:text-h1e', 'text-body1e')}>FAQ</h1>
       </div>
       <div className={cn('space-y-24')}>
         <FaqSearch placeholder="질문 검색하기" onSearch={handleSearch} />

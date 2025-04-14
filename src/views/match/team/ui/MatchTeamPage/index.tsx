@@ -11,6 +11,7 @@ import {
   useTeamDetailModalStore,
 } from '@/shared/stores';
 import useBracketModalStore from '@/shared/stores/useBracketModalStore';
+import useSelectedGameSystemStore from '@/shared/stores/useSelectedGameSystemStore';
 import BackPageButton from '@/shared/ui/backPageButton';
 import TeamDetailModal from '@/shared/ui/teamDetailModal';
 import { cn } from '@/shared/utils/cn';
@@ -21,16 +22,18 @@ const MatchTeamPage = () => {
   const { stageId } = params;
 
   const { data: gameData } = useGetStageGameQuery(stageId);
-
   const { isBracketModalOpen, setIsBracketModalOpen } = useBracketModalStore();
   const { selectedGameId, setSelectedGameId } = useSelectedGameIdStore();
   const { isTeamDetailModalOpen, setIsTeamDetailModalOpen } =
     useTeamDetailModalStore();
   const { setCategory } = useTeamDetailInfoStore();
+  const { selectedGameSystem, setSelectedGameSystem } =
+    useSelectedGameSystemStore();
 
   useEffect(() => {
     if (gameData) {
       setSelectedGameId(gameData.games[0].gameId);
+      setSelectedGameSystem(gameData.games[0].system);
     }
   }, [gameData]);
 
@@ -70,9 +73,13 @@ const MatchTeamPage = () => {
       >
         <BackPageButton />
         <div className={cn('flex', 'w-full', 'gap-[1.5rem]', 'flex-col')}>
-          <div className={cn('flex', 'w-full', 'justify-between')}>
+          <div
+            className={cn('flex', 'w-full', 'justify-between', 'gap-[1rem]')}
+          >
             <MatchNameContainer gameData={gameData} />
-            <ShowBracketButton onClick={() => setIsBracketModalOpen(true)} />
+            {selectedGameSystem === 'TOURNAMENT' && (
+              <ShowBracketButton onClick={() => setIsBracketModalOpen(true)} />
+            )}
           </div>
           <TeamListContainer teams={teamInfoData} />
         </div>
@@ -83,7 +90,7 @@ const MatchTeamPage = () => {
       {isBracketModalOpen && (
         <BracketModal
           onClose={() => setIsBracketModalOpen(false)}
-          _gameId={1}
+          gameId={Number(selectedGameId)}
         />
       )}
     </div>

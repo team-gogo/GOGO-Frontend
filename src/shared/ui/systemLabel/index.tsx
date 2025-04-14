@@ -7,11 +7,7 @@ interface SystemLabelProps {
   isFinal: boolean;
 }
 
-const SystemLabel: React.FC<SystemLabelProps> = ({
-  system,
-  roundText,
-  isFinal,
-}) => {
+const SystemLabel = ({ system, roundText, isFinal }: SystemLabelProps) => {
   if (system === 'TOURNAMENT') {
     return (
       <MatchTypeLabel

@@ -17,7 +17,17 @@ interface MatchPointProps {
 
 const MatchPointContainer = ({ ateam, bteam, betting }: MatchPointProps) => {
   return (
-    <div className={cn('flex', 'items-center', 'gap-[5rem]', 'h-[6.875rem]')}>
+    <div
+      className={cn(
+        'flex',
+        'items-center',
+        'laptop:gap-[5rem]',
+        'pad:gap-[1rem]',
+        'gap-0',
+        'pad:h-[6.875rem]',
+        'h-[4rem]',
+      )}
+    >
       <TeamMatchPoint
         team={ateam}
         isPredicted={betting.predictedWinTeamId === ateam.teamId}
@@ -36,7 +46,7 @@ const MatchPointContainer = ({ ateam, bteam, betting }: MatchPointProps) => {
         <div className={cn('flex', 'items-center', 'gap-[0.5rem]')}>
           <PointCircleIcon color="#FFFFFF" />
           <p className={cn('text-body2s', 'text-white')}>
-            {betting.bettingPoint}
+            {ateam.bettingPoint + bteam.bettingPoint}
           </p>
         </div>
       </div>

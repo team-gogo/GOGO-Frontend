@@ -12,7 +12,7 @@ const StageInputContainer = ({ register }: Props) => {
   return (
     <div className={cn('space-y-16')}>
       <p className={cn('text-white', 'text-body2e')}>스테이지</p>
-      <div className={cn('flex', 'gap-24', 'tablet:flex-wrap')}>
+      <div className={cn('flex', 'gap-24', 'flex-wrap', 'tablet:flex-nowrap')}>
         <Input
           {...register('stageName', {
             required: '스테이지 이름은 필수입니다.',

@@ -28,7 +28,8 @@ const FaqSearch = forwardRef<HTMLInputElement, InputProps>(
             'border-solid',
             'border-gray-700',
             'placeholder:text-gray-500',
-            'text-body1s',
+            'pad:text-body1s',
+            'text-body3s',
             'text-white',
           )}
         />
@@ -42,7 +43,14 @@ const FaqSearch = forwardRef<HTMLInputElement, InputProps>(
             'translate-y-[-50%]',
           )}
         >
-          <SearchIcon />
+          <SearchIcon
+            className={cn(
+              'pad:h-[40px]',
+              'pad:w-[40px]',
+              'h-[24px]',
+              'w-[24px]',
+            )}
+          />
         </button>
       </div>
     );

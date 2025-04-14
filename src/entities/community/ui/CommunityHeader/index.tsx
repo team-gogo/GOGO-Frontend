@@ -6,7 +6,7 @@ const CommunityHeader = () => {
       className={cn(
         'grid',
         'w-full',
-        'grid-cols-[1fr_3fr_1fr_1fr]',
+        'tablet:grid-cols-[1fr_3fr_1fr_1fr]',
         'px-16',
         'font-bold',
         'text-gray-600',
@@ -16,13 +16,15 @@ const CommunityHeader = () => {
         'border-solid',
         'border-gray-700',
         'px-16',
-        'tablet:grid-cols-[1fr_3fr]',
+        'grid-cols-[1fr_3fr]',
       )}
     >
       <div className={cn('text-center')}>운동 종류</div>
       <div className={cn('text-center')}>제목</div>
-      <div className={cn('text-center tablet:hidden')}>이름</div>
-      <div className={cn('text-center tablet:hidden')}>좋아요 & 댓글</div>
+      <div className={cn('hidden text-center', 'tablet:block')}>이름</div>
+      <div className={cn('hidden text-center', 'tablet:block')}>
+        좋아요 & 댓글
+      </div>
     </div>
   );
 };

@@ -6,9 +6,16 @@ import { cn } from '@/shared/utils/cn';
 interface TemPoraryPoint {
   tempPoint: number;
   expiredDate: string;
+  tempPointId: number;
+  onExpire: (id: number) => void;
 }
 
-const TemporaryPoint = ({ tempPoint, expiredDate }: TemPoraryPoint) => {
+const TemporaryPoint = ({
+  tempPoint,
+  expiredDate,
+  tempPointId,
+  onExpire,
+}: TemPoraryPoint) => {
   const [timeLeft, setTimeLeft] = useState(300);
   const [isSuccess, setIsSuccess] = useState(true); //60초 아래로 내려감을 확인함
 
@@ -26,6 +33,7 @@ const TemporaryPoint = ({ tempPoint, expiredDate }: TemPoraryPoint) => {
       setTimeLeft((prev) => {
         if (prev <= 0) {
           clearInterval(timer);
+          onExpire(tempPointId);
           return 0;
         }
         return prev - 1;

@@ -48,7 +48,15 @@ const OfficialCreatePage = () => {
         isFastMode={false}
       />
       <StoreContainer register={register} watch={watch} setValue={setValue} />
-      <div className={cn('flex', 'w-full', 'gap-24', 'tablet:flex-wrap')}>
+      <div
+        className={cn(
+          'flex',
+          'w-full',
+          'gap-24',
+          'flex-wrap',
+          'tablet:flex-nowrap',
+        )}
+      >
         <div className="w-full">
           <EntryNumberInput register={register} />
         </div>

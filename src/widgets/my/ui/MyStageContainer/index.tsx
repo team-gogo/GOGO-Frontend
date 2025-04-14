@@ -18,7 +18,9 @@ const MyStageContainer = ({
   const { push } = useRouter();
   return (
     <div className={cn('w-full', 'h-full', 'flex', 'flex-col', 'gap-[1.5rem]')}>
-      <h2 className={cn('text-body1e', 'text-white')}>내가 참여한 스테이지</h2>
+      <h2 className={cn('midpad:text-body1e', 'text-body3e', 'text-white')}>
+        내가 참여한 스테이지
+      </h2>
 
       {isPending && (
         <div
@@ -34,7 +36,7 @@ const MyStageContainer = ({
           <div
             className={cn('flex', 'flex-col', 'items-center', 'gap-[1.5ren]')}
           >
-            <h2 className={cn('text-h4e', 'text-white')}>
+            <h2 className={cn('midpad:text-h4e', 'text-body1e', 'text-white')}>
               정보를 불러오는 중 입니다.
             </h2>
           </div>
@@ -55,14 +57,25 @@ const MyStageContainer = ({
           <div
             className={cn('flex', 'flex-col', 'items-center', 'gap-[1.5ren]')}
           >
-            <h2 className={cn('text-h4e', 'text-white')}>
+            <h2 className={cn('midpad:text-h4e', 'text-body1e', 'text-white')}>
               현재 참여한 스테이지가 없습니다.
             </h2>
             <button
               onClick={() => push('/stage')}
-              className={cn('flex', 'items-center', 'gap-[1rem]')}
+              className={cn(
+                'flex',
+                'items-center',
+                'midpad:gap-[1rem]',
+                'gap-[0.5rem]',
+              )}
             >
-              <p className={cn('text-body1s', 'text-gray-500')}>
+              <p
+                className={cn(
+                  'midpad:text-body1e',
+                  'text-body3e',
+                  'text-gray-500',
+                )}
+              >
                 스테이지 참여하러가기
               </p>
               <RightArrowIcon />
@@ -73,12 +86,12 @@ const MyStageContainer = ({
         <div
           className={cn(
             'grid',
-            'grid-cols-2',
-            'gap-x-[2.5rem]',
-            'tablet:gap-x-[1rem]',
-            'gap-y-[2rem]',
-            'tablet:gap-y-[1rem]',
-            'mobile:grid-cols-1',
+            'pad:grid-cols-2',
+            'tablet:gap-x-[2.5rem]',
+            'gap-x-[1rem]',
+            'tablet:gap-y-[2rem]',
+            'gap-y-[1rem]',
+            'grid-cols-1',
           )}
         >
           {myStageInfo?.stages.map((stage) => (

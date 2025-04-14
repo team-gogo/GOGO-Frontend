@@ -61,6 +61,7 @@ const DetailFormation = ({
 
   useEffect(() => {
     const mapCenterX = svgBounds.width / 2;
+    let newPlayers: Player[] = [];
 
     if (team1DetailData?.participant) {
       const team1Players = team1DetailData.participant.map((participant) => ({
@@ -70,7 +71,7 @@ const DetailFormation = ({
         y: parseFloat(participant.positionY),
         team: 'A' as const, // 팀 A로 설정
       }));
-      setPlayers((prev) => [...prev, ...team1Players]);
+      newPlayers = [...newPlayers, ...team1Players];
     }
 
     if (team2DetailData?.participant) {
@@ -81,8 +82,10 @@ const DetailFormation = ({
         y: parseFloat(participant.positionY),
         team: 'B' as const, // 팀 B로 설정
       }));
-      setPlayers((prev) => [...prev, ...team2Players]);
+      newPlayers = [...newPlayers, ...team2Players];
     }
+
+    setPlayers(newPlayers);
   }, [team1DetailData, team2DetailData, svgBounds]);
 
   useEffect(() => {
@@ -328,14 +331,26 @@ const DetailFormation = ({
 
   return (
     <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-      <div className="px-4">
-        <div className="relative flex justify-center">
+      <div
+        className="scroll-hidden max-w-full overflow-x-auto laptop:overflow-x-hidden"
+        style={{
+          padding: '0 1rem',
+          scrollPaddingLeft: '1rem',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
+        <div
+          className="relative flex justify-center"
+          style={{ minWidth: 'fit-content' }}
+        >
           <div
-            className={`relative w-full ${isLargeScreen ? 'h-[500px]' : 'h-[400px]'}`}
+            className={`relative h-[30rem] w-full`}
             style={{
-              maxWidth: isLargeScreen ? 'none' : '100%',
-              minWidth: isModalUsed ? '660px' : '780px',
+              maxWidth: isModalUsed ? '660px' : '1200px',
+              minWidth: isModalUsed ? '660px' : '1200px',
+              width: isModalUsed ? '660px' : '1200px',
               margin: '0 auto',
+              overflow: 'hidden',
             }}
           >
             <Droppable droppableId="court" type="PLAYER" isDropDisabled={false}>

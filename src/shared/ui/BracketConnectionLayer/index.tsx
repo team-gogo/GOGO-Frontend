@@ -7,12 +7,8 @@ import FourBracketLine from '@/shared/assets/svg/BarcketLine/FourBracketLine';
 import SevenBracketLine from '@/shared/assets/svg/BarcketLine/SevenBracketLine';
 import SixBracketLine from '@/shared/assets/svg/BarcketLine/SixBracketLine';
 import ThreeBracketLine from '@/shared/assets/svg/BarcketLine/ThreeBracketLine';
+import { GroupDistribution } from '@/shared/model/calculateTeamDistribution';
 import { cn } from '@/shared/utils/cn';
-
-interface GroupDistribution {
-  top: number;
-  bottom: number;
-}
 
 interface BracketConnectionLayerProps {
   finalStage: number;

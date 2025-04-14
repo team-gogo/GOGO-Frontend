@@ -17,6 +17,7 @@ const PlinkoBottomDiv = ({
         'justify-around',
         'gap-[0.5rem]',
         'flex-col',
+        'w-full',
       )}
     >
       <div
@@ -35,8 +36,8 @@ const PlinkoBottomDiv = ({
               className={cn(
                 'flex',
                 'w-full',
-                'px-[0.5rem]',
-                'py-[0.1rem]',
+                'px-[0.5vw]',
+                'py-[0.1vw]',
                 'justify-center',
                 'items-center',
                 'rounded-lg',
@@ -48,7 +49,16 @@ const PlinkoBottomDiv = ({
                 index === lastPassedIndex && 'animate-bounce',
               )}
             >
-              <p className={cn('text-caption3s', 'text-main-600')}>{value}</p>
+              <p
+                className={cn(
+                  'min-text-[0.7vw]',
+                  'text-[0.7vw]',
+                  'min-leading-[1.375rem]',
+                  'text-main-600',
+                )}
+              >
+                {value}
+              </p>
 
               <style>
                 {`

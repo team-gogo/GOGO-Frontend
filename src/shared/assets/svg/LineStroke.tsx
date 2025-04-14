@@ -1,8 +1,8 @@
-const LineStroke = () => {
+const LineStroke = ({ height = 20 }: { height?: number }) => {
   return (
     <svg
       width="1"
-      height="20"
+      height={height}
       viewBox="0 0 1 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -17,13 +17,13 @@ const MiniGameSection = ({ stageId, activeGameList }: MiniGameSectionProps) => {
     {
       Icon: ShellGameIcon,
       label: '야바위',
-      path: 'shell-game',
+      path: 'yavarwee',
       isActive: activeGameList?.isYavarweeActive,
     },
     {
       Icon: CoinIcon,
       label: '코인',
-      path: 'coin',
+      path: 'coin-toss',
       isActive: activeGameList?.isCoinTossActive,
     },
     {
@@ -63,10 +63,19 @@ const MiniGameSection = ({ stageId, activeGameList }: MiniGameSectionProps) => {
           )}
           onClick={() => handleGameClick(path, isActive)}
         >
-          <Icon size={60} color={isActive ? '#FFFFFF' : '#898989'} />
+          <Icon
+            color={isActive ? '#FFFFFF' : '#898989'}
+            className={cn(
+              'pad:w-[3.75rem]',
+              'pad:h-[3.75rem]',
+              'w-[2rem]',
+              'h-[2rem]',
+            )}
+          />
           <h2
             className={cn(
-              'text-body1s',
+              'pad:text-body1s',
+              'text-body3s',
               isActive ? 'text-white' : 'text-gray-400',
             )}
           >

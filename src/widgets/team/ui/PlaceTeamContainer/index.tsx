@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { postTeam } from '@/entities/team/api/postTeam';
+import useSvgBounds from '@/entities/team/model/useSvgBounds';
 import SportMap from '@/entities/team/ui/Map';
 import PlayerItem from '@/entities/team/ui/PlayerItem';
 import FingerIcon from '@/shared/assets/svg/FingerIcon';
@@ -45,19 +46,10 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
   const draggedPlayerRef = useRef<string | null>(null);
   const mousePositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [draggingPlayerId, setDraggingPlayerId] = useState<string | null>(null);
-  const [svgBounds, setSvgBounds] = useState<{
-    width: number;
-    height: number;
-    left: number;
-    top: number;
-  }>({
-    width: 0,
-    height: 0,
-    left: 0,
-    top: 0,
-  });
   const [playerScale, setPlayerScale] = useState(1);
   const [isLargeScreen, setIsLargeScreen] = useState(true);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const svgBounds = useSvgBounds(isLargeScreen);
 
   const { gameId, category } = params;
 
@@ -123,78 +115,6 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
   }, []);
 
   useEffect(() => {
-    const updateSvgBounds = () => {
-      const courtElement = document.getElementById('court-droppable');
-      if (courtElement) {
-        const svg = courtElement.querySelector('svg');
-        if (svg) {
-          const courtRect = courtElement.getBoundingClientRect();
-          const svgRect = svg.getBoundingClientRect();
-          const viewBox = svg.viewBox.baseVal;
-
-          const newBounds = {
-            width: svgRect.width,
-            height: svgRect.height,
-            left: svgRect.left - courtRect.left,
-            top: svgRect.top - courtRect.top,
-          };
-
-          setSvgBounds(newBounds);
-
-          setPlayers((prevPlayers) =>
-            prevPlayers.map((player) => {
-              if (player.x === 0 && player.y === 0) return player;
-
-              const scaleX = viewBox.width / svgRect.width;
-              const scaleY = viewBox.height / svgRect.height;
-
-              const svgX = player.relativeX
-                ? player.relativeX * (viewBox.width / 2)
-                : player.x * scaleX;
-              const svgY = player.relativeY
-                ? player.relativeY * viewBox.height
-                : player.y * scaleY;
-
-              const playerWidth = isLargeScreen ? 90 : 60;
-              const playerHeight = isLargeScreen ? 90 : 60;
-              const scale = isLargeScreen ? 0.9 : 0.6;
-              const scaledWidth = playerWidth * scale * scaleX;
-              const scaledHeight = playerHeight * scale * scaleY;
-
-              const horizontalMargin = scaledWidth * 0.01;
-              const maxX = viewBox.width / 2 - scaledWidth - horizontalMargin;
-              const maxY = viewBox.height - scaledHeight;
-
-              const boundedX = Math.max(horizontalMargin, Math.min(svgX, maxX));
-              const boundedY = Math.max(0, Math.min(svgY, maxY));
-
-              const screenX = boundedX / scaleX;
-              const screenY = boundedY / scaleY;
-
-              return {
-                ...player,
-                x: screenX,
-                y: screenY,
-                relativeX: boundedX / (viewBox.width / 2),
-                relativeY: boundedY / viewBox.height,
-              };
-            }),
-          );
-        }
-      }
-    };
-
-    updateSvgBounds();
-    window.addEventListener('resize', updateSvgBounds);
-    const timeoutId = setTimeout(updateSvgBounds, 100);
-
-    return () => {
-      window.removeEventListener('resize', updateSvgBounds);
-      clearTimeout(timeoutId);
-    };
-  }, [sportType, isLargeScreen, svgBounds.width, svgBounds.height]);
-
-  useEffect(() => {
     const updatePlayerScale = () => {
       const courtElement = document.getElementById('court-droppable');
       if (courtElement) {
@@ -221,17 +141,6 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
     if (courtElement) {
       const resizeObserver = new ResizeObserver(() => {
         updatePlayerScale();
-        const svg = courtElement.querySelector('svg');
-        if (svg) {
-          const courtRect = courtElement.getBoundingClientRect();
-          const svgRect = svg.getBoundingClientRect();
-          setSvgBounds({
-            width: Math.max(svgRect.width, 300),
-            height: svgRect.height,
-            left: svgRect.left - courtRect.left,
-            top: svgRect.top - courtRect.top,
-          });
-        }
       });
       resizeObserver.observe(courtElement);
 
@@ -339,8 +248,21 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       const scaleX = viewBox.width / svgRect.width;
       const scaleY = viewBox.height / svgRect.height;
 
-      const svgX = (x - svgRect.left) * scaleX;
-      const svgY = (y - svgRect.top) * scaleY;
+      let svgX, svgY;
+
+      if (!isLargeScreen) {
+        const mapContainer = courtElement.querySelector(
+          'div[style*="position: fixed"]',
+        );
+        if (!mapContainer) return;
+
+        const mapRect = mapContainer.getBoundingClientRect();
+        svgX = (x - mapRect.left) * scaleX;
+        svgY = (y - mapRect.top) * scaleY;
+      } else {
+        svgX = (x - svgRect.left) * scaleX;
+        svgY = (y - svgRect.top) * scaleY;
+      }
 
       const baseMarginRatio = 0.02;
       const maxMarginRatio = 0.05;
@@ -463,8 +385,21 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       const scaleX = viewBox.width / svgRect.width;
       const scaleY = viewBox.height / svgRect.height;
 
-      const svgX = (e.clientX - svgRect.left) * scaleX;
-      const svgY = (e.clientY - svgRect.top) * scaleY;
+      let svgX, svgY;
+
+      if (!isLargeScreen) {
+        const mapContainer = courtElement.querySelector(
+          'div[style*="position: fixed"]',
+        );
+        if (!mapContainer) return;
+
+        const mapRect = mapContainer.getBoundingClientRect();
+        svgX = (e.clientX - mapRect.left) * scaleX;
+        svgY = (e.clientY - mapRect.top) * scaleY;
+      } else {
+        svgX = (e.clientX - svgRect.left) * scaleX;
+        svgY = (e.clientY - svgRect.top) * scaleY;
+      }
 
       const baseMarginRatio = 0.01;
       const maxMarginRatio = 0.02;
@@ -524,8 +459,11 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
       const width = window.innerWidth;
       if (width >= 1280) {
         setIsLargeScreen(true);
-      } else if (width < 1280) {
+      } else if (width < 1280 && width >= 649) {
         setIsLargeScreen(false);
+        setIsSmallScreen(false);
+      } else if (width < 649) {
+        setIsSmallScreen(true);
       }
     };
     checkScreenSize();
@@ -548,10 +486,16 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
         </header>
         <div className="mt-28 flex flex-1 flex-col">
           <div className="flex flex-row items-center justify-between">
-            <h1 className="mb-28 text-h3e text-white">{game?.gameName}</h1>
+            <p className="text-h3e text-white">{game?.gameName}</p>
             <div className="flex flex-row items-center justify-center gap-10">
-              <FingerIcon />
-              <h2 className="text-h3 text-white">인원을 배치 하세요</h2>
+              <FingerIcon size={isSmallScreen ? 20 : 26} />
+              <h2
+                className={`text-h3 text-white ${
+                  isSmallScreen ? 'text-h4' : 'text-h3'
+                }`}
+              >
+                인원을 배치 하세요
+              </h2>
             </div>
           </div>
           <div className="px-4">
@@ -560,8 +504,9 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                 className={`relative w-full ${isLargeScreen ? 'h-[500px]' : 'h-[400px]'}`}
                 style={{
                   maxWidth: isLargeScreen ? 'none' : '100%',
-                  minWidth: '780px',
+                  minWidth: isLargeScreen ? '780px' : '100%',
                   margin: '0 auto',
+                  overflow: !isLargeScreen ? 'hidden' : 'visible',
                 }}
               >
                 <Droppable
@@ -573,121 +518,148 @@ const PlaceTeamContainer = ({ params }: PlaceTeamContainerProps) => {
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="relative h-full overflow-visible rounded-lg bg-transparent"
+                      className={`relative h-full overflow-visible rounded-lg bg-transparent ${!isLargeScreen ? 'mx-auto' : ''}`}
                       id="court-droppable"
                     >
                       <div className="relative h-full">
-                        <SportMap
-                          type={sportType}
-                          isMapDragging={draggingPlayerId !== null}
-                          onPositionChange={(x, y) => {
-                            if (draggingPlayerId && draggedPlayerRef.current) {
-                              if (x === -1 && y === -1) {
-                                setDraggingPlayerId(null);
-                                draggedPlayerRef.current = null;
-                                return;
-                              }
-                              handlePlayerDrag(
-                                draggedPlayerRef.current,
-                                x + svgBounds.left,
-                                y + svgBounds.top,
-                              );
-                            }
-                          }}
-                        />
                         <div
-                          className="absolute inset-0"
+                          className="relative h-full w-full"
                           style={{
-                            pointerEvents: 'all',
+                            transformOrigin: 'center center',
+                            position: !isLargeScreen ? 'fixed' : 'relative',
+                            left: !isLargeScreen ? '50%' : 'auto',
+                            top: !isLargeScreen ? '40%' : 'auto',
+                            transform: !isLargeScreen
+                              ? `translate(-50%, -50%) ${isSmallScreen ? 'scale(0.8)' : ''}`
+                              : 'none',
+                            width: !isLargeScreen ? '100%' : '100%',
+                            height: !isLargeScreen ? '400px' : '100%',
+                            maxWidth: !isLargeScreen ? '500px' : 'none',
                           }}
                         >
-                          {players.map((player, index) => (
-                            <Draggable
-                              key={player.id}
-                              draggableId={player.id}
-                              index={index}
-                            >
-                              {(provided, snapshot) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  id={`player-${player.id}`}
-                                  style={{
-                                    ...provided.draggableProps.style,
-                                    position: 'absolute',
-                                    left: `${player.x}px`,
-                                    top: `${player.y}px`,
-                                    transform: `scale(${playerScale})`,
-                                    transformOrigin: 'center center',
-                                    transition: snapshot.isDragging
-                                      ? 'none'
-                                      : 'transform 0.2s, left 0.2s, top 0.2s',
-                                    zIndex:
-                                      snapshot.isDragging ||
-                                      draggingPlayerId === player.id
-                                        ? 99999
-                                        : 1,
-                                    pointerEvents: 'auto',
-                                  }}
-                                  onMouseDown={(e) => {
-                                    if (e.button === 0) {
-                                      e.stopPropagation();
-                                      e.preventDefault();
-                                      setDraggingPlayerId(player.id);
-                                      draggedPlayerRef.current = player.id;
+                          <SportMap
+                            type={sportType}
+                            isMapDragging={draggingPlayerId !== null}
+                            isModalUsed={!isLargeScreen}
+                            onPositionChange={(x, y) => {
+                              if (
+                                draggingPlayerId &&
+                                draggedPlayerRef.current
+                              ) {
+                                if (x === -1 && y === -1) {
+                                  setDraggingPlayerId(null);
+                                  draggedPlayerRef.current = null;
+                                  return;
+                                }
+                                handlePlayerDrag(
+                                  draggedPlayerRef.current,
+                                  x + svgBounds.left,
+                                  y + svgBounds.top,
+                                );
+                              }
+                            }}
+                          />
+                          <div
+                            className="absolute inset-0"
+                            style={{
+                              pointerEvents: 'all',
+                              position: 'absolute',
+                              top: !isLargeScreen ? '12%' : '0',
+                              left: !isLargeScreen ? '-2%' : '0',
+                              width: '100%',
+                              height: '100%',
+                            }}
+                          >
+                            {players.map((player, index) => (
+                              <Draggable
+                                key={player.id}
+                                draggableId={player.id}
+                                index={index}
+                              >
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    id={`player-${player.id}`}
+                                    style={{
+                                      ...provided.draggableProps.style,
+                                      position: 'absolute',
+                                      left: `${player.x}px`,
+                                      top: `${player.y}px`,
+                                      transform: `scale(${playerScale})`,
+                                      transformOrigin: 'center center',
+                                      transition: snapshot.isDragging
+                                        ? 'none'
+                                        : 'transform 0.2s, left 0.2s, top 0.2s',
+                                      zIndex:
+                                        snapshot.isDragging ||
+                                        draggingPlayerId === player.id
+                                          ? 99999
+                                          : 1,
+                                      pointerEvents: 'auto',
+                                    }}
+                                    onMouseDown={(e) => {
+                                      if (e.button === 0) {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        setDraggingPlayerId(player.id);
+                                        draggedPlayerRef.current = player.id;
 
-                                      const handleMouseMove = (e: MouseEvent) =>
-                                        handleGlobalMouseMove(e, player.id);
+                                        const handleMouseMove = (
+                                          e: MouseEvent,
+                                        ) =>
+                                          handleGlobalMouseMove(e, player.id);
 
-                                      const handleMouseUp = () => {
-                                        setDraggingPlayerId(null);
-                                        draggedPlayerRef.current = null;
-                                        window.removeEventListener(
+                                        const handleMouseUp = () => {
+                                          setDraggingPlayerId(null);
+                                          draggedPlayerRef.current = null;
+                                          window.removeEventListener(
+                                            'mousemove',
+                                            handleMouseMove,
+                                          );
+                                          window.removeEventListener(
+                                            'mouseup',
+                                            handleMouseUp,
+                                          );
+                                        };
+
+                                        window.addEventListener(
                                           'mousemove',
                                           handleMouseMove,
                                         );
-                                        window.removeEventListener(
+                                        window.addEventListener(
                                           'mouseup',
                                           handleMouseUp,
                                         );
-                                      };
-
-                                      window.addEventListener(
-                                        'mousemove',
-                                        handleMouseMove,
-                                      );
-                                      window.addEventListener(
-                                        'mouseup',
-                                        handleMouseUp,
-                                      );
-                                    }
-                                  }}
-                                >
-                                  <PlayerItem
-                                    name={player.name}
-                                    isDragging={
-                                      snapshot.isDragging ||
-                                      draggingPlayerId === player.id
-                                    }
-                                    style={{
-                                      position: 'relative',
-                                      cursor: 'move',
-                                      userSelect: 'none',
-                                      touchAction: 'none',
-                                      pointerEvents: 'auto',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      width: isLargeScreen ? '90px' : '60px',
-                                      height: isLargeScreen ? '90px' : '60px',
+                                      }
                                     }}
-                                    className="transition-transform"
-                                  />
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
+                                  >
+                                    <PlayerItem
+                                      name={player.name}
+                                      isDragging={
+                                        snapshot.isDragging ||
+                                        draggingPlayerId === player.id
+                                      }
+                                      style={{
+                                        position: 'relative',
+                                        cursor: 'move',
+                                        userSelect: 'none',
+                                        touchAction: 'none',
+                                        pointerEvents: 'auto',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: isLargeScreen ? '90px' : '60px',
+                                        height: isLargeScreen ? '90px' : '60px',
+                                      }}
+                                      className="transition-transform"
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                          </div>
                         </div>
                       </div>
                       {provided.placeholder}

@@ -26,8 +26,8 @@ const Header = () => {
     <header
       className={cn(
         'w-full',
-        'py-[32px]',
-        'tablet:py-[24px]',
+        'tablet:py-[32px]',
+        'py-[24px]',
         'flex',
         'border-b-1',
         'border-solid',
@@ -38,11 +38,11 @@ const Header = () => {
     >
       <div className={cn('flex', 'justify-between', 'w-full', 'w-[1320px]')}>
         <Link href="/stage">
-          <div className={cn('flex', 'max-w-[11.75rem]')}>
+          <div className={cn('flex', 'pad:w-[11.75rem]', 'w-[7rem]')}>
             <GOGOIcon className="h-auto w-full" />
           </div>
         </Link>
-        <nav className={cn('flex', 'gap-28', 'tablet:gap-16')}>
+        <nav className={cn('flex', 'tablet:gap-28', 'gap-16')}>
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -51,7 +51,7 @@ const Header = () => {
               onMouseEnter={() => setHoveredItem(item.href)}
               onMouseLeave={() => setHoveredItem(null)}
             >
-              <div className={cn('laptop:hidden', 'block')}>
+              <div className={cn('hidden', 'laptop:block')}>
                 <item.icon
                   size={24}
                   color={
@@ -63,8 +63,8 @@ const Header = () => {
               <span
                 className={cn(
                   'text-gray-500',
-                  'text-body2s',
-                  'tablet:text-body3s',
+                  'tablet:text-body2s',
+                  'text-body3s',
                 )}
                 style={{
                   color:

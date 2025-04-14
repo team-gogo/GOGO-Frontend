@@ -36,14 +36,15 @@ const GameField = ({
     <div
       className={cn(
         'flex',
+        'tablet:flex-nowrap',
         'gap-24',
         'w-full',
-        'tablet:flex-wrap',
+        'flex-wrap',
         'items-center',
       )}
     >
-      <div className={cn('flex', 'gap-24', 'w-4/6', 'tablet:w-full')}>
-        <div className={cn('w-2/3', 'tablet:w-full')}>
+      <div className={cn('flex', 'gap-24', 'tablet:w-4/6', 'w-full')}>
+        <div className={cn('tablet:w-2/3', 'w-full')}>
           <Input
             {...register(`game.${index}.name`, {
               required: `경기의 ${getCategoryLabel(category)}${sportIndex}번 경기 이름은 필수입니다.`,
@@ -52,14 +53,14 @@ const GameField = ({
             maxLength={10}
           />
         </div>
-        <div className={cn('w-1/3', 'tablet:w-full')}>
+        <div className={cn('tablet:w-1/3', 'w-full')}>
           <SelectOption
             {...register(`game.${index}.system`)}
             options={matchTypeOptions}
           />
         </div>
       </div>
-      <div className={cn('flex', 'gap-24', 'w-2/6', 'tablet:w-full')}>
+      <div className={cn('flex', 'gap-24', 'tablet:w-2/6', 'w-full')}>
         <div className={cn('w-1/2')}>
           <Input
             {...register(`game.${index}.teamMinCapacity`, {

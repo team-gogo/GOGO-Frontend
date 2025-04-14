@@ -16,14 +16,16 @@ interface CommentInputProps {
   boardId: string;
   stageId: string;
   onAddComment: (newComment: Comment) => void;
+  currentPage: number;
 }
 
 const CommentInput = ({
   boardId,
   stageId,
   onAddComment,
+  currentPage,
 }: CommentInputProps) => {
-  const { register, handleSubmit, reset } = useForm<CommentFormData>({
+  const { register, handleSubmit, reset, watch } = useForm<CommentFormData>({
     defaultValues: {
       boardId,
     },
@@ -32,6 +34,7 @@ const CommentInput = ({
   const { mutate: boardComment, isPending } = usePostBoardCommentMutation(
     boardId,
     stageId,
+    currentPage,
   );
 
   const onSubmit: SubmitHandler<CommentFormData> = async (data) => {
@@ -53,6 +56,7 @@ const CommentInput = ({
         placeholder="댓글을 입력해주세요"
         maxLength={300}
         icon={<SendIcon />}
+        value={watch('content') || ''}
       />
     </form>
   );

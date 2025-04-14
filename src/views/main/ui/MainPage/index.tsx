@@ -4,8 +4,10 @@ import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { useGetStageGameQuery } from '@/entities/community/model/useGetStageGameQuery';
 import { DateContainer, BettingModal } from '@/entities/main';
+import { useGetIsWasted } from '@/entities/main/model/useGetIsWasted';
 import BatchCancelModal from '@/entities/main/ui/BatchCancelModal';
 import BatchModal from '@/entities/main/ui/BatchModal';
+import WastedModal from '@/entities/main/ui/WastedModal';
 import { MatchClockIcon } from '@/shared/assets/svg';
 import {
   CommunityIcon,
@@ -13,7 +15,6 @@ import {
   PriceIcon,
   RankingIcon,
 } from '@/shared/assets/svg/MainIcon';
-
 import {
   useBatchModalStore,
   useCheckAgainModalStore,
@@ -22,10 +23,12 @@ import {
   useSelectDateStore,
 } from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
+import useWastedModalStore from '@/shared/stores/useWastedModalStore';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import { formatPoint } from '@/shared/utils/formatPoint';
 import { useGetActiveGameQuery } from '@/views/mini-game/model/useGetActiveGameQuery';
+import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetRankingQuery } from '@/views/ranking/model/useGetRankingQuery';
 import { CommunityItemContainer } from '@/widgets/community';
 import {
@@ -34,9 +37,7 @@ import {
   SectionWrapper,
 } from '@/widgets/main';
 import { RankingUserContainer } from '@/widgets/ranking';
-
 import { useGetSearchMatch } from '../../model/useGetSearchMatch';
-import { useGetUserStagePoint } from '../../model/useGetUserStagePoint';
 
 const MainPage = () => {
   const params = useParams<{ stageId: string }>();
@@ -46,7 +47,7 @@ const MainPage = () => {
   const { point, setPoint } = usePointStore();
   const { selectDate, setSelectDate } = useSelectDateStore();
 
-  const { data: userPointData } = useGetUserStagePoint(Number(stageId));
+  const { data: userPointData } = useGetMyPointQuery(stageId);
 
   useEffect(() => {
     if (userPointData?.point) {
@@ -71,7 +72,7 @@ const MainPage = () => {
   const { data: searchMatchData, isPending: searchMatchPending } =
     useGetSearchMatch(Number(stageId), year, month, day);
 
-  const { data: rankingData } = useGetRankingQuery(stageId);
+  const { data: rankingData } = useGetRankingQuery(stageId, 0, 4);
 
   const { data: activeGameList } = useGetActiveGameQuery(stageId);
 
@@ -89,6 +90,30 @@ const MainPage = () => {
   const { isBatchModalOpen, setIsBatchModalOpen } = useBatchModalStore();
   const { isCheckAgainModalOpen, setIsCheckAgainModalOpen } =
     useCheckAgainModalStore();
+  const { isWastedModalOpen, setIsWastedModalOpen } = useWastedModalStore();
+
+  const { data: isWastedData } = useGetIsWasted(Number(stageId));
+
+  useEffect(() => {
+    if (isWastedData?.isWasted === true) {
+      const notShowWastedDate = localStorage.getItem(
+        `not_show_wasted_${stageId}`,
+      );
+      if (notShowWastedDate) {
+        const savedDate = new Date(notShowWastedDate);
+        const todayStart = new Date(today);
+        todayStart.setHours(0, 0, 0, 0);
+
+        if (savedDate < todayStart) {
+          setIsWastedModalOpen(true);
+        }
+      } else {
+        setIsWastedModalOpen(true);
+      }
+    }
+  }, [isWastedData]);
+
+  const iconStyle = 'h-[1.5rem] w-[1.5rem] pad:h-[1.75rem] pad:w-[1.75rem]';
 
   return (
     <div
@@ -111,27 +136,34 @@ const MainPage = () => {
           'gap-[2.5rem]',
         )}
       >
-        <div className={cn('w-full', 'flex', 'justify-between')}>
-          <div className={cn('flex', 'items-center', 'gap-[1rem]', 'w-full')}>
-            <h2 className={cn('text-title4s', 'text-gray-500')}>포인트</h2>
-            <h2 className={cn('text-h3e', 'text-white')}>
+        <div className={cn('flex', 'justify-between')}>
+          <div className={cn('flex', 'items-center', 'gap-[1rem]')}>
+            <h2
+              className={cn(
+                'laptop:text-title4s',
+                'text-body2e',
+                'text-gray-500',
+              )}
+            >
+              포인트
+            </h2>
+            <h2 className={cn('laptop:text-h3e', 'text-body1e', 'text-white')}>
               {formatPoint(point)}
             </h2>
-            <h3 className={cn('text-body1s', 'text-gray-200')}>
+            <h3
+              className={cn(
+                'text-body1s',
+                'text-gray-200',
+                'laptop:block',
+                'hidden',
+              )}
+            >
               ({point.toLocaleString()})
             </h3>
           </div>
           <DateContainer />
         </div>
-        <div
-          className={cn(
-            'flex',
-            'w-full',
-            'flex-wrap',
-            'gap-[1.75rem]',
-            'md:flex-col',
-          )}
-        >
+        <div className={cn('flex', 'w-full', 'flex-wrap', 'gap-[1.75rem]')}>
           <SectionWrapper
             text={isToday ? '오늘 최신 매치' : `${selectDate.slice(5)} 매치`}
             icon={<MatchClockIcon />}
@@ -147,13 +179,14 @@ const MainPage = () => {
               'flex',
               'w-full',
               'gap-[1.75rem]',
-              'tablet:flex-wrap',
+              'flex-wrap',
+              'tablet:flex-nowrap',
               'min-h-[15.5rem]',
             )}
           >
             <SectionWrapper
               text={'미니게임'}
-              icon={<MiniGameIcon />}
+              icon={<MiniGameIcon className={iconStyle} />}
               path={`/mini-game/${stageId}`}
             >
               <MiniGameSection
@@ -163,7 +196,7 @@ const MainPage = () => {
             </SectionWrapper>
             <SectionWrapper
               text={'포인트 랭킹'}
-              icon={<PriceIcon />}
+              icon={<PriceIcon className={iconStyle} />}
               path={`/ranking/${stageId}`}
             >
               <div
@@ -182,12 +215,13 @@ const MainPage = () => {
               'w-full',
               'flex',
               'gap-[1.75rem]',
-              'tablet:flex-wrap',
+              'flex-wrap',
+              'tablet:flex-nowrap',
             )}
           >
             <SectionWrapper
               text={'커뮤니티'}
-              icon={<CommunityIcon />}
+              icon={<CommunityIcon className={iconStyle} />}
               path={`/community/${stageId}`}
             >
               <CommunityItemContainer
@@ -199,7 +233,7 @@ const MainPage = () => {
 
             <SectionWrapper
               text={'경기'}
-              icon={<RankingIcon />}
+              icon={<RankingIcon className={iconStyle} />}
               path={`/match/team/${stageId}`}
             >
               <MatchListSection stageInMatch={gameData} stageId={stageId} />
@@ -215,6 +249,12 @@ const MainPage = () => {
       )}
       {isCheckAgainModalOpen && (
         <BatchCancelModal onClose={() => setIsCheckAgainModalOpen(false)} />
+      )}
+      {isWastedModalOpen && (
+        <WastedModal
+          stageId={Number(stageId)}
+          onClose={() => setIsWastedModalOpen(false)}
+        />
       )}
     </div>
   );

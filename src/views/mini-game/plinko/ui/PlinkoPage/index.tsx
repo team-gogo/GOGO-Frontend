@@ -1,12 +1,14 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react'; // useRef 추가
+import { toast } from 'react-toastify';
 import { usePointTicketStore } from '@/shared/stores';
 import { PlinkoFormType, PlinkoResponse } from '@/shared/types/mini-game';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { formatPlinkoData } from '@/views/mini-game/model/formatPlinkoData';
+import { useGetBetLimit } from '@/views/mini-game/model/useGetBetLimit';
 import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { usePlinkoForm } from '@/views/mini-game/model/usePlinkoForm';
@@ -16,15 +18,27 @@ import { PlinkoGame, PlinkoInputBox } from '@/widgets/mini-game';
 const PlinkoPage = () => {
   const params = useParams<{ boardId: string; stageId: string }>();
   const { stageId } = params;
+  const { back } = useRouter();
 
   const { point, setPoint, ticket, setTicket } = usePointTicketStore();
 
   const [plinkoData, setPlinkoData] = useState<PlinkoResponse | null>(null);
   const [gameRunningCount, setGameRunningCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGameEnd, setIsGameEnd] = useState(false);
 
-  const { data: myPoint } = useGetMyPointQuery(String(stageId));
-  const { data: myTicket } = useGetMyTicketQuery(String(stageId));
+  const { data: myPoint, refetch: refetchMyPoint } =
+    useGetMyPointQuery(stageId);
+  const { data: myTicket, refetch: refetchMyTicket } = useGetMyTicketQuery(
+    String(stageId),
+  );
+
+  useEffect(() => {
+    if (isGameEnd === true && gameRunningCount === 0) {
+      refetchMyPoint();
+      refetchMyTicket();
+    }
+  }, [isGameEnd, gameRunningCount]);
 
   useEffect(() => {
     if (myPoint !== undefined && myPoint !== null) {
@@ -35,6 +49,16 @@ const PlinkoPage = () => {
       setTicket(myTicket.plinko || 0);
     }
   }, [myPoint, myTicket]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      refetchMyPoint();
+      refetchMyTicket();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const {
     register,
@@ -52,9 +76,25 @@ const PlinkoPage = () => {
   const isDisabled = !!(!amount || !risk || ticket === 0 || amount > point);
 
   const { mutate: PostPlinko } = usePostPlinkoGame(Number(stageId), amount);
+  const { data: betLimitData } = useGetBetLimit(stageId);
+
+  const minBetLimit = betLimitData?.plinko.minBetPoint || 0;
+  const maxBetLimit = betLimitData?.plinko.maxBetPoint || 0;
+
+  const submitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const onSubmit = (data: PlinkoFormType) => {
     if (isLoading) return;
+    setIsGameEnd(false);
+
+    const formattedAmount = data.amount;
+
+    if (formattedAmount < minBetLimit || formattedAmount > maxBetLimit) {
+      toast.error(
+        `배팅 금액은 최소 ${minBetLimit} 이상, 최대 ${maxBetLimit} 이하여야 합니다.`,
+      );
+      return;
+    }
 
     setIsLoading(true);
     const formattedData = formatPlinkoData(data, selectedRisk);
@@ -69,6 +109,14 @@ const PlinkoPage = () => {
         setIsLoading(false);
       },
     });
+
+    if (submitTimeoutRef.current) {
+      clearTimeout(submitTimeoutRef.current);
+    }
+
+    submitTimeoutRef.current = setTimeout(() => {
+      setIsGameEnd(true);
+    }, 500);
   };
 
   return (
@@ -91,11 +139,35 @@ const PlinkoPage = () => {
           'gap-[3rem]',
         )}
       >
-        <BackPageButton label="플린코" />
-        <div className={cn('w-full', 'flex', 'justify-between')}>
+        <BackPageButton
+          label="플린코"
+          onClick={() => {
+            refetchMyPoint();
+            refetchMyTicket();
+            back();
+          }}
+        />
+        <div
+          className={cn(
+            'w-full',
+            'flex',
+            'desktop:items-start',
+            'items-center',
+            'desktop:flex-row',
+            'flex-col-reverse',
+            'justify-between',
+            'gap-[2rem]',
+          )}
+        >
           <form
             onSubmit={handleSubmit(onSubmit, onError)}
-            className={cn('flex', 'gap-[2.5rem]', 'flex-col')}
+            className={cn(
+              'flex',
+              'gap-[2.5rem]',
+              'flex-col',
+              'desktop:w-[24.5rem]',
+              'w-full',
+            )}
           >
             <PlinkoInputBox
               money={point}
@@ -106,6 +178,8 @@ const PlinkoPage = () => {
               selectedRisk={selectedRisk}
               setSelectedRisk={setSelectedRisk}
               gameRunningCount={gameRunningCount}
+              minBetLimit={minBetLimit}
+              maxBetLimit={maxBetLimit}
             />
           </form>
 

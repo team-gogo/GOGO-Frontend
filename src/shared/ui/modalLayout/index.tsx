@@ -9,6 +9,7 @@ interface ModalLayoutProps {
   children: React.ReactNode;
   containerClassName?: string;
   showHeader?: boolean;
+  canClose?: boolean;
 }
 
 const ModalLayout = ({
@@ -17,6 +18,7 @@ const ModalLayout = ({
   children,
   containerClassName,
   showHeader = true,
+  canClose = true,
 }: ModalLayoutProps) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -40,7 +42,7 @@ const ModalLayout = ({
         'overflow-visible',
       )}
       style={{ margin: 0 } as React.CSSProperties}
-      onClick={onClose}
+      onClick={canClose ? onClose : undefined}
     >
       <div className={containerClassName} onClick={(e) => e.stopPropagation()}>
         {showHeader && (
@@ -48,13 +50,15 @@ const ModalLayout = ({
             className={cn('mb-4', 'flex', 'items-center', 'justify-between')}
           >
             <p
-              className={cn('text-white', 'text-body1s', 'mobile:text-body2s')}
+              className={cn('text-white', 'mobile:text-body1s', 'text-body2s')}
             >
               {title}
             </p>
-            <button onClick={onClose}>
-              <XIcon className="mobile:h-24 mobile:w-24" />
-            </button>
+            {canClose && (
+              <button onClick={onClose}>
+                <XIcon className="h-24 w-24" />
+              </button>
+            )}
           </div>
         )}
         {children}

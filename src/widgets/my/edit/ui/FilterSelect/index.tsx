@@ -36,7 +36,7 @@ const FilterSelect = ({
           filtered ? 'text-main-600' : 'text-gray-500',
         )}
       >
-        비속어 필터
+        민감한 게시글 확인하기
       </h2>
       <button
         type="button"
