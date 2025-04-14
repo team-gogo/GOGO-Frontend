@@ -26,7 +26,9 @@ export default function RootLayout({
         <TanstackProviders>
           <ToastProvider>
             {children}
-            <InspectionModal service="GOGO" />
+            {process.env.NEXT_PUBLIC_IS_INSPECTION === 'true' && (
+              <InspectionModal service="GOGO" />
+            )}
           </ToastProvider>
         </TanstackProviders>
       </body>
