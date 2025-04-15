@@ -23,7 +23,7 @@ const MatchTeamPage = () => {
 
   const { data: gameData } = useGetStageGameQuery(stageId);
   const { isBracketModalOpen, setIsBracketModalOpen } = useBracketModalStore();
-  const { selectedGameId, setSelectedGameId } = useSelectedGameIdStore();
+  const { selectedGameId } = useSelectedGameIdStore();
   const { isTeamDetailModalOpen, setIsTeamDetailModalOpen } =
     useTeamDetailModalStore();
   const { setCategory } = useTeamDetailInfoStore();
@@ -32,7 +32,6 @@ const MatchTeamPage = () => {
 
   useEffect(() => {
     if (gameData) {
-      setSelectedGameId(gameData.games[0].gameId);
       setSelectedGameSystem(gameData.games[0].system);
     }
   }, [gameData]);

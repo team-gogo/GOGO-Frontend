@@ -9,6 +9,7 @@ interface SectionWrapperProps {
   icon: React.ReactNode;
   children: React.ReactNode;
   path?: string;
+  onClick?: () => void;
 }
 
 const SectionWrapper = ({
@@ -16,8 +17,14 @@ const SectionWrapper = ({
   icon,
   children,
   path = '/',
+  onClick,
 }: SectionWrapperProps) => {
   const { push } = useRouter();
+
+  const handleClick = () => {
+    onClick?.();
+    push(path);
+  };
 
   return (
     <div
@@ -38,7 +45,7 @@ const SectionWrapper = ({
         </div>
         <button
           className={cn('flex', 'items-center', 'gap-[0.5rem]')}
-          onClick={() => push(path)}
+          onClick={handleClick}
         >
           <p className={cn('text-body3s', 'text-gray-500')}>더보기</p>
           <RightArrowIcon />
