@@ -12,7 +12,6 @@ import { usePostBoardLikeMutation } from '../../model/usePostBoardLikeMutation';
 interface CommunityContentProps {
   title: string;
   content: string;
-  authorName: string;
   likeCount: number;
   commentCount: number;
   createdAt: string;
@@ -27,7 +26,6 @@ interface CommunityContentProps {
 const CommunityContent = ({
   title,
   content,
-  authorName,
   likeCount,
   commentCount,
   createdAt,
@@ -96,7 +94,7 @@ const CommunityContent = ({
                 'whitespace-nowrap',
               )}
             >
-              {authorName}
+              익명
             </p>
           </div>
         </div>

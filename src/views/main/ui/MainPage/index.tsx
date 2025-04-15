@@ -21,6 +21,7 @@ import {
   useMyStageIdStore,
   usePointStore,
   useSelectDateStore,
+  useSelectedGameIdStore,
 } from '@/shared/stores';
 import useMatchModalStore from '@/shared/stores/useMatchModalStore';
 import useWastedModalStore from '@/shared/stores/useWastedModalStore';
@@ -46,6 +47,7 @@ const MainPage = () => {
   const { setStageId } = useMyStageIdStore();
   const { point, setPoint } = usePointStore();
   const { selectDate, setSelectDate } = useSelectDateStore();
+  const { setSelectedGameId } = useSelectedGameIdStore();
 
   const { data: userPointData } = useGetMyPointQuery(stageId);
 
@@ -235,6 +237,9 @@ const MainPage = () => {
               text={'경기'}
               icon={<RankingIcon className={iconStyle} />}
               path={`/match/team/${stageId}`}
+              onClick={() =>
+                setSelectedGameId(Number(gameData?.games[0].gameId))
+              }
             >
               <MatchListSection stageInMatch={gameData} stageId={stageId} />
             </SectionWrapper>

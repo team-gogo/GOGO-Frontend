@@ -51,7 +51,6 @@ const CommunityDetailPage = () => {
         <CommunityContent
           title={data.title}
           content={data.content}
-          authorName={data.author.name}
           likeCount={data.likeCount}
           createdAt={data.createdAt}
           stageCategory={data.stage.category}

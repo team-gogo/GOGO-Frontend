@@ -63,7 +63,6 @@ const CommentContainer = ({ boardId, comments }: CommentContainerProps) => {
           sortedComments.map((comment) => (
             <CommentItem
               key={comment.commentId}
-              authorName={comment.author.name}
               content={comment.content}
               likeCount={comment.likeCount}
               commentId={comment.commentId}
