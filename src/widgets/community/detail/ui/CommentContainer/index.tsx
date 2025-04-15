@@ -28,7 +28,6 @@ const CommentContainer = ({ boardId, comments }: CommentContainerProps) => {
           comments.map((comment) => (
             <CommentItem
               key={comment.commentId}
-              authorName={comment.author.name}
               content={comment.content}
               likeCount={comment.likeCount}
               commentId={comment.commentId}
