@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   CommunityHeader,
   CommunityItem,
@@ -13,7 +12,7 @@ interface CommunityItemProps {
   stageId: string;
   selectedSport?: SportType | null;
   selectedSort?: SortType | null;
-  initialPage?: number;
+  currentPage: number;
 }
 
 const CommunityItemContainer = ({
@@ -21,10 +20,8 @@ const CommunityItemContainer = ({
   stageId,
   selectedSport,
   selectedSort,
-  initialPage = 1,
+  currentPage,
 }: CommunityItemProps) => {
-  const [currentPage, setCurrentPage] = useState(initialPage);
-
   const { data, isLoading, error } = useGetCommunityQuery(
     stageId,
     currentPage,
@@ -43,11 +40,6 @@ const CommunityItemContainer = ({
   }
 
   const totalPage = data?.info?.totalPage ?? 1;
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo(0, 0);
-  };
 
   return (
     <div
@@ -74,12 +66,7 @@ const CommunityItemContainer = ({
         </div>
       </div>
       {!isMainUsed && (
-        <NavigationBar
-          totalPairs={totalPage}
-          stageId={stageId}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
+        <NavigationBar totalPairs={totalPage} stageId={stageId} />
       )}
     </div>
   );

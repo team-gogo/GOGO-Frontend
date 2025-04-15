@@ -58,7 +58,7 @@ const CommunityPage = () => {
             stageId={stageId}
             selectedSport={selectedSport}
             selectedSort={selectedSort}
-            initialPage={currentPage}
+            currentPage={currentPage}
           />
         </div>
       </div>
