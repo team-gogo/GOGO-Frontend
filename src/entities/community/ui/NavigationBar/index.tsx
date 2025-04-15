@@ -1,36 +1,33 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
 import { cn } from '@/shared/utils/cn';
 
 interface NavigationBarProps {
   stageId: string;
   totalPairs: number;
+  currentPage: number;
+  onPageChange: (page: number) => void;
 }
 
-const NavigationBar = ({ stageId, totalPairs }: NavigationBarProps) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
-
+const NavigationBar = ({
+  totalPairs,
+  currentPage,
+  onPageChange,
+}: NavigationBarProps) => {
   if (totalPairs <= 1) return null;
 
   const maxPagesToShow = 5;
 
-  const changePage = (page: number) => {
-    router.push(`/community/${stageId}?page=${page}`);
-  };
-
   const handlePrev = () => {
     if (currentPage > 1) {
-      changePage(currentPage - 1);
+      onPageChange(currentPage - 1);
     }
   };
 
   const handleNext = () => {
     if (currentPage < totalPairs) {
-      changePage(currentPage + 1);
+      onPageChange(currentPage + 1);
     }
   };
 
@@ -53,7 +50,7 @@ const NavigationBar = ({ stageId, totalPairs }: NavigationBarProps) => {
             'text-body1e',
             currentPage === startPage + i ? 'text-main-600' : 'text-gray-500',
           )}
-          onClick={() => changePage(startPage + i)}
+          onClick={() => onPageChange(startPage + i)}
         >
           {startPage + i}
         </button>
