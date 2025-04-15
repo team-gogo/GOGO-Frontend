@@ -229,7 +229,7 @@ const MainPage = () => {
               <CommunityItemContainer
                 stageId={stageId}
                 isMainUsed={isMainUsed}
-                currentPage={1}
+                initialPage={1}
               />
             </SectionWrapper>
 
