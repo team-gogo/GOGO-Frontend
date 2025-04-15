@@ -7,7 +7,6 @@ import { cn } from '@/shared/utils/cn';
 import { usePostCommentLike } from '../../model/usePostCommentLike';
 
 interface CommentItemProps {
-  authorName: string;
   content: string;
   likeCount: number;
   commentId: number;
@@ -16,7 +15,6 @@ interface CommentItemProps {
 }
 
 const CommentItem = ({
-  authorName,
   content,
   likeCount,
   commentId,
@@ -64,7 +62,7 @@ const CommentItem = ({
             'text-caption1s',
           )}
         >
-          {authorName}
+          익명
         </p>
       </div>
       <p
