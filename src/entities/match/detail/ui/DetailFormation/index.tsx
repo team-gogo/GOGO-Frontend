@@ -61,6 +61,8 @@ const DetailFormation = ({
 
   useEffect(() => {
     const mapCenterX = svgBounds.width / 2;
+    const mapCenterY = svgBounds.height / 2;
+
     let newPlayers: Player[] = [];
 
     if (team1DetailData?.participant) {
@@ -79,7 +81,7 @@ const DetailFormation = ({
         id: participant.studentId.toString(),
         name: participant.name,
         x: mapCenterX * 2 - parseFloat(participant.positionX),
-        y: parseFloat(participant.positionY),
+        y: mapCenterY * 2 - parseFloat(participant.positionY),
         team: 'B' as const, // 팀 B로 설정
       }));
       newPlayers = [...newPlayers, ...team2Players];
@@ -144,9 +146,11 @@ const DetailFormation = ({
         if (svg) {
           const courtRect = courtElement.getBoundingClientRect();
           const svgRect = svg.getBoundingClientRect();
+
+          console.log(svgRect.height);
           setSvgBounds({
             width: Math.max(svgRect.width - 90),
-            height: svgRect.height,
+            height: Math.max(svgRect.height - 90),
             left: svgRect.left - courtRect.left,
             top: svgRect.top - courtRect.top,
           });
@@ -344,7 +348,7 @@ const DetailFormation = ({
           style={{ minWidth: 'fit-content' }}
         >
           <div
-            className={`relative h-[30rem] w-full`}
+            className={`relative h-[28rem] w-full`}
             style={{
               maxWidth: isModalUsed ? '660px' : '1200px',
               minWidth: isModalUsed ? '660px' : '1200px',

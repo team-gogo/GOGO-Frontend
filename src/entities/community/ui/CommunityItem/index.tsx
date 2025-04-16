@@ -21,8 +21,7 @@ const CommunityItem = ({
     return count >= 100 ? '99+' : count.toString();
   };
 
-  const { boardId, gameCategory, title, author, commentCount, likeCount } =
-    item;
+  const { boardId, gameCategory, title, commentCount, likeCount } = item;
 
   return (
     <Link
@@ -70,7 +69,7 @@ const CommunityItem = ({
           'tablet:block',
         )}
       >
-        {author.name}
+        익명
       </p>
       <div
         className={cn(
