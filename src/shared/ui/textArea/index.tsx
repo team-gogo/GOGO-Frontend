@@ -65,6 +65,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
               'flex',
               'items-center',
               'leading-[32px]',
+              'caret-white',
             )}
           />
         </div>
