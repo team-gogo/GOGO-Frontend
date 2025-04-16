@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import PasswordModal from '@/entities/stage/ui/PasswordModal';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
 import useStageNavigation from '@/shared/model/useStageNavigation';
-import { usePasswordModalStore } from '@/shared/stores';
+import { usePasswordModalStore, useSelectDateStore } from '@/shared/stores';
 import { MatchResponse } from '@/shared/types/my/bet';
 import { StagesType } from '@/shared/types/stage';
 import { cn } from '@/shared/utils/cn';
@@ -38,18 +38,26 @@ const StageMatchSection = ({
 
   const { isPasswordModalOpen, setIsPasswordModalOpen } =
     usePasswordModalStore();
+  const { selectDate } = useSelectDateStore();
+
+  useEffect(() => {
+    setStageIndex(0);
+    setMatchIndex(0);
+  }, [selectDate]);
 
   const totalStages = stages?.length ?? 0;
   const totalMatches = matches?.matches?.length ?? 0;
 
   const {
     startIndex: stageStartIndex,
+    setStartIndex: setStageIndex,
     handlePrev: handlePrevStage,
     handleNext: handleNextStage,
   } = useStageNavigation(totalStages, visibleCount);
 
   const {
     startIndex: matchStartIndex,
+    setStartIndex: setMatchIndex,
     handlePrev: handlePrevMatch,
     handleNext: handleNextMatch,
   } = useStageNavigation(totalMatches, visibleCount);

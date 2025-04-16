@@ -51,6 +51,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           maxLength={maxLength}
           onChange={handleInputChange}
+          autoComplete="off"
           className={cn(
             'h-full',
             'w-full',
