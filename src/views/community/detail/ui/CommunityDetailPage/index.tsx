@@ -47,7 +47,7 @@ const CommunityDetailPage = () => {
       )}
     >
       <BackPageButton type="push" path={`/community/${stageId}`} />
-      <div className={cn('flex-1', 'space-y-[4.5rem]')}>
+      <div className={cn('flex-1', 'space-y-[1rem]')}>
         <CommunityContent
           title={data.title}
           content={data.content}
@@ -61,14 +61,14 @@ const CommunityDetailPage = () => {
           stageId={stageId}
           currentPage={currentPage}
         />
-        <CommentContainer boardId={boardId} comments={comments} />
+        <CommentInput
+          boardId={boardId}
+          stageId={stageId}
+          onAddComment={handleAddComment}
+          currentPage={currentPage}
+        />
       </div>
-      <CommentInput
-        boardId={boardId}
-        stageId={stageId}
-        onAddComment={handleAddComment}
-        currentPage={currentPage}
-      />
+      <CommentContainer boardId={boardId} comments={comments} />
     </div>
   );
 };
