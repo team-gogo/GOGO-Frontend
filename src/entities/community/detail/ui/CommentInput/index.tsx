@@ -50,7 +50,7 @@ const CommentInput = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn('relative')}>
-      <input type="hidden" {...register('boardId')} />
+      <input type="hidden" {...register('boardId')} autoComplete="off" />
       <Input
         {...register('content', { required: true })}
         placeholder="댓글을 입력해주세요"
