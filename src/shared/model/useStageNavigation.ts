@@ -15,6 +15,7 @@ const useStageNavigation = (stagesLength: number, visibleCount: number) => {
 
   return {
     startIndex,
+    setStartIndex,
     handlePrev,
     handleNext,
   };

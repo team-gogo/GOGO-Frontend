@@ -32,6 +32,7 @@ const FaqSearch = forwardRef<HTMLInputElement, InputProps>(
             'text-body3s',
             'text-white',
           )}
+          autoComplete="off"
         />
 
         <button
