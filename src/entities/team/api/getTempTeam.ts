@@ -1,4 +1,4 @@
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 
 interface Team {
   teamId: number;

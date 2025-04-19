@@ -1,5 +1,5 @@
 import axios from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { StageData } from '@/shared/types/stage/create';
 
 export const postFastStage = async (data: StageData) => {
