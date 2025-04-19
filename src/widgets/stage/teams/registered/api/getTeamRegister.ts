@@ -1,4 +1,4 @@
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { TeamRegisterResponse } from '@/shared/types/stage/teams/registered';
 
 export const getTeamRegister = async (

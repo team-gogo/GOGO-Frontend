@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { NextResponse } from 'next/server';
-import serverInstance from '@/shared/api/serverInstance';
-import { setAuthCookies } from '@/shared/utils/setAuthCookies';
+import { setAuthCookies } from '@/shared/libs/cookie/setAuthCookies';
+import serverInstance from '@/shared/libs/http/serverInstance';
 
 export const dynamic = 'force-dynamic';
 

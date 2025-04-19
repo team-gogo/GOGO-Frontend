@@ -1,5 +1,5 @@
 import axios from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { PostStageRequest } from '@/shared/types/stage/game';
 
 export const postStage = async (stageId: number, data: PostStageRequest) => {

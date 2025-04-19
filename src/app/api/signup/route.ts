@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import serverInstance from '@/shared/api/serverInstance';
-import { clearAuthCookies } from '@/shared/utils/clearAuthCookies';
-import { refreshAccessToken } from '@/shared/utils/refreshAccessToken';
-import { setAuthCookies } from '@/shared/utils/setAuthCookies';
+import { deleteAuthCookies } from '@/shared/libs/cookie/deleteCookies';
+import { setAuthCookies } from '@/shared/libs/cookie/setAuthCookies';
+import { refreshAccessToken } from '@/shared/libs/handler/refreshAccessToken';
+import serverInstance from '@/shared/libs/http/serverInstance';
 
 export async function POST(request: Request) {
   const cookieStore = cookies();
@@ -31,8 +31,7 @@ export async function POST(request: Request) {
 
     if (status === 401) {
       if (!refreshToken) {
-        clearAuthCookies();
-        return NextResponse.json(
+        const response = NextResponse.json(
           {
             error: 'No refresh token available',
             status: 401,
@@ -40,6 +39,7 @@ export async function POST(request: Request) {
           },
           { status: 401 },
         );
+        return deleteAuthCookies(response);
       }
 
       const newTokens = await refreshAccessToken(refreshToken);
@@ -66,11 +66,11 @@ export async function POST(request: Request) {
           status: retryResponse.status,
         });
       } else {
-        clearAuthCookies();
-        return NextResponse.json(
+        const response = NextResponse.json(
           { error: 'Token refresh failed', status: 401, isRefreshError: true },
           { status: 401 },
         );
+        return deleteAuthCookies(response);
       }
     }
 

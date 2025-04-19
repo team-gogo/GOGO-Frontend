@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 
 interface Participant {
   studentId: number;

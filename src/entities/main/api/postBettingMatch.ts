@@ -1,5 +1,5 @@
 import axios from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { BettingFormData } from '@/shared/types/main';
 
 export const postBettingMatch = async (

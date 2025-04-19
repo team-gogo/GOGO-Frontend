@@ -1,5 +1,5 @@
-import serverInstance from '../api/serverInstance';
-import { setAuthCookies } from './setAuthCookies';
+import { setAuthCookies } from '../cookie/setAuthCookies';
+import serverInstance from '../http/serverInstance';
 
 export async function refreshAccessToken(
   refreshToken: string,
