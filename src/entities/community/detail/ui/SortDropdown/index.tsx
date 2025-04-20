@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { SortType } from '@/shared/model/sportTypes';
-import SportTypeLabel from '@/shared/ui/sportTypelabel';
+import { ArrowDownIcon, ArrowUpIcon } from '@/shared/assets/icons';
+import { SortType, SPORT_TYPES } from '@/shared/model/sportTypes';
 import { cn } from '@/shared/utils/cn';
 
 interface SortDropdownProps {
@@ -33,23 +33,63 @@ const SortDropdown = ({ selectedSort, onSortSelect }: SortDropdownProps) => {
     setIsDropdownOpen(false);
   };
 
+  const selectedSortText = SPORT_TYPES[selectedSort]?.text;
+
   return (
     <div className="relative" ref={dropdownRef}>
-      <SportTypeLabel
+      <button
+        type="button"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        type={selectedSort}
-        asButton
-        isHaveBorder
-        isSelected={isDropdownOpen}
-      />
+        className={cn(
+          'w-fit',
+          'flex',
+          'gap-8',
+          'text-nowrap',
+          'items-center',
+          'tablet:h-[2.8125rem]',
+          'h-[1.875rem]',
+          'p-[0.25rem]',
+          'px-12',
+          'rounded-lg',
+          'border-1',
+          'border-solid',
+          'border-main-500',
+          isDropdownOpen && 'bg-main-500 text-white',
+          'cursor-pointer',
+        )}
+      >
+        <label>
+          {isDropdownOpen ? (
+            <ArrowUpIcon
+              color={isDropdownOpen ? 'white' : '#526FFE'}
+              size={20}
+            />
+          ) : (
+            <ArrowDownIcon
+              color={isDropdownOpen ? 'white' : '#526FFE'}
+              size={20}
+            />
+          )}
+        </label>
+        <p
+          className={cn(
+            'tablet:text-body3s',
+            'leading-[1.3125rem]',
+            'text-caption2s',
+            isDropdownOpen ? 'text-white' : 'text-main-500',
+          )}
+        >
+          {selectedSortText}
+        </p>
+      </button>
 
       {isDropdownOpen && (
         <div className="absolute right-0 z-10 mt-4 w-32 overflow-hidden rounded-lg bg-main-500 shadow-lg">
           <div className={cn('flex', 'flex-col')}>
             <button
               className={cn(
-                'py-12 text-center text-white transition-colors',
-                selectedSort === 'LATEST' && 'bg-[#4051B8]',
+                'py-12 text-center text-gray-300 transition-colors',
+                selectedSort === 'LATEST' && 'font-extrabold text-white',
               )}
               onClick={() => handleSortSelect('LATEST')}
             >
@@ -60,8 +100,8 @@ const SortDropdown = ({ selectedSort, onSortSelect }: SortDropdownProps) => {
             </div>
             <button
               className={cn(
-                'py-12 text-center text-white transition-colors',
-                selectedSort === 'LAST' && 'bg-[#4051B8]',
+                'py-12 text-center text-gray-300 transition-colors',
+                selectedSort === 'LAST' && 'font-extrabold text-white',
               )}
               onClick={() => handleSortSelect('LAST')}
             >
@@ -72,8 +112,8 @@ const SortDropdown = ({ selectedSort, onSortSelect }: SortDropdownProps) => {
             </div>
             <button
               className={cn(
-                'py-12 text-center text-white transition-colors',
-                selectedSort === 'LIKE' && 'bg-[#4051B8]',
+                'py-12 text-center text-gray-300 transition-colors',
+                selectedSort === 'LIKE' && 'font-extrabold text-white',
               )}
               onClick={() => handleSortSelect('LIKE')}
             >
