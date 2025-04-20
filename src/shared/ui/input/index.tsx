@@ -71,7 +71,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         className={cn(
-          'relative w-full',
+          'relative w-full transition-all duration-200',
           previewUrl && isImageUpload
             ? imageContainerClass || 'mx-auto my-4 h-[300px] max-w-[500px]'
             : 'h-[56px]',
