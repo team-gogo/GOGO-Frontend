@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { forwardRef, useState, useEffect, ChangeEvent } from 'react';
-import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { cn } from '@/shared/utils/cn';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -118,9 +117,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     isPlcCenter && 'w-full text-center',
                   )}
                 >
-                  {attributes.placeholder || '클릭하여 이미지 업로드'}
+                  {attributes.placeholder || '이미지 등록'}
                 </span>
-                <PlusButtonIcon color={'#898989'} />
                 <input
                   id="image-upload"
                   type="file"

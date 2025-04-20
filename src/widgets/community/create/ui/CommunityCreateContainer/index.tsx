@@ -10,6 +10,7 @@ import {
 } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { CategoryContainer, PageTitleBar } from '@/entities/community/create';
+import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { handleFormErrors } from '@/shared/model/formErrorUtils';
 import { SportType } from '@/shared/model/sportTypes';
 import { CommunityCreateFormData } from '@/shared/types/community/create';
@@ -70,6 +71,7 @@ const CommunityCreateContainer = () => {
                 isImageUpload
                 placeholder="클릭하여 이미지 업로드"
                 onImageUpload={handleImageUpload}
+                icon={<PlusButtonIcon color={'#898989'} />}
               />
               <Input
                 placeholder="제목을 입력해주세요."
