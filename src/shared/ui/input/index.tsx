@@ -13,6 +13,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   isPlcCenter?: boolean;
   isImageUpload?: boolean;
   onImageUpload?: (file: File) => void;
+  imageContainerClass?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -26,6 +27,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       isPlcCenter = false,
       isImageUpload = false,
       onImageUpload,
+      imageContainerClass,
       value,
       ...attributes
     },
@@ -67,7 +69,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     };
 
     return (
-      <div className={cn('h-[56px]', 'w-full', 'relative')}>
+      <div
+        className={cn(
+          'relative w-full',
+          previewUrl && isImageUpload
+            ? imageContainerClass || 'mx-auto my-4 h-[300px] max-w-[500px]'
+            : 'h-[56px]',
+        )}
+      >
         {isImageUpload ? (
           <div
             className={cn(
@@ -79,11 +88,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               'items-center',
               'justify-center',
               'overflow-hidden',
+              previewUrl && 'p-3',
               showBorder && 'border border-solid border-gray-600',
             )}
           >
             {previewUrl ? (
-              <div className="relative h-full w-full">
+              <div className="relative h-full w-full overflow-hidden rounded">
                 <Image
                   src={previewUrl}
                   alt="업로드 이미지"
@@ -92,7 +102,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 />
                 <button
                   type="button"
-                  className="absolute z-10 flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-white"
+                  className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-white"
                   onClick={() => {
                     setPreviewUrl(null);
                     if (ref && typeof ref !== 'function') {
