@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDownIcon, ArrowUpIcon } from '@/shared/assets/icons';
+import { ArrowDownIcon } from '@/shared/assets/icons';
 import { SortType, SPORT_TYPES } from '@/shared/model/sportTypes';
 import { cn } from '@/shared/utils/cn';
 
@@ -38,9 +38,6 @@ const SortDropdown = ({ selectedSort, onSortSelect }: SortDropdownProps) => {
     onSortSelect(sort);
     setIsDropdownOpen(false);
   };
-
-  const selectedSortText = SPORT_TYPES[selectedSort]?.text;
-  const iconColor = isDropdownOpen ? 'white' : '#526FFE';
 
   const dropdownItemClasses = (sortType: SortType) =>
     cn(
@@ -86,20 +83,24 @@ const SortDropdown = ({ selectedSort, onSortSelect }: SortDropdownProps) => {
           isDropdownOpen && 'bg-main-500 text-white',
         )}
       >
-        <label>
-          {isDropdownOpen ? (
-            <ArrowUpIcon color={iconColor} size={20} />
-          ) : (
-            <ArrowDownIcon color={iconColor} size={20} />
+        <div
+          className={cn(
+            'transition-transform duration-200',
+            isDropdownOpen ? 'rotate-180' : 'rotate-0',
           )}
-        </label>
+        >
+          <ArrowDownIcon
+            color={isDropdownOpen ? 'white' : '#526FFE'}
+            size={20}
+          />
+        </div>
         <p
           className={cn(
             'text-caption2s leading-[1.3125rem] tablet:text-body3s',
             isDropdownOpen ? 'text-white' : 'text-main-500',
           )}
         >
-          {selectedSortText}
+          {SPORT_TYPES[selectedSort]?.text}
         </p>
       </button>
 
