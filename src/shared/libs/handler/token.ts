@@ -1,76 +1,114 @@
-import { Mutex } from 'async-mutex';
 import { AxiosError } from 'axios';
-import { refreshAccessToken } from '@/shared/libs/handler/refreshAccessToken';
+import { NextRequest, NextResponse } from 'next/server';
+import { refreshAccessToken } from './refreshAccessToken';
 import { retryRequest } from './request';
-import { GlobalRefreshState } from './type';
 
-const tokenRefreshMutex = new Mutex();
+export interface GlobalRefreshState {
+  isRefreshing: boolean;
+  refreshTokenPromise: Promise<RefreshTokenResult | null> | null;
+  lastRefreshTime: number;
+  waitingRequests: {
+    resolve: (res: NextResponse) => void;
+    reject: (err: AxiosError) => void;
+    req: NextRequest;
+    originalBody?: string | FormData;
+  }[];
+  cachedTokens?: {
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: number;
+  };
+}
 
-export const globalForRefresh: GlobalRefreshState = {
-  refreshTokenPromise: null,
-  isRefreshing: false,
-  lastRefreshTime: 0,
-  waitingRequests: [],
-};
+export interface RefreshTokenResult {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export const globalForRefresh = new Map<string, GlobalRefreshState>();
+
+export function getRefreshStateForUser(
+  refreshToken: string,
+): GlobalRefreshState {
+  if (!globalForRefresh.has(refreshToken)) {
+    globalForRefresh.set(refreshToken, {
+      isRefreshing: false,
+      refreshTokenPromise: null,
+      lastRefreshTime: 0,
+      waitingRequests: [],
+      cachedTokens: undefined,
+    });
+  }
+  return globalForRefresh.get(refreshToken)!;
+}
 
 export async function performTokenRefresh(
   refreshToken: string,
-): Promise<{ accessToken: string; refreshToken: string } | null> {
-  return tokenRefreshMutex.runExclusive(async () => {
-    const now = Date.now();
+  refreshState: GlobalRefreshState,
+): Promise<RefreshTokenResult | null> {
+  const now = Date.now();
 
-    if (
-      globalForRefresh.cachedTokens &&
-      globalForRefresh.cachedTokens.expiresAt > now
-    ) {
-      return {
-        accessToken: globalForRefresh.cachedTokens.accessToken,
-        refreshToken: globalForRefresh.cachedTokens.refreshToken,
+  if (refreshState.cachedTokens && refreshState.cachedTokens.expiresAt > now) {
+    return {
+      accessToken: refreshState.cachedTokens.accessToken,
+      refreshToken: refreshState.cachedTokens.refreshToken,
+    };
+  }
+
+  if (refreshState.isRefreshing && refreshState.refreshTokenPromise) {
+    return await refreshState.refreshTokenPromise;
+  }
+
+  try {
+    refreshState.isRefreshing = true;
+    refreshState.lastRefreshTime = now;
+    refreshState.refreshTokenPromise = refreshAccessToken(refreshToken);
+
+    const result = await refreshState.refreshTokenPromise;
+
+    if (result) {
+      refreshState.cachedTokens = {
+        ...result,
+        expiresAt: now + 1000,
       };
+      await processWaitingRequests(refreshState, result.accessToken);
     }
 
-    try {
-      globalForRefresh.lastRefreshTime = now;
-      globalForRefresh.isRefreshing = true;
-      globalForRefresh.refreshTokenPromise = refreshAccessToken(refreshToken);
-
-      const result = await globalForRefresh.refreshTokenPromise;
-      if (result) {
-        globalForRefresh.cachedTokens = {
-          ...result,
-          expiresAt: Date.now() + 10000,
-        };
-        await processWaitingRequests(result.accessToken);
-      }
-      return result;
-    } catch (error) {
-      rejectWaitingRequests(error as AxiosError);
-      return null;
-    } finally {
-      globalForRefresh.isRefreshing = false;
-      globalForRefresh.refreshTokenPromise = null;
-    }
-  });
+    return result;
+  } catch (error) {
+    rejectWaitingRequests(refreshState, error as AxiosError);
+    return null;
+  } finally {
+    refreshState.isRefreshing = false;
+    refreshState.refreshTokenPromise = null;
+  }
 }
-export async function processWaitingRequests(accessToken: string) {
-  const waitingRequests = [...globalForRefresh.waitingRequests];
-  globalForRefresh.waitingRequests = [];
 
-  for (const { resolve, reject, req, originalBody } of waitingRequests) {
+async function processWaitingRequests(
+  refreshState: GlobalRefreshState,
+  accessToken: string,
+) {
+  const waiting = [...refreshState.waitingRequests];
+  refreshState.waitingRequests = [];
+
+  for (const { resolve, reject, req, originalBody } of waiting) {
     try {
       const response = await retryRequest(req, accessToken, originalBody);
       resolve(response);
-    } catch (error) {
-      reject(error as AxiosError);
+    } catch (err) {
+      reject(err as AxiosError);
     }
   }
 }
 
-export function rejectWaitingRequests(error: AxiosError) {
-  const waitingRequests = [...globalForRefresh.waitingRequests];
-  globalForRefresh.waitingRequests = [];
+function rejectWaitingRequests(
+  refreshState: GlobalRefreshState,
+  error: AxiosError,
+) {
+  const waiting = [...refreshState.waitingRequests];
+  refreshState.waitingRequests = [];
 
-  for (const { reject } of waitingRequests) {
+  for (const { reject } of waiting) {
     reject(error);
   }
 }

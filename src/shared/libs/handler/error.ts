@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { deleteAuthCookies } from '@/shared/libs/cookie/deleteCookies';
 import { retryRequest } from './request';
 import { createErrorResponse } from './response';
-import { globalForRefresh, performTokenRefresh } from './token';
+import { performTokenRefresh, getRefreshStateForUser } from './token';
 
 export async function handleError(
   error: unknown,
@@ -40,19 +40,20 @@ async function handleTokenError(
     return deleteAuthCookies(response);
   }
 
-  if (globalForRefresh.isRefreshing) {
+  const refreshState = getRefreshStateForUser(refreshToken);
+
+  if (refreshState.isRefreshing) {
     return new Promise<NextResponse>((resolve, reject) => {
-      globalForRefresh.waitingRequests.push({
+      refreshState.waitingRequests.push({
         resolve,
         reject,
         req,
-        isRetry: true,
         originalBody,
       });
     });
   }
 
-  const newTokens = await performTokenRefresh(refreshToken);
+  const newTokens = await performTokenRefresh(refreshToken, refreshState);
   if (newTokens) {
     return retryRequest(req, newTokens.accessToken, originalBody);
   } else {
