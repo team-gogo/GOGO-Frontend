@@ -25,10 +25,12 @@ export async function tokenHandleRequest(
 
   const refreshState = getRefreshStateForUser(refreshToken);
 
-  const cachedTokens = refreshState.cachedTokens;
-  if (cachedTokens && cachedTokens.expiresAt > Date.now()) {
-    accessToken = cachedTokens.accessToken;
+  if (refreshState.isRefreshing && !isRetry) {
+    return new Promise<NextResponse>((resolve, reject) => {
+      refreshState.waitingRequests.push({ resolve, reject, req, originalBody });
+    });
   }
+
   if (!accessToken && !isRetry) {
     const newTokens = await performTokenRefresh(refreshToken, refreshState);
     if (newTokens) {
@@ -44,9 +46,7 @@ export async function tokenHandleRequest(
 
   try {
     const { requestData, headers } = await parseRequestData(req, originalBody);
-
     const response = await sendRequest(req, accessToken, requestData, headers);
-
     return createResponse(response);
   } catch (error) {
     return handleError(error, req, isRetry, refreshToken, originalBody);

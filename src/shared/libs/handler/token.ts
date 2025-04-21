@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import { LRUCache } from 'lru-cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { refreshAccessToken } from './refreshAccessToken';
 import { retryRequest } from './request';
@@ -13,11 +14,6 @@ export interface GlobalRefreshState {
     req: NextRequest;
     originalBody?: string | FormData;
   }[];
-  cachedTokens?: {
-    accessToken: string;
-    refreshToken: string;
-    expiresAt: number;
-  };
 }
 
 export interface RefreshTokenResult {
@@ -25,19 +21,24 @@ export interface RefreshTokenResult {
   refreshToken: string;
 }
 
-export const globalForRefresh = new Map<string, GlobalRefreshState>();
+export const globalForRefresh = new LRUCache<string, GlobalRefreshState>({
+  max: 30000,
+  ttl: 1000 * 5,
+  allowStale: true,
+});
 
 export function getRefreshStateForUser(
   refreshToken: string,
 ): GlobalRefreshState {
   if (!globalForRefresh.has(refreshToken)) {
-    globalForRefresh.set(refreshToken, {
+    const newState: GlobalRefreshState = {
       isRefreshing: false,
       refreshTokenPromise: null,
       lastRefreshTime: 0,
       waitingRequests: [],
-      cachedTokens: undefined,
-    });
+    };
+    globalForRefresh.set(refreshToken, newState);
+    return newState;
   }
   return globalForRefresh.get(refreshToken)!;
 }
@@ -47,13 +48,6 @@ export async function performTokenRefresh(
   refreshState: GlobalRefreshState,
 ): Promise<RefreshTokenResult | null> {
   const now = Date.now();
-
-  if (refreshState.cachedTokens && refreshState.cachedTokens.expiresAt > now) {
-    return {
-      accessToken: refreshState.cachedTokens.accessToken,
-      refreshToken: refreshState.cachedTokens.refreshToken,
-    };
-  }
 
   if (refreshState.isRefreshing && refreshState.refreshTokenPromise) {
     return await refreshState.refreshTokenPromise;
@@ -67,16 +61,13 @@ export async function performTokenRefresh(
     const result = await refreshState.refreshTokenPromise;
 
     if (result) {
-      refreshState.cachedTokens = {
-        ...result,
-        expiresAt: now + 1000,
-      };
       await processWaitingRequests(refreshState, result.accessToken);
     }
 
     return result;
   } catch (error) {
     rejectWaitingRequests(refreshState, error as AxiosError);
+    globalForRefresh.delete(refreshToken);
     return null;
   } finally {
     refreshState.isRefreshing = false;
