@@ -60,6 +60,7 @@ const CommunityDetailPage = () => {
           boardId={boardId}
           stageId={stageId}
           currentPage={currentPage}
+          imageUrl={data.imageUrl}
         />
         <CommentInput
           boardId={boardId}
