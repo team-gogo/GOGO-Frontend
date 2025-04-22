@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import { forwardRef, useState, useEffect, ChangeEvent } from 'react';
+import TrashIcon from '@/shared/assets/svg/TrashIcon';
 import { cn } from '@/shared/utils/cn';
-
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
   maxLength?: number;
@@ -102,7 +102,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 />
                 <button
                   type="button"
-                  className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-white"
+                  className="absolute right-2 top-2 z-10 flex h-30 w-30 items-center justify-center rounded-full text-white"
                   onClick={() => {
                     setPreviewUrl(null);
                     if (ref && typeof ref !== 'function') {
@@ -112,7 +112,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     }
                   }}
                 >
-                  ✕
+                  <TrashIcon color="#FF4646" size={30} />
                 </button>
               </div>
             ) : (
