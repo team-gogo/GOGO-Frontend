@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { CommentIcon } from '@/shared/assets/icons';
 import HeartIcon from '@/shared/assets/icons/HeartIcon';
@@ -21,6 +22,7 @@ interface CommunityContentProps {
   boardId: string;
   stageId: string;
   currentPage: number;
+  imageUrl?: string;
 }
 
 const CommunityContent = ({
@@ -35,6 +37,7 @@ const CommunityContent = ({
   boardId,
   stageId,
   currentPage,
+  imageUrl,
 }: CommunityContentProps) => {
   const [liked, setLiked] = useState(isLiked);
   const [likeCountState, setLikeCountState] = useState(likeCount);
@@ -111,6 +114,21 @@ const CommunityContent = ({
           >
             {content}
           </p>
+          {imageUrl && (
+            <div className="mt-16 w-full">
+              <div className="relative mx-auto h-[400px] w-full max-w-[600px] overflow-hidden rounded-lg">
+                <Image
+                  src={imageUrl}
+                  alt={title}
+                  fill
+                  className="object-contain"
+                  onError={(e) => {
+                    console.error(e);
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className={cn('flex', 'items-center', 'justify-between')}>
