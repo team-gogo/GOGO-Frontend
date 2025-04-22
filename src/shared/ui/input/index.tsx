@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { forwardRef, useState, useEffect, ChangeEvent } from 'react';
 import TrashIcon from '@/shared/assets/svg/TrashIcon';
 import { cn } from '@/shared/utils/cn';
+
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
   maxLength?: number;
@@ -15,6 +16,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onImageUpload?: (file: File) => void;
   imageContainerClass?: string;
 }
+
+const S = {
+  container: 'relative w-full transition-all duration-200',
+  imageUpload: 'max-w-[500px]',
+  input: 'h-full w-full rounded-lg text-body3s text-white',
+  icon: 'absolute right-[16px] top-[50%] translate-y-[-50%]',
+  border: 'border border-solid border-gray-600',
+};
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
@@ -46,33 +55,20 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       }
     };
 
-    const openFileInput = () => {
-      const fileInput = document.getElementById(
-        'image-upload',
-      ) as HTMLInputElement;
-      if (fileInput) {
-        fileInput.click();
-      }
-    };
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       if (maxLength && value.length > maxLength) {
         e.target.value = value.slice(0, maxLength);
       }
       setInputLength(e.target.value.length);
-      if (attributes.onChange) {
-        attributes.onChange(e);
-      }
+      attributes.onChange?.(e);
     };
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
 
-      if (onImageUpload) {
-        onImageUpload(file);
-      }
+      onImageUpload?.(file);
 
       const fileReader = new FileReader();
       fileReader.onload = () => {
@@ -83,149 +79,130 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       fileReader.readAsDataURL(file);
     };
 
-    const handleImageDelete = () => {
-      setPreviewUrl(null);
-      handleRefReset();
-    };
-
-    const handleIconClick = () => {
+    const handleAction = () => {
       if (onIconClick) {
         onIconClick();
       } else if (isImageUpload) {
-        openFileInput();
+        const fileInput = document.getElementById(
+          'image-upload',
+        ) as HTMLInputElement;
+        fileInput?.click();
       }
     };
+
+    const renderImageUpload = () => (
+      <div
+        className={cn(
+          S.input,
+          bgColor,
+          'flex items-center justify-center overflow-hidden',
+          previewUrl && 'p-3',
+          showBorder && S.border,
+        )}
+      >
+        {previewUrl ? (
+          <div className="relative h-full w-full overflow-hidden rounded">
+            <Image
+              src={previewUrl}
+              alt="업로드 이미지"
+              fill
+              className="object-contain"
+            />
+            <button
+              type="button"
+              className="h-38 w-38 absolute right-2 top-2 z-10 flex items-center justify-center rounded-lg border-solid border-gray-100 bg-white p-8"
+              onClick={() => {
+                setPreviewUrl(null);
+                handleRefReset();
+              }}
+            >
+              <TrashIcon color="#FF4646" size={30} />
+            </button>
+          </div>
+        ) : (
+          <div className="relative flex h-full w-full">
+            <label
+              htmlFor="image-upload"
+              className="flex h-full w-full cursor-pointer items-center justify-between px-[16px]"
+            >
+              <span
+                className={cn(
+                  'text-body3s text-gray-400',
+                  isPlcCenter && 'w-full text-center',
+                )}
+              >
+                {attributes.placeholder || '이미지 등록'}
+              </span>
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                ref={ref}
+                onChange={handleImageChange}
+                {...attributes}
+              />
+            </label>
+            {icon && (
+              <div
+                onClick={handleAction}
+                className={cn(S.icon, 'cursor-pointer')}
+              >
+                {icon}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+
+    const renderTextInput = () => (
+      <>
+        <input
+          {...attributes}
+          ref={ref}
+          maxLength={maxLength}
+          onChange={handleInputChange}
+          autoComplete="off"
+          className={cn(
+            S.input,
+            bgColor,
+            'px-[16px] pl-[12px]',
+            icon ? 'pr-[50px]' : 'pr-[12px]',
+            'placeholder:text-gray-400',
+            isPlcCenter && 'placeholder:text-center',
+            showBorder && S.border,
+            attributes.type === 'number' &&
+              '[appearance:none] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden',
+          )}
+        />
+        {icon && (
+          <label
+            onClick={handleAction}
+            className={cn(S.icon, onIconClick && 'cursor-pointer')}
+          >
+            {icon}
+          </label>
+        )}
+      </>
+    );
 
     return (
       <div
         className={cn(
-          'relative w-full transition-all duration-200',
+          S.container,
           previewUrl && isImageUpload
             ? imageContainerClass || 'my-4 h-[300px] max-w-[500px]'
             : 'h-[56px]',
-          isImageUpload && 'max-w-[500px]',
+          isImageUpload && S.imageUpload,
         )}
       >
-        {isImageUpload ? (
-          <div
-            className={cn(
-              'h-full',
-              'w-full',
-              bgColor,
-              'rounded-lg',
-              'flex',
-              'items-center',
-              'justify-center',
-              'overflow-hidden',
-              previewUrl && 'p-3',
-              showBorder && 'border border-solid border-gray-600',
-            )}
-          >
-            {previewUrl ? (
-              <div className="relative h-full w-full overflow-hidden rounded">
-                <Image
-                  src={previewUrl}
-                  alt="업로드 이미지"
-                  fill
-                  className="object-contain"
-                />
-                <button
-                  type="button"
-                  className="h-38 w-38 absolute right-2 top-2 z-10 flex items-center justify-center rounded-lg border-solid border-gray-100 bg-white p-8"
-                  onClick={handleImageDelete}
-                >
-                  <TrashIcon color="#FF4646" size={30} />
-                </button>
-              </div>
-            ) : (
-              <div className="relative flex h-full w-full">
-                <label
-                  htmlFor="image-upload"
-                  className="flex h-full w-full cursor-pointer items-center justify-between px-[16px]"
-                >
-                  <span
-                    className={cn(
-                      'text-body3s',
-                      'text-gray-400',
-                      isPlcCenter && 'w-full text-center',
-                    )}
-                  >
-                    {attributes.placeholder || '이미지 등록'}
-                  </span>
-                  <input
-                    id="image-upload"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    ref={ref}
-                    onChange={handleImageChange}
-                    {...attributes}
-                  />
-                </label>
-                {icon && (
-                  <div
-                    onClick={handleIconClick}
-                    className={cn(
-                      'absolute',
-                      'right-[16px]',
-                      'top-[50%]',
-                      'translate-y-[-50%]',
-                      'cursor-pointer',
-                    )}
-                  >
-                    {icon}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        ) : (
-          <>
-            <input
-              type="text"
-              {...attributes}
-              ref={ref}
-              maxLength={maxLength}
-              onChange={handleInputChange}
-              autoComplete="off"
-              className={cn(
-                'h-full',
-                'w-full',
-                bgColor,
-                'px-[16px]',
-                'pl-[12px]',
-                icon ? 'pr-[50px]' : 'pr-[12px]',
-                'placeholder:text-gray-400',
-                isPlcCenter && 'placeholder:text-center',
-                'rounded-lg',
-                'text-body3s',
-                'text-white',
-                showBorder && 'border border-solid border-gray-600',
-                attributes.type === 'number' &&
-                  '[appearance:none] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden',
-              )}
-            />
-            {icon && (
-              <label
-                onClick={onIconClick}
-                className={cn(
-                  'absolute',
-                  'right-[16px]',
-                  'top-[50%]',
-                  'translate-y-[-50%]',
-                  onIconClick && 'cursor-pointer',
-                )}
-              >
-                {icon}
-              </label>
-            )}
-          </>
-        )}
+        {isImageUpload ? renderImageUpload() : renderTextInput()}
+
         {maxLength && !isImageUpload && (
           <div
             className={cn(
-              'text-body3s',
-              'text-end',
+              'text-end text-body3s',
               inputLength > 0 ? 'text-main-600' : 'text-gray-500',
             )}
           >
