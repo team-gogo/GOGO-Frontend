@@ -1,4 +1,5 @@
 import axios from 'axios';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { CommunityCreateFormData } from '@/shared/types/community/create';
 import { postImage } from './postImage';
 
@@ -19,15 +20,7 @@ export const postCommunity = async (
       imageUrl: imageUrl,
     };
 
-    await axios.post(
-      `/api/server/stage/community/${StageId}`,
-      JSON.stringify(postData),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    await clientInstance.post(`/stage/community/${StageId}`, postData);
 
     return true;
   } catch (error) {
