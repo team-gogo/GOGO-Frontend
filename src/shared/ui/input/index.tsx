@@ -183,7 +183,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       >
         {isImageUpload ? renderImageUpload() : renderTextInput()}
 
-        {icon && (
+        {icon && !onImageUpload && (
           <label
             onClick={handleAction}
             className={cn(S.icon, onIconClick && 'cursor-pointer')}
