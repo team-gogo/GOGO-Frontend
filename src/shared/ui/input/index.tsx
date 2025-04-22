@@ -143,14 +143,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 {...attributes}
               />
             </label>
-            {icon && (
-              <div
-                onClick={handleAction}
-                className={cn(S.icon, 'cursor-pointer')}
-              >
-                {icon}
-              </div>
-            )}
           </div>
         )}
       </div>
@@ -176,14 +168,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               '[appearance:none] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden',
           )}
         />
-        {icon && (
-          <label
-            onClick={handleAction}
-            className={cn(S.icon, onIconClick && 'cursor-pointer')}
-          >
-            {icon}
-          </label>
-        )}
       </>
     );
 
@@ -198,6 +182,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       >
         {isImageUpload ? renderImageUpload() : renderTextInput()}
+
+        {icon && (
+          <label
+            onClick={handleAction}
+            className={cn(S.icon, onIconClick && 'cursor-pointer')}
+          >
+            {icon}
+          </label>
+        )}
 
         {maxLength && !isImageUpload && (
           <div
