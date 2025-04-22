@@ -103,7 +103,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 />
                 <button
                   type="button"
-                  className="absolute right-2 top-2 z-10 flex h-30 w-30 items-center justify-center rounded-full text-white"
+                  className="h-38 w-38 absolute right-2 top-2 z-10 flex items-center justify-center rounded-lg border-solid border-gray-100 bg-white p-8"
                   onClick={() => {
                     setPreviewUrl(null);
                     if (ref && typeof ref !== 'function') {
