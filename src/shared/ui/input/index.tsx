@@ -73,8 +73,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         className={cn(
           'relative w-full transition-all duration-200',
           previewUrl && isImageUpload
-            ? imageContainerClass || 'mx-auto my-4 h-[300px] max-w-[500px]'
+            ? imageContainerClass || 'my-4 h-[300px] max-w-[500px]'
             : 'h-[56px]',
+          isImageUpload && 'max-w-[500px]',
         )}
       >
         {isImageUpload ? (
@@ -116,29 +117,45 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 </button>
               </div>
             ) : (
-              <label
-                htmlFor="image-upload"
-                className="flex h-full w-full cursor-pointer items-center justify-between px-[16px]"
-              >
-                <span
-                  className={cn(
-                    'text-body3s',
-                    'text-gray-400',
-                    isPlcCenter && 'w-full text-center',
-                  )}
+              <div className="relative flex h-full w-full">
+                <label
+                  htmlFor="image-upload"
+                  className="flex h-full w-full cursor-pointer items-center justify-between px-[16px]"
                 >
-                  {attributes.placeholder || '이미지 등록'}
-                </span>
-                <input
-                  id="image-upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  ref={ref}
-                  onChange={handleImageChange}
-                  {...attributes}
-                />
-              </label>
+                  <span
+                    className={cn(
+                      'text-body3s',
+                      'text-gray-400',
+                      isPlcCenter && 'w-full text-center',
+                    )}
+                  >
+                    {attributes.placeholder || '이미지 등록'}
+                  </span>
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    ref={ref}
+                    onChange={handleImageChange}
+                    {...attributes}
+                  />
+                </label>
+                {icon && (
+                  <div
+                    onClick={onIconClick}
+                    className={cn(
+                      'absolute',
+                      'right-[16px]',
+                      'top-[50%]',
+                      'translate-y-[-50%]',
+                      onIconClick && 'cursor-pointer',
+                    )}
+                  >
+                    {icon}
+                  </div>
+                )}
+              </div>
             )}
           </div>
         ) : (
