@@ -143,13 +143,24 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 </label>
                 {icon && (
                   <div
-                    onClick={onIconClick}
+                    onClick={() => {
+                      if (onIconClick) {
+                        onIconClick();
+                      } else {
+                        const fileInput = document.getElementById(
+                          'image-upload',
+                        ) as HTMLInputElement;
+                        if (fileInput) {
+                          fileInput.click();
+                        }
+                      }
+                    }}
                     className={cn(
                       'absolute',
                       'right-[16px]',
                       'top-[50%]',
                       'translate-y-[-50%]',
-                      onIconClick && 'cursor-pointer',
+                      'cursor-pointer',
                     )}
                   >
                     {icon}
