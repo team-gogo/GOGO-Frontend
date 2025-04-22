@@ -1,4 +1,4 @@
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { SortType } from '@/shared/model/sportTypes';
 import { SportType } from '@/shared/model/sportTypes';
 import { BoardData } from '@/shared/types/community';

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { BatchMatchType } from '@/shared/types/main';
 
 export const postBatchMatch = async (matchId: number, data: BatchMatchType) => {

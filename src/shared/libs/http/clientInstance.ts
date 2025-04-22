@@ -2,9 +2,6 @@ import axios from 'axios';
 
 const clientInstance = axios.create({
   baseURL: '/api/server',
-  headers: {
-    'Content-Type': 'application/json',
-  },
   withCredentials: true,
 });
 

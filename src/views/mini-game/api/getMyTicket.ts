@@ -1,5 +1,5 @@
 import axios from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { MyTicketType } from '@/shared/types/mini-game';
 
 export const getMyTicket = async (stageId: string): Promise<MyTicketType> => {
