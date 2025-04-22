@@ -40,6 +40,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       setInputLength(typeof value === 'string' ? value.length : 0);
     }, [value]);
 
+    const handleRefReset = () => {
+      if (ref && typeof ref !== 'function' && ref.current) {
+        ref.current.value = '';
+      }
+    };
+
+    const openFileInput = () => {
+      const fileInput = document.getElementById(
+        'image-upload',
+      ) as HTMLInputElement;
+      if (fileInput) {
+        fileInput.click();
+      }
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       if (maxLength && value.length > maxLength) {
@@ -66,6 +81,19 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         }
       };
       fileReader.readAsDataURL(file);
+    };
+
+    const handleImageDelete = () => {
+      setPreviewUrl(null);
+      handleRefReset();
+    };
+
+    const handleIconClick = () => {
+      if (onIconClick) {
+        onIconClick();
+      } else if (isImageUpload) {
+        openFileInput();
+      }
     };
 
     return (
@@ -104,14 +132,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 <button
                   type="button"
                   className="h-38 w-38 absolute right-2 top-2 z-10 flex items-center justify-center rounded-lg border-solid border-gray-100 bg-white p-8"
-                  onClick={() => {
-                    setPreviewUrl(null);
-                    if (ref && typeof ref !== 'function') {
-                      if (ref.current) {
-                        ref.current.value = '';
-                      }
-                    }
-                  }}
+                  onClick={handleImageDelete}
                 >
                   <TrashIcon color="#FF4646" size={30} />
                 </button>
@@ -143,18 +164,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 </label>
                 {icon && (
                   <div
-                    onClick={() => {
-                      if (onIconClick) {
-                        onIconClick();
-                      } else {
-                        const fileInput = document.getElementById(
-                          'image-upload',
-                        ) as HTMLInputElement;
-                        if (fileInput) {
-                          fileInput.click();
-                        }
-                      }
-                    }}
+                    onClick={handleIconClick}
                     className={cn(
                       'absolute',
                       'right-[16px]',
