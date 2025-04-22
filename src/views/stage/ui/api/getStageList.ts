@@ -1,5 +1,5 @@
 import axios from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { StageResponse } from '@/shared/types/stage';
 
 export const getStageList = async (): Promise<StageResponse> => {

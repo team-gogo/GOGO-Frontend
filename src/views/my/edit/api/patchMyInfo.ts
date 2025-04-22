@@ -1,5 +1,5 @@
 import axios from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { PatchStudentInfo } from '@/shared/types/my/edit';
 
 export const patchMyInfo = async (data: PatchStudentInfo) => {

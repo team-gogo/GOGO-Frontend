@@ -1,5 +1,5 @@
 import axios from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { PassCodeType } from '@/shared/types/stage';
 
 export const postPassCode = async (stageId: number, data?: PassCodeType) => {
