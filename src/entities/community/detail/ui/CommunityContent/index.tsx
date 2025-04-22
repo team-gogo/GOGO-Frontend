@@ -116,11 +116,13 @@ const CommunityContent = ({
           </p>
           {imageUrl && (
             <div className="mt-16 w-full">
-              <div className="relative mx-auto h-[400px] w-full max-w-[600px] overflow-hidden rounded-lg">
+              <div className="relative mx-auto w-full max-w-[400px] overflow-hidden rounded-lg">
                 <Image
                   src={imageUrl}
                   alt={title}
-                  fill
+                  layout="responsive"
+                  width={300}
+                  height={200}
                   className="object-contain"
                   onError={(e) => {
                     console.error(e);
