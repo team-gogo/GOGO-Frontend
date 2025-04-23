@@ -13,7 +13,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   showBorder?: boolean;
   isPlcCenter?: boolean;
   isImageUpload?: boolean;
-  onImageUpload?: (file: File) => void;
+  onImageUpload?: (file: File | null) => void;
   imageContainerClass?: string;
 }
 
@@ -114,6 +114,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               onClick={() => {
                 setPreviewUrl(null);
                 handleRefReset();
+                onImageUpload?.(null);
               }}
             >
               <TrashIcon color="#FF4646" size={30} />

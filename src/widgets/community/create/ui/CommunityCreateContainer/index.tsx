@@ -37,8 +37,12 @@ const CommunityCreateContainer = () => {
   const methods = useForm<CommunityCreateFormData>();
   const { handleSubmit, register, setValue } = methods;
 
-  const handleImageUpload = (file: File) => {
-    setValue('image', file);
+  const handleImageUpload = (file: File | null) => {
+    if (file) {
+      setValue('image', file);
+    } else {
+      setValue('image', undefined);
+    }
   };
 
   const onSubmit: SubmitHandler<CommunityCreateFormData> = (data) => {
