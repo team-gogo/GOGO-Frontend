@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { forwardRef, useState, useEffect, ChangeEvent } from 'react';
+import { toast } from 'react-toastify';
 import TrashIcon from '@/shared/assets/svg/TrashIcon';
 import { cn } from '@/shared/utils/cn';
 
@@ -67,6 +68,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
+
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
+      if (!fileExt || !['jpg', 'png', 'gif'].includes(fileExt)) {
+        toast.error('지원하지 않는 이미지 형식입니다.');
+        e.target.value = '';
+        return;
+      }
 
       onImageUpload?.(file);
 
@@ -137,7 +145,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               <input
                 id="image-upload"
                 type="file"
-                accept="image/*"
+                accept="image/jpg, image/png, image/gif"
                 className="hidden"
                 ref={ref}
                 onChange={handleImageChange}
