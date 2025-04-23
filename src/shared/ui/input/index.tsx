@@ -103,19 +103,34 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         className={cn(
           S.input,
           bgColor,
-          'flex items-center justify-center overflow-hidden',
+          'flex items-center justify-start overflow-hidden',
           previewUrl && 'p-3',
           showBorder && S.border,
         )}
       >
         {previewUrl ? (
-          <div className="relative h-full w-full overflow-hidden rounded">
-            <Image
-              src={previewUrl}
-              alt="업로드 이미지"
-              fill
-              className="object-contain"
-            />
+          <div className="relative w-full overflow-hidden rounded">
+            <div className="flex items-center justify-start">
+              <div
+                className="relative"
+                style={{
+                  maxWidth: '500px',
+                  maxHeight: '500px',
+                  width: 'auto',
+                  height: 'auto',
+                  position: 'relative',
+                }}
+              >
+                <Image
+                  src={previewUrl}
+                  alt="업로드 이미지"
+                  width={500}
+                  height={500}
+                  className="max-h-[500px] w-auto object-contain"
+                  style={{ maxWidth: '100%', height: 'auto' }}
+                />
+              </div>
+            </div>
             <button
               type="button"
               className="h-38 w-38 absolute right-2 top-2 z-10 flex items-center justify-center rounded-lg border-solid border-gray-100 bg-white p-8"
@@ -185,7 +200,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         className={cn(
           S.container,
           previewUrl && isImageUpload
-            ? imageContainerClass || 'my-4 h-[300px] max-w-[500px]'
+            ? imageContainerClass || 'my-4 h-auto min-h-[100px] max-w-[300px]'
             : 'h-[56px]',
           isImageUpload && S.imageUpload,
         )}
