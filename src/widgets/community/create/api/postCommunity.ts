@@ -17,7 +17,7 @@ export const postCommunity = async (
       title: data.title,
       content: data.content,
       gameCategory: data.gameCategory,
-      imageUrl: imageUrl,
+      ...(imageUrl && { imageUrl }),
     };
 
     await clientInstance.post(`/stage/community/${StageId}`, postData);
