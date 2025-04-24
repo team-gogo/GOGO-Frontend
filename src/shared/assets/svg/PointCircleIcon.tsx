@@ -1,8 +1,14 @@
-const PointCircleIcon = ({ color = '#A6A6A6' }: { color?: string }) => (
+const PointCircleIcon = ({
+  color = '#A6A6A6',
+  size = '1.25rem',
+}: {
+  color?: string;
+  size?: string;
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="1.25rem"
-    height="1.25rem"
+    width={size}
+    height={size}
     viewBox="0 0 20 20"
     fill="none"
   >
