@@ -38,6 +38,7 @@ export interface CommunityDetail {
   createdAt: string;
   stage: Stage;
   author: Author;
+  imageUrl: string;
   commentCount: number;
   comment: Comment[];
 }

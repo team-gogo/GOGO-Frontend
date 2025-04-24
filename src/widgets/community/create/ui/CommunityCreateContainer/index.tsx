@@ -2,9 +2,15 @@
 
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import { useForm, SubmitHandler, FieldErrors } from 'react-hook-form';
+import {
+  useForm,
+  SubmitHandler,
+  FieldErrors,
+  FormProvider,
+} from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { CategoryContainer, PageTitleBar } from '@/entities/community/create';
+import PlusButtonIcon from '@/shared/assets/svg/PlusButtonIcon';
 import { handleFormErrors } from '@/shared/model/formErrorUtils';
 import { SportType } from '@/shared/model/sportTypes';
 import { CommunityCreateFormData } from '@/shared/types/community/create';
@@ -28,8 +34,16 @@ const CommunityCreateContainer = () => {
     setSelectedSport((prev) => (prev === sport ? null : sport));
   };
 
-  const { register, handleSubmit, setValue } =
-    useForm<CommunityCreateFormData>();
+  const methods = useForm<CommunityCreateFormData>();
+  const { handleSubmit, register, setValue } = methods;
+
+  const handleImageUpload = (file: File | null) => {
+    if (file) {
+      setValue('image', file);
+    } else {
+      setValue('image', undefined);
+    }
+  };
 
   const onSubmit: SubmitHandler<CommunityCreateFormData> = (data) => {
     createCommunity(data);
@@ -40,39 +54,48 @@ const CommunityCreateContainer = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit, onError)}
-      className={cn('w-full', 'max-w-[1320px]', 'space-y-[72px]')}
-    >
-      <PageTitleBar />
-      <div className={cn('space-y-[36px]')}>
-        <CategoryContainer
-          register={register}
-          setValue={setValue}
-          selectedSport={selectedSport}
-          toggleSportSelection={toggleSportSelection}
-          stageId={stageId}
-        />
-        <div className={cn('space-y-[397px]')}>
-          <div className={cn('space-y-[32px]')}>
-            <Input
-              placeholder="제목을 입력해주세요."
-              maxLength={30}
-              {...register('title', { required: '제목을 입력해주세요.' })}
-            />
-            <TextArea
-              placeholder="내용을 입력해주세요."
-              maxLength={1000}
-              rows={1}
-              {...register('content', { required: '내용을 입력해주세요.' })}
-            />
+    <FormProvider {...methods}>
+      <form
+        onSubmit={handleSubmit(onSubmit, onError)}
+        className={cn('w-full', 'max-w-[1320px]', 'space-y-[72px]')}
+      >
+        <PageTitleBar />
+        <div className={cn('space-y-[36px]')}>
+          <CategoryContainer
+            register={register}
+            setValue={setValue}
+            selectedSport={selectedSport}
+            toggleSportSelection={toggleSportSelection}
+            stageId={stageId}
+          />
+
+          <div className={cn('space-y-[397px]')}>
+            <div className={cn('space-y-[32px]')}>
+              <Input
+                isImageUpload
+                placeholder="클릭하여 이미지 업로드"
+                onImageUpload={handleImageUpload}
+                icon={<PlusButtonIcon color={'#898989'} />}
+              />
+              <Input
+                placeholder="제목을 입력해주세요."
+                maxLength={30}
+                {...register('title', { required: '제목을 입력해주세요.' })}
+              />
+              <TextArea
+                placeholder="내용을 입력해주세요."
+                maxLength={1000}
+                rows={1}
+                {...register('content', { required: '내용을 입력해주세요.' })}
+              />
+            </div>
+            <Button disabled={isPending || isSuccess} type="submit">
+              완료
+            </Button>
           </div>
-          <Button disabled={isPending || isSuccess} type="submit">
-            완료
-          </Button>
         </div>
-      </div>
-    </form>
+      </form>
+    </FormProvider>
   );
 };
 

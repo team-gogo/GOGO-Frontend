@@ -1,5 +1,5 @@
 import axios from 'axios';
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { TempPointsResponse } from '@/shared/types/my/bet';
 
 export const getMyTempPoint = async (

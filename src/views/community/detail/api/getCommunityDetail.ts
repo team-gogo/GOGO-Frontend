@@ -1,4 +1,4 @@
-import clientInstance from '@/shared/api/clientInstance';
+import clientInstance from '@/shared/libs/http/clientInstance';
 import { CommunityDetail } from '@/shared/types/community/detail';
 
 export const getCommunityDetail = async (
