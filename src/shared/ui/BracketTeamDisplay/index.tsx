@@ -321,7 +321,28 @@ const BracketTeamDisplay = ({
             }
 
             if (teamId) {
-              const winner = getWinnerTeamId(round || '', idx);
+              let matchTurn = 1;
+              if (round === 'SEMI_FINALS') {
+                if (side === 'left') {
+                  matchTurn = 1;
+                } else {
+                  matchTurn = 2;
+                }
+              } else if (round === 'FINALS') {
+                matchTurn = 1;
+              } else if (round === 'QUARTER_FINALS') {
+                if (teamCount === 6) {
+                  matchTurn = side === 'left' ? 1 : 3;
+                } else {
+                  if (side === 'left') {
+                    matchTurn = idx === 0 ? 1 : 2;
+                  } else {
+                    matchTurn = idx === 0 ? 4 : 3;
+                  }
+                }
+              }
+
+              const winner = getWinnerTeamId(round || '', matchTurn);
               isWinner = winner?.id === teamId;
             }
 
