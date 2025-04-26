@@ -22,6 +22,7 @@ interface CommunityContentProps {
   boardId: string;
   stageId: string;
   currentPage: number;
+  viewCount: number;
   imageUrl?: string;
 }
 
@@ -38,6 +39,7 @@ const CommunityContent = ({
   stageId,
   currentPage,
   imageUrl,
+  viewCount,
 }: CommunityContentProps) => {
   const [liked, setLiked] = useState(isLiked);
   const [likeCountState, setLikeCountState] = useState(likeCount);
@@ -158,7 +160,7 @@ const CommunityContent = ({
           <div className={cn('flex', 'items-center', 'gap-8')}>
             <ViewsIcon />
             <p className={cn('text-body3s', 'text-caption1s', 'text-gray-300')}>
-              0
+              {viewCount}
             </p>
           </div>
         </div>

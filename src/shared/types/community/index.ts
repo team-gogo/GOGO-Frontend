@@ -22,6 +22,7 @@ interface BoardItem {
   title: string;
   likeCount: number;
   commentCount: number;
+  viewCount: number;
   createdAt: string;
   isFiltered: boolean;
   stageType: StageType;
@@ -45,6 +46,7 @@ export interface CommunityItemProps {
   author: Author;
   likeCount: number;
   commentCount: number;
+  viewCount: number;
 }
 
 enum System {

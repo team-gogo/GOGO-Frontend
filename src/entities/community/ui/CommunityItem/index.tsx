@@ -21,7 +21,8 @@ const CommunityItem = ({
     return count >= 100 ? '99+' : count.toString();
   };
 
-  const { boardId, gameCategory, title, commentCount, likeCount } = item;
+  const { boardId, gameCategory, title, commentCount, likeCount, viewCount } =
+    item;
 
   return (
     <Link
@@ -93,7 +94,7 @@ const CommunityItem = ({
         </div>
         <div className={cn('flex', 'items-center', 'gap-8')}>
           <ViewsIcon />
-          <p className={cn('text-body3s', 'text-gray-300')}>0</p>
+          <p className={cn('text-body3s', 'text-gray-300')}>{viewCount}</p>
         </div>
       </div>
     </Link>
