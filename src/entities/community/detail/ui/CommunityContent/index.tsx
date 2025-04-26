@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { CommentIcon } from '@/shared/assets/icons';
+import { CommentIcon, ViewsIcon } from '@/shared/assets/icons';
 import HeartIcon from '@/shared/assets/icons/HeartIcon';
 import { PersonIcon, SelectHeartIcon } from '@/shared/assets/svg';
 import { formatIsoDate } from '@/shared/model/formatIsoDate';
@@ -153,6 +153,12 @@ const CommunityContent = ({
               )}
             >
               {likeCountState}
+            </p>
+          </div>
+          <div className={cn('flex', 'items-center', 'gap-8')}>
+            <ViewsIcon />
+            <p className={cn('text-body3s', 'text-caption1s', 'text-gray-300')}>
+              0
             </p>
           </div>
         </div>

@@ -19,3 +19,4 @@ export { default as SelectIcon } from './SelectIcon';
 export { default as DeleteIcon } from './DeleteIcon';
 export { default as CommentIcon } from './CommentIcon';
 export { default as HeartIcon } from './HeartIcon';
+export { default as ViewsIcon } from './ViewsIcon';
