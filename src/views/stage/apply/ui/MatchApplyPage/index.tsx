@@ -21,10 +21,19 @@ const MatchApplyPage = () => {
   );
   const { selectedSport, toggleSportSelection } = useSelectSport();
   const { stageName } = useStageNameStore();
+  const [isMaintainer, setIsMaintainer] = useState(false);
 
   const [confirmedGames, setConfirmedGames] = useState<Record<string, boolean>>(
     {},
   );
+
+  useEffect(() => {
+    setIsMaintainer(
+      JSON.parse(localStorage.getItem('stageAdminArr') || '[]').includes(
+        Number(stageId),
+      ),
+    );
+  }, [stageId]);
 
   useEffect(() => {
     if (matchApplyList?.games) {
@@ -126,11 +135,7 @@ const MatchApplyPage = () => {
             <h1 className={cn('text-h4e', 'text-white')}>{stageName}</h1>
             <div className="flex-grow" />
             <div className="flex flex-row gap-2">
-              {JSON.parse(
-                localStorage.getItem('stageAdminArr') || '[]',
-              ).includes(Number(stageId)) && (
-                <ConfirmStage onClick={handleConfirmStage} />
-              )}
+              {isMaintainer && <ConfirmStage onClick={handleConfirmStage} />}
               <MatchFilterHeader
                 selectedSport={selectedSport}
                 toggleSportSelection={toggleSportSelection}
@@ -168,6 +173,7 @@ const MatchApplyPage = () => {
                   game={game}
                   stageId={Number(stageId)}
                   isConfirmed={confirmedGames[game.gameId] || false}
+                  isMaintainer={isMaintainer}
                 />
               ))}
             </div>
