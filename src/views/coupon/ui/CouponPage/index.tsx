@@ -25,7 +25,7 @@ const CouponPage = () => {
     couponData &&
     (couponData.isGain
       ? `+${couponData.earnedPoint}`
-      : `-${couponData.lostPoint}`);
+      : `-${couponData.lostedPoint}`);
 
   useEffect(() => {
     if (couponInfo) {
