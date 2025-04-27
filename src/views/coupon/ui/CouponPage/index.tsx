@@ -28,17 +28,17 @@ const CouponPage = () => {
       : `-${couponData.lostedPoint}`);
 
   useEffect(() => {
+    if (couponId) {
+      localStorage.setItem('couponId', couponId);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     if (couponInfo) {
       setIsUseCoupon(couponInfo.isUsed);
       localStorage.removeItem('couponId');
     }
   }, [couponInfo]);
-
-  useEffect(() => {
-    if (couponId) {
-      localStorage.setItem('couponId', couponId);
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     if (couponData) {
