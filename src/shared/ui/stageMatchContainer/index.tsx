@@ -22,6 +22,8 @@ const StageMatchContainer = ({
 }: StageContainerProps) => {
   const [visibleCount, setVisibleCount] = useState(2);
 
+  console.log(matches);
+
   useEffect(() => {
     const handleResize = () => {
       setVisibleCount(window.innerWidth <= 768 ? 1 : 2);
@@ -87,20 +89,27 @@ const StageMatchContainer = ({
             </div>
           ))}
 
-          {matches?.matches.map((match) => (
-            <div
-              key={match.matchId}
-              className={cn(
-                'flex',
-                'midpad:w-[calc(50%-20px)]',
-                'w-full',
-                'shrink-0',
-                'justify-center',
-              )}
-            >
-              <Match match={match} />
-            </div>
-          ))}
+          {matches?.matches
+            .slice()
+            .sort(
+              (a, b) =>
+                new Date(a.startDate).getTime() -
+                new Date(b.startDate).getTime(),
+            )
+            .map((match) => (
+              <div
+                key={match.matchId}
+                className={cn(
+                  'flex',
+                  'midpad:w-[calc(50%-20px)]',
+                  'w-full',
+                  'shrink-0',
+                  'justify-center',
+                )}
+              >
+                <Match match={match} />
+              </div>
+            ))}
         </div>
       </div>
     </div>
