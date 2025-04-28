@@ -177,7 +177,10 @@ const Match = ({ match }: MatchProps) => {
 
     localStorage.setItem('matchStatus', JSON.stringify(matchStatusData));
     localStorage.setItem('match', JSON.stringify(matchData));
-    sessionStorage.setItem('selectDate', JSON.stringify(selectDate));
+    sessionStorage.setItem(
+      'selectDate',
+      JSON.stringify({ selectDate, stageId }),
+    );
 
     setMatchStatus(matchStatusData);
     setMatch(matchData);

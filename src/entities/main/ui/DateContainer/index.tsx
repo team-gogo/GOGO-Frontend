@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
-import { useSelectDateStore } from '@/shared/stores';
+import { useMyStageIdStore, useSelectDateStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 
 const DateContainer = () => {
@@ -28,6 +28,7 @@ const DateContainer = () => {
   const pastDays = Math.floor(totalDays / 2);
 
   const { setSelectDate } = useSelectDateStore();
+  const { stageId } = useMyStageIdStore();
 
   const dates = Array.from({ length: totalDays }, (_, index) => {
     const date = new Date(today);
@@ -44,19 +45,24 @@ const DateContainer = () => {
     const localSelectDate = sessionStorage.getItem('selectDate');
 
     if (localSelectDate) {
-      const matchedDate = dates.find((d) => d.full === localSelectDate);
+      const { selectDate: localDate, stageId: localStageId } =
+        JSON.parse(localSelectDate);
 
-      if (matchedDate) {
-        setSelectedDate(matchedDate.short);
-        setSelectDate(matchedDate.full);
-      } else {
-        const date = new Date(localSelectDate);
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const short = `${month}-${day}`;
+      if (stageId === localStageId) {
+        const matchedDate = dates.find((d) => d.full === localDate);
 
-        setSelectedDate(short);
-        setSelectDate(localSelectDate);
+        if (matchedDate) {
+          setSelectedDate(matchedDate.short);
+          setSelectDate(matchedDate.full);
+        } else {
+          const date = new Date(localDate);
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const short = `${month}-${day}`;
+
+          setSelectedDate(short);
+          setSelectDate(localDate);
+        }
       }
     }
 
