@@ -5,7 +5,7 @@ import { cn } from '@/shared/utils/cn';
 
 interface ModalLayoutProps {
   title?: string;
-  onClose: (e: React.MouseEvent) => void;
+  onClose?: (e: React.MouseEvent) => void;
   children: React.ReactNode;
   containerClassName?: string;
   showHeader?: boolean;
