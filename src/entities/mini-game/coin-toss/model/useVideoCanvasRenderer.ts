@@ -1,4 +1,3 @@
-// src/entities/mini-game/coin-toss/hooks/useVideoCanvasRenderer.ts
 import { useEffect, RefObject, useRef } from 'react';
 
 interface Args {
@@ -34,13 +33,11 @@ export function useVideoCanvasRenderer({
         return;
       }
 
-      // video, canvas 크기 가져오기
       const vw = video.videoWidth;
       const vh = video.videoHeight;
       const cw = canvas.width;
       const ch = canvas.height;
 
-      // 원본을 캔버스로 꽉 채워서 그리기 (center-crop 필요 시 수식 조정)
       ctx.clearRect(0, 0, cw, ch);
       ctx.drawImage(video, 0, vh - vh, vw, vh, 0, 0, cw, ch);
 
@@ -48,12 +45,10 @@ export function useVideoCanvasRenderer({
     };
 
     const handleLoadedData = () => {
-      // 동영상 메타 데이터 로딩된 뒤
       if (isPlaying) {
         video.play();
         drawLoop();
       } else {
-        // **초기 프레임만** 그리기
         if (video.readyState >= 2) {
           const vw = video.videoWidth;
           const vh = video.videoHeight;
