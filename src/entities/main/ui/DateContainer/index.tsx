@@ -49,29 +49,31 @@ const DateContainer = () => {
       const { selectDate: localDate, stageId: localStageId } =
         JSON.parse(localSelectDate);
 
-      if (stageId === localStageId) {
-        const matchedDate = dates.find((d) => d.full === localDate);
+      if (localDate !== '') {
+        if (stageId === localStageId) {
+          const matchedDate = dates.find((d) => d.full === localDate);
 
-        if (matchedDate) {
-          setSelectedDate(matchedDate.short);
-          setSelectDate(matchedDate.full);
-          const matchedIndex = dates.findIndex((d) => d.full === localDate);
-          setStartIndex(matchedIndex);
-        } else {
-          const date = new Date(localDate);
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          const short = `${month}-${day}`;
+          if (matchedDate) {
+            setSelectedDate(matchedDate.short);
+            setSelectDate(matchedDate.full);
+            const matchedIndex = dates.findIndex((d) => d.full === localDate);
+            setStartIndex(matchedIndex);
+          } else {
+            const date = new Date(localDate);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const short = `${month}-${day}`;
 
-          setSelectedDate(short);
-          setSelectDate(localDate);
-          const matchedIndex = dates.findIndex((d) => d.full === localDate);
-          setStartIndex(matchedIndex);
+            setSelectedDate(short);
+            setSelectDate(localDate);
+            const matchedIndex = dates.findIndex((d) => d.full === localDate);
+            setStartIndex(matchedIndex);
+          }
         }
       }
-    }
 
-    sessionStorage.removeItem('selectDate');
+      sessionStorage.removeItem('selectDate');
+    }
   }, [dates]);
 
   const todayIndex = dates.findIndex(
