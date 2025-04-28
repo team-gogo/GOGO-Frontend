@@ -28,6 +28,7 @@ const DateContainer = () => {
   const pastDays = Math.floor(totalDays / 2);
 
   const { setSelectDate } = useSelectDateStore();
+
   const { stageId } = useMyStageIdStore();
 
   const dates = Array.from({ length: totalDays }, (_, index) => {
@@ -54,6 +55,8 @@ const DateContainer = () => {
         if (matchedDate) {
           setSelectedDate(matchedDate.short);
           setSelectDate(matchedDate.full);
+          const matchedIndex = dates.findIndex((d) => d.full === localDate);
+          setStartIndex(matchedIndex);
         } else {
           const date = new Date(localDate);
           const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -62,6 +65,8 @@ const DateContainer = () => {
 
           setSelectedDate(short);
           setSelectDate(localDate);
+          const matchedIndex = dates.findIndex((d) => d.full === localDate);
+          setStartIndex(matchedIndex);
         }
       }
     }
@@ -77,6 +82,7 @@ const DateContainer = () => {
   const [selectedDate, setSelectedDate] = useState<string>(
     dates[todayIndex].short,
   );
+
   const [startIndex, setStartIndex] = useState(todayIndex);
 
   const handleDateChange = (index: number) => {
