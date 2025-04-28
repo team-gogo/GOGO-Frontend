@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CommentIcon, HeartIcon } from '@/shared/assets/icons';
+import { CommentIcon, HeartIcon, ViewsIcon } from '@/shared/assets/icons';
 import { CommunityItemProps } from '@/shared/types/community';
 import SportTypelabel from '@/shared/ui/sportTypelabel';
 import { cn } from '@/shared/utils/cn';
@@ -21,7 +21,8 @@ const CommunityItem = ({
     return count >= 100 ? '99+' : count.toString();
   };
 
-  const { boardId, gameCategory, title, commentCount, likeCount } = item;
+  const { boardId, gameCategory, title, commentCount, likeCount, viewCount } =
+    item;
 
   return (
     <Link
@@ -91,10 +92,10 @@ const CommunityItem = ({
             {formatCount(likeCount)}
           </p>
         </div>
-        {/* <div className={cn('flex', 'items-center', 'gap-8')}>
+        <div className={cn('flex', 'items-center', 'gap-8')}>
           <ViewsIcon />
           <p className={cn('text-body3s', 'text-gray-300')}>{viewCount}</p>
-        </div> */}
+        </div>
       </div>
     </Link>
   );
