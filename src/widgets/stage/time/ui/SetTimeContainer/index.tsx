@@ -184,7 +184,12 @@ const SetTimeContainer = ({
       let matchIndex = -1;
 
       if (system === GameSystem.FULL_LEAGUE) {
-        matchIndex = savedMatches.findIndex((match) => match.index === index);
+        matchIndex = savedMatches.findIndex(
+          (match) =>
+            match.index === index &&
+            match.teamAName === teamAName &&
+            match.teamBName === teamBName,
+        );
       } else {
         matchIndex = savedMatches.findIndex(
           (match) => match.round === round && match.index === index,
@@ -907,9 +912,19 @@ const SetTimeContainer = ({
       setSelectedMatch({ round, index });
 
       let savedMatch;
+
+      const currentTeams = getSelectedMatchTeams(round, index);
+
       if (system === GameSystem.TOURNAMENT) {
         savedMatch = savedMatches.find(
           (match) => match.round === round && match.index === index,
+        );
+      } else if (system === GameSystem.FULL_LEAGUE) {
+        savedMatch = savedMatches.find(
+          (match) =>
+            match.index === index &&
+            match.teamAName === currentTeams.teamAName &&
+            match.teamBName === currentTeams.teamBName,
         );
       } else {
         savedMatch = savedMatches.find((match) => match.index === index);
@@ -954,7 +969,13 @@ const SetTimeContainer = ({
 
   const isMatchTimeSet = (round: string, index: number) => {
     if (system === GameSystem.FULL_LEAGUE) {
-      return savedMatches.some((match) => match.index === index);
+      const currentTeams = getSelectedMatchTeams(round, index);
+      return savedMatches.some(
+        (match) =>
+          match.index === index &&
+          match.teamAName === currentTeams.teamAName &&
+          match.teamBName === currentTeams.teamBName,
+      );
     }
     return savedMatches.some(
       (match) => match.round === round && match.index === index,
