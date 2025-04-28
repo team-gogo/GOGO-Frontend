@@ -181,9 +181,15 @@ const SetTimeContainer = ({
         savedMatches = JSON.parse(existingData);
       }
 
-      const matchIndex = savedMatches.findIndex(
-        (match) => match.round === round && match.index === index,
-      );
+      let matchIndex = -1;
+
+      if (system === GameSystem.FULL_LEAGUE) {
+        matchIndex = savedMatches.findIndex((match) => match.index === index);
+      } else {
+        matchIndex = savedMatches.findIndex(
+          (match) => match.round === round && match.index === index,
+        );
+      }
 
       if (matchIndex !== -1) {
         savedMatches[matchIndex] = {
@@ -286,10 +292,23 @@ const SetTimeContainer = ({
       sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
       if (system === GameSystem.FULL_LEAGUE) {
         /* eslint-disable */
-        const modifiedSavedMatches = savedMatches.map(({ round, ...rest }) => ({
-          ...rest,
-          leagueTurn: rest.index,
-        }));
+        // 중복 제거를 위해 Set 객체 활용
+        const uniqueIndices = new Set();
+        const uniqueSavedMatches = savedMatches.filter((match) => {
+          if (uniqueIndices.has(match.index)) {
+            return false;
+          }
+          uniqueIndices.add(match.index);
+          return true;
+        });
+
+        const modifiedSavedMatches = uniqueSavedMatches.map(
+          ({ round, ...rest }) => ({
+            ...rest,
+            leagueTurn: rest.index,
+          }),
+        );
+
         sessionStorage.setItem(
           savedMatchesKey,
           JSON.stringify(modifiedSavedMatches),
