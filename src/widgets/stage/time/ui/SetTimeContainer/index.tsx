@@ -906,9 +906,14 @@ const SetTimeContainer = ({
     } else {
       setSelectedMatch({ round, index });
 
-      const savedMatch = savedMatches.find(
-        (match) => match.round === round && match.index === index,
-      );
+      let savedMatch;
+      if (system === GameSystem.TOURNAMENT) {
+        savedMatch = savedMatches.find(
+          (match) => match.round === round && match.index === index,
+        );
+      } else {
+        savedMatch = savedMatches.find((match) => match.index === index);
+      }
 
       if (savedMatch) {
         const startDate = new Date(savedMatch.startDate);
