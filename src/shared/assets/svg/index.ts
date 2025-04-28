@@ -44,3 +44,5 @@ export { default as LineStroke } from './LineStroke';
 export { default as TimerIcon } from './TimerIcon';
 export { default as CheckingBoxIcon } from './CheckingBoxIcon';
 export { default as BlueCircle } from './BlueCircle';
+export { default as RandomIcon } from './RandomIcon';
+export { default as NormalIcon } from './NormalIcon';

@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { getStageMaintainer } from '@/entities/stage/api/getStageMaintainer';
 import { useTeamDetailInfoStore } from '@/shared/stores';
 import { MatchGameType } from '@/shared/types/stage/apply';
 import Button from '@/shared/ui/button';
@@ -15,31 +14,19 @@ interface StageApplyProps {
   game: MatchGameType;
   stageId: number;
   isConfirmed: boolean;
+  isMaintainer: boolean;
 }
 
 const StageApply = ({
   game,
   stageId,
   isConfirmed: initialIsConfirmed,
+  isMaintainer,
 }: StageApplyProps) => {
   const { gameName, teamCount, category, isParticipating, gameId } = game;
   const { setCategory } = useTeamDetailInfoStore();
   const router = useRouter();
-  const [isMaintainer, setIsMaintainer] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(initialIsConfirmed);
-
-  useEffect(() => {
-    const checkMaintainer = async () => {
-      try {
-        const response = await getStageMaintainer(String(stageId));
-        setIsMaintainer(response.isMaintainer);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    checkMaintainer();
-  }, [stageId]);
 
   useEffect(() => {
     const storedIsConfirmed = sessionStorage.getItem(`isConfirmed_${gameId}`);
