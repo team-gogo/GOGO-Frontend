@@ -41,7 +41,7 @@ const DateContainer = () => {
   });
 
   useEffect(() => {
-    const localSelectDate = localStorage.getItem('selectDate');
+    const localSelectDate = sessionStorage.getItem('selectDate');
 
     if (localSelectDate) {
       const matchedDate = dates.find((d) => d.full === localSelectDate);
@@ -60,7 +60,7 @@ const DateContainer = () => {
       }
     }
 
-    localStorage.removeItem('selectDate');
+    sessionStorage.removeItem('selectDate');
   }, [dates]);
 
   const todayIndex = dates.findIndex(
