@@ -7,12 +7,9 @@ import { StagesType } from '@/shared/types/stage';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import StageHeader from '@/widgets/stage/ui/StageHeader';
-// import getStageInfo from '../Mock/getStageInfo';
 import { useGetStageList } from '../model/useGetStageList';
 
 const StagePage = () => {
-  // const stageInfo = getStageInfo();
-
   const router = useRouter();
 
   useEffect(() => {
