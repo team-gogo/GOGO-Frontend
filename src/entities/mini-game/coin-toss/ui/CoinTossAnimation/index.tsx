@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { cn } from '@/shared/utils/cn';
 
 interface CoinTossAnimationProps {
@@ -17,29 +17,29 @@ const CoinTossAnimation = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationFrameId = useRef<number>();
-
   useEffect(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
+
+    let isMounted = true;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const drawToCanvas = () => {
       if (!video || !canvas || !ctx) return;
+      if (video.readyState < 2) return;
 
       const videoWidth = video.videoWidth;
       const videoHeight = video.videoHeight;
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
 
-      const zoom = 1;
-      const cropWidth = videoWidth / zoom;
-      const cropHeight = videoHeight / zoom;
+      const cropWidth = videoWidth;
+      const cropHeight = videoHeight;
       const centerX = videoWidth * 0.5;
       const centerY = videoHeight * 1;
-
       const sx = Math.max(0, centerX - cropWidth / 2);
       const sy = Math.max(0, centerY - cropHeight / 2);
       const sw = Math.min(cropWidth, videoWidth - sx);
@@ -48,23 +48,24 @@ const CoinTossAnimation = ({
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
 
-      animationFrameId.current = requestAnimationFrame(drawToCanvas);
+      if (isMounted && isPlaying) {
+        animationFrameId.current = requestAnimationFrame(drawToCanvas);
+      }
     };
 
     const drawInitialFrame = () => {
       if (!video || !canvas || !ctx) return;
+      if (video.readyState < 2) return;
 
       const videoWidth = video.videoWidth;
       const videoHeight = video.videoHeight;
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
 
-      const zoom = 1;
-      const cropWidth = videoWidth / zoom;
-      const cropHeight = videoHeight / zoom;
+      const cropWidth = videoWidth;
+      const cropHeight = videoHeight;
       const centerX = videoWidth * 0.5;
       const centerY = videoHeight * 1;
-
       const sx = Math.max(0, centerX - cropWidth / 2);
       const sy = Math.max(0, centerY - cropHeight / 2);
       const sw = Math.min(cropWidth, videoWidth - sx);
@@ -72,13 +73,6 @@ const CoinTossAnimation = ({
 
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
-    };
-
-    const handleEnded = () => {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-      onAnimationEnd?.();
     };
 
     const handleLoadedData = () => {
@@ -90,18 +84,27 @@ const CoinTossAnimation = ({
       }
     };
 
-    video.addEventListener('ended', handleEnded);
-    video.addEventListener('loadeddata', handleLoadedData);
+    const handleEnded = () => {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+      onAnimationEnd?.();
+    };
 
-    // ✅ 무조건 load 호출해서 첫 프레임도 준비되게
+    video.addEventListener('loadeddata', handleLoadedData);
+    video.addEventListener('ended', handleEnded);
+
+    video.src = videoSource;
     video.load();
 
     return () => {
-      video.removeEventListener('ended', handleEnded);
+      isMounted = false;
       video.removeEventListener('loadeddata', handleLoadedData);
-      cancelAnimationFrame(animationFrameId.current!);
+      video.removeEventListener('ended', handleEnded);
+      if (animationFrameId.current)
+        cancelAnimationFrame(animationFrameId.current);
     };
-  }, [isPlaying, videoSource, onAnimationEnd]);
+  }, [videoSource, isPlaying, onAnimationEnd]);
 
   return (
     <div className={cn('relative', 'rounded-lg')}>
@@ -120,7 +123,6 @@ const CoinTossAnimation = ({
       <video
         ref={videoRef}
         className="hidden"
-        src={videoSource}
         muted
         playsInline
         preload="auto"

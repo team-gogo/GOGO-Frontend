@@ -2,7 +2,7 @@
 
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useForm, SubmitHandler, FieldErrors } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { AnimationDisplayContainer } from '@/entities/mini-game';
@@ -85,7 +85,7 @@ const CoinTossPage = () => {
     handleFormErrors(errors, toast.error);
   };
 
-  const handleAnimationEnd = () => {
+  const handleAnimationEnd = useCallback(() => {
     setIsPlaying(false);
 
     const result = videoSource.includes('FrontCoin') ? 'FRONT' : 'BACK';
@@ -109,7 +109,7 @@ const CoinTossPage = () => {
     queryClient.invalidateQueries({
       queryKey: ['getMyTicket', stageId],
     });
-  };
+  }, [videoSource, watch, responseAmount, queryClient, stageId]);
 
   const selectedSide = watch('bet');
 
