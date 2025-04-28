@@ -22,8 +22,6 @@ const StageMatchContainer = ({
 }: StageContainerProps) => {
   const [visibleCount, setVisibleCount] = useState(2);
 
-  console.log(matches);
-
   useEffect(() => {
     const handleResize = () => {
       setVisibleCount(window.innerWidth <= 768 ? 1 : 2);
