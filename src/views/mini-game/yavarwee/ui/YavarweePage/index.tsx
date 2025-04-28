@@ -5,10 +5,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { AnimationDisplayContainer } from '@/entities/mini-game';
-import {
-  YavarweeAnimation,
-  YavarweeButton,
-} from '@/entities/mini-game/yavarwee';
+import { YavarweeButton } from '@/entities/mini-game/yavarwee';
 import { YavarweeForm } from '@/shared/types/mini-game/yavarwee';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
@@ -16,7 +13,10 @@ import { useGetBetLimit } from '@/views/mini-game/model/useGetBetLimit';
 import { useGetMyPointQuery } from '@/views/mini-game/model/useGetMyPointQuery';
 import { useGetMyTicketQuery } from '@/views/mini-game/model/useGetMyTicketQuery';
 import { ControlForm } from '@/widgets/mini-game';
-import { RoundContainer } from '@/widgets/mini-game/yavarwee';
+import {
+  RoundContainer,
+  YavarweeAnimation,
+} from '@/widgets/mini-game/yavarwee';
 import { useYavarweeController } from '../../model/useYavarweeController';
 import { useYavarweeFormHandler } from '../../model/useYavarweeFormHandler';
 import { getShuffleAnimationDurationForRound } from '../../model/yavarweeShuffleConfig';
