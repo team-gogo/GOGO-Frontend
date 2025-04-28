@@ -9,7 +9,7 @@ export interface CouponInfoType {
 export interface CouponResponseType {
   isGain: boolean;
   earnedPoint: number;
-  lostPoint: number;
+  lostedPoint: number;
   beforePoint: number;
   afterPoint: number;
 }

@@ -25,7 +25,13 @@ const CouponPage = () => {
     couponData &&
     (couponData.isGain
       ? `+${couponData.earnedPoint}`
-      : `-${couponData.lostPoint}`);
+      : `-${couponData.lostedPoint}`);
+
+  useEffect(() => {
+    if (couponId) {
+      localStorage.setItem('couponId', couponId);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (couponInfo) {
@@ -33,12 +39,6 @@ const CouponPage = () => {
       localStorage.removeItem('couponId');
     }
   }, [couponInfo]);
-
-  useEffect(() => {
-    if (couponId) {
-      localStorage.setItem('couponId', couponId);
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     if (couponData) {
