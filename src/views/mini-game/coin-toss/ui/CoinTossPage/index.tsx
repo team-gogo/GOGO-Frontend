@@ -158,12 +158,14 @@ const CoinTossPage = () => {
               selectedSide={selectedSide}
               setValue={setValue}
               isPlaying={isPlaying}
+              isPending={isPending}
             />
             <CoinTossButton
               side="BACK"
               selectedSide={selectedSide}
               setValue={setValue}
               isPlaying={isPlaying}
+              isPending={isPending}
             />
           </div>
         </div>
