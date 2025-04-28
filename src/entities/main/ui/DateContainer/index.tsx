@@ -40,6 +40,29 @@ const DateContainer = () => {
     return { short: `${month}-${day}`, full: `${year}-${month}-${day}` };
   });
 
+  useEffect(() => {
+    const localSelectDate = localStorage.getItem('selectDate');
+
+    if (localSelectDate) {
+      const matchedDate = dates.find((d) => d.full === localSelectDate);
+
+      if (matchedDate) {
+        setSelectedDate(matchedDate.short);
+        setSelectDate(matchedDate.full);
+      } else {
+        const date = new Date(localSelectDate);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const short = `${month}-${day}`;
+
+        setSelectedDate(short);
+        setSelectDate(localSelectDate);
+      }
+    }
+
+    localStorage.removeItem('selectDate');
+  }, [dates]);
+
   const todayIndex = dates.findIndex(
     (d) =>
       d.short ===
