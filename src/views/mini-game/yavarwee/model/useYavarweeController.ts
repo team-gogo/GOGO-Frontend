@@ -51,15 +51,21 @@ export function useYavarweeController(stageId: string, reset: () => void) {
   }, [gameState, userSelection, betUuid, round, comfirmYavarwee, reset]);
 
   const performShuffleAnimation = (currentRound: number) => {
-    const count = getShuffleCountForRound(currentRound);
-    const duration = getShuffleAnimationDurationForRound(currentRound);
-    let delay = 0;
+    const shuffleCount = getShuffleCountForRound(currentRound);
+    const shuffleDuration = getShuffleAnimationDurationForRound(currentRound);
+    const current = [...cupPositions];
+    const shuffles: [number, number][] = [];
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < shuffleCount; i++) {
       const a = Math.floor(Math.random() * 3);
       let b = Math.floor(Math.random() * 3);
       while (a === b) b = Math.floor(Math.random() * 3);
+      [current[a], current[b]] = [current[b], current[a]];
+      shuffles.push([a, b]);
+    }
 
+    let delay = 0;
+    shuffles.forEach(([a, b]) => {
       setTimeout(() => {
         setCupPositions((prev) => {
           const next = [...prev];
@@ -67,11 +73,12 @@ export function useYavarweeController(stageId: string, reset: () => void) {
           return next;
         });
       }, delay);
+      delay += shuffleDuration;
+    });
 
-      delay += duration;
-    }
-
-    setTimeout(() => setGameState('selecting'), delay);
+    setTimeout(() => {
+      setGameState('selecting');
+    }, delay);
   };
 
   const startGameWithRound = (currentRound: number) => {
