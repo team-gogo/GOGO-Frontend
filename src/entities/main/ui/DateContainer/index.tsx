@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { LeftArrow, RightArrowIcon } from '@/shared/assets/svg';
-import { useSelectDateStore } from '@/shared/stores';
+import { useMyStageIdStore, useSelectDateStore } from '@/shared/stores';
 import { cn } from '@/shared/utils/cn';
 
 const DateContainer = () => {
@@ -29,6 +29,8 @@ const DateContainer = () => {
 
   const { setSelectDate } = useSelectDateStore();
 
+  const { stageId } = useMyStageIdStore();
+
   const dates = Array.from({ length: totalDays }, (_, index) => {
     const date = new Date(today);
     date.setDate(today.getDate() - pastDays + index);
@@ -40,6 +42,40 @@ const DateContainer = () => {
     return { short: `${month}-${day}`, full: `${year}-${month}-${day}` };
   });
 
+  useEffect(() => {
+    const localSelectDate = sessionStorage.getItem('selectDate');
+
+    if (localSelectDate) {
+      const { selectDate: localDate, stageId: localStageId } =
+        JSON.parse(localSelectDate);
+
+      if (localDate !== '') {
+        if (stageId === localStageId) {
+          const matchedDate = dates.find((d) => d.full === localDate);
+
+          if (matchedDate) {
+            setSelectedDate(matchedDate.short);
+            setSelectDate(matchedDate.full);
+            const matchedIndex = dates.findIndex((d) => d.full === localDate);
+            setStartIndex(matchedIndex);
+          } else {
+            const date = new Date(localDate);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const short = `${month}-${day}`;
+
+            setSelectedDate(short);
+            setSelectDate(localDate);
+            const matchedIndex = dates.findIndex((d) => d.full === localDate);
+            setStartIndex(matchedIndex);
+          }
+        }
+      }
+
+      sessionStorage.removeItem('selectDate');
+    }
+  }, [dates]);
+
   const todayIndex = dates.findIndex(
     (d) =>
       d.short ===
@@ -48,6 +84,7 @@ const DateContainer = () => {
   const [selectedDate, setSelectedDate] = useState<string>(
     dates[todayIndex].short,
   );
+
   const [startIndex, setStartIndex] = useState(todayIndex);
 
   const handleDateChange = (index: number) => {

@@ -40,5 +40,6 @@ export interface CommunityDetail {
   author: Author;
   imageUrl: string;
   commentCount: number;
+  viewCount: number;
   comment: Comment[];
 }

@@ -1,16 +1,27 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useStageAdminStore } from '@/shared/stores';
 import { StagesType } from '@/shared/types/stage';
 import StageMatchSection from '@/shared/ui/stageMatchSection';
 import { cn } from '@/shared/utils/cn';
 import StageHeader from '@/widgets/stage/ui/StageHeader';
-// import getStageInfo from '../Mock/getStageInfo';
 import { useGetStageList } from '../model/useGetStageList';
 
 const StagePage = () => {
-  // const stageInfo = getStageInfo();
+  const router = useRouter();
+
+  useEffect(() => {
+    const couponId = localStorage.getItem('couponId');
+
+    if (couponId) {
+      router.replace(`/coupon?couponId=${couponId}`);
+    } else {
+      router.replace('/stage');
+    }
+  }, [router]);
+
   const {
     data: stageListInfo,
     refetch: stageListRefetch,

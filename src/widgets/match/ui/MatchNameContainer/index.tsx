@@ -16,8 +16,6 @@ const MatchNameContainer = ({ gameData }: MatchNameContainerProps) => {
       id: game.gameId,
     })) ?? [];
 
-  console.log(selectedGameId);
-
   return (
     <div
       className={cn(

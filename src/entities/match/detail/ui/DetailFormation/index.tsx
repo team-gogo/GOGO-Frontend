@@ -147,7 +147,6 @@ const DetailFormation = ({
           const courtRect = courtElement.getBoundingClientRect();
           const svgRect = svg.getBoundingClientRect();
 
-          console.log(svgRect.height);
           setSvgBounds({
             width: Math.max(svgRect.width - 90),
             height: Math.max(svgRect.height - 90),
