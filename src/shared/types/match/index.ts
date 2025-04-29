@@ -22,3 +22,12 @@ interface Participant {
 export interface TeamDetailType extends Team {
   participant: Participant[];
 }
+
+export interface MatchData {
+  index: number;
+  teamAName: string;
+  teamBName: string;
+  round: string;
+  startDate?: string;
+  endDate?: string;
+}
