@@ -9,10 +9,11 @@ import LeagueMatchView from '@/entities/stage/time/ui/LeagueMatchView';
 import SingleMatchView from '@/entities/stage/time/ui/SingleMatchView';
 import StartTimeInput from '@/entities/stage/time/ui/StartTimeInput';
 import TournamentMatchView from '@/entities/stage/time/ui/TournamentMatchView';
+import { useMatchStore } from '@/shared/stores/matchStore';
 import { MatchData } from '@/shared/types/match';
 import { GameSystem } from '@/shared/types/stage/game';
 import { parseTeamData } from '@/shared/utils/parseTeamData';
-import { useMatchStore } from '@/store/matchStore';
+import { getTournamentMatches } from '../../models/getTournamentMatches';
 
 interface SavedMatchData {
   round: string;
@@ -29,57 +30,6 @@ type SetTimeContainerProps = {
   system: GameSystem;
   matchId: number;
   teamIds: Record<string, number>;
-};
-
-const getTournamentMatches = (finalStage: 4 | 8) => {
-  if (finalStage === 8) {
-    return {
-      quarterFinals: Array(4)
-        .fill(null)
-        .map((_, i) => ({
-          index: i + 1,
-          teamAName: 'TBD',
-          teamBName: 'TBD',
-          round: '8강',
-        })),
-      semiFinals: Array(2)
-        .fill(null)
-        .map((_, i) => ({
-          index: i + 1,
-          teamAName: 'TBD',
-          teamBName: 'TBD',
-          round: '4강',
-        })),
-      finals: [
-        {
-          index: 1,
-          teamAName: 'TBD',
-          teamBName: 'TBD',
-          round: '결승',
-        },
-      ],
-    };
-  }
-
-  return {
-    quarterFinals: [],
-    semiFinals: Array(2)
-      .fill(null)
-      .map((_, i) => ({
-        index: i + 1,
-        teamAName: 'TBD',
-        teamBName: 'TBD',
-        round: '4강',
-      })),
-    finals: [
-      {
-        index: 1,
-        teamAName: 'TBD',
-        teamBName: 'TBD',
-        round: '결승',
-      },
-    ],
-  };
 };
 
 const SetTimeContainer = ({
@@ -343,7 +293,6 @@ const SetTimeContainer = ({
       sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
 
       if (system === GameSystem.FULL_LEAGUE) {
-        /* eslint-disable */
         const uniqueIndices = new Set();
         const uniqueSavedMatches = savedMatches.filter((match) => {
           if (uniqueIndices.has(match.index)) {
@@ -353,12 +302,10 @@ const SetTimeContainer = ({
           return true;
         });
 
-        const modifiedSavedMatches = uniqueSavedMatches.map(
-          ({ round, ...rest }) => ({
-            ...rest,
-            leagueTurn: rest.index,
-          }),
-        );
+        const modifiedSavedMatches = uniqueSavedMatches.map(({ ...rest }) => ({
+          ...rest,
+          leagueTurn: rest.index,
+        }));
 
         sessionStorage.setItem(
           savedMatchesKey,
