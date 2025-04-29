@@ -181,9 +181,20 @@ const SetTimeContainer = ({
         savedMatches = JSON.parse(existingData);
       }
 
-      const matchIndex = savedMatches.findIndex(
-        (match) => match.round === round && match.index === index,
-      );
+      let matchIndex = -1;
+
+      if (system === GameSystem.FULL_LEAGUE) {
+        matchIndex = savedMatches.findIndex(
+          (match) =>
+            match.index === index &&
+            match.teamAName === teamAName &&
+            match.teamBName === teamBName,
+        );
+      } else {
+        matchIndex = savedMatches.findIndex(
+          (match) => match.round === round && match.index === index,
+        );
+      }
 
       if (matchIndex !== -1) {
         savedMatches[matchIndex] = {
@@ -286,10 +297,22 @@ const SetTimeContainer = ({
       sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
       if (system === GameSystem.FULL_LEAGUE) {
         /* eslint-disable */
-        const modifiedSavedMatches = savedMatches.map(({ round, ...rest }) => ({
-          ...rest,
-          leagueTurn: rest.index,
-        }));
+        const uniqueIndices = new Set();
+        const uniqueSavedMatches = savedMatches.filter((match) => {
+          if (uniqueIndices.has(match.index)) {
+            return false;
+          }
+          uniqueIndices.add(match.index);
+          return true;
+        });
+
+        const modifiedSavedMatches = uniqueSavedMatches.map(
+          ({ round, ...rest }) => ({
+            ...rest,
+            leagueTurn: rest.index,
+          }),
+        );
+
         sessionStorage.setItem(
           savedMatchesKey,
           JSON.stringify(modifiedSavedMatches),
@@ -888,9 +911,24 @@ const SetTimeContainer = ({
     } else {
       setSelectedMatch({ round, index });
 
-      const savedMatch = savedMatches.find(
-        (match) => match.round === round && match.index === index,
-      );
+      let savedMatch;
+
+      const currentTeams = getSelectedMatchTeams(round, index);
+
+      if (system === GameSystem.TOURNAMENT) {
+        savedMatch = savedMatches.find(
+          (match) => match.round === round && match.index === index,
+        );
+      } else if (system === GameSystem.FULL_LEAGUE) {
+        savedMatch = savedMatches.find(
+          (match) =>
+            match.index === index &&
+            match.teamAName === currentTeams.teamAName &&
+            match.teamBName === currentTeams.teamBName,
+        );
+      } else {
+        savedMatch = savedMatches.find((match) => match.index === index);
+      }
 
       if (savedMatch) {
         const startDate = new Date(savedMatch.startDate);
@@ -931,7 +969,13 @@ const SetTimeContainer = ({
 
   const isMatchTimeSet = (round: string, index: number) => {
     if (system === GameSystem.FULL_LEAGUE) {
-      return savedMatches.some((match) => match.index === index);
+      const currentTeams = getSelectedMatchTeams(round, index);
+      return savedMatches.some(
+        (match) =>
+          match.index === index &&
+          match.teamAName === currentTeams.teamAName &&
+          match.teamBName === currentTeams.teamBName,
+      );
     }
     return savedMatches.some(
       (match) => match.round === round && match.index === index,

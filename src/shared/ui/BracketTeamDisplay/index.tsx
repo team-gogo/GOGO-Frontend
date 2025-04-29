@@ -298,7 +298,7 @@ const BracketTeamDisplay = ({
                   teamId = getTeamByRoundAndTurn('SEMI_FINALS', 1, 'B');
                   teamName = getTeamNameByRoundAndTurn('SEMI_FINALS', 1, 'B');
                 }
-              } else {
+              } else if (side === 'right') {
                 if (teamCount === 3 && idx === 0) {
                   teamId = getTeamByRoundAndTurn('FINALS', 1, 'B');
                   teamName = getTeamNameByRoundAndTurn('FINALS', 1, 'B');
@@ -321,8 +321,36 @@ const BracketTeamDisplay = ({
             }
 
             if (teamId) {
-              const winner = getWinnerTeamId(round || '', idx);
+              let matchTurn = 1;
+              if (round === 'SEMI_FINALS') {
+                if (side === 'left') {
+                  matchTurn = 1;
+                } else {
+                  matchTurn = 2;
+                }
+              } else if (round === 'FINALS') {
+                matchTurn = 1;
+              } else if (round === 'QUARTER_FINALS') {
+                if (teamCount === 6) {
+                  matchTurn = side === 'left' ? 1 : 3;
+                } else {
+                  if (side === 'left') {
+                    matchTurn = idx === 0 ? 1 : 2;
+                  } else {
+                    matchTurn = idx === 0 ? 4 : 3;
+                  }
+                }
+              }
+
+              const winner = getWinnerTeamId(round || '', matchTurn);
               isWinner = winner?.id === teamId;
+
+              if (round === 'SEMI_FINALS' && side === 'right' && idx === 0) {
+                const winner = getWinnerTeamId('SEMI_FINALS', 2);
+                if (winner && winner.id === teamId) {
+                  isWinner = true;
+                }
+              }
             }
 
             return (

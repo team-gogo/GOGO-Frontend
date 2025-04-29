@@ -18,6 +18,7 @@ import {
   useMatchNoticeStore,
   useMatchStore,
   useMyStageIdStore,
+  useSelectDateStore,
 } from '@/shared/stores';
 import { MatchData } from '@/shared/types/my/bet';
 import { cn } from '@/shared/utils/cn';
@@ -55,6 +56,7 @@ const Match = ({ match }: MatchProps) => {
   const { matchNoticeArr } = useMatchNoticeStore();
   const { bettingMatchArr } = useBettingMatchArrStore();
   const { isAlarmClicked, setIsAlarmClicked } = useAlarmClickStore();
+  const { selectDate } = useSelectDateStore();
   const [isBettingPossible, setIsBettingPossible] = useState(false);
 
   const [adminIdxArr, setAdminIdxArr] = useState<number[]>([]);
@@ -175,6 +177,10 @@ const Match = ({ match }: MatchProps) => {
 
     localStorage.setItem('matchStatus', JSON.stringify(matchStatusData));
     localStorage.setItem('match', JSON.stringify(matchData));
+    sessionStorage.setItem(
+      'selectDate',
+      JSON.stringify({ selectDate, stageId }),
+    );
 
     setMatchStatus(matchStatusData);
     setMatch(matchData);
