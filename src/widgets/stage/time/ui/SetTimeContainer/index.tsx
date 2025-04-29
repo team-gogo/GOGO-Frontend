@@ -3,12 +3,14 @@ import { toast } from 'react-toastify';
 import generateLeagueMatches from '@/entities/stage/time/model/generateLeagueMatches';
 import generateSingleMatch from '@/entities/stage/time/model/generateSingleMatch';
 import generateTournamentMatches from '@/entities/stage/time/model/generateTournamentMatches';
+import DateInput from '@/entities/stage/time/ui/DateInput';
+import EndTimeInput from '@/entities/stage/time/ui/EndTimeInput';
 import LeagueMatchView from '@/entities/stage/time/ui/LeagueMatchView';
 import SingleMatchView from '@/entities/stage/time/ui/SingleMatchView';
+import StartTimeInput from '@/entities/stage/time/ui/StartTimeInput';
 import TournamentMatchView from '@/entities/stage/time/ui/TournamentMatchView';
 import { MatchData } from '@/shared/types/match';
 import { GameSystem } from '@/shared/types/stage/game';
-import Input from '@/shared/ui/input';
 import { parseTeamData } from '@/shared/utils/parseTeamData';
 import { useMatchStore } from '@/store/matchStore';
 
@@ -316,6 +318,26 @@ const SetTimeContainer = ({
   }, [matchId]);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const confirmedTeamsKey = `confirmedTeams_${matchId}`;
+      const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+
+      if (confirmedTeamsData) {
+        try {
+          const parsedTeams = JSON.parse(confirmedTeamsData);
+          const teamCount = Array.isArray(parsedTeams) ? parsedTeams.length : 0;
+          setFinalStage(teamCount < 5 ? 4 : 8);
+        } catch (error) {
+          toast.error('데이터 처리 오류');
+          console.error(error);
+        }
+      } else {
+        setFinalStage(8);
+      }
+    }
+  }, [matchId]);
+
+  useEffect(() => {
     if (typeof window !== 'undefined' && savedMatches.length > 0) {
       const savedMatchesKey = `savedMatches_${matchId}`;
       sessionStorage.setItem(savedMatchesKey, JSON.stringify(savedMatches));
@@ -355,26 +377,6 @@ const SetTimeContainer = ({
       formatMatchData(matchId, savedMatches);
     }
   }, [savedMatches, matchId, formatMatchData, system]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const confirmedTeamsKey = `confirmedTeams_${matchId}`;
-      const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
-
-      if (confirmedTeamsData) {
-        try {
-          const parsedTeams = JSON.parse(confirmedTeamsData);
-          const teamCount = Array.isArray(parsedTeams) ? parsedTeams.length : 0;
-          setFinalStage(teamCount < 5 ? 4 : 8);
-        } catch (error) {
-          toast.error('데이터 처리 오류');
-          console.error(error);
-        }
-      } else {
-        setFinalStage(8);
-      }
-    }
-  }, [matchId]);
 
   useEffect(() => {
     try {
@@ -563,51 +565,12 @@ const SetTimeContainer = ({
 
       {selectedMatch && (
         <div className="flex gap-20">
-          <div className="flex-1">
-            <Input
-              type="date"
-              placeholder="날짜를 입력해주세요"
-              value={date}
-              onChange={handleDateChange}
-              showBorder={true}
-              onClick={(e) => {
-                const input = e.target as HTMLInputElement;
-                if (input.showPicker) {
-                  input.showPicker();
-                }
-              }}
-            />
-          </div>
-          <div className="flex-1">
-            <Input
-              type="time"
-              placeholder="시작 시간을 입력해주세요"
-              value={startTime}
-              onChange={handleStartTimeChange}
-              showBorder={true}
-              onClick={(e) => {
-                const input = e.target as HTMLInputElement;
-                if (input.showPicker) {
-                  input.showPicker();
-                }
-              }}
-            />
-          </div>
-          <div className="flex-1">
-            <Input
-              type="time"
-              placeholder="끝나는 시간을 입력해주세요"
-              value={endTime}
-              onChange={handleEndTimeChange}
-              showBorder={true}
-              onClick={(e) => {
-                const input = e.target as HTMLInputElement;
-                if (input.showPicker) {
-                  input.showPicker();
-                }
-              }}
-            />
-          </div>
+          <DateInput date={date} onChange={handleDateChange} />
+          <StartTimeInput
+            startTime={startTime}
+            onChange={handleStartTimeChange}
+          />
+          <EndTimeInput endTime={endTime} onChange={handleEndTimeChange} />
         </div>
       )}
     </div>
