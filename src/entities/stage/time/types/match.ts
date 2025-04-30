@@ -1,16 +1,22 @@
 import { MatchData } from '@/shared/types/match';
 
+export interface MatchTeams {
+  teamAName: string;
+  teamBName: string;
+}
+
 export interface MatchesState {
   quarterFinals: MatchData[];
   semiFinals: MatchData[];
   finals: MatchData[];
 }
 
-export interface SavedMatchData {
-  round: string;
-  index: number;
+export interface SavedMatchData extends MatchTeams, MatchSelection {
   startDate: string;
   endDate: string;
-  teamAName: string;
-  teamBName: string;
+}
+
+export interface MatchSelection {
+  round: string;
+  index: number;
 }
