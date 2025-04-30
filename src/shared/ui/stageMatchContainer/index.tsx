@@ -89,11 +89,15 @@ const StageMatchContainer = ({
 
           {matches?.matches
             .slice()
-            .sort(
-              (a, b) =>
-                new Date(a.startDate).getTime() -
-                new Date(b.startDate).getTime(),
-            )
+            .sort((a, b) => {
+              if (a.isEnd === b.isEnd) {
+                return (
+                  new Date(a.startDate).getTime() -
+                  new Date(b.startDate).getTime()
+                );
+              }
+              return a.isEnd ? 1 : -1;
+            })
             .map((match) => (
               <div
                 key={match.matchId}
