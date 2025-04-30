@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useMatches } from '@/entities/stage/time/hooks/useMatches';
 import { useSavedMatches } from '@/entities/stage/time/hooks/useSavedMatches';
-import { SavedMatchData } from '@/entities/stage/time/types/match';
+import { useTimeHandlers } from '@/entities/stage/time/hooks/useTimeHandlers';
+import {
+  SavedMatchData,
+  MatchSelection,
+} from '@/entities/stage/time/types/match';
 import DateInput from '@/entities/stage/time/ui/DateInput';
 import EndTimeInput from '@/entities/stage/time/ui/EndTimeInput';
 import LeagueMatchView from '@/entities/stage/time/ui/LeagueMatchView';
@@ -35,13 +39,9 @@ const SetTimeContainer = ({
   teamIds,
 }: SetTimeContainerProps) => {
   const { formatMatchData } = useMatchStore();
-  const [date, setDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [selectedMatch, setSelectedMatch] = useState<{
-    round: string;
-    index: number;
-  } | null>(null);
+  const [selectedMatch, setSelectedMatch] = useState<MatchSelection | null>(
+    null,
+  );
   const [finalStage, setFinalStage] = useState<4 | 8>(8);
 
   const { matches, updateMatchDateInfo: _updateMatchDateInfo } = useMatches(
@@ -78,62 +78,14 @@ const SetTimeContainer = ({
     };
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(e.target.value);
-    if (selectedMatch && e.target.value && startTime && endTime) {
-      const { teamAName, teamBName } = getSelectedMatchTeams(
-        selectedMatch.round,
-        selectedMatch.index,
-      );
-      saveMatchTime(
-        selectedMatch.round,
-        selectedMatch.index,
-        e.target.value,
-        startTime,
-        endTime,
-        teamAName,
-        teamBName,
-      );
-    }
-  };
-
-  const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStartTime(e.target.value);
-    if (selectedMatch && date && e.target.value && endTime) {
-      const { teamAName, teamBName } = getSelectedMatchTeams(
-        selectedMatch.round,
-        selectedMatch.index,
-      );
-      saveMatchTime(
-        selectedMatch.round,
-        selectedMatch.index,
-        date,
-        e.target.value,
-        endTime,
-        teamAName,
-        teamBName,
-      );
-    }
-  };
-
-  const handleEndTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEndTime(e.target.value);
-    if (selectedMatch && date && startTime && e.target.value) {
-      const { teamAName, teamBName } = getSelectedMatchTeams(
-        selectedMatch.round,
-        selectedMatch.index,
-      );
-      saveMatchTime(
-        selectedMatch.round,
-        selectedMatch.index,
-        date,
-        startTime,
-        e.target.value,
-        teamAName,
-        teamBName,
-      );
-    }
-  };
+  const {
+    date,
+    startTime,
+    endTime,
+    handleDateChange,
+    handleStartTimeChange,
+    handleEndTimeChange,
+  } = useTimeHandlers(selectedMatch, getSelectedMatchTeams, saveMatchTime);
 
   const handleMatchSelect = (round: string, index: number) => {
     if (
@@ -142,9 +94,6 @@ const SetTimeContainer = ({
       selectedMatch.index === index
     ) {
       setSelectedMatch(null);
-      setDate('');
-      setStartTime('');
-      setEndTime('');
     } else {
       setSelectedMatch({ round, index });
 
@@ -194,13 +143,25 @@ const SetTimeContainer = ({
           .split(' ')[0]
           .substring(0, 5);
 
-        setDate(formattedDate);
-        setStartTime(formattedStartTime);
-        setEndTime(formattedEndTime);
+        handleDateChange({
+          target: { value: formattedDate },
+        } as React.ChangeEvent<HTMLInputElement>);
+        handleStartTimeChange({
+          target: { value: formattedStartTime },
+        } as React.ChangeEvent<HTMLInputElement>);
+        handleEndTimeChange({
+          target: { value: formattedEndTime },
+        } as React.ChangeEvent<HTMLInputElement>);
       } else {
-        setDate('');
-        setStartTime('');
-        setEndTime('');
+        handleDateChange({
+          target: { value: '' },
+        } as React.ChangeEvent<HTMLInputElement>);
+        handleStartTimeChange({
+          target: { value: '' },
+        } as React.ChangeEvent<HTMLInputElement>);
+        handleEndTimeChange({
+          target: { value: '' },
+        } as React.ChangeEvent<HTMLInputElement>);
       }
     }
   };
