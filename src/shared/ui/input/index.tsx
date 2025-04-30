@@ -177,6 +177,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           {...attributes}
           ref={ref}
+          {...(value !== undefined ? { value } : {})}
           maxLength={maxLength}
           onChange={handleInputChange}
           autoComplete="off"
