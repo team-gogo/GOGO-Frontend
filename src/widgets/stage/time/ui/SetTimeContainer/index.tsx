@@ -253,13 +253,13 @@ const SetTimeContainer = ({
     <div className="m-30 flex flex-col gap-8">
       <div className="my-20 min-h-[calc(50vh-120px)] rounded-lg bg-gray-700 p-8">
         <div
-          className={`m-20 flex ${
+          className={`flex pad:m-20 m-10${
             system === GameSystem.FULL_LEAGUE
               ? ''
               : finalStage === 4
                 ? 'justify-center'
                 : 'justify-between'
-          } gap-4 p-20`}
+          } gap-4 pad:p-20`}
         >
           {renderSections()}
         </div>

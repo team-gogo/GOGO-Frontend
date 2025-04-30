@@ -13,7 +13,7 @@ interface MatchSectionProps {
   title: string;
   matchList: MatchData[];
   finalStage: number;
-  teamIds: Record<string, number>;
+  teamIds: { [key: string]: number };
   onMatchSelect: (round: string, index: number) => void;
   isMatchSelected: (round: string, index: number) => boolean;
   isMatchTimeSet: (round: string, index: number) => boolean;
@@ -28,9 +28,11 @@ const MatchSection = ({
   isMatchSelected,
   isMatchTimeSet,
 }: MatchSectionProps) => (
-  <div className="flex w-1/3 flex-col gap-20 rounded-lg border border-gray-500 bg-gray-700 p-6">
-    <h2 className="text-center text-h4s text-white">{title}</h2>
-    <div className="flex flex-col items-center gap-10">
+  <div className="flex flex-col gap-4 rounded-lg border border-gray-500 bg-gray-700 p-4 phone:w-[90vw] mobile:w-[90vw] pad:w-[400px] laptop:w-[400px]">
+    <h2 className="text-center text-white phone:text-body1s pad:text-h4s">
+      {title}
+    </h2>
+    <div className="flex flex-col items-center gap-4">
       {matchList.length > 0 ? (
         matchList
           .filter(
@@ -47,15 +49,14 @@ const MatchSection = ({
               ),
           )
           .map((match) => (
-            <div key={`${match.round}-${match.index}`} className="relative">
+            <div
+              key={`${match.round}-${match.index}`}
+              className="relative flex w-full justify-center"
+            >
               <MatchItem
                 index={match.index}
                 teamAName={match.teamAName}
-                teamBName={
-                  match.teamBName === '부전승'
-                    ? `${match.teamAName}(부전승)`
-                    : match.teamBName
-                }
+                teamBName={match.teamBName}
                 teamAId={teamIds[match.teamAName]}
                 teamBId={teamIds[match.teamBName]}
                 selected={isMatchSelected(match.round, match.index)}
