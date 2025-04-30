@@ -16,7 +16,7 @@ import TournamentMatchView from '@/entities/stage/time/ui/TournamentMatchView';
 import { useMatchStore } from '@/shared/stores/matchStore';
 import { MatchData } from '@/shared/types/match';
 import { GameSystem } from '@/shared/types/stage/game';
-
+import getKoreanTime from '@/shared/utils/getKoreanTime';
 export interface MatchesState {
   quarterFinals: MatchData[];
   semiFinals: MatchData[];
@@ -39,6 +39,7 @@ const SetTimeContainer = ({
   teamIds,
 }: SetTimeContainerProps) => {
   const { formatMatchData } = useMatchStore();
+
   const [selectedMatch, setSelectedMatch] = useState<MatchSelection | null>(
     null,
   );
@@ -57,6 +58,27 @@ const SetTimeContainer = ({
     initialSavedMatches,
     formatMatchData,
   );
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const confirmedTeamsData = sessionStorage.getItem(
+        `confirmedTeams_${matchId}`,
+      );
+
+      if (confirmedTeamsData) {
+        try {
+          const parsedTeams = JSON.parse(confirmedTeamsData);
+          const teamCount = Array.isArray(parsedTeams) ? parsedTeams.length : 0;
+          setFinalStage(teamCount < 5 ? 4 : 8);
+        } catch (error) {
+          toast.error('데이터 처리 오류');
+          console.error(error);
+        }
+      } else {
+        setFinalStage(8);
+      }
+    }
+  }, [matchId]);
 
   const getSelectedMatchTeams = (
     round: string,
@@ -85,7 +107,12 @@ const SetTimeContainer = ({
     handleDateChange,
     handleStartTimeChange,
     handleEndTimeChange,
-  } = useTimeHandlers(selectedMatch, getSelectedMatchTeams, saveMatchTime);
+  } = useTimeHandlers(
+    selectedMatch,
+    getSelectedMatchTeams,
+    saveMatchTime,
+    savedMatches,
+  );
 
   const handleMatchSelect = (round: string, index: number) => {
     if (
@@ -125,20 +152,16 @@ const SetTimeContainer = ({
         const startDate = new Date(savedMatch.startDate);
         const endDate = new Date(savedMatch.endDate);
 
-        const koreaTimeOffset = 9 * 60;
-        const koreaStartDate = new Date(
-          startDate.getTime() - koreaTimeOffset * 60000,
-        );
-        const koreaEndDate = new Date(
-          endDate.getTime() - koreaTimeOffset * 60000,
-        );
+        const formattedDate = getKoreanTime(startDate)
+          .toISOString()
+          .split('T')[0];
 
-        const formattedDate = koreaStartDate.toISOString().split('T')[0];
-        const formattedStartTime = koreaStartDate
+        const formattedStartTime = getKoreanTime(startDate)
           .toTimeString()
           .split(' ')[0]
           .substring(0, 5);
-        const formattedEndTime = koreaEndDate
+
+        const formattedEndTime = getKoreanTime(endDate)
           .toTimeString()
           .split(' ')[0]
           .substring(0, 5);
@@ -170,7 +193,7 @@ const SetTimeContainer = ({
     return selectedMatch?.round === round && selectedMatch?.index === index;
   };
 
-  const isMatchTimeSet = (round: string, index: number) => {
+  const isMatchTimeSet = (round: string, index: number): boolean => {
     if (system === GameSystem.FULL_LEAGUE) {
       const currentTeams = getSelectedMatchTeams(round, index);
       return savedMatches.some(
@@ -225,27 +248,6 @@ const SetTimeContainer = ({
         );
     }
   };
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const confirmedTeamsData = sessionStorage.getItem(
-        `confirmedTeams_${matchId}`,
-      );
-
-      if (confirmedTeamsData) {
-        try {
-          const parsedTeams = JSON.parse(confirmedTeamsData);
-          const teamCount = Array.isArray(parsedTeams) ? parsedTeams.length : 0;
-          setFinalStage(teamCount < 5 ? 4 : 8);
-        } catch (error) {
-          toast.error('데이터 처리 오류');
-          console.error(error);
-        }
-      } else {
-        setFinalStage(8);
-      }
-    }
-  }, [matchId]);
 
   return (
     <div className="m-30 flex flex-col gap-8">
