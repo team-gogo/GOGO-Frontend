@@ -7,6 +7,7 @@ interface CoinTossButtonProps {
   selectedSide: string | undefined;
   setValue: UseFormSetValue<CoinTossForm>;
   isPlaying: boolean;
+  isPending: boolean;
 }
 
 const CoinTossButton = ({
@@ -14,6 +15,7 @@ const CoinTossButton = ({
   selectedSide,
   setValue,
   isPlaying,
+  isPending,
 }: CoinTossButtonProps) => {
   const isSelected = selectedSide === side;
 
@@ -21,8 +23,10 @@ const CoinTossButton = ({
     <Button
       onClick={() => setValue('bet', side)}
       bg={!isSelected ? 'bg-black-800' : undefined}
-      border={!isSelected && !isPlaying ? 'border-white' : undefined}
-      disabled={isPlaying}
+      border={
+        !isSelected && !isPlaying && !isPending ? 'border-white' : undefined
+      }
+      disabled={isPlaying || isPending}
     >
       {side === 'FRONT' ? '앞면' : '뒷면'}
     </Button>
