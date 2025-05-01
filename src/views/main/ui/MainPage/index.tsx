@@ -154,7 +154,7 @@ const MainPage = () => {
               포인트
             </h2>
             <h2 className={cn('laptop:text-h3e', 'text-body1e', 'text-white')}>
-              {formatPoint(point)}
+              {userPointData ? formatPoint(point) : '000'}
             </h2>
             <h3
               className={cn(
@@ -164,7 +164,7 @@ const MainPage = () => {
                 'hidden',
               )}
             >
-              ({point.toLocaleString()})
+              {userPointData ? `(${point.toLocaleString()})` : '(000)'}
             </h3>
           </div>
           <DateContainer />
