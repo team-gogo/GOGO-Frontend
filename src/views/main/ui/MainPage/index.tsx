@@ -174,6 +174,7 @@ const MainPage = () => {
             text={isToday ? '오늘 최신 매치' : `${selectDate.slice(5)} 매치`}
             icon={<MatchClockIcon />}
             path={`/match/list/${stageId}`}
+            onClick={() => setSelectDate(selectDate)}
           >
             <StageMatchSection
               matches={searchMatchData}
