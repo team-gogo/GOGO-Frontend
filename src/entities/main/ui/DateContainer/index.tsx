@@ -27,7 +27,7 @@ const DateContainer = () => {
   }, []);
   const pastDays = Math.floor(totalDays / 2);
 
-  const { setSelectDate } = useSelectDateStore();
+  const { selectDate, setSelectDate } = useSelectDateStore();
 
   const { stageId } = useMyStageIdStore();
 
@@ -42,39 +42,37 @@ const DateContainer = () => {
     return { short: `${month}-${day}`, full: `${year}-${month}-${day}` };
   });
 
-  useEffect(() => {
-    const localSelectDate = sessionStorage.getItem('selectDate');
+  const syncSelectedDate = (fullDate: string) => {
+    const matchedDate = dates.find((d) => d.full === fullDate);
 
-    if (localSelectDate) {
-      const { selectDate: localDate, stageId: localStageId } =
-        JSON.parse(localSelectDate);
-
-      if (localDate !== '') {
-        if (stageId === localStageId) {
-          const matchedDate = dates.find((d) => d.full === localDate);
-
-          if (matchedDate) {
-            setSelectedDate(matchedDate.short);
-            setSelectDate(matchedDate.full);
-            const matchedIndex = dates.findIndex((d) => d.full === localDate);
-            setStartIndex(matchedIndex);
-          } else {
-            const date = new Date(localDate);
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const short = `${month}-${day}`;
-
-            setSelectedDate(short);
-            setSelectDate(localDate);
-            const matchedIndex = dates.findIndex((d) => d.full === localDate);
-            setStartIndex(matchedIndex);
-          }
-        }
-      }
-
-      sessionStorage.removeItem('selectDate');
+    if (matchedDate) {
+      setSelectedDate(matchedDate.short);
+      setSelectDate(matchedDate.full);
+      setStartIndex(dates.findIndex((d) => d.full === fullDate));
+    } else {
+      const date = new Date(fullDate);
+      const short = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      setSelectedDate(short);
+      setSelectDate(fullDate);
+      setStartIndex(dates.findIndex((d) => d.full === fullDate));
     }
-  }, [dates]);
+  };
+
+  useEffect(() => {
+    if (selectDate) syncSelectedDate(selectDate);
+  }, []);
+
+  useEffect(() => {
+    const local = sessionStorage.getItem('selectDate');
+    if (!local) return;
+
+    const { selectDate: localDate, stageId: localStageId } = JSON.parse(local);
+    sessionStorage.removeItem('selectDate');
+
+    if (localDate && stageId === localStageId) {
+      syncSelectedDate(localDate);
+    }
+  }, [dates, stageId]);
 
   const todayIndex = dates.findIndex(
     (d) =>

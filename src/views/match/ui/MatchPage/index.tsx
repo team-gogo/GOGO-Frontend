@@ -34,6 +34,10 @@ const MatchPage = () => {
     setSelectDate('');
   }, [stageId]);
 
+  useEffect(() => {
+    setSelectDate(selectDate);
+  }, []);
+
   const today = new Date();
 
   const [year, month, day] = selectDate
