@@ -11,7 +11,10 @@ import { usePostMyCoupon } from '../../model/usePostMyCoupon';
 const CouponPage = () => {
   const searchParams = useSearchParams();
   const couponId = searchParams.get('couponId');
-  const { data: couponInfo } = useGetMyCouponInfo(String(couponId));
+  const { data: couponInfo, isPending } = useGetMyCouponInfo(String(couponId), {
+    enabled: !!couponId,
+    retry: false,
+  });
   const { mutate: postCoupon, data: couponData } = usePostMyCoupon(
     String(couponId),
   );
@@ -36,9 +39,14 @@ const CouponPage = () => {
   useEffect(() => {
     if (couponInfo) {
       setIsUseCoupon(couponInfo.isUsed);
-      localStorage.removeItem('couponId');
     }
   }, [couponInfo]);
+
+  useEffect(() => {
+    if (!isPending) {
+      localStorage.removeItem('couponId');
+    }
+  }, [isPending]);
 
   useEffect(() => {
     if (couponData) {
