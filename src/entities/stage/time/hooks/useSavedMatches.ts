@@ -59,19 +59,24 @@ export const useSavedMatches = (
         );
       }
 
-      const newMatchData = {
-        round,
-        index,
-        startDate: startDateStr,
-        endDate: endDateStr,
-        teamAName,
-        teamBName,
-      };
-
       if (matchIndex !== -1) {
-        currentSavedMatches[matchIndex] = newMatchData;
+        currentSavedMatches[matchIndex] = {
+          round,
+          index,
+          startDate: startDateStr,
+          endDate: endDateStr,
+          teamAName,
+          teamBName,
+        };
       } else {
-        currentSavedMatches.push(newMatchData);
+        currentSavedMatches.push({
+          round,
+          index,
+          startDate: startDateStr,
+          endDate: endDateStr,
+          teamAName,
+          teamBName,
+        });
       }
 
       sessionStorage.setItem(
@@ -81,6 +86,8 @@ export const useSavedMatches = (
       setSavedMatches(currentSavedMatches);
 
       toast.success('매치 시간이 저장되었습니다.');
+
+      formatMatchData(matchId, currentSavedMatches);
     } catch (error) {
       toast.error('날짜 또는 시간 형식이 올바르지 않습니다.');
       console.error(error);

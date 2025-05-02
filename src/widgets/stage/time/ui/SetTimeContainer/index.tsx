@@ -60,6 +60,10 @@ const SetTimeContainer = ({
   );
 
   useEffect(() => {
+    _onMatchSave?.();
+  }, [savedMatches, _onMatchSave]);
+
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       const confirmedTeamsData = sessionStorage.getItem(
         `confirmedTeams_${matchId}`,

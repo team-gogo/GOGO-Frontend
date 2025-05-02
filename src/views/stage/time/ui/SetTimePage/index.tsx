@@ -292,6 +292,13 @@ const SetTimePage = () => {
 
   const handleConfirm = () => {
     try {
+      console.log('Saved Matches:', savedMatches);
+
+      if (!savedMatches || savedMatches.length === 0) {
+        toast.error('매치 시간을 먼저 설정해주세요.');
+        return;
+      }
+
       const games = [];
       let parsedTeams: { teamId: number; teamName: string }[] = [];
 
@@ -470,6 +477,21 @@ const SetTimePage = () => {
             teamIdMap[team.teamName] = team.teamId;
           });
           setTeamIds(teamIdMap);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+  }, [gameId]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && gameId) {
+      const savedMatchesData = sessionStorage.getItem(`savedMatches_${gameId}`);
+
+      if (savedMatchesData) {
+        try {
+          const parsedSavedMatches = JSON.parse(savedMatchesData);
+          setSavedMatches(parsedSavedMatches);
         } catch (error) {
           console.error(error);
         }
