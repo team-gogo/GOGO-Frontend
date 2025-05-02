@@ -172,7 +172,7 @@ const TournamentMatchView = ({
   }
 
   return (
-    <div className="flex flex-row gap-4 overflow-x-auto p-4 phone:w-full mobile:w-full pad:w-full laptop:w-full">
+    <div className="flex flex-row gap-4 overflow-x-auto p-4 phone:w-full mobile:w-full pad:w-full laptop:w-full [&::-webkit-scrollbar]:hidden">
       <MatchSection
         title="8강"
         matchList={matches.quarterFinals}
