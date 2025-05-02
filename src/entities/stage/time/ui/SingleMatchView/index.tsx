@@ -16,8 +16,8 @@ interface MatchViewProps {
     finals: MatchData[];
   };
   teamIds: Record<string, number>;
-  finalStage: number;
-  matchId: number;
+  finalStage?: number;
+  gameId?: number;
   handleMatchSelect: (round: string, index: number) => void;
   isMatchSelected: (round: string, index: number) => boolean;
   isMatchTimeSet: (round: string, index: number) => boolean;

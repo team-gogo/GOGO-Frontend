@@ -23,7 +23,7 @@ interface MatchViewProps {
   };
   teamIds: Record<string, number>;
   finalStage: number;
-  matchId: number;
+  gameId: number;
   handleMatchSelect: (round: string, index: number) => void;
   isMatchSelected: (round: string, index: number) => boolean;
   isMatchTimeSet: (round: string, index: number) => boolean;
@@ -33,19 +33,20 @@ const TournamentMatchView = ({
   matches,
   teamIds,
   finalStage,
-  matchId,
+  gameId,
   handleMatchSelect,
   isMatchSelected,
   isMatchTimeSet,
 }: MatchViewProps) => {
   if (finalStage === 4) {
-    const confirmedTeamsKey = `confirmedTeams_${matchId}`;
-    const confirmedTeamsData = sessionStorage.getItem(confirmedTeamsKey);
+    const confirmedTeamsData = sessionStorage.getItem(
+      `confirmedTeams_${gameId}`,
+    );
 
     if (confirmedTeamsData) {
       const teams = JSON.parse(confirmedTeamsData) as TeamData[];
       if (teams.length === 3) {
-        const byeTeamData = sessionStorage.getItem(`threeTeamBye_${matchId}`);
+        const byeTeamData = sessionStorage.getItem(`threeTeamBye_${gameId}`);
         let byeTeamName = 'TBD';
 
         if (byeTeamData) {

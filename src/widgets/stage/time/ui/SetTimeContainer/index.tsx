@@ -27,7 +27,7 @@ type SetTimeContainerProps = {
   onMatchSave?: () => void;
   savedMatches: SavedMatchData[];
   system: GameSystem;
-  matchId: number;
+  gameId: number;
   teamIds: Record<string, number>;
 };
 
@@ -35,7 +35,7 @@ const SetTimeContainer = ({
   onMatchSave: _onMatchSave,
   savedMatches: initialSavedMatches,
   system,
-  matchId,
+  gameId,
   teamIds,
 }: SetTimeContainerProps) => {
   const { formatMatchData } = useMatchStore();
@@ -46,14 +46,14 @@ const SetTimeContainer = ({
   const [finalStage, setFinalStage] = useState<4 | 8>(8);
 
   const { matches, updateMatchDateInfo: _updateMatchDateInfo } = useMatches(
-    matchId,
+    gameId,
     system,
     finalStage,
     teamIds,
   );
 
   const { savedMatches, saveMatchTime } = useSavedMatches(
-    matchId,
+    gameId,
     system,
     initialSavedMatches,
     formatMatchData,
@@ -66,7 +66,7 @@ const SetTimeContainer = ({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const confirmedTeamsData = sessionStorage.getItem(
-        `confirmedTeams_${matchId}`,
+        `confirmedTeams_${gameId}`,
       );
 
       if (confirmedTeamsData) {
@@ -82,7 +82,7 @@ const SetTimeContainer = ({
         setFinalStage(8);
       }
     }
-  }, [matchId]);
+  }, [gameId]);
 
   const getSelectedMatchTeams = (
     round: string,
@@ -219,8 +219,6 @@ const SetTimeContainer = ({
           <SingleMatchView
             matches={matches}
             teamIds={teamIds}
-            finalStage={finalStage}
-            matchId={matchId}
             handleMatchSelect={handleMatchSelect}
             isMatchSelected={isMatchSelected}
             isMatchTimeSet={isMatchTimeSet}
@@ -232,7 +230,7 @@ const SetTimeContainer = ({
             matches={matches}
             teamIds={teamIds}
             finalStage={finalStage}
-            matchId={matchId}
+            gameId={gameId}
             handleMatchSelect={handleMatchSelect}
             isMatchSelected={isMatchSelected}
             isMatchTimeSet={isMatchTimeSet}
@@ -244,7 +242,7 @@ const SetTimeContainer = ({
             matches={matches}
             teamIds={teamIds}
             finalStage={finalStage}
-            matchId={matchId}
+            gameId={gameId}
             handleMatchSelect={handleMatchSelect}
             isMatchSelected={isMatchSelected}
             isMatchTimeSet={isMatchTimeSet}
