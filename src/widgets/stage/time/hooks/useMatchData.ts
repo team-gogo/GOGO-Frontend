@@ -1,16 +1,7 @@
 import { useState, useEffect } from 'react';
-
 import { toast } from 'react-toastify';
+import { MatchData } from '@/shared/types/match';
 import { GameSystem } from '@/shared/types/stage/game';
-
-interface MatchData {
-  index: number;
-  teamAName: string;
-  teamBName: string;
-  round: string;
-  startDate?: string;
-  endDate?: string;
-}
 
 interface TeamData {
   teamId: number;

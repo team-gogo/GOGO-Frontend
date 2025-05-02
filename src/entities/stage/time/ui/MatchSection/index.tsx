@@ -1,13 +1,5 @@
 import MatchItem from '@/entities/stage/time/ui/MatchItem';
-
-interface MatchData {
-  index: number;
-  teamAName: string;
-  teamBName: string;
-  round: string;
-  startDate?: string;
-  endDate?: string;
-}
+import { MatchData } from '@/shared/types/match';
 
 interface MatchSectionProps {
   title: string;

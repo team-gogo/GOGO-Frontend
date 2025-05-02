@@ -1,18 +1,10 @@
 import MatchItem from '@/entities/stage/time/ui/MatchItem';
 import MatchSection from '@/entities/stage/time/ui/MatchSection';
+import { MatchData } from '@/shared/types/match';
 
 interface TeamData {
   teamId: number;
   teamName: string;
-}
-
-interface MatchData {
-  index: number;
-  teamAName: string;
-  teamBName: string;
-  round: string;
-  startDate?: string;
-  endDate?: string;
 }
 
 interface MatchViewProps {
