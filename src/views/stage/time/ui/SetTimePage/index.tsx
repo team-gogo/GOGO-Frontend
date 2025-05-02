@@ -534,7 +534,7 @@ const SetTimePage = () => {
             onMatchSave={handleMatchSave}
             savedMatches={savedMatches}
             system={system}
-            matchId={parseInt(gameId || '0', 10)}
+            gameId={parseInt(gameId || '0', 10)}
             teamIds={teamIds}
           />
         </div>
