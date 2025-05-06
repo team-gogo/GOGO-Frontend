@@ -108,6 +108,9 @@ const SetTimeContainer = ({
     date,
     startTime,
     endTime,
+    setDate,
+    setStartTime,
+    setEndTime,
     handleDateChange,
     handleStartTimeChange,
     handleEndTimeChange,
@@ -159,36 +162,22 @@ const SetTimeContainer = ({
         const formattedDate = getKoreanTime(startDate)
           .toISOString()
           .split('T')[0];
-
         const formattedStartTime = getKoreanTime(startDate)
           .toTimeString()
           .split(' ')[0]
           .substring(0, 5);
-
         const formattedEndTime = getKoreanTime(endDate)
           .toTimeString()
           .split(' ')[0]
           .substring(0, 5);
 
-        handleDateChange({
-          target: { value: formattedDate },
-        } as React.ChangeEvent<HTMLInputElement>);
-        handleStartTimeChange({
-          target: { value: formattedStartTime },
-        } as React.ChangeEvent<HTMLInputElement>);
-        handleEndTimeChange({
-          target: { value: formattedEndTime },
-        } as React.ChangeEvent<HTMLInputElement>);
+        setDate(formattedDate);
+        setStartTime(formattedStartTime);
+        setEndTime(formattedEndTime);
       } else {
-        handleDateChange({
-          target: { value: '' },
-        } as React.ChangeEvent<HTMLInputElement>);
-        handleStartTimeChange({
-          target: { value: '' },
-        } as React.ChangeEvent<HTMLInputElement>);
-        handleEndTimeChange({
-          target: { value: '' },
-        } as React.ChangeEvent<HTMLInputElement>);
+        setDate('');
+        setStartTime('');
+        setEndTime('');
       }
     }
   };

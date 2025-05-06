@@ -42,9 +42,12 @@ export const useTimeHandlers = (
     }
   }, [selectedMatch, savedMatches]);
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(e.target.value);
-    if (selectedMatch && e.target.value && startTime && endTime) {
+  const saveMatchTimeIfComplete = (
+    newDate: string,
+    newStartTime: string,
+    newEndTime: string,
+  ) => {
+    if (selectedMatch && newDate && newStartTime && newEndTime) {
       const { teamAName, teamBName } = getSelectedMatchTeams(
         selectedMatch.round,
         selectedMatch.index,
@@ -52,57 +55,40 @@ export const useTimeHandlers = (
       saveMatchTime(
         selectedMatch.round,
         selectedMatch.index,
-        e.target.value,
-        startTime,
-        endTime,
+        newDate,
+        newStartTime,
+        newEndTime,
         teamAName,
         teamBName,
       );
     }
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value;
+    setDate(newDate);
+    saveMatchTimeIfComplete(newDate, startTime, endTime);
   };
 
   const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStartTime(e.target.value);
-    if (selectedMatch && date && e.target.value && endTime) {
-      const { teamAName, teamBName } = getSelectedMatchTeams(
-        selectedMatch.round,
-        selectedMatch.index,
-      );
-      saveMatchTime(
-        selectedMatch.round,
-        selectedMatch.index,
-        date,
-        e.target.value,
-        endTime,
-        teamAName,
-        teamBName,
-      );
-    }
+    const newStartTime = e.target.value;
+    setStartTime(newStartTime);
+    saveMatchTimeIfComplete(date, newStartTime, endTime);
   };
 
   const handleEndTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEndTime(e.target.value);
-    if (selectedMatch && date && startTime && e.target.value) {
-      const { teamAName, teamBName } = getSelectedMatchTeams(
-        selectedMatch.round,
-        selectedMatch.index,
-      );
-      saveMatchTime(
-        selectedMatch.round,
-        selectedMatch.index,
-        date,
-        startTime,
-        e.target.value,
-        teamAName,
-        teamBName,
-      );
-    }
+    const newEndTime = e.target.value;
+    setEndTime(newEndTime);
+    saveMatchTimeIfComplete(date, startTime, newEndTime);
   };
 
   return {
     date,
     startTime,
     endTime,
+    setDate,
+    setStartTime,
+    setEndTime,
     handleDateChange,
     handleStartTimeChange,
     handleEndTimeChange,
