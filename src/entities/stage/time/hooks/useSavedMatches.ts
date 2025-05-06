@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { GameSystem } from '@/shared/types/stage/game';
+import getKoreanTime from '@/shared/utils/getKoreanTime';
 import { SavedMatchData } from '../types/match';
 
 export const useSavedMatches = (
@@ -28,13 +29,8 @@ export const useSavedMatches = (
       const startDateTime = new Date(`${dateVal}T${startTimeVal}`);
       const endDateTime = new Date(`${dateVal}T${endTimeVal}`);
 
-      const koreaTimeOffset = 9 * 60;
-      const startDateStr = new Date(
-        startDateTime.getTime() + koreaTimeOffset * 60000,
-      ).toISOString();
-      const endDateStr = new Date(
-        endDateTime.getTime() + koreaTimeOffset * 60000,
-      ).toISOString();
+      const startDateStr = getKoreanTime(startDateTime).toISOString();
+      const endDateStr = getKoreanTime(endDateTime).toISOString();
 
       const savedMatchesKey = `savedMatches_${matchId}`;
       let currentSavedMatches: SavedMatchData[] = [];
@@ -85,7 +81,7 @@ export const useSavedMatches = (
       );
       setSavedMatches(currentSavedMatches);
 
-      toast.success('매치 시간이 저장되었습니다.');
+      // toast.success('매치 시간이 저장되었습니다.');
 
       formatMatchData(matchId, currentSavedMatches);
     } catch (error) {
