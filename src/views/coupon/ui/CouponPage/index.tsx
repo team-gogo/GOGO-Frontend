@@ -11,7 +11,7 @@ import { usePostMyCoupon } from '../../model/usePostMyCoupon';
 const CouponPage = () => {
   const searchParams = useSearchParams();
   const couponId = searchParams.get('couponId');
-  const { data: couponInfo, isPending } = useGetMyCouponInfo(String(couponId), {
+  const { data: couponInfo, is404 } = useGetMyCouponInfo(String(couponId), {
     enabled: !!couponId,
     retry: false,
   });
@@ -43,10 +43,10 @@ const CouponPage = () => {
   }, [couponInfo]);
 
   useEffect(() => {
-    if (!isPending) {
+    if (is404 || couponInfo) {
       localStorage.removeItem('couponId');
     }
-  }, [isPending]);
+  }, [is404, couponInfo]);
 
   useEffect(() => {
     if (couponData) {
