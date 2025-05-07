@@ -11,9 +11,12 @@ export const getMyCouponInfo = async (
     );
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        throw new Error('404');
+      }
       throw new Error(
-        error.response.data.error || '내 쿠폰 정보 불러오기를 실패 했습니다.',
+        error.response?.data?.error || '내 쿠폰 정보 불러오기를 실패 했습니다.',
       );
     }
     throw error;
