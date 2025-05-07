@@ -43,10 +43,10 @@ const CouponPage = () => {
   }, [couponInfo]);
 
   useEffect(() => {
-    if (is404) {
+    if (is404 || couponInfo) {
       localStorage.removeItem('couponId');
     }
-  }, [is404]);
+  }, [is404, couponInfo]);
 
   useEffect(() => {
     if (couponData) {
