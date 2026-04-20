@@ -1,87 +1,166 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+  CSSProperties,
+} from 'react';
+import { RankingUserItem } from '@/entities/ranking';
 import { RankItem } from '@/shared/types/ranking';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
-import { RankingUserContainer, TopRankListContainer } from '@/widgets/ranking';
-import { useGetRankingQuery } from '../../model/useGetRankingQuery';
+import { TopRankListContainer } from '@/widgets/ranking';
+import { getRank } from '../../api/getRank';
+import type { PageResponse } from 'scrolloop';
+
+const MemoRankingUserItem = React.memo(RankingUserItem);
+
+const InfiniteList = dynamic(
+  () => import('scrolloop').then((mod) => mod.InfiniteList),
+  { ssr: false },
+) as <T>(props: import('scrolloop').InfiniteListProps<T>) => JSX.Element;
+
+const ITEM_HEIGHT = 76;
+const PAGE_SIZE = 10;
+const MIN_LIST_HEIGHT = 300;
+const LIST_BOTTOM_GAP = 24;
 
 const RankingPage = () => {
   const params = useParams<{ stageId: string }>();
   const { stageId } = params;
 
-  const [page, setPage] = useState(0);
-  const size = 10;
-  const [allRanks, setAllRanks] = useState<RankItem[]>([]);
-  const [isLastPage, setIsLastPage] = useState(false);
+  const [topThreeRanks, setTopThreeRanks] = useState<RankItem[]>([]);
+  const listWrapperRef = useRef<HTMLDivElement>(null);
+  const [listHeight, setListHeight] = useState(MIN_LIST_HEIGHT);
 
-  const { data, isFetching } = useGetRankingQuery(stageId, page, size);
+  useLayoutEffect(() => {
+    const compute = () => {
+      const el = listWrapperRef.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top;
+      const available = window.innerHeight - top - LIST_BOTTOM_GAP;
+      setListHeight(Math.max(MIN_LIST_HEIGHT, available));
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
 
-  const observerRef = useRef<HTMLDivElement | null>(null);
-  const prevScrollYRef = useRef(0);
+  const fetchPage = useCallback(
+    async (page: number, size: number): Promise<PageResponse<RankItem>> => {
+      const MAX_ATTEMPTS = 3;
+      let lastError: unknown;
+      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+        try {
+          const data = await getRank(stageId, page, size);
 
-  const handleObserver = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-      if (entry.isIntersecting && !isFetching && !isLastPage) {
-        prevScrollYRef.current = window.scrollY;
-        setPage((prev) => prev + 1);
+          if (page === 0 && data.rank.length >= 3) {
+            setTopThreeRanks(data.rank.slice(0, 3));
+          }
+
+          const hasMore = data.rank.length === size;
+          const loadedEnd = page * size + data.rank.length;
+
+          return {
+            items: data.rank,
+            total: hasMore ? loadedEnd + size : loadedEnd,
+            hasMore,
+          };
+        } catch (error) {
+          lastError = error;
+          if (attempt < MAX_ATTEMPTS - 1) {
+            await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
+          }
+        }
       }
+      throw lastError;
     },
-    [isFetching],
+    [stageId],
   );
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, {
-      root: null,
-      rootMargin: '0px',
-      threshold: 1.0,
-    });
+  const reorderedTopThreeRanks: RankItem[] =
+    topThreeRanks.length >= 3
+      ? [topThreeRanks[1], topThreeRanks[0], topThreeRanks[2]]
+      : topThreeRanks;
 
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-    }
-
-    return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
-      }
-    };
-  }, [handleObserver]);
-
-  useEffect(() => {
-    if (data?.rank) {
-      setAllRanks((prev) => {
-        const newItems = data.rank.filter(
-          (item) =>
-            !prev.find((prevItem) => prevItem.studentId === item.studentId),
+  const renderItem = useCallback(
+    (item: RankItem | undefined, _index: number, style: CSSProperties) => {
+      if (!item) {
+        return (
+          <div style={style}>
+            <div
+              className={cn(
+                'w-full',
+                'h-[3.75rem]',
+                'px-24',
+                'py-12',
+                'flex',
+                'justify-between',
+                'bg-gray-700',
+                'rounded-lg',
+                'items-center',
+                'animate-pulse',
+              )}
+            />
+          </div>
         );
+      }
 
-        // ✅ 새로 추가된 게 없다면 마지막 페이지로 판단
-        if (newItems.length === 0) {
-          setIsLastPage(true);
-        }
+      return (
+        <div style={style}>
+          <MemoRankingUserItem rank={item} />
+        </div>
+      );
+    },
+    [],
+  );
 
-        if (newItems.length > 0) {
-          requestAnimationFrame(() => {
-            window.scrollTo({ top: prevScrollYRef.current, behavior: 'auto' });
-          });
-        }
+  const renderLoading = useCallback(
+    () => (
+      <div className={cn('flex', 'items-center', 'justify-center', 'h-full')}>
+        <p className={cn('text-gray-400', 'text-body2s')}>로딩 중...</p>
+      </div>
+    ),
+    [],
+  );
 
-        return [...prev, ...newItems];
-      });
-    }
-  }, [data]);
+  const renderEmpty = useCallback(
+    () => (
+      <div className={cn('flex', 'items-center', 'justify-center', 'h-full')}>
+        <p className={cn('text-gray-400', 'text-body2s')}>
+          랭킹 데이터가 없습니다.
+        </p>
+      </div>
+    ),
+    [],
+  );
 
-  const topThreeRanks: RankItem[] = allRanks.slice(0, 3);
-  const reorderedTopThreeRanks: RankItem[] = [
-    topThreeRanks[1],
-    topThreeRanks[0],
-    topThreeRanks[2],
-  ];
-  const remainingRanks: RankItem[] = allRanks.slice(3);
+  const renderError = useCallback(
+    (_error: Error, retry: () => void) => (
+      <div
+        className={cn(
+          'flex',
+          'flex-col',
+          'items-center',
+          'justify-center',
+          'h-full',
+          'gap-4',
+        )}
+      >
+        <p className={cn('text-gray-400', 'text-body2s')}>
+          에러가 발생했습니다.
+        </p>
+        <button onClick={retry} className={cn('text-main-400', 'text-body2s')}>
+          다시 시도
+        </button>
+      </div>
+    ),
+    [],
+  );
 
   return (
     <div
@@ -96,8 +175,21 @@ const RankingPage = () => {
       <BackPageButton label="포인트 랭킹" type="back" />
       <div className={cn('space-y-[2.25rem]')}>
         <TopRankListContainer topRanks={reorderedTopThreeRanks} />
-        <RankingUserContainer remainingRanks={remainingRanks} />
-        <div ref={observerRef} className="h-10" />
+        <div ref={listWrapperRef}>
+          <InfiniteList<RankItem>
+            fetchPage={fetchPage}
+            renderItem={renderItem}
+            itemSize={ITEM_HEIGHT}
+            pageSize={PAGE_SIZE}
+            height={listHeight}
+            overscan={20}
+            prefetchThreshold={3}
+            className="scroll-hidden"
+            renderLoading={renderLoading}
+            renderEmpty={renderEmpty}
+            renderError={renderError}
+          />
+        </div>
       </div>
     </div>
   );
