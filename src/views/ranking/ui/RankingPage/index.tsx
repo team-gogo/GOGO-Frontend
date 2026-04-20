@@ -4,13 +4,14 @@ import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
 import React, {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
   CSSProperties,
 } from 'react';
 import { RankingUserItem } from '@/entities/ranking';
-import { RankItem } from '@/shared/types/ranking';
+import { RankItem, RankingData } from '@/shared/types/ranking';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { TopRankListContainer } from '@/widgets/ranking';
@@ -28,6 +29,7 @@ const ITEM_HEIGHT = 76;
 const PAGE_SIZE = 10;
 const MIN_LIST_HEIGHT = 300;
 const LIST_BOTTOM_GAP = 24;
+const SKIP_TOP = 3;
 
 const RankingPage = () => {
   const params = useParams<{ stageId: string }>();
@@ -36,6 +38,11 @@ const RankingPage = () => {
   const [topThreeRanks, setTopThreeRanks] = useState<RankItem[]>([]);
   const listWrapperRef = useRef<HTMLDivElement>(null);
   const [listHeight, setListHeight] = useState(MIN_LIST_HEIGHT);
+  const backendPagesRef = useRef<Map<number, Promise<RankingData>>>(new Map());
+
+  useEffect(() => {
+    backendPagesRef.current = new Map();
+  }, [stageId]);
 
   useLayoutEffect(() => {
     const compute = () => {
@@ -50,23 +57,49 @@ const RankingPage = () => {
     return () => window.removeEventListener('resize', compute);
   }, []);
 
+  const getBackendPage = useCallback(
+    (page: number) => {
+      let promise = backendPagesRef.current.get(page);
+      if (!promise) {
+        promise = getRank(stageId, page, PAGE_SIZE).catch((err) => {
+          backendPagesRef.current.delete(page);
+          throw err;
+        });
+        backendPagesRef.current.set(page, promise);
+      }
+      return promise;
+    },
+    [stageId],
+  );
+
   const fetchPage = useCallback(
     async (page: number, size: number): Promise<PageResponse<RankItem>> => {
       const MAX_ATTEMPTS = 3;
       let lastError: unknown;
       for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
         try {
-          const data = await getRank(stageId, page, size);
+          const startIdx = SKIP_TOP + page * size;
+          const firstBackendPage = Math.floor(startIdx / size);
+          const offset = startIdx - firstBackendPage * size;
 
-          if (page === 0 && data.rank.length >= 3) {
-            setTopThreeRanks(data.rank.slice(0, 3));
+          const [first, second] = await Promise.all([
+            getBackendPage(firstBackendPage),
+            getBackendPage(firstBackendPage + 1),
+          ]);
+          let items = first.rank.slice(offset);
+          if (items.length < size) {
+            items = items.concat(second.rank.slice(0, size - items.length));
           }
 
-          const hasMore = data.rank.length === size;
-          const loadedEnd = page * size + data.rank.length;
+          if (page === 0 && first.rank.length >= SKIP_TOP) {
+            setTopThreeRanks(first.rank.slice(0, SKIP_TOP));
+          }
+
+          const hasMore = items.length === size;
+          const loadedEnd = page * size + items.length;
 
           return {
-            items: data.rank,
+            items,
             total: hasMore ? loadedEnd + size : loadedEnd,
             hasMore,
           };
@@ -79,7 +112,7 @@ const RankingPage = () => {
       }
       throw lastError;
     },
-    [stageId],
+    [getBackendPage],
   );
 
   const reorderedTopThreeRanks: RankItem[] =
