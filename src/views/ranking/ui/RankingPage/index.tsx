@@ -1,48 +1,108 @@
 'use client';
 
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
 import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   CSSProperties,
 } from 'react';
 import { RankingUserItem } from '@/entities/ranking';
-import { RankItem, RankingData } from '@/shared/types/ranking';
+import { RankItem } from '@/shared/types/ranking';
 import BackPageButton from '@/shared/ui/backPageButton';
 import { cn } from '@/shared/utils/cn';
 import { TopRankListContainer } from '@/widgets/ranking';
 import { getRank } from '../../api/getRank';
-import type { PageResponse } from 'scrolloop';
 
 const MemoRankingUserItem = React.memo(RankingUserItem);
 
-const InfiniteList = dynamic(
-  () => import('scrolloop').then((mod) => mod.InfiniteList),
+const VirtualList = dynamic(
+  () => import('scrolloop').then((mod) => mod.VirtualList),
   { ssr: false },
-) as <T>(props: import('scrolloop').InfiniteListProps<T>) => JSX.Element;
+);
 
 const ITEM_HEIGHT = 76;
 const PAGE_SIZE = 10;
+const ALL_PAGE_SIZE = 200;
 const MIN_LIST_HEIGHT = 300;
 const LIST_BOTTOM_GAP = 24;
 const SKIP_TOP = 3;
 
-const RankingPage = () => {
-  const params = useParams<{ stageId: string }>();
-  const { stageId } = params;
+const supportsUntilFound = () =>
+  typeof document !== 'undefined' &&
+  document.body != null &&
+  'onbeforematch' in document.body;
 
-  const [topThreeRanks, setTopThreeRanks] = useState<RankItem[]>([]);
-  const listWrapperRef = useRef<HTMLDivElement>(null);
-  const [listHeight, setListHeight] = useState(MIN_LIST_HEIGHT);
-  const backendPagesRef = useRef<Map<number, Promise<RankingData>>>(new Map());
+const findScroller = (root: HTMLElement): HTMLElement | null => {
+  const candidates = root.querySelectorAll<HTMLElement>('*');
+  for (const el of Array.from(candidates)) {
+    const style = getComputedStyle(el);
+    if (style.overflowY === 'auto' || style.overflowY === 'scroll') return el;
+  }
+  return null;
+};
+
+const SearchableRow = ({ index, rank }: { index: number; rank: RankItem }) => {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    backendPagesRef.current = new Map();
-  }, [stageId]);
+    ref.current?.setAttribute('hidden', 'until-found');
+  }, []);
+
+  return (
+    <div ref={ref} data-index={index}>
+      {rank.rank}등 {rank.name}
+    </div>
+  );
+};
+
+const RankingPage = () => {
+  const { stageId } = useParams<{ stageId: string }>();
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ['ranking', stageId],
+      queryFn: ({ pageParam }) => getRank(stageId, pageParam, PAGE_SIZE),
+      initialPageParam: 0,
+      getNextPageParam: (last, pages) =>
+        last.rank.length === PAGE_SIZE ? pages.length : undefined,
+    });
+
+  const { data: fullData, refetch: fetchAll } = useQuery({
+    queryKey: ['ranking-all', stageId],
+    queryFn: () => getRank(stageId, 0, ALL_PAGE_SIZE),
+    enabled: false,
+    staleTime: 60_000,
+  });
+
+  const allRanks = useMemo<RankItem[]>(
+    () => fullData?.rank ?? data?.pages.flatMap((p) => p.rank) ?? [],
+    [data, fullData],
+  );
+  const topThree = useMemo(() => allRanks.slice(0, SKIP_TOP), [allRanks]);
+  const remaining = useMemo(() => allRanks.slice(SKIP_TOP), [allRanks]);
+  const reorderedTopThree = useMemo<RankItem[]>(
+    () =>
+      topThree.length >= SKIP_TOP
+        ? [topThree[1], topThree[0], topThree[2]]
+        : topThree,
+    [topThree],
+  );
+
+  const listWrapperRef = useRef<HTMLDivElement>(null);
+  const searchLayerRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLElement | null>(null);
+  const [listHeight, setListHeight] = useState(MIN_LIST_HEIGHT);
+  const [canRenderSidecar, setCanRenderSidecar] = useState(false);
+
+  useEffect(() => {
+    setCanRenderSidecar(supportsUntilFound());
+  }, []);
 
   useLayoutEffect(() => {
     const compute = () => {
@@ -57,142 +117,66 @@ const RankingPage = () => {
     return () => window.removeEventListener('resize', compute);
   }, []);
 
-  const getBackendPage = useCallback(
-    (page: number) => {
-      let promise = backendPagesRef.current.get(page);
-      if (!promise) {
-        promise = getRank(stageId, page, PAGE_SIZE).catch((err) => {
-          backendPagesRef.current.delete(page);
-          throw err;
+  const fullDataRef = useRef(fullData);
+  fullDataRef.current = fullData;
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!((e.metaKey || e.ctrlKey) && e.key === 'f')) return;
+      if (fullDataRef.current) return;
+      fetchAll();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [fetchAll]);
+
+  useEffect(() => {
+    const layer = searchLayerRef.current;
+    const wrapper = listWrapperRef.current;
+    if (!layer || !wrapper) return;
+
+    const onBeforeMatch = (e: Event) => {
+      const target = e.target as HTMLElement;
+      const idx = Number(target.dataset.index);
+      if (!Number.isFinite(idx)) return;
+
+      if (!scrollerRef.current) {
+        scrollerRef.current = findScroller(wrapper);
+      }
+
+      setTimeout(() => {
+        scrollerRef.current?.scrollTo({
+          top: idx * ITEM_HEIGHT,
+          behavior: 'smooth',
         });
-        backendPagesRef.current.set(page, promise);
+        target.setAttribute('hidden', 'until-found');
+      }, 0);
+    };
+
+    layer.addEventListener('beforematch', onBeforeMatch, true);
+    return () => layer.removeEventListener('beforematch', onBeforeMatch, true);
+  }, [canRenderSidecar]);
+
+  const handleRangeChange = useCallback(
+    ({ endIndex }: { startIndex: number; endIndex: number }) => {
+      if (
+        hasNextPage &&
+        !isFetchingNextPage &&
+        endIndex >= remaining.length - PAGE_SIZE / 2
+      ) {
+        fetchNextPage();
       }
-      return promise;
     },
-    [stageId],
+    [hasNextPage, isFetchingNextPage, remaining.length, fetchNextPage],
   );
-
-  const fetchPage = useCallback(
-    async (page: number, size: number): Promise<PageResponse<RankItem>> => {
-      const MAX_ATTEMPTS = 3;
-      let lastError: unknown;
-      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-        try {
-          const startIdx = SKIP_TOP + page * size;
-          const firstBackendPage = Math.floor(startIdx / size);
-          const offset = startIdx - firstBackendPage * size;
-
-          const [first, second] = await Promise.all([
-            getBackendPage(firstBackendPage),
-            getBackendPage(firstBackendPage + 1),
-          ]);
-          let items = first.rank.slice(offset);
-          if (items.length < size) {
-            items = items.concat(second.rank.slice(0, size - items.length));
-          }
-
-          if (page === 0 && first.rank.length >= SKIP_TOP) {
-            setTopThreeRanks(first.rank.slice(0, SKIP_TOP));
-          }
-
-          const hasMore = items.length === size;
-          const loadedEnd = page * size + items.length;
-
-          return {
-            items,
-            total: hasMore ? loadedEnd + size : loadedEnd,
-            hasMore,
-          };
-        } catch (error) {
-          lastError = error;
-          if (attempt < MAX_ATTEMPTS - 1) {
-            await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
-          }
-        }
-      }
-      throw lastError;
-    },
-    [getBackendPage],
-  );
-
-  const reorderedTopThreeRanks: RankItem[] =
-    topThreeRanks.length >= 3
-      ? [topThreeRanks[1], topThreeRanks[0], topThreeRanks[2]]
-      : topThreeRanks;
 
   const renderItem = useCallback(
-    (item: RankItem | undefined, _index: number, style: CSSProperties) => {
-      if (!item) {
-        return (
-          <div style={style}>
-            <div
-              className={cn(
-                'w-full',
-                'h-[3.75rem]',
-                'px-24',
-                'py-12',
-                'flex',
-                'justify-between',
-                'bg-gray-700',
-                'rounded-lg',
-                'items-center',
-                'animate-pulse',
-              )}
-            />
-          </div>
-        );
-      }
-
-      return (
-        <div style={style}>
-          <MemoRankingUserItem rank={item} />
-        </div>
-      );
-    },
-    [],
-  );
-
-  const renderLoading = useCallback(
-    () => (
-      <div className={cn('flex', 'items-center', 'justify-center', 'h-full')}>
-        <p className={cn('text-gray-400', 'text-body2s')}>로딩 중...</p>
+    (index: number, style: CSSProperties) => (
+      <div style={style}>
+        <MemoRankingUserItem rank={remaining[index]} />
       </div>
     ),
-    [],
-  );
-
-  const renderEmpty = useCallback(
-    () => (
-      <div className={cn('flex', 'items-center', 'justify-center', 'h-full')}>
-        <p className={cn('text-gray-400', 'text-body2s')}>
-          랭킹 데이터가 없습니다.
-        </p>
-      </div>
-    ),
-    [],
-  );
-
-  const renderError = useCallback(
-    (_error: Error, retry: () => void) => (
-      <div
-        className={cn(
-          'flex',
-          'flex-col',
-          'items-center',
-          'justify-center',
-          'h-full',
-          'gap-4',
-        )}
-      >
-        <p className={cn('text-gray-400', 'text-body2s')}>
-          에러가 발생했습니다.
-        </p>
-        <button onClick={retry} className={cn('text-main-400', 'text-body2s')}>
-          다시 시도
-        </button>
-      </div>
-    ),
-    [],
+    [remaining],
   );
 
   return (
@@ -207,22 +191,42 @@ const RankingPage = () => {
     >
       <BackPageButton label="포인트 랭킹" type="back" />
       <div className={cn('space-y-[2.25rem]')}>
-        <TopRankListContainer topRanks={reorderedTopThreeRanks} />
+        <TopRankListContainer topRanks={reorderedTopThree} />
         <div ref={listWrapperRef}>
-          <InfiniteList<RankItem>
-            fetchPage={fetchPage}
-            renderItem={renderItem}
+          <VirtualList
+            count={remaining.length}
             itemSize={ITEM_HEIGHT}
-            pageSize={PAGE_SIZE}
             height={listHeight}
-            overscan={20}
-            prefetchThreshold={3}
+            overscan={10}
             className="scroll-hidden"
-            renderLoading={renderLoading}
-            renderEmpty={renderEmpty}
-            renderError={renderError}
+            renderItem={renderItem}
+            onRangeChange={handleRangeChange}
           />
         </div>
+        {canRenderSidecar && (
+          <div
+            ref={searchLayerRef}
+            aria-hidden="true"
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: 1,
+              height: 1,
+              padding: 0,
+              margin: 0,
+              overflow: 'hidden',
+              clip: 'rect(0, 0, 0, 0)',
+              whiteSpace: 'nowrap',
+              border: 0,
+              pointerEvents: 'none',
+            }}
+          >
+            {remaining.map((rank, i) => (
+              <SearchableRow key={rank.studentId} index={i} rank={rank} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
